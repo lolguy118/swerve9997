@@ -205,7 +205,7 @@ public class CTREManager {
         if (signalsAllArray == null) {
             edu.wpi.first.wpilibj.DriverStation.reportWarning(
                     "CTREManager.refreshAll() called before init() — no signals to refresh", false);
-            return tmpReturn;
+            return StatusCode.StatusCodeNotInitialized;
         }
 
         if (signalsAllArray.length > 0) {

@@ -39,7 +39,7 @@ public abstract class AutoMode {
     }
 
     public void start() {
-        if (moves.isEmpty() == false) {
+        if (!moves.isEmpty()) {
             currentMoveIdx = 0;
             currentMove = moves.get((int) currentMoveIdx);
 
@@ -92,7 +92,7 @@ public abstract class AutoMode {
      * Robot
      */
     public void robotPeriodicBefore(double argTimestamp) {
-        if (isRunning() == true) {
+        if (isRunning()) {
             lastTime = currentTime;
             currentTime = elapsedTimer.get();
 
@@ -111,10 +111,6 @@ public abstract class AutoMode {
 
             if (currentMove.isComplete()) {
                 nextMove();
-
-                if (currentMove == null) {
-                    end();
-                }
             }
         }
     }
@@ -144,7 +140,7 @@ public abstract class AutoMode {
     public void autonomousPeriodic(double argTimestamp) {
         moves.forEach(
                 t -> {
-                    if (t.canRun() == true) {
+                    if (t.canRun()) {
                         t.autonomousPeriodic(argTimestamp);
                     }
                 });

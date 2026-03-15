@@ -107,9 +107,9 @@ public class SwitchFX extends SwitchBase {
 
     public void setEnabled(final boolean argEnabled) {
         if (isFwdLimit) {
-            controller.getConfig().HardwareLimitSwitch.ForwardLimitEnable = true;
+            controller.getConfig().HardwareLimitSwitch.ForwardLimitEnable = argEnabled;
         } else {
-            controller.getConfig().HardwareLimitSwitch.ReverseLimitEnable = true;
+            controller.getConfig().HardwareLimitSwitch.ReverseLimitEnable = argEnabled;
         }
     }
 

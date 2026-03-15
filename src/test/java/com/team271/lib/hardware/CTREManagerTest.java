@@ -370,10 +370,10 @@ class CTREManagerTest {
      * ================================================================ */
 
     @Test
-    void refreshAllBeforeInitReturnsOKWithWarning() {
+    void refreshAllBeforeInitReturnsNotInitialized() {
         StatusCode status = CTREManager.refreshAll();
 
-        assertEquals(StatusCode.OK, status);
+        assertEquals(StatusCode.StatusCodeNotInitialized, status);
     }
 
     @Test

@@ -138,10 +138,16 @@ public abstract class ControllerBase extends TObj {
     }
 
     public final int getFollowingIDNum() {
+        if (followingID == null) {
+            return -1;
+        }
         return followingID.getDeviceNumber();
     }
 
     public final String getFollowingBus() {
+        if (followingID == null) {
+            return "";
+        }
         return followingID.getBus();
     }
 

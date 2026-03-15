@@ -35,7 +35,8 @@ public final class Elastic {
         try {
             notificationPublisher.set(objectMapper.writeValueAsString(notification));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            edu.wpi.first.wpilibj.DriverStation.reportError(
+                    "Elastic notification failed: " + e.getMessage(), false);
         }
     }
 

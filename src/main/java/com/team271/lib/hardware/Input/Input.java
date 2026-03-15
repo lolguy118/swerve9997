@@ -239,14 +239,14 @@ public class Input extends Subsystem {
         /*
          * Check for Connected/Reconnected Controller
          */
-        if (isConnected == true && isConnectedPrev == false) {
+        if (isConnected && !isConnectedPrev) {
             /*
              * Controller Connected/Reconnected
              */
             axisCount = Math.min(mController.getAxisCount(), DriverStationJNI.kMaxJoystickAxes);
             buttonCount = Math.min(mController.getButtonCount(), kMaxButtons);
             povCount = Math.min(mController.getPOVCount(), DriverStationJNI.kMaxJoystickPOVs);
-        } else if (isConnected == false && isConnectedPrev == true) {
+        } else if (!isConnected && isConnectedPrev) {
             /*
              * Connection Lost
              */

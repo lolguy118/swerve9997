@@ -4,23 +4,10 @@
 
 package com.team271.libtest;
 
-import static com.team271.libtest.Config.*;
-
-import com.team271.lib.TRobot;
 import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.subsystem.SubsystemManager;
 import com.team271.lib.wpilib.TimedRobot;
-import com.team271.libtest.Config.Mode;
-import com.team271.libtest.subsystems.EncoderTest;
-import com.team271.libtest.subsystems.Infrastructure;
-// import com.ctre.phoenix6.SignalLogger;
-import com.team271.libtest.subsystems.Input.InputDriver;
-import com.team271.libtest.subsystems.Input.InputOp;
-import com.team271.libtest.subsystems.Superstructure;
-import com.team271.libtest.subsystems.TransmissionTest;
-import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,23 +19,13 @@ public class Robot extends TimedRobot {
     /*
      * Variables
      */
-    private TRobot ntRobot;
-
     private double mTimestamp = 0;
     // private double mDisabledStartTime = Double.NaN;
 
     private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
     public Robot() {
-        super(LOOPER_DT_S);
-
         LiveWindow.disableAllTelemetry();
-
-        try {
-            ntRobot = new TRobot();
-        } catch (Throwable t) {
-            throw t;
-        }
     }
 
     /**
@@ -57,88 +34,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // SignalLogger.setPath("/media/sda1/");
-
-        // Explicitly start the logger
-        // SignalLogger.start();
-
-        // Default to blue alliance in sim
-        if (Config.getMode() == Mode.SIM) {
-            DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
-        }
-
-        /*
-         * Register CAN buses for this robot's bus topology.
-         * A multi-CANivore robot would register each bus separately, e.g.:
-         *   CTREManager.addBus("rio");
-         *   CTREManager.addBus("drivetrain");
-         *   CTREManager.addBus("subsystems");
-         */
-        CTREManager.addBus(Constants.CAN_BUS_NAME);
-
-        /*
-         * Controls
-         */
-        try {
-            Globals.controllerDriver = InputDriver.getInstance(ntRobot);
-
-            mSubsystemManager.addSubsystem(Globals.controllerDriver);
-        } catch (Throwable t) {
-            throw t;
-        }
-
-        try {
-            Globals.controllerOperator = InputOp.getInstance(ntRobot);
-
-            mSubsystemManager.addSubsystem(Globals.controllerOperator);
-        } catch (Throwable t) {
-            throw t;
-        }
-
-        /*
-         * Infrastructure
-         */
-        try {
-            Globals.infrastructure = Infrastructure.getInstance(ntRobot);
-
-            mSubsystemManager.addSubsystem(Globals.infrastructure);
-        } catch (Throwable t) {
-            throw t;
-        }
-
-        /*
-         * Encoder Test
-         */
-        try {
-            Globals.encoderTest = EncoderTest.getInstance(ntRobot);
-
-            mSubsystemManager.addSubsystem(Globals.encoderTest);
-        } catch (Throwable t) {
-            throw t;
-        }
-
-        /*
-         * Transmission Test
-         */
-        try {
-            Globals.transmissionTest = TransmissionTest.getInstance(ntRobot);
-
-            mSubsystemManager.addSubsystem(Globals.transmissionTest);
-        } catch (Throwable t) {
-            throw t;
-        }
-
-        /*
-         * Superstructure
-         */
-        try {
-            Globals.superstructure = Superstructure.getInstance(ntRobot);
-
-            mSubsystemManager.addSubsystem(Globals.superstructure);
-        } catch (Throwable t) {
-            throw t;
-        }
-
         /*
          * Subsystem Init
          */
@@ -216,8 +111,6 @@ public class Robot extends TimedRobot {
         // Explicitly start the logger
         // SignalLogger.start();
 
-        Globals.infrastructure.setIsTeleop(false);
-
         mSubsystemManager.autonomousInit(mTimestamp);
     }
 
@@ -233,8 +126,6 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         // Explicitly start the logger
         // SignalLogger.start();
-
-        Globals.infrastructure.setIsTeleop(true);
 
         mSubsystemManager.teleopInit(mTimestamp);
 
@@ -253,8 +144,6 @@ public class Robot extends TimedRobot {
     public void simulationInit() {
         // Explicitly start the logger
         // SignalLogger.start();
-
-        Globals.infrastructure.setIsTeleop(true);
 
         mSubsystemManager.simulationInit(mTimestamp);
     }

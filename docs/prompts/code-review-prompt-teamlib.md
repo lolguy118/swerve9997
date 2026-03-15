@@ -25,11 +25,13 @@ Use this document as context when reviewing changes to `com.team271.lib` and `co
 
 ## Stack
 
-- **WPILib** — core FRC framework (GradleRIO 2026.2.1, Java 17)
-- **CTRE Phoenix 6** — motor controllers, sensors, CANivore + RIO CAN buses
-- **AdvantageKit 3.2.0** — dependency available, integration pending (new code should adopt `Logger.recordOutput()` and IO interfaces)
-- **PathPlanner** — dependency available, integration pending (new autonomous code should adopt PathPlanner paths)
-- **WPILib New Commands** — dependency available for command-based patterns
+All dependencies must always use the **latest available version**. Versions are managed via vendordep JSON files in `vendordeps/` and `build.gradle`. When reviewing, verify vendordeps are up to date with their `jsonUrl` sources.
+
+- **WPILib** — core FRC framework (GradleRIO, Java 17)
+- **CTRE Phoenix 6** — motor controllers, sensors, CANivore + RIO CAN buses (vendordep: `Phoenix6-frc2026-latest.json`)
+- **AdvantageKit** — dependency available, integration pending (vendordep: `AdvantageKit.json`; new code should adopt `Logger.recordOutput()` and IO interfaces)
+- **PathPlanner** — dependency available, integration pending (vendordep: `PathplannerLib.json`; new autonomous code should adopt PathPlanner paths)
+- **WPILib New Commands** — dependency available for command-based patterns (vendordep: `WPILibNewCommands.json`)
 
 ---
 
@@ -352,6 +354,12 @@ When adding new auto modes, ALL subsystems that participate in auto must have ca
 - [ ] Simulation methods (`simulationInit`/`simulationPeriodic`) update sim state for all hardware
 - [ ] LimelightHelpers calls handle null/missing camera gracefully
 - [ ] CAN IDs in `Constants.java` don't conflict (no duplicates per device type per bus)
+
+### Dependencies
+- [ ] All vendordep JSONs are the latest version (check `jsonUrl` sources)
+- [ ] `build.gradle` GradleRIO plugin version is latest for the FRC season
+- [ ] No hardcoded dependency versions in `build.gradle` that conflict with vendordep versions
+- [ ] JUnit version is current
 
 ### Code Quality
 - [ ] No `==` for String comparison (use `.equals()`)

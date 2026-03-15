@@ -141,7 +141,7 @@ public class ControllerTalonFX extends ControllerSmart {
             /*
              * Create Talon FX
              */
-            talonFX = new TalonFX(deviceID.getDeviceNumber(), deviceID.getBus());
+            talonFX = new TalonFX(deviceID.getDeviceNumber(), deviceID.getCANBus());
             CTREManager.addDevice(talonFX);
 
             if (talonFX.isConnected()) {

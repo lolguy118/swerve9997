@@ -10,12 +10,6 @@ public final class ConstantsLib {
     public static final String S_INVALID = "Invalid";
 
     /*
-     * CAN Bus Names — set these in your robot project's robotInit() before calling CTREManager.init()
-     */
-    public static String CAN_BUS_NAME_DRIVE = "drivetrain";
-    public static String CAN_BUS_NAME_SUBSYSTEMS = "subsystems";
-
-    /*
      * Pneumatics Hub CAN ID — set this before creating transmissions with shifters
      */
     public static int CAN_ID_PH = 1;

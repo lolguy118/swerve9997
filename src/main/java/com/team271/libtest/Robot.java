@@ -74,10 +74,13 @@ public class Robot extends TimedRobot {
     }
 
     /*
-     * Configure library CAN bus names to match this robot's bus topology
+     * Register CAN buses for this robot's bus topology.
+     * A multi-CANivore robot would register each bus separately, e.g.:
+     *   CTREManager.addBus("rio");
+     *   CTREManager.addBus("drivetrain");
+     *   CTREManager.addBus("subsystems");
      */
-    com.team271.lib.ConstantsLib.CAN_BUS_NAME_DRIVE = Constants.CAN_BUS_NAME;
-    com.team271.lib.ConstantsLib.CAN_BUS_NAME_SUBSYSTEMS = Constants.CAN_BUS_NAME;
+    CTREManager.addBus(Constants.CAN_BUS_NAME);
 
     /*
      * Controls
@@ -178,6 +181,7 @@ public class Robot extends TimedRobot {
 
     // if ((mTimestamp - mLastTele) > 0.25) {
     mSubsystemManager.outputTelemetry();
+    CTREManager.outputTelemetry();
     // mLastTele = mTimestamp;
     // }
   }

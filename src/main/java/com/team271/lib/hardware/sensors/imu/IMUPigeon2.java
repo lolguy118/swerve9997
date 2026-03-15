@@ -57,7 +57,7 @@ public class IMUPigeon2 extends IMUCTRE {
         /*
          * Create CANCoder
          */
-        imu = new Pigeon2(imuDeviceID.getDeviceNumber(), imuDeviceID.getBus());
+        imu = new Pigeon2(imuDeviceID.getDeviceNumber(), imuDeviceID.getCANBus());
 
         CTREManager.addDevice(imu);
 

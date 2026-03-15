@@ -155,6 +155,14 @@ public class Translation2d implements ITranslation2d<Translation2d> {
     }
 
     @Override
+    public int hashCode() {
+        /* Epsilon-based equals cannot produce a consistent fine-grained hash.
+         * Returning a constant is correct but degrades hash collections to O(n).
+         * These geometry types are not intended for use as hash keys. */
+        return 0;
+    }
+
+    @Override
     public Translation2d getTranslation() {
         return this;
     }

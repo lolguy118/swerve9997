@@ -1,19 +1,23 @@
 package com.team271.lib.hardware;
 
+import com.ctre.phoenix6.CANBus;
+
+/**
+ * Composite key identifying a CAN device by its device number and bus name.
+ * Immutable and safe for use as a HashMap key.
+ */
 public class CANDeviceID {
     private final int mDeviceNumber;
     private final String mBus;
-
-    private final String mString;
+    private final CANBus mCANBus;
 
     public CANDeviceID(final int argDeviceNumber, final String argBus) {
         mDeviceNumber = argDeviceNumber;
         mBus = argBus;
-
-        mString = "Bus: " + mBus + "ID: " + mDeviceNumber;
+        mCANBus = new CANBus(mBus);
     }
 
-    // Use the default bus name (empty string).
+    /** Use the RIO bus (empty string). */
     public CANDeviceID(final int argDeviceNumber) {
         this(argDeviceNumber, "");
     }
@@ -26,8 +30,11 @@ public class CANDeviceID {
         return mBus;
     }
 
-    public final String toString() {
-        return mString;
+    /**
+     * Returns a CTRE {@link CANBus} object for use with Phoenix 6 v26+ device constructors.
+     */
+    public final CANBus getCANBus() {
+        return mCANBus;
     }
 
     public final boolean isSameBus(final CANDeviceID argOther) {
@@ -35,35 +42,27 @@ public class CANDeviceID {
     }
 
     @Override
+    public final String toString() {
+        return "Bus: " + mBus + " ID: " + mDeviceNumber;
+    }
+
+    @Override
     public final boolean equals(final Object argOther) {
-        // If the object is compared with itself then return true
         if (argOther == this) {
             return true;
         }
 
-        /*
-         * Check if o is an instance of Complex or not
-         * "null instanceof [type]" also returns false
-         */
         if (!(argOther instanceof CANDeviceID)) {
             return false;
         }
 
-        // typecast o to Complex so that we can compare data members
         CANDeviceID c = (CANDeviceID) argOther;
 
-        // Compare the data members and return accordingly
-        return (mDeviceNumber == c.mDeviceNumber) && isSameBus(c);
+        return (mDeviceNumber == c.mDeviceNumber) && mBus.equals(c.mBus);
     }
 
     @Override
     public final int hashCode() {
-        int result = 31 * 17 + mDeviceNumber;
-
-        if (mBus != null) {
-            result = 31 * result + mBus.hashCode();
-        }
-
-        return result;
+        return 31 * (31 * 17 + mDeviceNumber) + mBus.hashCode();
     }
 }

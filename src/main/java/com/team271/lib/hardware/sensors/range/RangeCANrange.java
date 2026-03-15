@@ -54,7 +54,7 @@ public class RangeCANrange extends RangeCTRE {
         /*
          * Create CANrange
          */
-        range = new CANrange(rangeDeviceID.getDeviceNumber(), rangeDeviceID.getBus());
+        range = new CANrange(rangeDeviceID.getDeviceNumber(), rangeDeviceID.getCANBus());
 
         // rangeConfig.FovParams.FOVRangeX = 6.75;
         // rangeConfig.FovParams.FOVRangeY = 6.75;

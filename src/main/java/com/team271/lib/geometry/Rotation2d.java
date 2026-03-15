@@ -230,6 +230,11 @@ public class Rotation2d implements IRotation2d<Rotation2d> {
     }
 
     @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
     public Rotation2d getRotation() {
         return this;
     }

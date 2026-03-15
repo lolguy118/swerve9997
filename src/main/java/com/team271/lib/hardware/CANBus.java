@@ -1,59 +1,93 @@
 package com.team271.lib.hardware;
 
-public class CANBus {
+import com.team271.lib.nt.NTEntry;
+import com.team271.lib.nt.NTTable;
 
-    public enum CANBusStatus {
-        UNKNOWN,
-        ERROR,
-        ERROR_INVALID_BUS,
-        OK
-    }
+/**
+ * Wrapper around a CTRE {@link com.ctre.phoenix6.CANBus} that adds bus type
+ * tracking, utilization monitoring, hoot file logging, and NT telemetry.
+ * <p>
+ * Note: This class shares a simple name with {@code com.ctre.phoenix6.CANBus}.
+ * Within this class, the CTRE type is referenced fully qualified.
+ */
+public class CANBus {
 
     public enum CANBusType {
         RIO,
         CANIVORE
     }
 
-    protected CANBusStatus status = CANBusStatus.OK;
     protected final CANBusType canBusType;
-
     protected final String mBus;
     protected final String hootFile;
 
-    protected final String mString;
-
     protected final com.ctre.phoenix6.CANBus canBus;
 
-    // retrieve bus utilization for the CAN bus
-    com.ctre.phoenix6.CANBus.CANBusStatus canInfo;
-    float busUtil = 0.0f;
+    /* Bus utilization tracking */
+    private float busUtil = 0.0f;
 
-    public CANBus(final CANBusType argCANBusType, final String argBus, final String argHootFile) {
+    /*
+     * Telemetry (NT)
+     */
+    private final NTTable table;
+    private final NTEntry ntBusName;
+    private final NTEntry ntBusType;
+    private final NTEntry ntBusUtil;
+
+    /**
+     * @param argBus      CAN bus name ("rio", "", or a CANivore name)
+     * @param argHootFile path for hoot file logging (empty string to disable)
+     */
+    public CANBus(final String argBus, final String argHootFile) {
         mBus = argBus;
         hootFile = argHootFile;
 
-        canBusType = argCANBusType;
-
-        mString = "Bus: " + mBus;
+        /* Detect bus type: empty string or "rio" is the RIO bus, anything else is a CANivore */
+        if (mBus.isEmpty() || "rio".equalsIgnoreCase(mBus)) {
+            canBusType = CANBusType.RIO;
+        } else {
+            canBusType = CANBusType.CANIVORE;
+        }
 
         canBus = new com.ctre.phoenix6.CANBus(mBus, hootFile);
 
-        canInfo = canBus.getStatus();
-
-        busUtil = canInfo.BusUtilization;
+        table = new NTTable("CANBus/" + (mBus.isEmpty() ? "rio" : mBus));
+        ntBusName = new NTEntry(table, "Name", mBus.isEmpty() ? "rio" : mBus);
+        ntBusType = new NTEntry(table, "Type", canBusType == CANBusType.CANIVORE ? "CANivore" : "RIO");
+        ntBusUtil = new NTEntry(table, "Utilization", 0.0);
     }
 
-    // Use the default bus name (empty string).
+    /** Create a CAN bus with no hoot file logging. */
     public CANBus(final String argBus) {
-        this(CANBusType.RIO, argBus, "");
+        this(argBus, "");
     }
 
     public final String getBus() {
         return mBus;
     }
 
-    public final String toString() {
-        return mString;
+    public final CANBusType getType() {
+        return canBusType;
+    }
+
+    public final boolean isCANivore() {
+        return canBusType == CANBusType.CANIVORE;
+    }
+
+    public final float getBusUtilization() {
+        return busUtil;
+    }
+
+    /** Refresh bus utilization from hardware. Call periodically (e.g. every 250ms). */
+    public void refresh() {
+        var canInfo = canBus.getStatus();
+        busUtil = canInfo.BusUtilization;
+    }
+
+    public void outputTelemetry() {
+        ntBusName.publish(mBus.isEmpty() ? "rio" : mBus);
+        ntBusType.publish(canBusType == CANBusType.CANIVORE ? "CANivore" : "RIO");
+        ntBusUtil.publish(busUtil);
     }
 
     public final boolean isSameBus(final CANBus argOther) {
@@ -61,39 +95,27 @@ public class CANBus {
     }
 
     @Override
+    public final String toString() {
+        return "CANBus(" + (mBus.isEmpty() ? "rio" : mBus) + ")";
+    }
+
+    @Override
     public final boolean equals(final Object argOther) {
-        // If the object is compared with itself then return true
         if (argOther == this) {
             return true;
         }
 
-        /*
-         * Check if o is an instance of Complex or not
-         * "null instanceof [type]" also returns false
-         */
         if (!(argOther instanceof CANBus)) {
             return false;
         }
 
-        // typecast o to Complex so that we can compare data members
         CANBus c = (CANBus) argOther;
 
-        // Compare the data members and return accordingly
         return mBus.equals(c.mBus);
     }
 
     @Override
     public final int hashCode() {
-        int result = 31 * 17;
-
-        if (mBus != null) {
-            result = result + mBus.hashCode();
-        }
-
-        if (hootFile != null) {
-            result = result + hootFile.hashCode();
-        }
-
-        return result;
+        return mBus.hashCode();
     }
 }

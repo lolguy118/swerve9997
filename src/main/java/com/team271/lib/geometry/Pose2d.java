@@ -208,6 +208,11 @@ public class Pose2d implements IPose2d<Pose2d> {
     }
 
     @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
     public Pose2d getPose() {
         return this;
     }

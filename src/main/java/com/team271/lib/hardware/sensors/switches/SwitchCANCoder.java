@@ -10,7 +10,6 @@ import com.team271.lib.TObj;
 import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
 import com.team271.lib.nt.NTEntry;
-import com.team271.lib.util.Util;
 
 public class SwitchCANCoder extends SwitchBase {
     protected static final int RETRY_COUNT_CAN = 5;
@@ -158,13 +157,13 @@ public class SwitchCANCoder extends SwitchBase {
 
     @Override
     public boolean getTriggered() {
-        if (isFwdLimit) {
-            if (swFwd != null && swFwd.getStatus().isOK()) {
-                return Util.epsilonEquals(swFwd.getValueAsDouble(), 1.0);
+        if (isFwdLimit && swFwd != null) {
+            if (swFwd.getStatus().isOK()) {
+                return swFwd.getValue() == ForwardLimitValue.ClosedToGround;
             }
-        } else {
-            if (swRev != null && swRev.getStatus().isOK()) {
-                return Util.epsilonEquals(swRev.getValueAsDouble(), 1.0);
+        } else if (swRev != null) {
+            if (swRev.getStatus().isOK()) {
+                return swRev.getValue() == ReverseLimitValue.ClosedToGround;
             }
         }
 

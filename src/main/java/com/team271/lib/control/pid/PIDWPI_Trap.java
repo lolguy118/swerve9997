@@ -80,14 +80,10 @@ public class PIDWPI_Trap extends PIDBase {
         /*
          * Controller
          */
-        // constraints = new TrapezoidProfile.Constraints(argMaxVelocity, argMaxAcceleration);
-        // controller = new ProfiledPIDController(p, i, d, constraints, controllerRateSecs);
-
-        /*
-         * Setup Network Tables
-         */
-        // mData = new IO();
-        // mData.SetupData();
+        controller.setConstraints(
+                new TrapezoidProfile.Constraints(argMaxVelocity, argMaxAcceleration));
+        controller.setPID(argP, argI, argD);
+        controller.setTolerance(argTol);
     }
 
     /*
@@ -152,7 +148,7 @@ public class PIDWPI_Trap extends PIDBase {
             final double argMinimumIntegral, final double argMaximumIntegral) {
         super.setIntegratorRange(argMinimumIntegral, argMaximumIntegral);
 
-        // controller.setIntegratorRange(iMin, iMax);
+        controller.setIntegratorRange(pidSlot.iMin, pidSlot.iMax);
     }
 
     @Override

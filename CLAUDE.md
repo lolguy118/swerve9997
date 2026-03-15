@@ -10,10 +10,9 @@ When reviewing this codebase, you should:
 
 1. **Review all Java source files** in `com.team271.lib` and `com.team271.libtest` for bugs, correctness, and adherence to the patterns documented below.
 2. **Fix issues directly** — do not just report problems, apply corrections to the code.
-3. **Clean up dead code** — remove `Balance.java` (`control/Balance.java`), it is dead code from 2025.
-4. **Remove debug artifacts** — delete commented-out `System.out.println` lines.
-5. **Verify dependency versions** — check that vendordep JSONs in `vendordeps/` are up to date with their `jsonUrl` sources.
-6. **Run validation** after changes:
+3. **Remove debug artifacts** — delete commented-out `System.out.println` lines.
+4. **Verify dependency versions** — check that vendordep JSONs in `vendordeps/` are up to date with their `jsonUrl` sources.
+5. **Run validation** after changes:
    - `./gradlew spotlessApply` (auto-format)
    - `./gradlew spotlessCheck` (verify formatting)
    - `./gradlew test` (all JUnit tests must pass)

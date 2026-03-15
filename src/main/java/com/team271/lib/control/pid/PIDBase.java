@@ -42,11 +42,11 @@ public class PIDBase extends TObj {
         protected double iMax = 1.0;
     }
 
-    protected static class Continous {
+    protected static class Continuous {
         /* Do the endpoints wrap around? e.g. Absolute encoder */
         protected boolean enabled = false;
 
-        /* Minimum and Maximum Input of the Controller, used for continous mode */
+        /* Minimum and Maximum Input of the Controller, used for continuous mode */
         protected double minInput = 0.0;
         protected double maxInput = 0.0;
     }
@@ -60,7 +60,7 @@ public class PIDBase extends TObj {
      * PID Configuration
      */
     /* Continuous Input Mode */
-    protected Continous continuousMode = new Continous();
+    protected Continuous continuousMode = new Continuous();
 
     /* Active PID Gains */
     protected PIDSlot pidSlot = new PIDSlot();

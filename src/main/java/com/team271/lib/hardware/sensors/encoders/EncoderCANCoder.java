@@ -116,16 +116,16 @@ public class EncoderCANCoder extends EncoderCTRE {
          * Get Position and Velocity Objects
          */
         sigPos = enc.getPosition();
-        CTREManager.addSignalCANCoder(enc.getPosition(), updateFreqHz);
+        CTREManager.addSignalCANCoder(sigPos, updateFreqHz);
 
         sigPosBoot = enc.getPositionSinceBoot();
-        CTREManager.addSignalCANCoder(enc.getPositionSinceBoot(), updateFreqHz);
+        CTREManager.addSignalCANCoder(sigPosBoot, updateFreqHz);
 
         sigPosAbs = enc.getAbsolutePosition();
-        CTREManager.addSignalCANCoder(enc.getAbsolutePosition(), updateFreqHz);
+        CTREManager.addSignalCANCoder(sigPosAbs, updateFreqHz);
 
         sigVel = enc.getVelocity();
-        CTREManager.addSignalCANCoder(enc.getVelocity(), updateFreqHz);
+        CTREManager.addSignalCANCoder(sigVel, updateFreqHz);
     }
 
     @Override

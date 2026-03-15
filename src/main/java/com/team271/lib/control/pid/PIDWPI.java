@@ -114,21 +114,21 @@ public class PIDWPI extends PIDBase {
     public void setTolerance(final double argTolerance) {
         super.setTolerance(argTolerance);
 
-        // controller.setTolerance(posTolerance);
+        controller.setTolerance(pidSlot.posTolerance);
     }
 
     @Override
     public void setP(final double argP) {
         super.setP(argP);
 
-        // controller.setP(kp);
+        controller.setP(pidSlot.kP);
     }
 
     @Override
     public void setI(final double argI) {
         super.setI(argI);
 
-        // controller.setI(ki);
+        controller.setI(pidSlot.kI);
     }
 
     @Override
@@ -136,21 +136,21 @@ public class PIDWPI extends PIDBase {
             final double argMinimumIntegral, final double argMaximumIntegral) {
         super.setIntegratorRange(argMinimumIntegral, argMaximumIntegral);
 
-        // controller.setIntegratorRange(iMin, iMax);
+        controller.setIntegratorRange(pidSlot.iMin, pidSlot.iMax);
     }
 
     @Override
     public void setD(final double argD) {
         super.setD(argD);
 
-        // controller.setD(kd);
+        controller.setD(pidSlot.kD);
     }
 
     @Override
     public void setPID(final double argP, final double argI, final double argD) {
         super.setPID(argP, argI, argD);
 
-        // controller.setPID(kp, ki, kd);
+        controller.setPID(pidSlot.kP, pidSlot.kI, pidSlot.kD);
     }
 
     /*

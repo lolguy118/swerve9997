@@ -100,23 +100,23 @@ public class TimedRobot extends IterativeRobotBase {
         HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_Timed);
     }
 
-  /**
-   * Constructor for TimedRobot.
-   *
-   * @param period The period of the robot loop function.
-   */
-  protected TimedRobot(Time period) {
-    this(period.in(Seconds));
-  }
+    /**
+     * Constructor for TimedRobot.
+     *
+     * @param period The period of the robot loop function.
+     */
+    protected TimedRobot(Time period) {
+        this(period.in(Seconds));
+    }
 
-  /**
-   * Constructor for TimedRobot.
-   *
-   * @param frequency The frequency of the robot loop function.
-   */
-  protected TimedRobot(Frequency frequency) {
-    this(frequency.asPeriod());
-  }
+    /**
+     * Constructor for TimedRobot.
+     *
+     * @param frequency The frequency of the robot loop function.
+     */
+    protected TimedRobot(Frequency frequency) {
+        this(frequency.asPeriod());
+    }
 
     @Override
     public void close() {

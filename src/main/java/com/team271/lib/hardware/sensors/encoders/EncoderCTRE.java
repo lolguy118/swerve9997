@@ -40,6 +40,11 @@ public abstract class EncoderCTRE extends EncoderBase {
         super(argParent, "(EncoderCTRE)" + argName, argEncoderType);
 
         /*
+         * Store Direction
+         */
+        direction = argEncoderDirection;
+
+        /*
          * Store Update Frequency in Hz
          */
         updateFreqHz = argUpdateFreqHz;

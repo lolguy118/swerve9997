@@ -50,7 +50,12 @@ public class EncoderCANCoder extends EncoderCTRE {
             final CANDeviceID argCANID,
             final EncoderDirection argEncoderDirection,
             final double argUpdateFreqHz) {
-        super(argParent, "(CANCoder)" + argName, EncoderType.CANCODER, argEncoderDirection, argUpdateFreqHz);
+        super(
+                argParent,
+                "(CANCoder)" + argName,
+                EncoderType.CANCODER,
+                argEncoderDirection,
+                argUpdateFreqHz);
 
         encDeviceID = argCANID;
 

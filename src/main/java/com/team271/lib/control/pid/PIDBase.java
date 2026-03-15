@@ -111,7 +111,8 @@ public class PIDBase extends TObj {
     /*
      * Continuous Input
      */
-    final NTEntry contEnabled = new NTEntry(table, "Continuous Input Enabled", continuousMode.enabled);
+    final NTEntry contEnabled =
+            new NTEntry(table, "Continuous Input Enabled", continuousMode.enabled);
     final NTEntry contInputMin = new NTEntry(table, "Cont Input Min", continuousMode.minInput);
     final NTEntry contInputMax = new NTEntry(table, "Cont Input Max", continuousMode.maxInput);
 
@@ -419,7 +420,8 @@ public class PIDBase extends TObj {
      * @param argInputMeasurement The current measurement of the process variable.
      * @return The next controller output.
      */
-    public double calc(final double argInputMeasurement, final double argSetpoint, final double argTimestamp) {
+    public double calc(
+            final double argInputMeasurement, final double argSetpoint, final double argTimestamp) {
         /* Get and Limit dt */
         if (Double.isNaN(lastTimestamp)) {
             lastTimestamp = argTimestamp;
@@ -440,7 +442,9 @@ public class PIDBase extends TObj {
         /* Handle continuous mode (input wrapping) */
         if (continuousMode.enabled) {
             double errorBound = (continuousMode.maxInput - continuousMode.minInput) / 2.0;
-            posError = MathUtil.inputModulus(argSetpoint - lastInputMeasurement, -errorBound, errorBound);
+            posError =
+                    MathUtil.inputModulus(
+                            argSetpoint - lastInputMeasurement, -errorBound, errorBound);
         }
 
         /* Calculate the rate of change of the error for our derivative calculation */
@@ -453,8 +457,11 @@ public class PIDBase extends TObj {
         if (Math.abs(posError) > pidSlot.iZone) {
             totalError = 0.0;
         } else if (pidSlot.kI != 0) {
-            totalError = MathUtil.clamp(
-                    totalError + (posError * tmpDT), pidSlot.iMin / pidSlot.kI, pidSlot.iMax / pidSlot.kI);
+            totalError =
+                    MathUtil.clamp(
+                            totalError + (posError * tmpDT),
+                            pidSlot.iMin / pidSlot.kI,
+                            pidSlot.iMax / pidSlot.kI);
         }
 
         /* Don't blow away posError so as to not break derivative */

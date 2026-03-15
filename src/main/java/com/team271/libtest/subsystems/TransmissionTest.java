@@ -2,21 +2,6 @@ package com.team271.libtest.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-
-import com.team271.libtest.Constants;
-import com.team271.libtest.Constants.ControlMode;
-import com.team271.libtest.subsystems.Input.InputDriver;
-import com.team271.libtest.subsystems.Input.InputOp;
-
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.controllers.ControllerBase.MotorDirection;
@@ -26,6 +11,19 @@ import com.team271.lib.hardware.motors.MotorBase.MotorType;
 import com.team271.lib.hardware.sensors.encoders.EncoderBase.EncoderDirection;
 import com.team271.lib.hardware.transmissions.TransmissionFX;
 import com.team271.lib.subsystem.Subsystem;
+import com.team271.libtest.Constants;
+import com.team271.libtest.Constants.ControlMode;
+import com.team271.libtest.subsystems.Input.InputDriver;
+import com.team271.libtest.subsystems.Input.InputOp;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class TransmissionTest extends Subsystem {
     /*
@@ -73,7 +71,7 @@ public class TransmissionTest extends Subsystem {
         static final double kMaxPos = Degrees.of(255).in(Radians);
 
         // Calibration
-        //static final double kRefLowPos = -15.7 - 75.05859375;
+        // static final double kRefLowPos = -15.7 - 75.05859375;
         static final double kRefHighPos = 91.6;
 
         static final double kMagnetOffset = -0.894775;
@@ -91,12 +89,14 @@ public class TransmissionTest extends Subsystem {
     /*
      * TransmissionTest
      */
-    private final TransmissionFX transmission = new TransmissionFX(this,
-            "TransmissionTest",
-            new MotorBase(MotorType.KRAKENX60),
-            new CANDeviceID(Constants.CAN_ID_SHOULDER_LEAD, Constants.CAN_BUS_NAME),
-            new CANDeviceID(Constants.CAN_ID_SHOULDER_FOLLOWER, Constants.CAN_BUS_NAME), true);
-
+    private final TransmissionFX transmission =
+            new TransmissionFX(
+                    this,
+                    "TransmissionTest",
+                    new MotorBase(MotorType.KRAKENX60),
+                    new CANDeviceID(Constants.CAN_ID_SHOULDER_LEAD, Constants.CAN_BUS_NAME),
+                    new CANDeviceID(Constants.CAN_ID_SHOULDER_FOLLOWER, Constants.CAN_BUS_NAME),
+                    true);
 
     /*
      * Simulation
@@ -105,34 +105,38 @@ public class TransmissionTest extends Subsystem {
 
     // Create a Mechanism2d display of an Arm with a fixed ArmTower and moving Arm.
     private final Mechanism2d m_mech2d = new Mechanism2d(68, 90);
-    private final MechanismRoot2d m_armPivot = m_mech2d.getRoot("ArmPivot", (68/2)-8.525000000, 10.960000000);
-    private final MechanismLigament2d m_armTower = m_armPivot.append(new MechanismLigament2d("ArmTower", 20, -90));
-    private final MechanismLigament2d m_arm = m_armPivot.append( new MechanismLigament2d(
-                "Arm",
-                30,
-                Radians.of(0.0).in(Degrees),
-                6,
-                new Color8Bit(Color.kYellow)));
+    private final MechanismRoot2d m_armPivot =
+            m_mech2d.getRoot("ArmPivot", (68 / 2) - 8.525000000, 10.960000000);
+    private final MechanismLigament2d m_armTower =
+            m_armPivot.append(new MechanismLigament2d("ArmTower", 20, -90));
+    private final MechanismLigament2d m_arm =
+            m_armPivot.append(
+                    new MechanismLigament2d(
+                            "Arm",
+                            30,
+                            Radians.of(0.0).in(Degrees),
+                            6,
+                            new Color8Bit(Color.kYellow)));
 
     /*
      *
      * Telemetry (NT)
-     * 
+     *
      */
 
     /*
-     * 
+     *
      * Constructors
-     * 
+     *
      */
     public TransmissionTest(final TObj argParent) {
         super(argParent, "TransmissionTest");
     }
 
     /*
-     * 
+     *
      * Robot States
-     * 
+     *
      */
     @Override
     public void robotInit(final double timestamp) {
@@ -142,17 +146,23 @@ public class TransmissionTest extends Subsystem {
         transmission.configDirection(MotorDirection.CW);
         transmission.setNeutralMode(NeutralState.BRAKE);
 
-        transmission.configCurrentLimitStator(TransmissionTestConstants.kSatorLimitEnabled, TransmissionTestConstants.kCurrentSatorLimit);
+        transmission.configCurrentLimitStator(
+                TransmissionTestConstants.kSatorLimitEnabled,
+                TransmissionTestConstants.kCurrentSatorLimit);
 
-        transmission.configCurrentLimitSupply(TransmissionTestConstants.kSupplyLimitEnabled, TransmissionTestConstants.kCurrentSupplyLimit);
+        transmission.configCurrentLimitSupply(
+                TransmissionTestConstants.kSupplyLimitEnabled,
+                TransmissionTestConstants.kCurrentSupplyLimit);
 
         transmission.applyConfigs();
 
         /*
          * CANCoder
          */
-        transmission.addCANCoder(new CANDeviceID(Constants.CAN_ID_CANCODER_SHOULDER, Constants.CAN_BUS_NAME),
-                EncoderDirection.CCW, TransmissionTestConstants.kEncUpdateFreq);
+        transmission.addCANCoder(
+                new CANDeviceID(Constants.CAN_ID_CANCODER_SHOULDER, Constants.CAN_BUS_NAME),
+                EncoderDirection.CCW,
+                TransmissionTestConstants.kEncUpdateFreq);
 
         transmission.getEncoderCANCoder().setMagnetSensor(1.0);
         transmission.getEncoderCANCoder().setMagnetOffset(TransmissionTestConstants.kMagnetOffset);
@@ -182,7 +192,8 @@ public class TransmissionTest extends Subsystem {
                 true,
                 0);
                 */
-                m_armSim = new SingleJointedArmSim(
+        m_armSim =
+                new SingleJointedArmSim(
                         transmission.getDCMotor(),
                         1.0 / TransmissionTestConstants.kRatio,
                         0.021,
@@ -198,20 +209,20 @@ public class TransmissionTest extends Subsystem {
     }
 
     /*
-     * 
+     *
      * Transmissions
-     * 
+     *
      */
     /*
-     * 
+     *
      * TransmissionTest
-     * 
+     *
      */
 
     /*
      *
      * Robot States
-     * 
+     *
      */
     @Override
     public void robotPeriodicBefore(final double argTimestamp) {
@@ -219,8 +230,7 @@ public class TransmissionTest extends Subsystem {
     }
 
     @Override
-    public void robotPeriodicAfter(final double argTimestamp) {
-    }
+    public void robotPeriodicAfter(final double argTimestamp) {}
 
     @Override
     public void teleopPeriodic(final double argTimestamp) {
@@ -233,7 +243,7 @@ public class TransmissionTest extends Subsystem {
     /*
      *
      * Simulation
-     * 
+     *
      */
     @Override
     public void simulationInit(final double argTimestamp) {
@@ -254,21 +264,25 @@ public class TransmissionTest extends Subsystem {
         m_armSim.update(0.02);
 
         // Finally, we set our simulated encoder's readings and simulated battery voltage
-        transmission.setSimPosRotations(Radians.of(m_armSim.getAngleRads()).in(Rotations) / TransmissionTestConstants.kRatio);
-        transmission.setSimVelRotations(RadiansPerSecond.of(m_armSim.getVelocityRadPerSec()).in(RotationsPerSecond) / TransmissionTestConstants.kRatio);
+        transmission.setSimPosRotations(
+                Radians.of(m_armSim.getAngleRads()).in(Rotations)
+                        / TransmissionTestConstants.kRatio);
+        transmission.setSimVelRotations(
+                RadiansPerSecond.of(m_armSim.getVelocityRadPerSec()).in(RotationsPerSecond)
+                        / TransmissionTestConstants.kRatio);
 
         // SimBattery estimates loaded battery voltages
         RoboRioSim.setVInVoltage(
-            BatterySim.calculateDefaultBatteryLoadedVoltage(m_armSim.getCurrentDrawAmps()));
+                BatterySim.calculateDefaultBatteryLoadedVoltage(m_armSim.getCurrentDrawAmps()));
 
         // Update the Mechanism Arm angle based on the simulated arm angle
         m_arm.setAngle(Radians.of(m_armSim.getAngleRads()).in(Degrees));
     }
 
     /*
-     * 
+     *
      * Telemetry
-     * 
+     *
      */
     @Override
     public void outputTelemetry() {

@@ -11,13 +11,16 @@ public abstract class ControllerSmart extends ControllerBase {
      * Telemetry (NT)
      *
      */
-    final NTEntry ntCurrentLimitStatorEnable = new NTEntry(table, "Current Limit Stator Enable", false);
+    final NTEntry ntCurrentLimitStatorEnable =
+            new NTEntry(table, "Current Limit Stator Enable", false);
     final NTEntry ntCurrentLimitStator = new NTEntry(table, "Current Limit Stator", 0);
 
-    final NTEntry ntCurrentLimitSupplyEnable = new NTEntry(table, "Current Limit Supply Enable", false);
+    final NTEntry ntCurrentLimitSupplyEnable =
+            new NTEntry(table, "Current Limit Supply Enable", false);
     final NTEntry ntCurrentLimitSupply = new NTEntry(table, "Current Limit Supply", 0);
     final NTEntry ntCurrentLimitSupplyTime = new NTEntry(table, "Current Limit Supply Time", 0);
-    final NTEntry ntCurrentLimitSupplyLowerLimit = new NTEntry(table, "Current Limit Supply Lower Limit", 0);
+    final NTEntry ntCurrentLimitSupplyLowerLimit =
+            new NTEntry(table, "Current Limit Supply Lower Limit", 0);
 
     final NTEntry ntVoltagePeakFwd = new NTEntry(table, "Voltage Peak Fwd", 0);
     final NTEntry ntVoltagePeakRev = new NTEntry(table, "Voltage Peak Rev", 0);
@@ -52,17 +55,21 @@ public abstract class ControllerSmart extends ControllerBase {
      *
      */
     /* Current Limit - Stator */
-    public abstract void setCurrentLimitStator(final boolean argEnable, final double argStatorCurrent);
+    public abstract void setCurrentLimitStator(
+            final boolean argEnable, final double argStatorCurrent);
 
     public abstract boolean getCurrentLimitStatorEnable();
 
     public abstract double getCurrentLimitStator();
 
     /* Current Limit - Supply */
-    public abstract void setCurrentLimitSupply(final boolean argEnable, final double argSupplyCurrent);
+    public abstract void setCurrentLimitSupply(
+            final boolean argEnable, final double argSupplyCurrent);
 
     public abstract void setCurrentLimitSupply(
-            final double argSupplyCurrentLimit, final double argTime, final double argSupplyCurrentLowerLimit);
+            final double argSupplyCurrentLimit,
+            final double argTime,
+            final double argSupplyCurrentLowerLimit);
 
     public abstract boolean getCurrentLimitSupplyEnable();
 

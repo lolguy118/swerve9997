@@ -142,11 +142,12 @@ public abstract class AutoMode {
     }
 
     public void autonomousPeriodic(double argTimestamp) {
-        moves.forEach(t -> {
-            if (t.canRun() == true) {
-                t.autonomousPeriodic(argTimestamp);
-            }
-        });
+        moves.forEach(
+                t -> {
+                    if (t.canRun() == true) {
+                        t.autonomousPeriodic(argTimestamp);
+                    }
+                });
     }
 
     public void autonomousExit(double argTimestamp) {

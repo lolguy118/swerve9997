@@ -24,7 +24,12 @@ public class EncoderCANCoderComp extends EncoderCANCoder {
             final CANDeviceID argCANID,
             final EncoderDirection argEncoderDirection,
             final double argUpdateFreqHz) {
-        super(argParent, "(CANCoder Comp)" + argName, argCANID, argEncoderDirection, argUpdateFreqHz);
+        super(
+                argParent,
+                "(CANCoder Comp)" + argName,
+                argCANID,
+                argEncoderDirection,
+                argUpdateFreqHz);
     }
 
     /*
@@ -39,18 +44,20 @@ public class EncoderCANCoderComp extends EncoderCANCoder {
             velRotations = sigVel.getValue().in(RotationsPerSecond);
 
             if ((sigPos != null) && sigPos.getStatus().isOK()) {
-                posRotations = BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel)
-                        .in(Rotations);
+                posRotations =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel).in(Rotations);
             }
 
             if ((sigPosBoot != null) && sigPosBoot.getStatus().isOK()) {
-                posBoot = BaseStatusSignal.getLatencyCompensatedValue(sigPosBoot, sigVel)
-                        .in(Rotations);
+                posBoot =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPosBoot, sigVel)
+                                .in(Rotations);
             }
 
             if ((sigPosAbs != null) && sigPosAbs.getStatus().isOK()) {
-                posAbs = BaseStatusSignal.getLatencyCompensatedValue(sigPosAbs, sigVel)
-                        .in(Rotations);
+                posAbs =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPosAbs, sigVel)
+                                .in(Rotations);
             }
         }
     }

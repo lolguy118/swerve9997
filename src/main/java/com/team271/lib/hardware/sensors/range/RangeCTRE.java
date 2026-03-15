@@ -28,7 +28,10 @@ public abstract class RangeCTRE extends RangeBase {
      *
      */
     public RangeCTRE(
-            final TObj argParent, final String argName, final RangeType argEncoderType, final double argUpdateFreqHz) {
+            final TObj argParent,
+            final String argName,
+            final RangeType argEncoderType,
+            final double argUpdateFreqHz) {
         super(argParent, "(RangeCTRE)" + argName, argEncoderType);
 
         /*

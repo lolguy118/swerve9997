@@ -65,27 +65,32 @@ public class ControllerTalonFX extends ControllerSmart {
     protected StatusSignal<Current> supplyCurrent;
 
     /* Open Loop Controls — timesync enabled for CANivore synchronization, UpdateFreqHz=0 required */
-    protected final DutyCycleOut motorOut = new DutyCycleOut(0).withUseTimesync(true).withUpdateFreqHz(0);
+    protected final DutyCycleOut motorOut =
+            new DutyCycleOut(0).withUseTimesync(true).withUpdateFreqHz(0);
 
     protected static final double UPDATE_FREQ_HZ_OUTPUT_DUTY = 250.0;
     protected StatusSignal<Double> outputDuty;
     protected double valueOutputDuty = 0.0;
 
-    protected final VoltageOut motorOutV = new VoltageOut(0).withUseTimesync(true).withUpdateFreqHz(0);
+    protected final VoltageOut motorOutV =
+            new VoltageOut(0).withUseTimesync(true).withUpdateFreqHz(0);
 
     protected static final double UPDATE_FREQ_HZ_OUTPUT_VOLT = 250.0;
     protected StatusSignal<Voltage> outputVoltage;
     protected double valueOutputVoltage = 0.0;
 
-    protected final TorqueCurrentFOC motorOutTC = new TorqueCurrentFOC(0).withUseTimesync(true).withUpdateFreqHz(0);
+    protected final TorqueCurrentFOC motorOutTC =
+            new TorqueCurrentFOC(0).withUseTimesync(true).withUpdateFreqHz(0);
 
     protected static final double UPDATE_FREQ_HZ_OUTPUT_TORQUE_CURRENT = 250.0;
     protected StatusSignal<Current> outputTorqueCurrent;
     protected double valueOutputTorqueCurrent = 0.0;
 
     /* Closed Loop Controls — timesync enabled for CANivore synchronization */
-    protected final PositionVoltage motorPosition = new PositionVoltage(0).withUseTimesync(true).withUpdateFreqHz(0);
-    protected final VelocityVoltage motorVelocity = new VelocityVoltage(0).withUseTimesync(true).withUpdateFreqHz(0);
+    protected final PositionVoltage motorPosition =
+            new PositionVoltage(0).withUseTimesync(true).withUpdateFreqHz(0);
+    protected final VelocityVoltage motorVelocity =
+            new VelocityVoltage(0).withUseTimesync(true).withUpdateFreqHz(0);
 
     protected static final double UPDATE_FREQ_HZ_CLOSED_LOOP = 250.0;
     protected StatusSignal<Double> clError;
@@ -113,7 +118,10 @@ public class ControllerTalonFX extends ControllerSmart {
      *
      */
     public ControllerTalonFX(
-            final TObj argParent, final String argName, final CANDeviceID argID, final MotorBase argMotor) {
+            final TObj argParent,
+            final String argName,
+            final CANDeviceID argID,
+            final MotorBase argMotor) {
         super(argParent, "(TalonFX)" + argName, ControllerType.TALONFX, argID, argMotor);
 
         create();
@@ -244,8 +252,13 @@ public class ControllerTalonFX extends ControllerSmart {
         status = super.follow(argLeader, argOpposeLeader);
 
         if (status == ControllerStatus.OK) {
-            fxStatus = talonFX.setControl(new Follower(followingID.getDeviceNumber(),
-                    argOpposeLeader ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned));
+            fxStatus =
+                    talonFX.setControl(
+                            new Follower(
+                                    followingID.getDeviceNumber(),
+                                    argOpposeLeader
+                                            ? MotorAlignmentValue.Opposed
+                                            : MotorAlignmentValue.Aligned));
 
             if (simState != null) {
                 if (opposeLeader) {
@@ -413,7 +426,9 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     public void setCurrentLimitSupply(
-            final double argSupplyCurrentLimit, final double argTime, final double argSupplyCurrentLowerLimit) {
+            final double argSupplyCurrentLimit,
+            final double argTime,
+            final double argSupplyCurrentLowerLimit) {
         /*
          * Limit to SupplyCurrentLowerLimit if Current exceeds SupplyCurrentLimit for
          * SupplyCurrentLowerTime seconds
@@ -441,7 +456,8 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     /* Voltage Limit */
-    public void setVoltagePeak(final double argFwdVoltage, final double argRevVoltage, final double argTimeFilter) {
+    public void setVoltagePeak(
+            final double argFwdVoltage, final double argRevVoltage, final double argTimeFilter) {
         config.Voltage.PeakForwardVoltage = argFwdVoltage;
         config.Voltage.PeakReverseVoltage = argRevVoltage;
         config.Voltage.SupplyVoltageTimeConstant = argTimeFilter;

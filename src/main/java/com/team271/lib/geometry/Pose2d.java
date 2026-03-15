@@ -81,9 +81,12 @@ public class Pose2d implements IPose2d<Pose2d> {
             halftheta_by_tan_of_halfdtheta =
                     -(half_dtheta * transform.getRotation().sin()) / cos_minus_one;
         }
-        final Translation2d translation_part = transform
-                .getTranslation()
-                .rotateBy(new Rotation2d(halftheta_by_tan_of_halfdtheta, -half_dtheta, false));
+        final Translation2d translation_part =
+                transform
+                        .getTranslation()
+                        .rotateBy(
+                                new Rotation2d(
+                                        halftheta_by_tan_of_halfdtheta, -half_dtheta, false));
         return new Twist2d(translation_part.x(), translation_part.y(), dtheta);
     }
 
@@ -107,7 +110,8 @@ public class Pose2d implements IPose2d<Pose2d> {
     @Override
     public Pose2d transformBy(final Pose2d other) {
         return new Pose2d(
-                translation_.translateBy(other.translation_.rotateBy(rotation_)), rotation_.rotateBy(other.rotation_));
+                translation_.translateBy(other.translation_.rotateBy(rotation_)),
+                rotation_.rotateBy(other.rotation_));
     }
 
     /*
@@ -162,7 +166,8 @@ public class Pose2d implements IPose2d<Pose2d> {
         final Translation2d b_t = b.getTranslation();
 
         final double tan_b = b_r.tan();
-        final double t = ((a_t.x() - b_t.x()) * tan_b + b_t.y() - a_t.y()) / (a_r.sin() - a_r.cos() * tan_b);
+        final double t =
+                ((a_t.x() - b_t.x()) * tan_b + b_t.y() - a_t.y()) / (a_r.sin() - a_r.cos() * tan_b);
         if (Double.isNaN(t)) {
             return new Translation2d(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
         }

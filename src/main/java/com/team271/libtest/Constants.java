@@ -6,22 +6,18 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the
+ * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
 public class Constants {
     /*
      *
      * CAN Constants
-     * 
+     *
      */
     public static final double CANCODER_BOOT_ALLOWANCE_SECS = 10.0;
 
@@ -44,7 +40,7 @@ public class Constants {
     public static final int CAN_ID_ELEVATOR_FOLLOWER = 8;
 
     public static final int CAN_ID_WRIST_LEAD = 14;
-    
+
     public static final int CAN_ID_CLAW_LEAD = 10;
     public static final int CAN_ID_CLAW_FOLLOWER = 16;
 
@@ -68,7 +64,7 @@ public class Constants {
     public static final int ID_GYRO = 0;
 
     /* Power */
-    //public static final int CAN_ID_PDH = 1;
+    // public static final int CAN_ID_PDH = 1;
 
     /* Pneumatics */
     public static final int CAN_ID_PH = 1;
@@ -120,11 +116,14 @@ public class Constants {
                     byte[] mac = nis.getHardwareAddress();
                     if (mac != null) {
                         for (int i = 0; i < mac.length; i++) {
-                            ret.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
+                            ret.append(
+                                    String.format(
+                                            "%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
                         }
                         return ret.toString();
                     } else {
-                        DriverStation.reportWarning("MAC address doesn't exist or is not accessible", false);
+                        DriverStation.reportWarning(
+                                "MAC address doesn't exist or is not accessible", false);
                     }
                 }
             }

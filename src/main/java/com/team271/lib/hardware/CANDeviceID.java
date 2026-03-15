@@ -3,8 +3,8 @@ package com.team271.lib.hardware;
 import com.ctre.phoenix6.CANBus;
 
 /**
- * Composite key identifying a CAN device by its device number and bus name.
- * Immutable and safe for use as a HashMap key.
+ * Composite key identifying a CAN device by its device number and bus name. Immutable and safe for
+ * use as a HashMap key.
  */
 public class CANDeviceID {
     private final int mDeviceNumber;
@@ -30,9 +30,7 @@ public class CANDeviceID {
         return mBus;
     }
 
-    /**
-     * Returns a CTRE {@link CANBus} object for use with Phoenix 6 v26+ device constructors.
-     */
+    /** Returns a CTRE {@link CANBus} object for use with Phoenix 6 v26+ device constructors. */
     public final CANBus getCANBus() {
         return mCANBus;
     }

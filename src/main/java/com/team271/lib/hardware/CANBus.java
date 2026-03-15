@@ -4,11 +4,11 @@ import com.team271.lib.nt.NTEntry;
 import com.team271.lib.nt.NTTable;
 
 /**
- * Wrapper around a CTRE {@link com.ctre.phoenix6.CANBus} that adds bus type
- * tracking, utilization monitoring, hoot file logging, and NT telemetry.
- * <p>
- * Note: This class shares a simple name with {@code com.ctre.phoenix6.CANBus}.
- * Within this class, the CTRE type is referenced fully qualified.
+ * Wrapper around a CTRE {@link com.ctre.phoenix6.CANBus} that adds bus type tracking, utilization
+ * monitoring, hoot file logging, and NT telemetry.
+ *
+ * <p>Note: This class shares a simple name with {@code com.ctre.phoenix6.CANBus}. Within this
+ * class, the CTRE type is referenced fully qualified.
  */
 public class CANBus {
 
@@ -35,7 +35,7 @@ public class CANBus {
     private final NTEntry ntBusUtil;
 
     /**
-     * @param argBus      CAN bus name ("rio", "", or a CANivore name)
+     * @param argBus CAN bus name ("rio", "", or a CANivore name)
      * @param argHootFile path for hoot file logging (empty string to disable)
      */
     public CANBus(final String argBus, final String argHootFile) {
@@ -53,7 +53,8 @@ public class CANBus {
 
         table = new NTTable("CANBus/" + (mBus.isEmpty() ? "rio" : mBus));
         ntBusName = new NTEntry(table, "Name", mBus.isEmpty() ? "rio" : mBus);
-        ntBusType = new NTEntry(table, "Type", canBusType == CANBusType.CANIVORE ? "CANivore" : "RIO");
+        ntBusType =
+                new NTEntry(table, "Type", canBusType == CANBusType.CANIVORE ? "CANivore" : "RIO");
         ntBusUtil = new NTEntry(table, "Utilization", 0.0);
     }
 

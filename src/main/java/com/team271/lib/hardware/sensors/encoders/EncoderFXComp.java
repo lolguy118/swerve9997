@@ -56,8 +56,8 @@ public class EncoderFXComp extends EncoderFX {
             velRotations = sigVel.getValue().in(RotationsPerSecond);
 
             if ((sigPos != null) && sigPos.getStatus().isOK()) {
-                posRotations = BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel)
-                        .in(Rotations);
+                posRotations =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel).in(Rotations);
             }
         }
     }

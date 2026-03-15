@@ -44,6 +44,12 @@ public class Twist2d {
     @Override
     public String toString() {
         final DecimalFormat fmt = new DecimalFormat("#0.000");
-        return "(" + fmt.format(dx) + "," + fmt.format(dy) + "," + fmt.format(Math.toDegrees(dtheta)) + " deg)";
+        return "("
+                + fmt.format(dx)
+                + ","
+                + fmt.format(dy)
+                + ","
+                + fmt.format(Math.toDegrees(dtheta))
+                + " deg)";
     }
 }

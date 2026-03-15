@@ -34,31 +34,42 @@ public class NTEntry {
 
     /* Boolean */
     public NTEntry(
-            final NTTable argTable, final String argTopicName, final boolean argDefaultValue, final double argRate) {
+            final NTTable argTable,
+            final String argTopicName,
+            final boolean argDefaultValue,
+            final double argRate) {
         this(argTable, argTopicName);
 
         setup(argDefaultValue, argRate);
     }
 
-    public NTEntry(final NTTable argTable, final String argTopicName, final boolean argDefaultValue) {
+    public NTEntry(
+            final NTTable argTable, final String argTopicName, final boolean argDefaultValue) {
         this(argTable, argTopicName, argDefaultValue, NT_UPDATE_MS);
     }
 
     /* double */
     public NTEntry(
-            final NTTable argTable, final String argTopicName, final double argDefaultValue, final double argRate) {
+            final NTTable argTable,
+            final String argTopicName,
+            final double argDefaultValue,
+            final double argRate) {
         this(argTable, argTopicName);
 
         setup(argDefaultValue, argRate);
     }
 
-    public NTEntry(final NTTable argTable, final String argTopicName, final double argDefaultValue) {
+    public NTEntry(
+            final NTTable argTable, final String argTopicName, final double argDefaultValue) {
         this(argTable, argTopicName, argDefaultValue, NT_UPDATE_MS);
     }
 
     /* long */
     public NTEntry(
-            final NTTable argTable, final String argTopicName, final long argDefaultValue, final double argRate) {
+            final NTTable argTable,
+            final String argTopicName,
+            final long argDefaultValue,
+            final double argRate) {
         this(argTable, argTopicName);
 
         setup(argDefaultValue, argRate);
@@ -70,13 +81,17 @@ public class NTEntry {
 
     /* string */
     public NTEntry(
-            final NTTable argTable, final String argTopicName, final String argDefaultValue, final double argRate) {
+            final NTTable argTable,
+            final String argTopicName,
+            final String argDefaultValue,
+            final double argRate) {
         this(argTable, argTopicName);
 
         setup(argDefaultValue, argRate);
     }
 
-    public NTEntry(final NTTable argTable, final String argTopicName, final String argDefaultValue) {
+    public NTEntry(
+            final NTTable argTable, final String argTopicName, final String argDefaultValue) {
         this(argTable, argTopicName, argDefaultValue, NT_UPDATE_MS);
     }
 
@@ -85,18 +100,20 @@ public class NTEntry {
      */
     public void setup(final boolean argDefaultValue, final double argRate) {
         if (topic != null) {
-            sub = topic.genericSubscribe(
-                    "boolean",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
-            pub = topic.genericPublish(
-                    "boolean",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
+            sub =
+                    topic.genericSubscribe(
+                            "boolean",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
+            pub =
+                    topic.genericPublish(
+                            "boolean",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
 
             pub.setDefaultBoolean(argDefaultValue);
         }
@@ -111,18 +128,20 @@ public class NTEntry {
      */
     public void setup(final double argDefaultValue, final double argRate) {
         if (topic != null) {
-            sub = topic.genericSubscribe(
-                    "double",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
-            pub = topic.genericPublish(
-                    "double",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
+            sub =
+                    topic.genericSubscribe(
+                            "double",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
+            pub =
+                    topic.genericPublish(
+                            "double",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
 
             pub.setDefaultDouble(argDefaultValue);
         }
@@ -137,18 +156,20 @@ public class NTEntry {
      */
     public void setup(final long argDefaultValue, final double argRate) {
         if (topic != null) {
-            sub = topic.genericSubscribe(
-                    "int",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
-            pub = topic.genericPublish(
-                    "int",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
+            sub =
+                    topic.genericSubscribe(
+                            "int",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
+            pub =
+                    topic.genericPublish(
+                            "int",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
 
             pub.setDefaultInteger(argDefaultValue);
         }
@@ -163,18 +184,20 @@ public class NTEntry {
      */
     public void setup(final int argDefaultValue, final double argRate) {
         if (topic != null) {
-            sub = topic.genericSubscribe(
-                    "int",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
-            pub = topic.genericPublish(
-                    "int",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
+            sub =
+                    topic.genericSubscribe(
+                            "int",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
+            pub =
+                    topic.genericPublish(
+                            "int",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
 
             pub.setDefaultInteger(argDefaultValue);
         }
@@ -189,18 +212,20 @@ public class NTEntry {
      */
     public void setup(final String argDefaultValue, final double argRate) {
         if (topic != null) {
-            sub = topic.genericSubscribe(
-                    "string",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
-            pub = topic.genericPublish(
-                    "string",
-                    PubSubOption.keepDuplicates(false),
-                    PubSubOption.periodic(argRate),
-                    PubSubOption.pollStorage(20),
-                    PubSubOption.sendAll(false));
+            sub =
+                    topic.genericSubscribe(
+                            "string",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
+            pub =
+                    topic.genericPublish(
+                            "string",
+                            PubSubOption.keepDuplicates(false),
+                            PubSubOption.periodic(argRate),
+                            PubSubOption.pollStorage(20),
+                            PubSubOption.sendAll(false));
 
             pub.setDefaultString(argDefaultValue);
         }

@@ -42,7 +42,10 @@ public class IMUPigeon2 extends IMUCTRE {
      *
      */
     public IMUPigeon2(
-            final TObj argParent, final String argName, final CANDeviceID argCANID, final double argUpdateFreqHz) {
+            final TObj argParent,
+            final String argName,
+            final CANDeviceID argCANID,
+            final double argUpdateFreqHz) {
         super(argParent, "(IMUPigeon2)" + argName, IMUType.PIGEON2, argCANID, argUpdateFreqHz);
 
         create();
@@ -139,8 +142,7 @@ public class IMUPigeon2 extends IMUCTRE {
         /* Yaw: prefer latency-compensated value, fall back to raw signal */
         if ((sigYaw != null) && sigYaw.getStatus().isOK()) {
             if ((sigYawRate != null) && sigYawRate.getStatus().isOK()) {
-                yaw = BaseStatusSignal.getLatencyCompensatedValue(sigYaw, sigYawRate)
-                        .in(Degree);
+                yaw = BaseStatusSignal.getLatencyCompensatedValue(sigYaw, sigYawRate).in(Degree);
             } else {
                 yaw = sigYaw.getValue().in(Degree);
             }

@@ -42,7 +42,8 @@ public class DriveSignal {
         // if either of the left or right signals is greater than 1, creating a scaling
         // factor so that we can proportionally scale down the motor outputs so the max
         // output is 1.0
-        double scaling_factor = Math.max(1.0, Math.max(Math.abs(this.getLeft()), Math.abs(this.getRight())));
+        double scaling_factor =
+                Math.max(1.0, Math.max(Math.abs(this.getLeft()), Math.abs(this.getRight())));
 
         // divide by scaling factor so that the max motor output is 1
         return new DriveSignal(this.getLeft() / scaling_factor, this.getRight() / scaling_factor);

@@ -4,8 +4,8 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-//import com.team271.frc2026.Config;
-//import com.team271.frc2026.Config.Mode;
+// import com.team271.frc2026.Config;
+// import com.team271.frc2026.Config.Mode;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
@@ -49,7 +49,10 @@ public class TransmissionFX extends TransmissionBase {
      *
      */
     public TransmissionFX(
-            final TObj argParent, final String argName, final MotorBase argMotor, final CANDeviceID argCANIDMaster) {
+            final TObj argParent,
+            final String argName,
+            final MotorBase argMotor,
+            final CANDeviceID argCANIDMaster) {
         super(argParent, "(FX)" + argName);
 
         leader = new ControllerTalonFX(this, "(FX)" + argName, argCANIDMaster, argMotor);
@@ -71,8 +74,14 @@ public class TransmissionFX extends TransmissionBase {
             final boolean argFollower1OpposeLeader) {
         this(argParent, argName, argMotor, argCANIDLeader);
 
-        follower1 = new ControllerTalonFX(
-                this, "(FX1)" + argName, argCANIDFollower1, argMotor, getLeaderController(), argFollower1OpposeLeader);
+        follower1 =
+                new ControllerTalonFX(
+                        this,
+                        "(FX1)" + argName,
+                        argCANIDFollower1,
+                        argMotor,
+                        getLeaderController(),
+                        argFollower1OpposeLeader);
 
         allControllers.add(follower1);
     }
@@ -86,10 +95,22 @@ public class TransmissionFX extends TransmissionBase {
             final boolean argFollower1OpposeLeader,
             final CANDeviceID argCANIDFollower2,
             final boolean argFollower2OpposeLeader) {
-        this(argParent, argName, argMotor, argCANIDLeader, argCANIDFollower1, argFollower1OpposeLeader);
+        this(
+                argParent,
+                argName,
+                argMotor,
+                argCANIDLeader,
+                argCANIDFollower1,
+                argFollower1OpposeLeader);
 
-        follower2 = new ControllerTalonFX(
-                this, "(FX2)" + argName, argCANIDFollower2, argMotor, getLeaderController(), argFollower2OpposeLeader);
+        follower2 =
+                new ControllerTalonFX(
+                        this,
+                        "(FX2)" + argName,
+                        argCANIDFollower2,
+                        argMotor,
+                        getLeaderController(),
+                        argFollower2OpposeLeader);
 
         allControllers.add(follower2);
     }
@@ -215,7 +236,10 @@ public class TransmissionFX extends TransmissionBase {
     /*
      * Motion Magic
      */
-    public void setMMConfig(final double argCruiseVelRPS, final double argCruiseAccelRPSS, final double argJerkRPSSS) {
+    public void setMMConfig(
+            final double argCruiseVelRPS,
+            final double argCruiseAccelRPSS,
+            final double argJerkRPSSS) {
         if (configMM != null) {
             configMM.MotionMagicCruiseVelocity = argCruiseVelRPS; // rps
             configMM.MotionMagicAcceleration = argCruiseAccelRPSS; // rps/s

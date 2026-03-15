@@ -2,7 +2,6 @@ package com.team271.lib.hardware.Input;
 
 import com.team271.lib.TObj;
 import com.team271.lib.util.Util;
-
 import edu.wpi.first.wpilibj.XboxController;
 
 public class InputXBox extends Input {
@@ -63,7 +62,7 @@ public class InputXBox extends Input {
         return 0.0;
     }
 
-     /*
+    /*
      * Bumpers
      */
     public boolean getLeftBumper() {
@@ -80,7 +79,7 @@ public class InputXBox extends Input {
         return false;
     }
 
-        /*
+    /*
      * Buttons
      */
     public boolean getA() {

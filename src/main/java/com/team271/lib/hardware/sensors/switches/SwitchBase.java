@@ -38,7 +38,8 @@ public abstract class SwitchBase extends TObj {
      * Constructors
      *
      */
-    protected SwitchBase(final TObj argParent, final String argName, final SwitchType argSwitchType) {
+    protected SwitchBase(
+            final TObj argParent, final String argName, final SwitchType argSwitchType) {
         super(argParent, "(Switch)" + argName);
 
         type = argSwitchType;

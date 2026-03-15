@@ -69,7 +69,11 @@ public class Input extends Subsystem {
     /*
      * Constructor
      */
-    public Input(final TObj argParent, final String argName, final int argPort, final InputType argInputType) {
+    public Input(
+            final TObj argParent,
+            final String argName,
+            final int argPort,
+            final InputType argInputType) {
         super(argParent, "(Input)" + argName);
         inputType = argInputType;
         switch (inputType) {

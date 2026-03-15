@@ -1,10 +1,9 @@
 package com.team271.lib.subsystem;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import edu.wpi.first.wpilibj.DriverStation;
 
 /*
  * Used to reset, start, stop, and update all subsystems at once
@@ -60,8 +59,8 @@ public class SubsystemManager {
     }
 
     /**
-     * Runs an action on each subsystem, catching and logging any exception so
-     * that a single failing subsystem does not prevent others from running.
+     * Runs an action on each subsystem, catching and logging any exception so that a single failing
+     * subsystem does not prevent others from running.
      */
     private void forEachSafe(final String phase, final Consumer<Subsystem> action) {
         for (Subsystem s : mAllSubsystems) {

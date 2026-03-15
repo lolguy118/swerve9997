@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "com.diffplug.spotless" version "7.0.4"
 }
 
 java {
@@ -78,6 +79,20 @@ dependencies {
 test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+}
+
+// Code formatting — run `./gradlew spotlessApply` to auto-format
+spotless {
+    java {
+        target 'src/**/*.java'
+        toggleOffOn()                      // respect // spotless:off / // spotless:on
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+        googleJavaFormat()                 // google-java-format with AOSP 4-space indentation
+            .aosp()
+            .reflowLongStrings()
+    }
 }
 
 // Simulation configuration (e.g. environment variables).

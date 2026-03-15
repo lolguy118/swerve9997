@@ -102,7 +102,7 @@ public class Balance {
     public double autoBalanceRoutineReverse(final double argTilt) {
         // System.out.println("argTilt: " + argTilt);
         switch (state) {
-                // drive forwards to approach station, exit when tilt is detected
+            // drive forwards to approach station, exit when tilt is detected
             case 0:
                 if (argTilt > onChargeStationDegree) {
                     debounceCount++;
@@ -113,7 +113,7 @@ public class Balance {
                     return robotSpeedSlow;
                 }
                 return robotSpeedFast;
-                // driving up charge station, drive slower, stopping when level
+            // driving up charge station, drive slower, stopping when level
             case 1:
                 if (argTilt < levelDegree) {
                     debounceCount++;
@@ -124,7 +124,7 @@ public class Balance {
                     return 0;
                 }
                 return robotSpeedSlow;
-                // on charge station, stop motors and wait for end of auto
+            // on charge station, stop motors and wait for end of auto
             case 2:
                 if (Math.abs(argTilt) <= levelDegree / 2) {
                     debounceCount++;
@@ -148,7 +148,7 @@ public class Balance {
     public double autoBalanceRoutineForward(final double argTilt) {
         // System.out.println("argTilt: " + argTilt);
         switch (state) {
-                // drive forwards to approach station, exit when tilt is detected
+            // drive forwards to approach station, exit when tilt is detected
             case 0:
                 if (argTilt < onChargeStationDegree) {
                     debounceCount++;
@@ -159,7 +159,7 @@ public class Balance {
                     return robotSpeedSlow;
                 }
                 return robotSpeedFast;
-                // driving up charge station, drive slower, stopping when level
+            // driving up charge station, drive slower, stopping when level
             case 1:
                 if (argTilt > levelDegree) {
                     debounceCount++;
@@ -170,7 +170,7 @@ public class Balance {
                     return 0;
                 }
                 return robotSpeedSlow;
-                // on charge station, stop motors and wait for end of auto
+            // on charge station, stop motors and wait for end of auto
             case 2:
                 if (Math.abs(argTilt) <= Math.abs(levelDegree) / 2) {
                     debounceCount++;

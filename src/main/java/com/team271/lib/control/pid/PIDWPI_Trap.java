@@ -11,10 +11,12 @@ public class PIDWPI_Trap extends PIDBase {
     /*
      * PID
      */
-    protected final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(0, 0);
+    protected final TrapezoidProfile.Constraints constraints =
+            new TrapezoidProfile.Constraints(0, 0);
     // TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
-    protected final ProfiledPIDController controller = new ProfiledPIDController(0, 0, 0, constraints);
+    protected final ProfiledPIDController controller =
+            new ProfiledPIDController(0, 0, 0, constraints);
 
     double goal = 0;
 
@@ -146,7 +148,8 @@ public class PIDWPI_Trap extends PIDBase {
     }
 
     @Override
-    public void setIntegratorRange(final double argMinimumIntegral, final double argMaximumIntegral) {
+    public void setIntegratorRange(
+            final double argMinimumIntegral, final double argMaximumIntegral) {
         super.setIntegratorRange(argMinimumIntegral, argMaximumIntegral);
 
         // controller.setIntegratorRange(iMin, iMax);

@@ -232,6 +232,40 @@ The `sysid/` package provides system identification support:
 
 ---
 
+## Formatting & Linting
+
+Code formatting is enforced automatically via **Spotless** (Gradle plugin) and **`.editorconfig`**.
+
+### Spotless (google-java-format, AOSP style)
+- Configured in `build.gradle` under the `spotless { }` block
+- Uses **google-java-format** with the **AOSP** variant (4-space indentation)
+- Enforces: consistent formatting, removed unused imports, no trailing whitespace, final newline
+- **Check:** `./gradlew spotlessCheck` — fails the build if any file has violations
+- **Fix:** `./gradlew spotlessApply` — auto-formats all Java source files in-place
+- Supports `// spotless:off` / `// spotless:on` toggle comments for sections that must not be reformatted (e.g., lookup tables, ASCII art)
+
+### .editorconfig
+- IDE-agnostic formatting hints at the repository root
+- Java: 4-space indent, 120-char line length, UTF-8, LF line endings
+- JSON/YAML: 2-space indent
+- Markdown: trailing whitespace preserved (intentional line breaks)
+
+### Workflow
+1. Write code normally in your IDE (most IDEs auto-apply `.editorconfig` rules)
+2. Before committing, run `./gradlew spotlessApply` to auto-fix formatting
+3. CI (if configured) runs `./gradlew spotlessCheck` — PRs with violations will fail
+
+### JUnit Testing
+- Test source directory: `src/test/java/`
+- Framework: JUnit 5 (Jupiter) — configured in `build.gradle`
+- Run tests: `./gradlew test`
+- HAL initialization: Tests that use WPILib or CTRE Phoenix 6 classes must call `HAL.initialize(500, 0)` in a `@BeforeAll` method
+- Static state: Classes like `CTREManager` that use static state require `@BeforeEach` cleanup between tests (via reflection if necessary)
+- Sim devices: `TalonFX`, `CANcoder`, `Pigeon2`, etc. create simulated device instances in the HAL — no real hardware needed
+- Test coverage: Target 100% method and branch coverage for utility/infrastructure classes (`CANBus`, `CANDeviceID`, `CTREManager`)
+
+---
+
 ## Known Bug Patterns to Watch For
 
 These are specific bug categories that have been found in this codebase. Check every PR for these:
@@ -355,11 +389,28 @@ When adding new auto modes, ALL subsystems that participate in auto must have ca
 - [ ] LimelightHelpers calls handle null/missing camera gracefully
 - [ ] CAN IDs in `Constants.java` don't conflict (no duplicates per device type per bus)
 
+### Testing
+- [ ] `./gradlew test` passes (all JUnit tests green)
+- [ ] New utility/infrastructure classes have corresponding test classes in `src/test/java/`
+- [ ] Tests use `@BeforeAll` for HAL initialization, `@BeforeEach` for state reset
+- [ ] Static state (singletons, static managers) cleaned up between tests
+- [ ] New branches in existing code covered by updated tests
+- [ ] No test depends on execution order (each test is independent)
+
 ### Dependencies
 - [ ] All vendordep JSONs are the latest version (check `jsonUrl` sources)
 - [ ] `build.gradle` GradleRIO plugin version is latest for the FRC season
 - [ ] No hardcoded dependency versions in `build.gradle` that conflict with vendordep versions
 - [ ] JUnit version is current
+
+### Formatting & Linting
+- [ ] `./gradlew spotlessCheck` passes (no formatting violations)
+- [ ] No unused imports (Spotless `removeUnusedImports()` enforces this)
+- [ ] No trailing whitespace
+- [ ] All files end with a newline
+- [ ] 4-space indentation (AOSP style via google-java-format)
+- [ ] Line length ≤ 120 characters (`.editorconfig` recommendation)
+- [ ] Run `./gradlew spotlessApply` before committing to auto-fix formatting
 
 ### Code Quality
 - [ ] No `==` for String comparison (use `.equals()`)

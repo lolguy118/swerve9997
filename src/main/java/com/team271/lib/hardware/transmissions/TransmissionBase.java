@@ -165,12 +165,19 @@ public abstract class TransmissionBase extends TObj {
                 simDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
                 break;
             case KRAKENX44:
-                simDCMotor = new DCMotor(
-                        12.0, 4.05, 275.0, 1.4, RPM.of(7530).in(RadiansPerSecond), tmpNumMotors);
+                simDCMotor =
+                        new DCMotor(
+                                12.0,
+                                4.05,
+                                275.0,
+                                1.4,
+                                RPM.of(7530).in(RadiansPerSecond),
+                                tmpNumMotors);
                 break;
             case CTRE_MINION:
                 simDCMotor =
-                        new DCMotor(0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
+                        new DCMotor(
+                                0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
                 break;
             case NEO:
                 simDCMotor = DCMotor.getNEO(tmpNumMotors);
@@ -183,7 +190,8 @@ public abstract class TransmissionBase extends TObj {
                 break;
             default:
                 simDCMotor =
-                        new DCMotor(0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
+                        new DCMotor(
+                                0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
                 break;
         }
     }
@@ -249,15 +257,16 @@ public abstract class TransmissionBase extends TObj {
             final double argAutoZeroValueInches) {
 
         if (argSwitchType == SwitchType.FX) {
-            fwdLimit = new SwitchFX(
-                    this,
-                    name + "(Fwd)",
-                    (ControllerTalonFX) leader,
-                    true,
-                    argLimitType,
-                    argAutoZero,
-                    argAutoZeroValueInches,
-                    LIMIT_UPDATE_FREQ_HZ);
+            fwdLimit =
+                    new SwitchFX(
+                            this,
+                            name + "(Fwd)",
+                            (ControllerTalonFX) leader,
+                            true,
+                            argLimitType,
+                            argAutoZero,
+                            argAutoZeroValueInches,
+                            LIMIT_UPDATE_FREQ_HZ);
 
             fwdLimit.setEnabled(argEnable);
         }
@@ -271,15 +280,16 @@ public abstract class TransmissionBase extends TObj {
             final double argAutoZeroValueInches) {
 
         if (argSwitchType == SwitchType.FX) {
-            revLimit = new SwitchFX(
-                    this,
-                    name + "(Rev)",
-                    (ControllerTalonFX) leader,
-                    false,
-                    argLimitType,
-                    argAutoZero,
-                    argAutoZeroValueInches,
-                    LIMIT_UPDATE_FREQ_HZ);
+            revLimit =
+                    new SwitchFX(
+                            this,
+                            name + "(Rev)",
+                            (ControllerTalonFX) leader,
+                            false,
+                            argLimitType,
+                            argAutoZero,
+                            argAutoZeroValueInches,
+                            LIMIT_UPDATE_FREQ_HZ);
 
             revLimit.setEnabled(argEnable);
         }
@@ -299,16 +309,21 @@ public abstract class TransmissionBase extends TObj {
     }
 
     public void configCurrentLimitSupply(
-            final double argSupplyCurrentLimit, final double argTime, double argSupplyCurrentLowerLimit) {
+            final double argSupplyCurrentLimit,
+            final double argTime,
+            double argSupplyCurrentLowerLimit) {
         // Omar: Good Idea to apply to all
         allControllers.forEach(
-                t -> t.setCurrentLimitSupply(argSupplyCurrentLimit, argTime, argSupplyCurrentLowerLimit));
+                t ->
+                        t.setCurrentLimitSupply(
+                                argSupplyCurrentLimit, argTime, argSupplyCurrentLowerLimit));
     }
 
     /*
      * Voltage Limits
      */
-    public void configVoltagePeak(final double argFwdVoltage, final double argRevVoltage, final double argTimeFilter) {
+    public void configVoltagePeak(
+            final double argFwdVoltage, final double argRevVoltage, final double argTimeFilter) {
         // Omar: Only Apply to Leader
         leader.setVoltagePeak(argFwdVoltage, argRevVoltage, argTimeFilter);
     }
@@ -366,8 +381,11 @@ public abstract class TransmissionBase extends TObj {
     }
 
     public void addCANCoder(
-            final CANDeviceID argCANIDEnc, final EncoderDirection argEncoderDir, final double argUpdateFreqHz) {
-        encCANCoder = new EncoderCANCoderComp(this, name, argCANIDEnc, argEncoderDir, argUpdateFreqHz);
+            final CANDeviceID argCANIDEnc,
+            final EncoderDirection argEncoderDir,
+            final double argUpdateFreqHz) {
+        encCANCoder =
+                new EncoderCANCoderComp(this, name, argCANIDEnc, argEncoderDir, argUpdateFreqHz);
     }
 
     public EncoderCANCoder getEncoderCANCoder() {
@@ -524,17 +542,16 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     /**
-     * Set a shifter actuator. Use {@link ShifterPneumatic} for pneumatic shifting,
-     * or implement the {@link Shifter} interface for other mechanisms.
+     * Set a shifter actuator. Use {@link ShifterPneumatic} for pneumatic shifting, or implement the
+     * {@link Shifter} interface for other mechanisms.
      */
     public void setShifter(final Shifter argShifter) {
         shifter = argShifter;
     }
 
-    /**
-     * Set a shifter with per-gear sensor ratios.
-     */
-    public void setShifter(final Shifter argShifter, final double argSensorRatio1, final double argSensorRatio2) {
+    /** Set a shifter with per-gear sensor ratios. */
+    public void setShifter(
+            final Shifter argShifter, final double argSensorRatio1, final double argSensorRatio2) {
         sensorRatioGear1 = argSensorRatio1;
         sensorRatioGear2 = argSensorRatio2;
 
@@ -542,8 +559,8 @@ public abstract class TransmissionBase extends TObj {
     }
 
     /**
-     * Convenience method: create a pneumatic shifter from solenoid channels.
-     * Equivalent to {@code setShifter(new ShifterPneumatic(chGear1, chGear2))}.
+     * Convenience method: create a pneumatic shifter from solenoid channels. Equivalent to {@code
+     * setShifter(new ShifterPneumatic(chGear1, chGear2))}.
      */
     public void addShifter(final int chGear1, final int chGear2) {
         if (chGear1 != 99 && chGear2 != 99) {
@@ -551,11 +568,12 @@ public abstract class TransmissionBase extends TObj {
         }
     }
 
-    /**
-     * Convenience method: create a pneumatic shifter with per-gear sensor ratios.
-     */
+    /** Convenience method: create a pneumatic shifter with per-gear sensor ratios. */
     public void addShifter(
-            final int chGear1, final double argSensorRatio1, final int chGear2, final double argSensorRatio2) {
+            final int chGear1,
+            final double argSensorRatio1,
+            final int chGear2,
+            final double argSensorRatio2) {
         sensorRatioGear1 = argSensorRatio1;
         sensorRatioGear2 = argSensorRatio2;
 

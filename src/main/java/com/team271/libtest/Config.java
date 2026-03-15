@@ -2,16 +2,16 @@ package com.team271.libtest;
 
 import com.team271.lib.util.Alert;
 import com.team271.lib.util.Alert.AlertType;
-
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class Config {
     public static final double LOOPER_DT_S = 0.020;
 
     public static final double NT_UPDATE_MS = 100;
-    
-    //public static final Map<RobotType, String> logFolders = Map.of(RobotType.ROBOT_2023C, "/media/sdb1/");
-    
+
+    // public static final Map<RobotType, String> logFolders = Map.of(RobotType.ROBOT_2023C,
+    // "/media/sdb1/");
+
     public static boolean invalidRobotAlertSent = false;
 
     // Function to disable HAL interaction when running without native libs
@@ -48,7 +48,9 @@ public class Config {
         if (!disableHAL && RobotBase.isReal()) {
             if (robot == RobotType.ROBOT_SIMBOT) { // Invalid robot selected
                 if (!invalidRobotAlertSent) {
-                    new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR)
+                    new Alert(
+                                    "Invalid robot selected, using competition robot as default.",
+                                    AlertType.ERROR)
                             .set(true);
                     invalidRobotAlertSent = true;
                 }

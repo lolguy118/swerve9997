@@ -198,9 +198,11 @@ public class PIDTrap extends PIDBase {
             // Get error which is the smallest distance between goal and argMeasurement
             double errorBound = (continuousMode.maxInput - continuousMode.minInput) / 2.0;
             double goalMinDistance =
-                    MathUtil.inputModulus(goal.position - argInputMeasurement, -errorBound, errorBound);
+                    MathUtil.inputModulus(
+                            goal.position - argInputMeasurement, -errorBound, errorBound);
             double setpointMinDistance =
-                    MathUtil.inputModulus(setpoint.position - argInputMeasurement, -errorBound, errorBound);
+                    MathUtil.inputModulus(
+                            setpoint.position - argInputMeasurement, -errorBound, errorBound);
 
             // Recompute the profile goal with the smallest error, thus giving the shortest
             // path. The goal may be outside the input range after this operation, but

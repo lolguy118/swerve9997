@@ -8,21 +8,18 @@
       "WebFetch(domain:github.wpilib.org)",
       "WebFetch(domain:pathplanner.dev)",
       "Bash(./gradlew build:*)",
+      "Bash(./gradlew test:*)",
+      "Bash(./gradlew spotlessCheck)",
       "Bash(java -version)",
       "Bash(where java:*)",
-      "Bash(JAVA_HOME=\"C:/Program Files/Eclipse Adoptium/jdk-17.0.11.9-hotspot\" ./gradlew build)",
-      "Read(//c/Users/RVarone/.gradle/caches/modules-2/files-2.1/com.pathplanner.lib/PathplannerLib-java/2026.1.2/d78b9d79d4017312175100fb8fd0b722883b9cfe//**)",
       "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/controllers/PPHolonomicDriveController.java\")",
       "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/trajectory/PathPlannerTrajectory.java\")",
       "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/path/PathPlannerPath.java\")",
-      "Bash(find \"d:\\\\robotics\\\\software\\\\2026\\\\Robots\\\\Team271-Lib/src/main/java/com/team271/lib\" -name \"*.java\" -exec grep -l \"null\" {})",
-      "Bash(find /d/robotics/software/2026/Robots/Team271-Lib -type f -name \"*.java\" -exec grep -l \"System.out\\\\|System.err\" {})",
       "Bash(sort -t: -k2)",
       "Bash(for file:*)",
       "Bash(do echo:*)",
       "Bash(sed 's/.*public void //')",
-      "Bash(sed 's/\\(.*\\)//')",
-      "Bash(find d:roboticssoftware2026RobotsTeam271-Libsrcmainjavacomteam271libtest -name *.java -type f)"
+      "Bash(sed 's/\\(.*\\)//')"
     ]
   }
 }

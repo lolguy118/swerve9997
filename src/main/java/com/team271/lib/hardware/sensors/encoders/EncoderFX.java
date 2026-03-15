@@ -31,7 +31,12 @@ public class EncoderFX extends EncoderCTRE {
             final String argName,
             final ControllerTalonFX argTalonFX,
             final double argUpdateFreqHz) {
-        super(argParent, "(Internal FX)" + argName, EncoderType.INTERNAL_FX, EncoderDirection.CW, argUpdateFreqHz);
+        super(
+                argParent,
+                "(Internal FX)" + argName,
+                EncoderType.INTERNAL_FX,
+                EncoderDirection.CW,
+                argUpdateFreqHz);
 
         /*
          * Store FX Controller
@@ -79,7 +84,10 @@ public class EncoderFX extends EncoderCTRE {
         super.setPosRotations(argPositionRotations);
 
         if (controller != null) {
-            ctreStatus = controller.getTalonFX().setPosition(argPositionRotations, ConstantsLib.CAN_LONG_TIMEOUT_MS);
+            ctreStatus =
+                    controller
+                            .getTalonFX()
+                            .setPosition(argPositionRotations, ConstantsLib.CAN_LONG_TIMEOUT_MS);
         }
     }
 
@@ -96,8 +104,8 @@ public class EncoderFX extends EncoderCTRE {
             velRotations = sigVel.getValue().in(RotationsPerSecond);
 
             if ((sigPos != null) && sigPos.getStatus().isOK()) {
-                posRotations = BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel)
-                        .in(Rotations);
+                posRotations =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel).in(Rotations);
             }
         }
     }

@@ -1,9 +1,9 @@
 package com.team271.libtest.subsystems.Input;
 
-import com.team271.libtest.Constants;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.Input.InputEnvisionPro;
 import com.team271.lib.util.Util;
+import com.team271.libtest.Constants;
 
 public class InputDriver extends InputEnvisionPro {
     /*
@@ -42,20 +42,21 @@ public class InputDriver extends InputEnvisionPro {
      * Driver Throttle and Steer
      */
     public double getThrottle() {
-        //final double tmpValueX = getLeftX();
+        // final double tmpValueX = getLeftX();
         double tmpValueY = getLeftY();
-        //double tmpValues[] = new double[2];
+        // double tmpValues[] = new double[2];
 
         tmpValueY = Util.handleDeadzone(tmpValueY, DEADBAND_THROTTLE);
-        //Util.handleDeadzone_Radial(tmpValues, tmpValueX, tmpValueY, DEADBAND_THROTTLE, DEADBAND_THROTTLE_HIGH);
+        // Util.handleDeadzone_Radial(tmpValues, tmpValueX, tmpValueY, DEADBAND_THROTTLE,
+        // DEADBAND_THROTTLE_HIGH);
 
         tmpValueY = inputShaping(InputShaping.INPUT_SHAPING_LINEAR, tmpValueY);
 
-        tmpValueY = Util.reMap(tmpValueY, 0.0, 1.0, 0,0.7);
+        tmpValueY = Util.reMap(tmpValueY, 0.0, 1.0, 0, 0.7);
 
         return tmpValueY;
-        //return inputShaping(InputShaping.INPUT_SHAPING_CUBED, tmpValueY);
-        //return inputShaping(InputShaping.INPUT_SHAPING_LINEAR, tmpValueY);
+        // return inputShaping(InputShaping.INPUT_SHAPING_CUBED, tmpValueY);
+        // return inputShaping(InputShaping.INPUT_SHAPING_LINEAR, tmpValueY);
     }
 
     public double getSteer() {
@@ -64,13 +65,12 @@ public class InputDriver extends InputEnvisionPro {
 
         tmpValue = inputShaping(InputShaping.INPUT_SHAPING_CUBED, tmpValue);
 
-        tmpValue = Util.reMap(tmpValue, 0.0, 1.0, 0,
-                                    0.7);
+        tmpValue = Util.reMap(tmpValue, 0.0, 1.0, 0, 0.7);
 
-        //return inputShaping(InputShaping.INPUT_SHAPING_CUBED, tmpValue);
+        // return inputShaping(InputShaping.INPUT_SHAPING_CUBED, tmpValue);
         return tmpValue;
 
-        //return inputShaping(InputShaping.INPUT_SHAPING_CUBED, tmpValue);
+        // return inputShaping(InputShaping.INPUT_SHAPING_CUBED, tmpValue);
     }
 
     public double getThrottleDriver() {
@@ -97,19 +97,17 @@ public class InputDriver extends InputEnvisionPro {
 
         tmpValueTurn = Util.handleDeadzone(tmpValueTurn, DEADBAND_THROTTLE_QUICK_TURN);
 
-        tmpValueTurn = Util.reMap(tmpValueTurn, 0.0, 1.0, 0,
-                                    0.5);
+        tmpValueTurn = Util.reMap(tmpValueTurn, 0.0, 1.0, 0, 0.5);
 
         return tmpValueTurn;
     }
 
     public double getQuickTurnRight() {
         double tmpValueTurn = getRightTrigger();
-        
+
         tmpValueTurn = Util.handleDeadzone(tmpValueTurn, DEADBAND_THROTTLE_QUICK_TURN);
 
-        tmpValueTurn = Util.reMap(tmpValueTurn, 0.0, 1.0, 0,
-                                    0.5);
+        tmpValueTurn = Util.reMap(tmpValueTurn, 0.0, 1.0, 0, 0.5);
 
         return tmpValueTurn;
     }

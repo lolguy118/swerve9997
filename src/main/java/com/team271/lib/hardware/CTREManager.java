@@ -11,24 +11,26 @@ import java.util.Map;
 
 /**
  * Centralized manager for all CTRE Phoenix 6 devices and status signals.
- * <p>
- * Supports any number of CAN buses (RIO + multiple CANivores). Buses are
- * registered via {@link #addBus(String)} or automatically when devices are
- * added. Each bus gets independent utilization tracking and telemetry.
- * <p>
- * Typical multi-CANivore setup (in Robot.robotInit(), before subsystem init):
+ *
+ * <p>Supports any number of CAN buses (RIO + multiple CANivores). Buses are registered via {@link
+ * #addBus(String)} or automatically when devices are added. Each bus gets independent utilization
+ * tracking and telemetry.
+ *
+ * <p>Typical multi-CANivore setup (in Robot.robotInit(), before subsystem init):
+ *
  * <pre>
  *   CTREManager.addBus("rio");
  *   CTREManager.addBus("drivetrain");
  *   CTREManager.addBus("subsystems");
  * </pre>
- * <p>
- * Lifecycle:
+ *
+ * <p>Lifecycle:
+ *
  * <ol>
- *   <li>Register buses (optional — auto-registered when devices are added)</li>
- *   <li>Subsystems create devices and register signals during {@code robotInit()}</li>
- *   <li>Call {@code CTREManager.init()} after all subsystems are initialized</li>
- *   <li>Call {@code CTREManager.refreshAll()} once per cycle in {@code robotPeriodicBefore()}</li>
+ *   <li>Register buses (optional — auto-registered when devices are added)
+ *   <li>Subsystems create devices and register signals during {@code robotInit()}
+ *   <li>Call {@code CTREManager.init()} after all subsystems are initialized
+ *   <li>Call {@code CTREManager.refreshAll()} once per cycle in {@code robotPeriodicBefore()}
  * </ol>
  */
 public class CTREManager {
@@ -40,7 +42,8 @@ public class CTREManager {
     /*
      * Per-bus device lists — for per-bus optimization
      */
-    private static final LinkedHashMap<String, ArrayList<ParentDevice>> devicesByBus = new LinkedHashMap<>();
+    private static final LinkedHashMap<String, ArrayList<ParentDevice>> devicesByBus =
+            new LinkedHashMap<>();
 
     /*
      * All devices (for backwards compatibility)
@@ -69,16 +72,15 @@ public class CTREManager {
     private static final NTEntry ntDt = new NTEntry(table, "dt", 0.0);
     private static final NTEntry ntRefreshStatus = new NTEntry(table, "Refresh Status", "");
 
-    private CTREManager() {
-    }
+    private CTREManager() {}
 
     /*
      * Bus Registration
      */
 
     /**
-     * Register a CAN bus for tracking. Idempotent — calling with the same name
-     * multiple times is safe.
+     * Register a CAN bus for tracking. Idempotent — calling with the same name multiple times is
+     * safe.
      *
      * @param argBusName bus name ("rio", "", or a CANivore name like "drivetrain")
      * @return the CANBus tracking object
@@ -87,23 +89,17 @@ public class CTREManager {
         return buses.computeIfAbsent(argBusName, CANBus::new);
     }
 
-    /**
-     * Register a CAN bus with hoot file logging.
-     */
+    /** Register a CAN bus with hoot file logging. */
     public static CANBus addBus(final String argBusName, final String argHootFile) {
         return buses.computeIfAbsent(argBusName, name -> new CANBus(name, argHootFile));
     }
 
-    /**
-     * Get a registered bus by name, or null if not registered.
-     */
+    /** Get a registered bus by name, or null if not registered. */
     public static CANBus getBus(final String argBusName) {
         return buses.get(argBusName);
     }
 
-    /**
-     * Get all registered buses.
-     */
+    /** Get all registered buses. */
     public static Map<String, CANBus> getAllBuses() {
         return buses;
     }
@@ -113,8 +109,7 @@ public class CTREManager {
      */
 
     /**
-     * Register a CTRE device. The device's bus is automatically registered
-     * if not already tracked.
+     * Register a CTRE device. The device's bus is automatically registered if not already tracked.
      */
     public static void addDevice(final ParentDevice argDevice) {
         devices.add(argDevice);
@@ -134,27 +129,32 @@ public class CTREManager {
         signalsAll.add(argSignal);
     }
 
-    private static void addSignalInternal(final StatusSignal<?> argSignal, final double argUpdateRate) {
+    private static void addSignalInternal(
+            final StatusSignal<?> argSignal, final double argUpdateRate) {
         if ((argSignal != null) && argSignal.getStatus().isOK()) {
             addSignal(argSignal);
             argSignal.setUpdateFrequency(argUpdateRate, ConstantsLib.CAN_LONG_TIMEOUT_MS);
         }
     }
 
-    public static void addSignalTalonFX(final StatusSignal<?> argSignal, final double argUpdateRate) {
+    public static void addSignalTalonFX(
+            final StatusSignal<?> argSignal, final double argUpdateRate) {
         addSignalInternal(argSignal, argUpdateRate);
     }
 
-    public static StatusSignal<?> addSignalCANCoder(final StatusSignal<?> argSignal, final double argUpdateRate) {
+    public static StatusSignal<?> addSignalCANCoder(
+            final StatusSignal<?> argSignal, final double argUpdateRate) {
         addSignalInternal(argSignal, argUpdateRate);
         return argSignal;
     }
 
-    public static void addSignalPigeon(final StatusSignal<?> argSignal, final double argUpdateRate) {
+    public static void addSignalPigeon(
+            final StatusSignal<?> argSignal, final double argUpdateRate) {
         addSignalInternal(argSignal, argUpdateRate);
     }
 
-    public static void addSignalCANrange(final StatusSignal<?> argSignal, final double argUpdateRate) {
+    public static void addSignalCANrange(
+            final StatusSignal<?> argSignal, final double argUpdateRate) {
         addSignalInternal(argSignal, argUpdateRate);
     }
 
@@ -231,7 +231,8 @@ public class CTREManager {
         ntDeviceCount.publish(devices.size());
         ntBusCount.publish(buses.size());
         ntDt.publish(getDt());
-        ntRefreshStatus.publish(signalsAllArray != null && signalsAllArray.length > 0 ? "OK" : "No Signals");
+        ntRefreshStatus.publish(
+                signalsAllArray != null && signalsAllArray.length > 0 ? "OK" : "No Signals");
 
         for (CANBus bus : buses.values()) {
             bus.refresh();

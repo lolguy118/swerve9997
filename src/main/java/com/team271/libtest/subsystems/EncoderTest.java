@@ -1,14 +1,14 @@
 package com.team271.libtest.subsystems;
 
-import com.team271.libtest.Constants;
-import com.team271.libtest.Constants.ControlMode;
-import com.team271.libtest.subsystems.Input.InputDriver;
-import com.team271.libtest.subsystems.Input.InputOp;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.sensors.encoders.EncoderBase.EncoderDirection;
 import com.team271.lib.hardware.sensors.encoders.EncoderCANCoder;
 import com.team271.lib.subsystem.Subsystem;
+import com.team271.libtest.Constants;
+import com.team271.libtest.Constants.ControlMode;
+import com.team271.libtest.subsystems.Input.InputDriver;
+import com.team271.libtest.subsystems.Input.InputOp;
 
 public class EncoderTest extends Subsystem {
     /*
@@ -41,7 +41,7 @@ public class EncoderTest extends Subsystem {
         static final double kEncUpdateFreq = 250.0;
 
         // Calibration
-        //static final double kRefLowPos = -15.7 - 75.05859375;
+        // static final double kRefLowPos = -15.7 - 75.05859375;
         static final double kRefHighPos = 91.6;
 
         static final double kMagnetOffset = -0.894775;
@@ -57,27 +57,33 @@ public class EncoderTest extends Subsystem {
     /*
      * EncoderTest
      */
-    protected EncoderCANCoder encCANCoder = new EncoderCANCoder(this, "EncoderTest", new CANDeviceID(Constants.CAN_ID_CANCODER_SHOULDER, Constants.CAN_BUS_NAME), EncoderDirection.CW, EncoderTestConstants.kEncUpdateFreq);
+    protected EncoderCANCoder encCANCoder =
+            new EncoderCANCoder(
+                    this,
+                    "EncoderTest",
+                    new CANDeviceID(Constants.CAN_ID_CANCODER_SHOULDER, Constants.CAN_BUS_NAME),
+                    EncoderDirection.CW,
+                    EncoderTestConstants.kEncUpdateFreq);
 
     /*
      *
      * Telemetry (NT)
-     * 
+     *
      */
 
     /*
-     * 
+     *
      * Constructors
-     * 
+     *
      */
     public EncoderTest(final TObj argParent) {
         super(argParent, "EncoderTest");
     }
 
     /*
-     * 
+     *
      * Robot States
-     * 
+     *
      */
     @Override
     public void robotInit(final double timestamp) {
@@ -88,7 +94,6 @@ public class EncoderTest extends Subsystem {
         encCANCoder.setMagnetOffset(EncoderTestConstants.kMagnetOffset);
         encCANCoder.applyConfig();
 
-
         /*
          * Transmission Init
          */
@@ -96,20 +101,20 @@ public class EncoderTest extends Subsystem {
     }
 
     /*
-     * 
+     *
      * Transmissions
-     * 
+     *
      */
     /*
-     * 
+     *
      * EncoderTest
-     * 
+     *
      */
 
     /*
      *
      * Robot States
-     * 
+     *
      */
     @Override
     public void robotPeriodicBefore(final double timestamp) {
@@ -117,8 +122,7 @@ public class EncoderTest extends Subsystem {
     }
 
     @Override
-    public void robotPeriodicAfter(final double argTimestamp) {
-    }
+    public void robotPeriodicAfter(final double argTimestamp) {}
 
     private double simPosRotations = 0;
     private static final double SIM_VEL_RPS = 0.5;
@@ -141,9 +145,9 @@ public class EncoderTest extends Subsystem {
     }
 
     /*
-     * 
+     *
      * Telemetry
-     * 
+     *
      */
     @Override
     public void outputTelemetry() {

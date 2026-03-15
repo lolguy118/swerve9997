@@ -162,7 +162,8 @@ public abstract class IterativeRobotBase extends RobotBase {
     /* Periodic code for all robot modes should go here. */
     public void robotPeriodicBefore() {
         if (m_rpbFirstRun) {
-            DriverStation.reportWarning("Default robotPeriodicBefore() method... Override me!", false);
+            DriverStation.reportWarning(
+                    "Default robotPeriodicBefore() method... Override me!", false);
             m_rpbFirstRun = false;
         }
     }
@@ -172,7 +173,8 @@ public abstract class IterativeRobotBase extends RobotBase {
     /* Periodic code for all robot modes should go here. */
     public void robotPeriodicAfter() {
         if (m_rpaFirstRun) {
-            DriverStation.reportWarning("Default robotPeriodicAfter() method... Override me!", false);
+            DriverStation.reportWarning(
+                    "Default robotPeriodicAfter() method... Override me!", false);
             m_rpaFirstRun = false;
         }
     }
@@ -186,7 +188,8 @@ public abstract class IterativeRobotBase extends RobotBase {
      */
     public void simulationPeriodic() {
         if (m_spFirstRun) {
-            DriverStation.reportWarning("Default simulationPeriodic() method... Override me!", false);
+            DriverStation.reportWarning(
+                    "Default simulationPeriodic() method... Override me!", false);
             m_spFirstRun = false;
         }
     }
@@ -206,7 +209,8 @@ public abstract class IterativeRobotBase extends RobotBase {
     /* Periodic code for autonomous mode should go here. */
     public void autonomousPeriodic() {
         if (m_apFirstRun) {
-            DriverStation.reportWarning("Default autonomousPeriodic() method... Override me!", false);
+            DriverStation.reportWarning(
+                    "Default autonomousPeriodic() method... Override me!", false);
             m_apFirstRun = false;
         }
     }
@@ -284,10 +288,13 @@ public abstract class IterativeRobotBase extends RobotBase {
      */
     public void enableLiveWindowInTest(boolean testLW) {
         if (isTestEnabled()) {
-            throw new ConcurrentModificationException("Can't configure test mode while in test mode!");
+            throw new ConcurrentModificationException(
+                    "Can't configure test mode while in test mode!");
         }
         if (!m_reportedLw && testLW) {
-            HAL.report(tResourceType.kResourceType_SmartDashboard, tInstances.kSmartDashboard_LiveWindow);
+            HAL.report(
+                    tResourceType.kResourceType_SmartDashboard,
+                    tInstances.kSmartDashboard_LiveWindow);
             m_reportedLw = true;
         }
         m_lwEnabledInTest = testLW;

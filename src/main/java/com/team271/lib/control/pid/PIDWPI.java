@@ -132,7 +132,8 @@ public class PIDWPI extends PIDBase {
     }
 
     @Override
-    public void setIntegratorRange(final double argMinimumIntegral, final double argMaximumIntegral) {
+    public void setIntegratorRange(
+            final double argMinimumIntegral, final double argMaximumIntegral) {
         super.setIntegratorRange(argMinimumIntegral, argMaximumIntegral);
 
         // controller.setIntegratorRange(iMin, iMax);

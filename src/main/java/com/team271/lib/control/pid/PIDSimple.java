@@ -79,7 +79,8 @@ public class PIDSimple extends PIDBase {
      *
      */
     @Override
-    public double calc(final double argInputMeasurement, final double argSetpoint, final double argTimestamp) {
+    public double calc(
+            final double argInputMeasurement, final double argSetpoint, final double argTimestamp) {
         setpoint = argSetpoint;
 
         return super.calc(argInputMeasurement, setpoint, argTimestamp);

@@ -116,15 +116,19 @@ public class SwitchFX extends SwitchBase {
     public void setTriggerType(final SwitchTrigger argTriggerType) {
         if (isFwdLimit) {
             if (argTriggerType == SwitchTrigger.NC) {
-                controller.getConfig().HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyClosed;
+                controller.getConfig().HardwareLimitSwitch.ForwardLimitType =
+                        ForwardLimitTypeValue.NormallyClosed;
             } else {
-                controller.getConfig().HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
+                controller.getConfig().HardwareLimitSwitch.ForwardLimitType =
+                        ForwardLimitTypeValue.NormallyOpen;
             }
         } else {
             if (argTriggerType == SwitchTrigger.NC) {
-                controller.getConfig().HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyClosed;
+                controller.getConfig().HardwareLimitSwitch.ReverseLimitType =
+                        ReverseLimitTypeValue.NormallyClosed;
             } else {
-                controller.getConfig().HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
+                controller.getConfig().HardwareLimitSwitch.ReverseLimitType =
+                        ReverseLimitTypeValue.NormallyOpen;
             }
         }
     }
@@ -145,9 +149,11 @@ public class SwitchFX extends SwitchBase {
         super.setAutoSetPos(argAutoSetPos);
 
         if (isFwdLimit) {
-            controller.getConfig().HardwareLimitSwitch.ForwardLimitAutosetPositionValue = autoSetPos;
+            controller.getConfig().HardwareLimitSwitch.ForwardLimitAutosetPositionValue =
+                    autoSetPos;
         } else {
-            controller.getConfig().HardwareLimitSwitch.ReverseLimitAutosetPositionValue = autoSetPos;
+            controller.getConfig().HardwareLimitSwitch.ReverseLimitAutosetPositionValue =
+                    autoSetPos;
         }
     }
 

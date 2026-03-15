@@ -34,7 +34,10 @@ public class RangeCANrange extends RangeCTRE {
      *
      */
     public RangeCANrange(
-            final TObj argParent, final String argName, final CANDeviceID argCANID, final double argUpdateFreqHz) {
+            final TObj argParent,
+            final String argName,
+            final CANDeviceID argCANID,
+            final double argUpdateFreqHz) {
         super(argParent, "(CANrange)" + argName, RangeType.CANRANGE, argUpdateFreqHz);
 
         rangeDeviceID = argCANID;
@@ -91,7 +94,8 @@ public class RangeCANrange extends RangeCTRE {
     public StatusCode applyConfig() {
         /* Retry config apply up to retryCountCAN times, report if failure */
         for (int i = 0; i < ConstantsLib.CAN_RETRY_COUNT; ++i) {
-            ctreStatus = range.getConfigurator().apply(rangeConfig, ConstantsLib.CAN_LONG_TIMEOUT_MS);
+            ctreStatus =
+                    range.getConfigurator().apply(rangeConfig, ConstantsLib.CAN_LONG_TIMEOUT_MS);
             if (ctreStatus.isOK()) break;
         }
 

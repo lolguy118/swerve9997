@@ -1,9 +1,9 @@
 package com.team271.libtest.subsystems.Input;
 
-import com.team271.libtest.Constants;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.Input.InputEnvisionPro;
 import com.team271.lib.util.Util;
+import com.team271.libtest.Constants;
 
 public class InputOp extends InputEnvisionPro {
     /*
@@ -77,7 +77,7 @@ public class InputOp extends InputEnvisionPro {
     public boolean getReefAlgaeL2() {
         return getB();
     }
-    
+
     public boolean getReefAlgaeL3() {
         return getX();
     }
@@ -98,18 +98,18 @@ public class InputOp extends InputEnvisionPro {
 
     public double getShoulderUpValue() {
         double tmpValue = getLeftTrigger();
-        //tmpValue = Util.handleDeadzone(tmpValue, DEADBAND_TRIGGER_PIVOT);
+        // tmpValue = Util.handleDeadzone(tmpValue, DEADBAND_TRIGGER_PIVOT);
 
-        //return inputShaping(InputShaping.INPUT_SHAPING_NONE, tmpValue);
+        // return inputShaping(InputShaping.INPUT_SHAPING_NONE, tmpValue);
 
         return tmpValue;
     }
 
     public double getShoulderDownValue() {
         double tmpValue = getRightTrigger();
-        //tmpValue = Util.handleDeadzone(tmpValue, DEADBAND_TRIGGER_PIVOT);
+        // tmpValue = Util.handleDeadzone(tmpValue, DEADBAND_TRIGGER_PIVOT);
 
-        //return inputShaping(InputShaping.INPUT_SHAPING_NONE, tmpValue);
+        // return inputShaping(InputShaping.INPUT_SHAPING_NONE, tmpValue);
         return tmpValue;
     }
 
@@ -135,8 +135,7 @@ public class InputOp extends InputEnvisionPro {
     }
 
     public double getDeepClimbOpen() {
-        if(getLeftBumper())
-        {
+        if (getLeftBumper()) {
             return 0.1;
         }
 
@@ -144,8 +143,7 @@ public class InputOp extends InputEnvisionPro {
     }
 
     public double getDeepClimbClose() {
-        if(getRightBumper())
-        {
+        if (getRightBumper()) {
             return 0.1;
         }
 

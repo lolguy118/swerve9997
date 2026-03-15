@@ -51,10 +51,10 @@ public abstract class AutoMove {
     }
 
     /**
-     * Returns true while the elapsed time is within the allowed duration.
-     * Once currentTime exceeds the time limit, returns false and canRun() will stop.
+     * Returns true while the elapsed time is within the allowed duration. Once currentTime exceeds
+     * the time limit, returns false and canRun() will stop.
      *
-     * Note: AutoMode.isDelayDone() has OPPOSITE semantics (true AFTER delay elapses).
+     * <p>Note: AutoMode.isDelayDone() has OPPOSITE semantics (true AFTER delay elapses).
      */
     public boolean isWithinTimeLimit() {
         return (delay < 0.01) || ((delay > 0.0) && (currentTime <= delay));

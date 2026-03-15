@@ -41,7 +41,8 @@ public abstract class EncoderBase extends TObj {
      * Constructors
      *
      */
-    protected EncoderBase(final TObj argParent, final String argName, final EncoderType argEncoderType) {
+    protected EncoderBase(
+            final TObj argParent, final String argName, final EncoderType argEncoderType) {
         super(argParent, "(Encoder)" + argName);
 
         /*

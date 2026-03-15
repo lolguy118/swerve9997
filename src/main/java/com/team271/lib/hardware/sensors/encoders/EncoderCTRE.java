@@ -1,0 +1,101 @@
+package com.team271.lib.hardware.sensors.encoders;
+
+import com.ctre.phoenix6.*;
+import com.team271.lib.TObj;
+import com.team271.lib.nt.NTEntry;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+
+public abstract class EncoderCTRE extends EncoderBase {
+    /*
+     * EncoderCTRE
+     */
+    protected StatusCode ctreStatus;
+
+    protected double updateFreqHz = 250.0;
+
+    protected StatusSignal<Angle> sigPos;
+    protected StatusSignal<AngularVelocity> sigVel;
+
+    /*
+     *
+     * Telemetry (NT)
+     *
+     */
+    final NTEntry ntCTREStatus = new NTEntry(table, "CTRE Status", "");
+
+    /*
+     *
+     * Constructors
+     *
+     */
+    public EncoderCTRE(
+            final TObj argParent,
+            final String argName,
+            final EncoderType argEncoderType,
+            final EncoderDirection argEncoderDirection,
+            final double argUpdateFreqHz) {
+        super(argParent, "(EncoderCTRE)" + argName, argEncoderType);
+
+        /*
+         * Store Update Frequency in Hz
+         */
+        updateFreqHz = argUpdateFreqHz;
+    }
+
+    /*
+     *
+     * Encoder
+     *
+     */
+
+    /*
+     *
+     * Robot
+     *
+     */
+    public StatusCode applyConfig() {
+        return ctreStatus;
+    }
+
+    /*
+     *
+     * Refresh
+     *
+     */
+    public void refresh() {
+        /* Since these are already refreshed we don't need to inline the refresh call */
+        if ((sigVel != null) && sigVel.getStatus().isOK()) {
+            velRotations = sigVel.getValueAsDouble();
+        }
+
+        if ((sigPos != null) && sigPos.getStatus().isOK()) {
+            posRotations = sigPos.getValueAsDouble();
+        }
+    }
+
+    /*
+     *
+     * Simulation
+     *
+     */
+    @Override
+    public void simulationInit(final double argTimestamp) {}
+
+    @Override
+    public void simulationPeriodic(final double argTimestamp) {}
+
+    /*
+     *
+     * Telemetry
+     *
+     */
+    @Override
+    public void outputTelemetry() {
+        super.outputTelemetry();
+
+        if (ctreStatus != null) {
+            ntCTREStatus.publish(ctreStatus.getDescription());
+        }
+    }
+}

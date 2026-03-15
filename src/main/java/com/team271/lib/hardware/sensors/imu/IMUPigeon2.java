@@ -1,0 +1,172 @@
+package com.team271.lib.hardware.sensors.imu;
+
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.team271.lib.ConstantsLib;
+import com.team271.lib.TObj;
+import com.team271.lib.hardware.CANDeviceID;
+import com.team271.lib.hardware.CTREManager;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.RobotController;
+
+public class IMUPigeon2 extends IMUCTRE {
+    /*
+     * IMU
+     */
+    private final Pigeon2Configuration imuConfig = new Pigeon2Configuration();
+    private Pigeon2 imu;
+    private Pigeon2SimState simState;
+
+    protected StatusSignal<Angle> sigYaw;
+    protected StatusSignal<AngularVelocity> sigYawRate;
+    protected StatusSignal<Angle> sigRoll;
+    protected StatusSignal<Angle> sigPitch;
+
+    /*
+     *
+     * Telemetry (NT)
+     *
+     */
+
+    /*
+     *
+     * Constructors
+     *
+     */
+    public IMUPigeon2(
+            final TObj argParent, final String argName, final CANDeviceID argCANID, final double argUpdateFreqHz) {
+        super(argParent, "(IMUPigeon2)" + argName, IMUType.PIGEON2, argCANID, argUpdateFreqHz);
+
+        create();
+    }
+
+    /*
+     *
+     * IMU
+     *
+     */
+    protected void create() {
+        /*
+         * Create CANCoder
+         */
+        imu = new Pigeon2(imuDeviceID.getDeviceNumber(), imuDeviceID.getBus());
+
+        CTREManager.addDevice(imu);
+
+        /*
+         * Get Sim State
+         */
+        simState = imu.getSimState();
+
+        /*
+         * Gyro Config
+         */
+        ctreStatus = applyConfig();
+
+        imu.setYaw(0, ConstantsLib.CAN_LONG_TIMEOUT_MS);
+    }
+
+    @Override
+    public StatusCode applyConfig() {
+        /* Retry config apply up to retryCountCAN times, report if failure */
+        for (int i = 0; i < ConstantsLib.CAN_RETRY_COUNT; ++i) {
+            ctreStatus = imu.getConfigurator().apply(imuConfig, ConstantsLib.CAN_LONG_TIMEOUT_MS);
+            if (ctreStatus.isOK()) break;
+        }
+
+        return ctreStatus;
+    }
+
+    /*
+     *
+     * Robot
+     *
+     */
+    @Override
+    public void robotInit(final double argTimestamp) {
+        /*
+         * Get IMU Objects
+         */
+        sigYaw = imu.getYaw();
+        CTREManager.addSignalPigeon(sigYaw, updateFreqHz);
+
+        sigYawRate = imu.getAngularVelocityZWorld();
+        CTREManager.addSignalPigeon(sigYawRate, updateFreqHz);
+
+        sigRoll = imu.getRoll();
+        CTREManager.addSignalPigeon(sigRoll, updateFreqHz);
+
+        sigPitch = imu.getPitch();
+        CTREManager.addSignalPigeon(sigPitch, updateFreqHz);
+    }
+
+    /*
+     * Raw
+     */
+    public Rotation2d getHeading() {
+        if (imu != null) {
+            return imu.getRotation2d();
+        }
+
+        return new Rotation2d();
+    }
+
+    /*
+     *
+     * Simulation
+     *
+     */
+    @Override
+    public void simulationPeriodic(final double argTimestamp) {
+        simState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    }
+
+    /*
+     *
+     * Refresh
+     *
+     */
+    @Override
+    public void refresh() {
+        /* Use the helper function to apply latency compensation to the signals */
+        /* Since these are already refreshed we don't need to inline the refresh call */
+
+        if ((sigYaw != null) && sigYaw.getStatus().isOK()) {
+            yaw = sigYaw.getValueAsDouble();
+        }
+
+        if ((sigYawRate != null) && sigYawRate.getStatus().isOK()) {
+            yawRate = sigYawRate.getValueAsDouble();
+        }
+
+        if ((sigRoll != null) && sigRoll.getStatus().isOK()) {
+            roll = sigRoll.getValueAsDouble();
+        }
+
+        if ((sigPitch != null) && sigPitch.getStatus().isOK()) {
+            pitch = sigPitch.getValueAsDouble();
+        }
+
+        if ((sigYaw != null)
+                && sigYaw.getStatus().isOK()
+                && (sigYawRate != null)
+                && sigYawRate.getStatus().isOK()) {
+            yaw = BaseStatusSignal.getLatencyCompensatedValue(sigYaw, sigYawRate)
+                    .in(Degree);
+        }
+    }
+
+    /*
+     *
+     * Telemetry
+     *
+     */
+}

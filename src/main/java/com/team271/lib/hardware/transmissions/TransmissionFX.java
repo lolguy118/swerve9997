@@ -124,11 +124,8 @@ public class TransmissionFX extends TransmissionBase {
      */
     @Override
     public ShifterState shift(final ShifterState argShiftTo) {
-        super.shift(argShiftTo);
-
         /*
-         * - Activate Pneumatics
-         * - Update Encoder Gear Ratio
+         * - Update Encoder Gear Ratio BEFORE super.shift() which sets shifterState
          */
         if (shifterState != argShiftTo) {
             if (argShiftTo == ShifterState.GEAR_1) {
@@ -138,8 +135,10 @@ public class TransmissionFX extends TransmissionBase {
                 getLeaderConfig().Feedback.RotorToSensorRatio = sensorRatioGear2;
                 applyConfigs();
             }
-            shifterState = argShiftTo;
         }
+
+        /* Activate pneumatics and update shifterState */
+        super.shift(argShiftTo);
 
         return shifterState;
     }

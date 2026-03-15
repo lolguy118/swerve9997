@@ -1,6 +1,5 @@
 package com.team271.lib.hardware.transmissions;
 
-import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.control.pid.PIDBase;
 import com.team271.lib.hardware.CANDeviceID;
@@ -18,9 +17,6 @@ import com.team271.lib.hardware.sensors.switches.SwitchFX;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -71,7 +67,7 @@ public abstract class TransmissionBase extends TObj {
     /*
      * Shifters
      */
-    protected DoubleSolenoid shifter;
+    protected Shifter shifter;
     protected ShifterState shifterState = ShifterState.GEAR_NONE;
 
     protected double sensorRatioGear1 = 1.0;
@@ -526,12 +522,37 @@ public abstract class TransmissionBase extends TObj {
      * Shifters
      *
      */
+    /**
+     * Set a shifter actuator. Use {@link ShifterPneumatic} for pneumatic shifting,
+     * or implement the {@link Shifter} interface for other mechanisms.
+     */
+    public void setShifter(final Shifter argShifter) {
+        shifter = argShifter;
+    }
+
+    /**
+     * Set a shifter with per-gear sensor ratios.
+     */
+    public void setShifter(final Shifter argShifter, final double argSensorRatio1, final double argSensorRatio2) {
+        sensorRatioGear1 = argSensorRatio1;
+        sensorRatioGear2 = argSensorRatio2;
+
+        setShifter(argShifter);
+    }
+
+    /**
+     * Convenience method: create a pneumatic shifter from solenoid channels.
+     * Equivalent to {@code setShifter(new ShifterPneumatic(chGear1, chGear2))}.
+     */
     public void addShifter(final int chGear1, final int chGear2) {
         if (chGear1 != 99 && chGear2 != 99) {
-            shifter = new DoubleSolenoid(ConstantsLib.CAN_ID_PH, PneumaticsModuleType.REVPH, chGear1, chGear2);
+            setShifter(new ShifterPneumatic(chGear1, chGear2));
         }
     }
 
+    /**
+     * Convenience method: create a pneumatic shifter with per-gear sensor ratios.
+     */
     public void addShifter(
             final int chGear1, final double argSensorRatio1, final int chGear2, final double argSensorRatio2) {
         sensorRatioGear1 = argSensorRatio1;
@@ -542,16 +563,12 @@ public abstract class TransmissionBase extends TObj {
 
     public ShifterState shift(final ShifterState argShiftTo) {
         /*
-         * - Activate Pneumatics
-         * - Update Encoder Gear Ratio
+         * - Actuate shifter mechanism
+         * - Update gear state
          */
         if (shifterState != argShiftTo) {
             if (shifter != null) {
-                if (argShiftTo == ShifterState.GEAR_1) {
-                    shifter.set(Value.kForward);
-                } else if (argShiftTo == ShifterState.GEAR_2) {
-                    shifter.set(Value.kReverse);
-                }
+                shifter.actuate(argShiftTo);
             }
             shifterState = argShiftTo;
         }

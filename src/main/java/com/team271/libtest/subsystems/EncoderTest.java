@@ -57,7 +57,7 @@ public class EncoderTest extends Subsystem {
     /*
      * EncoderTest
      */
-    protected EncoderCANCoder encCANCoder = new EncoderCANCoder(this, "EncoderTest", new CANDeviceID(1, Constants.CAN_BUS_NAME), EncoderDirection.CW, EncoderTestConstants.kEncUpdateFreq);
+    protected EncoderCANCoder encCANCoder = new EncoderCANCoder(this, "EncoderTest", new CANDeviceID(Constants.CAN_ID_CANCODER_SHOULDER, Constants.CAN_BUS_NAME), EncoderDirection.CW, EncoderTestConstants.kEncUpdateFreq);
 
     /*
      *
@@ -120,18 +120,29 @@ public class EncoderTest extends Subsystem {
     public void robotPeriodicAfter(final double argTimestamp) {
     }
 
-    double tmpSimPos = 0;
-    double tmpSimVel = 0;
+    private double simAngleRad = 0;
+    private double simVelRadPerSec = 0;
+    private static final double SIM_DT = 0.020;
+
+    @Override
+    public void simulationInit(final double argTimestamp) {
+        simAngleRad = 0;
+        simVelRadPerSec = 0;
+    }
 
     @Override
     public void simulationPeriodic(final double argTimestamp) {
-        encCANCoder.setSimPosRotations(tmpSimPos);
-        encCANCoder.setSimVelRotations(tmpSimVel);
+        /* Simple constant-velocity rotation for encoder testing: 0.5 RPS */
+        simVelRadPerSec = 0.5 * 2.0 * Math.PI;
+        simAngleRad += simVelRadPerSec * SIM_DT;
+
+        double simPosRotations = simAngleRad / (2.0 * Math.PI);
+        double simVelRPS = simVelRadPerSec / (2.0 * Math.PI);
+
+        encCANCoder.setSimPosRotations(simPosRotations);
+        encCANCoder.setSimVelRotations(simVelRPS);
 
         encCANCoder.simulationPeriodic(argTimestamp);
-
-        ++tmpSimPos;
-        ++tmpSimVel;
     }
 
     /*

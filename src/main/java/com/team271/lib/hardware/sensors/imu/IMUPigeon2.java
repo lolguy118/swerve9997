@@ -136,11 +136,14 @@ public class IMUPigeon2 extends IMUCTRE {
      */
     @Override
     public void refresh() {
-        /* Use the helper function to apply latency compensation to the signals */
-        /* Since these are already refreshed we don't need to inline the refresh call */
-
+        /* Yaw: prefer latency-compensated value, fall back to raw signal */
         if ((sigYaw != null) && sigYaw.getStatus().isOK()) {
-            yaw = sigYaw.getValueAsDouble();
+            if ((sigYawRate != null) && sigYawRate.getStatus().isOK()) {
+                yaw = BaseStatusSignal.getLatencyCompensatedValue(sigYaw, sigYawRate)
+                        .in(Degree);
+            } else {
+                yaw = sigYaw.getValueAsDouble();
+            }
         }
 
         if ((sigYawRate != null) && sigYawRate.getStatus().isOK()) {
@@ -153,14 +156,6 @@ public class IMUPigeon2 extends IMUCTRE {
 
         if ((sigPitch != null) && sigPitch.getStatus().isOK()) {
             pitch = sigPitch.getValueAsDouble();
-        }
-
-        if ((sigYaw != null)
-                && sigYaw.getStatus().isOK()
-                && (sigYawRate != null)
-                && sigYawRate.getStatus().isOK()) {
-            yaw = BaseStatusSignal.getLatencyCompensatedValue(sigYaw, sigYawRate)
-                    .in(Degree);
         }
     }
 

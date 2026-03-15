@@ -93,7 +93,22 @@ public class Superstructure extends Subsystem {
     @Override
     public void robotPeriodicBefore(final double timestamp) {
         statePrev = state;
+    }
 
+    @Override
+    public void robotPeriodicAfter(final double argTimestamp) {
+    }
+
+    @Override
+    public void disabledInit(final double argTimestamp) {
+    }
+
+    @Override
+    public void teleopInit(final double argTimestamp) {
+    }
+
+    @Override
+    public void teleopPeriodic(final double argTimestamp) {
         if (mInputDriver.getDisableSensors()) {
             sensorsDisable();
             state = ROBOT_STATE.MANUAL;
@@ -102,10 +117,26 @@ public class Superstructure extends Subsystem {
         }
     }
 
+    @Override
+    public void autonomousInit(final double argTimestamp) {
+    }
+
+    @Override
+    public void autonomousPeriodic(final double argTimestamp) {
+    }
+
+    @Override
+    public void simulationInit(final double argTimestamp) {
+    }
+
+    @Override
+    public void simulationPeriodic(final double argTimestamp) {
+    }
+
     /*
-     * 
+     *
      * Telemetry
-     * 
+     *
      */
     @Override
     public void outputTelemetry() {

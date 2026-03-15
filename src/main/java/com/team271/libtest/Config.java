@@ -62,6 +62,11 @@ public class Config {
     }
 
     public static Mode getMode() {
+        /* Auto-detect simulation environment regardless of robot type */
+        if (!disableHAL && RobotBase.isSimulation()) {
+            return Mode.SIM;
+        }
+
         switch (getRobot()) {
             case ROBOT_2024C:
             case ROBOT_2024P:

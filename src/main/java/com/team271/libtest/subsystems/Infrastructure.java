@@ -33,7 +33,7 @@ public class Infrastructure extends Subsystem {
         super(argParent, "Infrastructure");
 
         RobotController.setEnabled3V3(false);
-        RobotController.setEnabled5V(false); // Needed for DIO +5 Rail
+        RobotController.setEnabled5V(true); // Needed for DIO +5 Rail
         RobotController.setEnabled6V(false);
 
         RobotController.setBrownoutVoltage(6.3);
@@ -93,9 +93,19 @@ public class Infrastructure extends Subsystem {
         try {
             WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
         } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            edu.wpi.first.wpilibj.DriverStation.reportWarning(
+                    "WebServer start failed: " + e.getMessage(), false);
         }
 
+    }
+
+    @Override
+    public void robotInit(final double argTimestamp) {
+    }
+
+    @Override
+    public void outputTelemetry() {
+        super.outputTelemetry();
     }
 
     public synchronized void setIsTeleop(final boolean isTeleop) {

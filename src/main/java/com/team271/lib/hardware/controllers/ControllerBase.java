@@ -253,6 +253,9 @@ public abstract class ControllerBase extends TObj {
             case TALONFX:
                 ntTypeController.publish("TalonFX");
                 break;
+            case TALONFXS:
+                ntTypeController.publish("TalonFXS");
+                break;
             case SPARK_MAX:
                 ntTypeController.publish("Spark Max");
                 break;

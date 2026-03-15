@@ -106,9 +106,9 @@ public class SwitchCANCoder extends SwitchBase {
 
     public void setEnabled(final boolean argEnabled) {
         if (isFwdLimit) {
-            controller.getConfig().HardwareLimitSwitch.ForwardLimitEnable = true;
+            controller.getConfig().HardwareLimitSwitch.ForwardLimitEnable = argEnabled;
         } else {
-            controller.getConfig().HardwareLimitSwitch.ReverseLimitEnable = true;
+            controller.getConfig().HardwareLimitSwitch.ReverseLimitEnable = argEnabled;
         }
     }
 
@@ -153,11 +153,11 @@ public class SwitchCANCoder extends SwitchBase {
     @Override
     public boolean getTriggered() {
         if (isFwdLimit) {
-            if (swFwd.getStatus().isOK()) {
+            if (swFwd != null && swFwd.getStatus().isOK()) {
                 return Util.epsilonEquals(swFwd.getValueAsDouble(), 1.0);
             }
         } else {
-            if (swRev.getStatus().isOK()) {
+            if (swRev != null && swRev.getStatus().isOK()) {
                 return Util.epsilonEquals(swRev.getValueAsDouble(), 1.0);
             }
         }

@@ -224,12 +224,15 @@ public class TransmissionTest extends Subsystem {
     @Override
     public void robotPeriodicBefore(final double argTimestamp) {
         transmission.robotPeriodicBefore(argTimestamp);
-
-        transmission.setOutputVoltage(mInputOp.getLeftY() * 12.0);
     }
 
     @Override
     public void robotPeriodicAfter(final double argTimestamp) {
+    }
+
+    @Override
+    public void teleopPeriodic(final double argTimestamp) {
+        transmission.setOutputVoltage(mInputOp.getLeftY() * 12.0);
     }
 
     double tmpSimPos = 0;

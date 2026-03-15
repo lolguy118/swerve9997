@@ -1,7 +1,5 @@
 package com.team271.lib.hardware.sensors.imu;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.nt.NTEntry;
@@ -57,10 +55,10 @@ public abstract class IMUBase extends TObj {
     protected abstract void create();
 
     public void reset() {
-        yaw = Degrees.of(0).in(Degree);
-        yawRate = Degrees.of(0).in(Degree);
-        roll = Degrees.of(0).in(Degree);
-        pitch = Degrees.of(0).in(Degree);
+        yaw = 0.0;
+        yawRate = 0.0;
+        roll = 0.0;
+        pitch = 0.0;
     }
 
     public double getYaw() {
@@ -80,7 +78,7 @@ public abstract class IMUBase extends TObj {
     }
 
     public Rotation2d getHeading() {
-        return new Rotation2d();
+        return Rotation2d.fromDegrees(yaw);
     }
 
     /*

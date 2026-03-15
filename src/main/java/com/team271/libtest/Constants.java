@@ -1,5 +1,6 @@
 package com.team271.libtest;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
@@ -115,25 +116,20 @@ public class Constants {
             StringBuilder ret = new StringBuilder();
             while (nwInterface.hasMoreElements()) {
                 NetworkInterface nis = nwInterface.nextElement();
-                System.out.println("NIS: " + nis.getDisplayName());
                 if (nis != null && "eth0".equals(nis.getDisplayName())) {
                     byte[] mac = nis.getHardwareAddress();
                     if (mac != null) {
                         for (int i = 0; i < mac.length; i++) {
                             ret.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
                         }
-                        String addr = ret.toString();
-                        System.out.println("NIS " + nis.getDisplayName() + " addr: " + addr);
-                        return addr;
+                        return ret.toString();
                     } else {
-                        System.out.println("Address doesn't exist or is not accessible");
+                        DriverStation.reportWarning("MAC address doesn't exist or is not accessible", false);
                     }
-                } else {
-                    System.out.println("Skipping adaptor: " + nis.getDisplayName());
                 }
             }
         } catch (SocketException | NullPointerException e) {
-            e.printStackTrace();
+            DriverStation.reportWarning("Failed to get MAC address: " + e.getMessage(), false);
         }
 
         return "";

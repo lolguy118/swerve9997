@@ -12,10 +12,9 @@ import com.team271.libtest.subsystems.Input.InputDriver;
 import com.team271.libtest.subsystems.Input.InputOp;
 import com.team271.libtest.subsystems.EncoderTest;
 import com.team271.libtest.subsystems.Infrastructure;
+//import com.ctre.phoenix6.SignalLogger;
 import com.team271.libtest.subsystems.Superstructure;
 import com.team271.libtest.subsystems.TransmissionTest;
-import com.team271.libtest.subsystems.EncoderTest;
-//import com.ctre.phoenix6.SignalLogger;
 import com.team271.lib.TRobot;
 import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.subsystem.SubsystemManager;
@@ -73,6 +72,12 @@ public class Robot extends TimedRobot {
     if (Config.getMode() == Mode.SIM) {
       DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
     }
+
+    /*
+     * Configure library CAN bus names to match this robot's bus topology
+     */
+    com.team271.lib.ConstantsLib.CAN_BUS_NAME_DRIVE = Constants.CAN_BUS_NAME;
+    com.team271.lib.ConstantsLib.CAN_BUS_NAME_SUBSYSTEMS = Constants.CAN_BUS_NAME;
 
     /*
      * Controls

@@ -1,8 +1,8 @@
-Please comprehensively review our FRC robot library codebase. The codebase uses the latest version of WPILib, CTRE Phoenix 6, PathPlanner, and AdvantageKit for logging.
+Please comprehensively review our FRC robot library codebase. The codebase uses the latest version of WPILib and CTRE Phoenix 6. AdvantageKit and PathPlanner are available as dependencies for future integration. The `com.team271.libtest` package contains a full test robot for validating the library in simulation and on real hardware.
 
 # Team 271 Library Code Review Prompt
 
-Use this document as context when reviewing changes to `com.team271.lib`. It describes the library architecture, required patterns, and known pitfall categories so you can catch bugs specific to this codebase.
+Use this document as context when reviewing changes to `com.team271.lib` and `com.team271.libtest`. It describes the library architecture, required patterns, and known pitfall categories so you can catch bugs specific to this codebase.
 
 ---
 
@@ -25,14 +25,15 @@ Use this document as context when reviewing changes to `com.team271.lib`. It des
 
 ## Stack
 
-- WPILib
-- CTRE Phoenix 6 (CANivore + RIO CAN buses)
-- AdvantageKit (logging)
-- PathPlanner (autonomous)
+- **WPILib** — core FRC framework (GradleRIO 2026.2.1, Java 17)
+- **CTRE Phoenix 6** — motor controllers, sensors, CANivore + RIO CAN buses
+- **AdvantageKit 3.2.0** — dependency available, integration pending (new code should adopt `Logger.recordOutput()` and IO interfaces)
+- **PathPlanner** — dependency available, integration pending (new autonomous code should adopt PathPlanner paths)
+- **WPILib New Commands** — dependency available for command-based patterns
 
 ---
 
-## Library Architecture
+## Library Architecture (`com.team271.lib`)
 
 ```
 TObj (base class — name, NTTable, lifecycle hooks)
@@ -40,45 +41,109 @@ TObj (base class — name, NTTable, lifecycle hooks)
 ├── Subsystem (sensor modes, isZeroed, lifecycle)
 │   └── SubsystemManager (singleton, forEachSafe exception isolation)
 ├── hardware/
-│   ├── CTREManager (centralized CAN signal refresh at 250Hz)
+│   ├── CTREManager (centralized CAN signal refresh at 250Hz, dt tracking)
 │   ├── CANDeviceID (device number + bus name composite key)
-│   ├── CANBus (bus abstraction with utilization tracking)
+│   ├── CANBus (CANBusType: RIO/CANIVORE, utilization tracking, hoot file logging)
 │   ├── controllers/
-│   │   ├── ControllerBase → ControllerSmart → ControllerTalonFX
-│   │   └── Leader/follower pattern, PID slots 0-2, current limits, voltage peaks
+│   │   ├── ControllerBase (abstract — duty cycle, voltage, follower, simulation)
+│   │   ├── → ControllerSmart (abstract — stator/supply current limits, voltage peaks, ramp rates)
+│   │   ├── → → ControllerTalonFX (Phoenix 6 — timesync, TorqueCurrentFOC, TalonFXSimState)
+│   │   └── Leader/follower pattern, PID slots 0-2
 │   ├── transmissions/
 │   │   ├── TransmissionBase → TransmissionFX
-│   │   └── Voltage, duty, position, velocity, Motion Magic control modes
-│   │   └── Encoder integration: internal FX or external CANCoder
+│   │   ├── Voltage, duty, position, velocity, Motion Magic control modes
+│   │   ├── Encoder integration: internal FX or external CANCoder
+│   │   ├── Pneumatic shifter support (DoubleSolenoid, gear ratios per gear)
+│   │   └── DCMotor physics models for simulation
 │   ├── sensors/
 │   │   ├── encoders/ (EncoderBase → EncoderCTRE → EncoderFX, EncoderCANCoder)
-│   │   │   └── Comp variants add latency compensation
+│   │   │   └── Comp variants (EncoderFXComp, EncoderCANCoderComp) add latency compensation
 │   │   ├── imu/ (IMUBase → IMUCTRE → IMUPigeon2)
 │   │   ├── range/ (RangeBase → RangeCTRE → RangeCANrange)
 │   │   └── switches/ (SwitchBase → SwitchFX, SwitchCANCoder)
 │   ├── Input/ (Input → Input8BitDuo, InputXBox, InputPS4, InputEnvisionPro)
-│   └── motors/MotorBase (Falcon, Kraken X60/X44, NEO specs)
+│   │   └── Input shaping: LINEAR, SOFT, SQUARED, CUBED, AGGRESSIVE, MORE_AGGRESSIVE, DYNAMIC
+│   └── motors/MotorBase (Falcon500, KrakenX60, KrakenX44, CTRE_Minion, NEO, NEO550, NEO_Vortex)
 ├── control/
-│   ├── pid/ (PIDBase, PIDSimple, PIDWPI, PIDWPI_Trap, PIDTrap, PIDFX)
-│   └── Balance.java (dead code from 2025)
-├── geometry/ (Pose2d, Rotation2d, Translation2d, Twist2d)
-├── nt/ (NTTable, NTEntry — NetworkTables pub/sub wrappers)
-├── misc/ (Elastic dashboard notifications, Alert system)
+│   ├── pid/ (PIDBase → PIDSimple, PIDTrap, PIDWPI, PIDWPI_Trap, PIDFX)
+│   │   └── PIDSimpleTest.java (only unit test in library)
+│   └── Balance.java (dead code from 2025 — candidate for removal)
+├── geometry/ (custom implementations, not WPILib wrappers)
+│   ├── Pose2d, Rotation2d, Translation2d, Twist2d, State
+│   └── Interfaces: IPose2d, IRotation2d, ITranslation2d
+├── nt/ (NTTable, NTEntry — NetworkTables pub/sub wrappers with value caching)
+├── wpilib/ (IterativeRobotBase, TimedRobot — custom WPILib base classes)
+├── sysid/ (Logger, LoggerGeneral — SmartDashboard-based SysId characterization)
+├── misc/ (Elastic — dashboard notifications)
 ├── auto/ (AutoMode, AutoMove, AutoMoveSingle, AutoMoveTimed)
-└── util/ (Util — deadzone, interpolation, epsilon compare)
+└── util/ (Util, Alert, DriveSignal, CSVWritable, Interpolable)
 ```
 
 ### Key Design Patterns
 
-1. **TObj Lifecycle**: Every component extends `TObj` and receives lifecycle callbacks: `robotInit()`, `robotPeriodicBefore()`, `robotPeriodicAfter()`, `autonomousInit/Periodic/Exit()`, `teleopInit/Periodic/Exit()`, etc.
+1. **TObj Lifecycle**: Every component extends `TObj` and receives lifecycle callbacks: `robotInit()`, `robotPeriodicBefore()`, `robotPeriodicAfter()`, `autonomousInit/Periodic/Exit()`, `teleopInit/Periodic/Exit()`, `simulationInit/Periodic()`, etc.
 
 2. **Subsystem State Machines**: Subsystems use a desired-state/actual-state pattern. Desired state is set in `teleopPeriodic()`/`autonomousPeriodic()`, then applied in `robotPeriodicAfter()`. State transitions (timer resets, etc.) happen at the boundary in `robotPeriodicAfter()`.
 
-3. **Singleton Pattern**: All subsystems and the SubsystemManager use lazy-initialized singletons with `getInstance()`.
+3. **Singleton Pattern**: All subsystems and the SubsystemManager use lazy-initialized singletons with `getInstance()`. Private constructors prevent external instantiation.
 
 4. **SubsystemManager Ordering**: Subsystems are added in a specific order in `Robot.robotInit()`. The iteration order determines which subsystem's `robotPeriodicBefore()` runs first. This matters for cross-subsystem data dependencies (e.g., Launcher velocity must update before Index reads it).
 
 5. **TransmissionFX Wraps TalonFX**: Motor commands go through TransmissionFX, which handles encoder integration, gear ratios, unit conversions, and timesync control requests. Do not create raw TalonFX objects for subsystem motors.
+
+6. **Exception Isolation**: `SubsystemManager.forEachSafe()` wraps subsystem callbacks in try-catch to prevent one subsystem's exception from crashing the entire robot.
+
+---
+
+## Libtest Architecture (`com.team271.libtest`)
+
+The libtest package is a **complete FRC robot implementation** used for testing library components in simulation and on real hardware. It is the deploy target (`Main.java` is the robot entry point in `build.gradle`).
+
+```
+libtest/
+├── Main.java (WPILib RobotBase entry point)
+├── Robot.java (extends TimedRobot — lifecycle orchestration)
+├── Config.java (Mode: REAL/SIM/REPLAY, RobotType: ROBOT_2024C/ROBOT_2024P/ROBOT_SIMBOT)
+├── Constants.java (CAN IDs, bus names, controller ports, physical dimensions)
+├── Globals.java (static singleton references to all subsystems)
+├── LimelightHelpers.java (Limelight vision processing utilities)
+├── subsystems/
+│   ├── Infrastructure.java (PDH, gyro, teleop/auto mode tracking)
+│   ├── EncoderTest.java (encoder verification subsystem)
+│   ├── TransmissionTest.java (motor/transmission testing subsystem)
+│   ├── Superstructure.java (high-level coordination, ROBOT_STATE enum)
+│   └── Input/
+│       ├── InputDriver.java (driver controller)
+│       └── InputOp.java (operator controller)
+└── auto/
+    ├── auto_modes/Auto0.java (default autonomous mode)
+    └── auto_moves/ (autonomous movement actions)
+```
+
+### Libtest Key Details
+
+**Subsystem Init Order** (in `Robot.robotInit()` — order matters):
+1. InputDriver
+2. InputOp
+3. Infrastructure
+4. EncoderTest
+5. TransmissionTest
+6. Superstructure
+7. → `mSubsystemManager.robotInit()` (calls robotInit on all subsystems)
+8. → `CTREManager.init()` (optimizes bus, builds signal arrays — must be AFTER subsystem init)
+
+**Config Modes**:
+- `Mode.REAL` — running on physical robot hardware
+- `Mode.SIM` — running in WPILib simulation (uses `DriverStationSim`, `ROBOT_SIMBOT` type)
+- `Mode.REPLAY` — replaying from a log file (real robot types in sim environment)
+
+**CAN Bus Names** (from `Constants.java`):
+- `"rio"` — RoboRIO built-in CAN bus
+- `"271"` — CANivore CAN bus
+
+**Robot Lifecycle Flow**:
+1. `robotPeriodicBefore()`: `CTREManager.refreshAll()` → timestamp update → `mSubsystemManager.robotPeriodicBefore()`
+2. `robotPeriodicAfter()`: `mSubsystemManager.robotPeriodicAfter()` → `mSubsystemManager.outputTelemetry()`
 
 ---
 
@@ -92,8 +157,9 @@ new VoltageOut(0).withUseTimesync(true).withUpdateFreqHz(0)
 When `UseTimesync = true`, `UpdateFreqHz` MUST be `0` (CTRE requirement). The ControllerTalonFX config also sets `ControlTimesyncFreqHz = 250.0`.
 
 ### Signal Refresh
-- All StatusSignals are registered with `CTREManager` during `robotInit()`
-- `CTREManager.refreshAll()` is called once per cycle in `Robot.robotPeriodic()` using `BaseStatusSignal.refreshAll()` for batched efficiency
+- All StatusSignals are registered with `CTREManager` during `robotInit()` via `addSignal()`, `addSignalTalonFX()`, `addSignalCANCoder()`, `addSignalPigeon()`, `addSignalCANrange()`
+- `CTREManager.refreshAll()` is called once per cycle in `Robot.robotPeriodicBefore()` using `BaseStatusSignal.refreshAll()` for batched efficiency
+- CTREManager tracks `lastRefreshTime` and `prevRefreshTime` for `getDt()` calculations
 - Individual signal reads must check `signal != null && signal.getStatus().isOK()` before reading values
 - Target update frequency: 250Hz for most signals
 
@@ -116,11 +182,40 @@ When `UseTimesync = true`, `UpdateFreqHz` MUST be `0` (CTRE requirement). The Co
 
 ---
 
+## Simulation Patterns
+
+Simulation support is integrated throughout all hardware classes, not in a separate package.
+
+### Hardware Simulation Methods
+- **Controllers**: `setSimVelRotations()`, `setSimPosRotations()` — set simulated encoder feedback
+- **Encoders**: `simulationInit()`, `simulationPeriodic()` — update sim state each cycle
+- **Transmissions**: build `DCMotor` physics models from `MotorBase` motor type (Falcon500, KrakenX60, etc.)
+- **IMU / Range sensors**: `simulationInit()`, `simulationPeriodic()` — update simulated sensor values
+- **TalonFX**: `TalonFXSimState` via `getSimState()` — CTRE's built-in physics simulation
+
+### Robot-Level Simulation
+- `simulationInit()` and `simulationPeriodic()` lifecycle hooks in `TObj` hierarchy
+- `Config.getMode() == Mode.SIM` triggers simulation code paths
+- `DriverStationSim.setAllianceStationId()` used to set alliance in sim (defaults to Blue1)
+- WPILib simulation GUI enabled via `wpi.sim.addGui()` in `build.gradle`
+
+---
+
+## SysId / Characterization
+
+The `sysid/` package provides system identification support:
+
+- **`Logger.java`**: SmartDashboard-based data collection for quasistatic and dynamic tests. Collects voltage, position, and velocity data for feed-forward characterization.
+- **`LoggerGeneral.java`**: CSV-based data logging extension for general characterization.
+- **`SensorMode.SYSID`**: Triggers characterization mode in subsystems, allowing SysId voltage commands to override normal control.
+
+---
+
 ## WPILib Required Patterns
 
 ### NetworkTables
 - Use `NTEntry` wrapper for pub/sub — supports boolean, double, long, int, String
-- NTEntry caches last published value to avoid redundant network traffic
+- NTEntry caches last published value to avoid redundant network traffic (uses `Util.epsilonEquals()` for doubles, `.equals()` for strings)
 - All NT publishing happens in `outputTelemetry()` methods
 
 ### Units
@@ -167,7 +262,7 @@ If a config object (like `TrapezoidProfile.Constraints`) is declared `final`, it
 ### 6. Debug Prints Left In Production
 `System.out.println()` and `System.err.println()` in production code spam the DS console and can mask important warnings.
 
-**Check:** No `System.out.println` or `System.err.println` in any production code path. Use `DriverStation.reportError/Warning()` or `Logger.recordOutput()` instead.
+**Check:** No `System.out.println` or `System.err.println` in any production code path. Use `DriverStation.reportError/Warning()` or `NTEntry.publish()` for telemetry instead.
 
 ### 7. Signal Null Safety
 CTRE StatusSignals can be null if the device doesn't exist or the signal wasn't registered. Always guard with:
@@ -242,6 +337,21 @@ When adding new auto modes, ALL subsystems that participate in auto must have ca
 - [ ] SubsystemManager add order preserved (Launcher before Index)
 - [ ] Static shared state (e.g., `Launcher.isAtMaxVelocity`) updated before consumers read it
 - [ ] Shared timers (`Drive.autoTimer`) started/stopped in the correct subsystem
+
+### Simulation Changes
+- [ ] DCMotor model matches actual motor type in MotorBase
+- [ ] Sim state updated every cycle in `simulationPeriodic()`
+- [ ] Gear ratios applied correctly in sim (same as real hardware)
+- [ ] `DriverStationSim` alliance set in sim mode
+- [ ] New hardware classes implement `simulationInit()` and `simulationPeriodic()`
+
+### Libtest / Test Robot Changes
+- [ ] `Config.getMode()` correctly handles REAL/SIM/REPLAY paths
+- [ ] New subsystems added to `Robot.robotInit()` in correct order
+- [ ] `Globals` singleton references set before use
+- [ ] Simulation methods (`simulationInit`/`simulationPeriodic`) update sim state for all hardware
+- [ ] LimelightHelpers calls handle null/missing camera gracefully
+- [ ] CAN IDs in `Constants.java` don't conflict (no duplicates per device type per bus)
 
 ### Code Quality
 - [ ] No `==` for String comparison (use `.equals()`)

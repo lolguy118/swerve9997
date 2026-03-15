@@ -15,7 +15,8 @@
       "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/controllers/PPHolonomicDriveController.java\")",
       "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/trajectory/PathPlannerTrajectory.java\")",
       "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/path/PathPlannerPath.java\")",
-      "Bash(find \"d:\\\\robotics\\\\software\\\\2026\\\\Robots\\\\Team271-Lib/src/main/java/com/team271/lib\" -name \"*.java\" -exec grep -l \"null\" {})"
+      "Bash(find \"d:\\\\robotics\\\\software\\\\2026\\\\Robots\\\\Team271-Lib/src/main/java/com/team271/lib\" -name \"*.java\" -exec grep -l \"null\" {})",
+      "Bash(find /d/robotics/software/2026/Robots/Team271-Lib -type f -name \"*.java\" -exec grep -l \"System.out\\\\|System.err\" {})"
     ]
   }
 }

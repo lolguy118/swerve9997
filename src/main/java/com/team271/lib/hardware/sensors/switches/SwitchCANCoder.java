@@ -61,6 +61,8 @@ public class SwitchCANCoder extends SwitchBase {
         autoZeroValueIn = argAutoZeroValueInches;
 
         updateFreqHz = argUpdateFreqHz;
+
+        create();
     }
 
     /*

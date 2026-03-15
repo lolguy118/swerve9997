@@ -3,8 +3,6 @@ package com.team271.lib.control.pid;
 import com.team271.lib.TObj;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class PIDWPI_Trap extends PIDBase {
 
@@ -13,53 +11,11 @@ public class PIDWPI_Trap extends PIDBase {
      */
     protected final TrapezoidProfile.Constraints constraints =
             new TrapezoidProfile.Constraints(0, 0);
-    // TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
     protected final ProfiledPIDController controller =
             new ProfiledPIDController(0, 0, 0, constraints);
 
     double goal = 0;
-
-    /*
-     * Network Tables
-     */
-    protected class IO {
-        final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        final NetworkTable table = inst.getTable(name);
-
-        /*
-         * PID
-         */
-
-        /*
-         * Setup
-         */
-        public void setupData() {
-            // Default Method
-        }
-
-        /*
-         * Publish
-         */
-        public void publish() {
-            /*
-             * PID
-             */
-            // mPub_PosSetpoint.set(mControllerProfiled.getSetpoint().position);
-            // mPub_PosError.set(mControllerProfiled.getPositionError());
-            // mPub_PosTol.set(mControllerProfiled.getPositionTolerance());
-
-            // mControllerProfiled.setP(mPub_ExtP.getAsDouble());
-            // mControllerProfiled.setI(mPub_ExtI.getAsDouble());
-            // mControllerProfiled.setD(mPub_ExtD.getAsDouble());
-
-            // mPub_ExtP.set(mControllerProfiled.getP());
-            // mPub_ExtI.set(mControllerProfiled.getI());
-            // mPub_ExtD.set(mControllerProfiled.getD());
-        }
-    }
-
-    // private final IO mData;
 
     /*
      *
@@ -170,9 +126,7 @@ public class PIDWPI_Trap extends PIDBase {
      * Refresh
      *
      */
-    public void refresh() {
-        // error = controller.getPositionError();
-    }
+    public void refresh() {}
 
     /*
      *
@@ -191,9 +145,5 @@ public class PIDWPI_Trap extends PIDBase {
     @Override
     public void outputTelemetry() {
         super.outputTelemetry();
-
-        // if (mData != null) {
-        // mData.Publish();
-        // }
     }
 }

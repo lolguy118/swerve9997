@@ -254,6 +254,10 @@ public class NTEntry {
         return sub != null ? (int) sub.getInteger(0) : 0;
     }
 
+    public final String getString() {
+        return sub != null ? sub.getString("") : "";
+    }
+
     /*
      * Publish
      */

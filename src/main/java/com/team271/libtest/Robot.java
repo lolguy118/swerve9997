@@ -20,7 +20,6 @@ public class Robot extends TimedRobot {
      * Variables
      */
     private double mTimestamp = 0;
-    // private double mDisabledStartTime = Double.NaN;
 
     private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
@@ -42,20 +41,12 @@ public class Robot extends TimedRobot {
         /*
          * CTRE Init
          */
-        try {
-            CTREManager.init();
-        } catch (Throwable t) {
-            throw t;
-        }
+        CTREManager.init();
     }
 
     @Override
     public void robotPeriodicBefore() {
-        try {
-            CTREManager.refreshAll();
-        } catch (Throwable t) {
-            throw t;
-        }
+        CTREManager.refreshAll();
 
         mTimestamp = CTREManager.getLastRefreshTime();
 
@@ -64,15 +55,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodicAfter() {
-        // mTimestamp = Timer.getFPGATimestamp();
-
         mSubsystemManager.robotPeriodicAfter(mTimestamp);
 
-        // if ((mTimestamp - mLastTele) > 0.25) {
         mSubsystemManager.outputTelemetry();
         CTREManager.outputTelemetry();
-        // mLastTele = mTimestamp;
-        // }
     }
 
     /*
@@ -80,26 +66,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        // mDisabledStartTime = mTimestamp;
-
         mSubsystemManager.disabledInit(mTimestamp);
-
-        // Explicitly stop logging
-        // If the user does not call stop(), then it's possible to lose the last few
-        // seconds of data
-        // .stop();
     }
 
     @Override
     public void disabledPeriodic() {
-        // mTimestamp = Timer.getFPGATimestamp();
-
-        // if ((mTimestamp - mDisabledStartTime) > 5.0 &&
-        // (mTimestamp - mDisabledStartTime) < 5.5) {
-        // System.out.println("Setting coast!");
-        // mDrive.setBrakeMode(false);
-        // }
-
         mSubsystemManager.disabledPeriodic(mTimestamp);
     }
 
@@ -108,9 +79,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        // Explicitly start the logger
-        // SignalLogger.start();
-
         mSubsystemManager.autonomousInit(mTimestamp);
     }
 
@@ -124,12 +92,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        // Explicitly start the logger
-        // SignalLogger.start();
-
         mSubsystemManager.teleopInit(mTimestamp);
-
-        // handleShooter(false, false, false);
     }
 
     @Override
@@ -142,9 +105,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void simulationInit() {
-        // Explicitly start the logger
-        // SignalLogger.start();
-
         mSubsystemManager.simulationInit(mTimestamp);
     }
 
@@ -154,10 +114,5 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void endCompetition() {
-        // Explicitly stop logging
-        // If the user does not call stop(), then it's possible to lose the last few
-        // seconds of data
-        // SignalLogger.stop();
-    }
+    public void endCompetition() {}
 }

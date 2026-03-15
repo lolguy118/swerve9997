@@ -4,8 +4,6 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-// import com.team271.frc2026.Config;
-// import com.team271.frc2026.Config.Mode;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;

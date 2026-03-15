@@ -153,7 +153,6 @@ TObj (base class — name, NTTable, lifecycle hooks)
 │   └── motors/MotorBase (Falcon500, KrakenX60, KrakenX44, CTRE_Minion, NEO, NEO550, NEO_Vortex)
 ├── control/
 │   ├── pid/ (PIDBase → PIDSimple, PIDTrap, PIDWPI, PIDWPI_Trap, PIDFX)
-│   └── Balance.java (dead code from 2025 — DELETE THIS FILE)
 ├── geometry/ (custom implementations, not WPILib wrappers)
 │   ├── Pose2d, Rotation2d, Translation2d, Twist2d, State
 │   └── Interfaces: IPose2d, IRotation2d, ITranslation2d

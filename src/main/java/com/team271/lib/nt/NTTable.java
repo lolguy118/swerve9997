@@ -1,7 +1,5 @@
 package com.team271.lib.nt;
 
-// import java.util.ArrayList;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.Topic;
@@ -18,7 +16,6 @@ public class NTTable {
 
     protected final NTTable parent;
     protected final String path;
-    // protected final ArrayList<NTTable> children = new ArrayList<NTTable>();
 
     protected boolean enabled = false;
 
@@ -68,18 +65,12 @@ public class NTTable {
     }
 
     public final Topic getTopic(final String argTopicName) {
+        if (table == null) {
+            return null;
+        }
         return table.getTopic(argTopicName);
     }
 
-    /*
-        public NTTable createChild(String argName)
-        {
-            NTTable tmpChild = new NTTable(this, argName);
-            children.add(tmpChild);
-
-            return tmpChild;
-        }
-    */
     public void enableTelemetry() {
         enabled = true;
     }
@@ -88,10 +79,5 @@ public class NTTable {
         enabled = false;
     }
 
-    public void publish() {
-        /*
-        for (NTTable tmpChild : children) {
-            tmpChild.publish();
-        }*/
-    }
+    public void publish() {}
 }

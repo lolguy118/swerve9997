@@ -2,8 +2,6 @@ package com.team271.lib.control.pid;
 
 import com.team271.lib.TObj;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class PIDWPI extends PIDBase {
 
@@ -11,36 +9,6 @@ public class PIDWPI extends PIDBase {
      * PID
      */
     protected final PIDController controller;
-
-    /*
-     * Network Tables
-     */
-    protected class IO {
-        final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        final NetworkTable table = inst.getTable(name);
-
-        /*
-         * PID
-         */
-
-        /*
-         * Setup
-         */
-        public void setupData() {
-            // Default Method
-        }
-
-        /*
-         * Publish
-         */
-        public void publish() {
-            /*
-             * PID
-             */
-        }
-    }
-
-    // private final IO mData;
 
     /*
      *
@@ -63,12 +31,6 @@ public class PIDWPI extends PIDBase {
         controller = new PIDController(argP, argI, argD, argControllerRateSecs);
 
         reset();
-
-        /*
-         * Setup Network Tables
-         */
-        // mData = new IO();
-        // mData.SetupData();
     }
 
     public PIDWPI(
@@ -158,9 +120,7 @@ public class PIDWPI extends PIDBase {
      * Refresh
      *
      */
-    public void refresh() {
-        // error = controller.getPositionError();
-    }
+    public void refresh() {}
 
     /*
      *
@@ -179,9 +139,5 @@ public class PIDWPI extends PIDBase {
     @Override
     public void outputTelemetry() {
         super.outputTelemetry();
-
-        // if (mData != null) {
-        // mData.Publish();
-        // }
     }
 }

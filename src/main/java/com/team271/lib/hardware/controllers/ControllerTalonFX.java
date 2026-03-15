@@ -328,7 +328,7 @@ public class ControllerTalonFX extends ControllerSmart {
             config.MotorOutput.ControlTimesyncFreqHz = argUpdateFreqHz;
 
             /*
-             * When Using Time Sync UpdateFreqHz shuld be set to 0Hz
+             * When Using Time Sync UpdateFreqHz should be set to 0Hz
              */
             motorOut.UseTimesync = true;
             motorOut.UpdateFreqHz = 0.0;
@@ -348,7 +348,7 @@ public class ControllerTalonFX extends ControllerSmart {
             config.MotorOutput.ControlTimesyncFreqHz = 0.0;
 
             /*
-             * When Using Time Sync UpdateFreqHz shuld be set to 0Hz
+             * When Using Time Sync UpdateFreqHz should be set to 0Hz
              */
             motorOut.UseTimesync = false;
             motorOut.UpdateFreqHz = argUpdateFreqHz;

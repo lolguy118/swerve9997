@@ -138,24 +138,4 @@ public class Util {
 
         return tmpOutput;
     }
-    /*
-     * public static double mapOneRangeToAnother(double sourceNumber, double fromA,
-     * double fromB, double toA, double toB,
-     * int decimalPrecision) {
-     * double deltaA = fromB - fromA;
-     * double deltaB = toB - toA;
-     * if (epsilonEquals(deltaA, 0.0) || epsilonEquals(deltaB, 0.0)) { // One set of
-     * end-points is not a range,
-     * // therefore, cannot calculate a
-     * // meaningful number.
-     * return null;
-     * }
-     * double scale = deltaB / deltaA;
-     * double negA = -1 * fromA;
-     * double offset = (negA * scale) + toA;
-     * double finalNumber = (sourceNumber * scale) + offset;
-     * int calcScale = (int) Math.pow(10, decimalPrecision);
-     * return (double) Math.round(finalNumber * calcScale) / calcScale;
-     * }
-     */
 }

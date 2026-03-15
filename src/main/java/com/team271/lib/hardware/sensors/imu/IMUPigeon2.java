@@ -142,20 +142,20 @@ public class IMUPigeon2 extends IMUCTRE {
                 yaw = BaseStatusSignal.getLatencyCompensatedValue(sigYaw, sigYawRate)
                         .in(Degree);
             } else {
-                yaw = sigYaw.getValueAsDouble();
+                yaw = sigYaw.getValue().in(Degree);
             }
         }
 
         if ((sigYawRate != null) && sigYawRate.getStatus().isOK()) {
-            yawRate = sigYawRate.getValueAsDouble();
+            yawRate = sigYawRate.getValue().in(DegreesPerSecond);
         }
 
         if ((sigRoll != null) && sigRoll.getStatus().isOK()) {
-            roll = sigRoll.getValueAsDouble();
+            roll = sigRoll.getValue().in(Degree);
         }
 
         if ((sigPitch != null) && sigPitch.getStatus().isOK()) {
-            pitch = sigPitch.getValueAsDouble();
+            pitch = sigPitch.getValue().in(Degree);
         }
     }
 

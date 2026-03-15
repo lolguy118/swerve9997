@@ -120,27 +120,22 @@ public class EncoderTest extends Subsystem {
     public void robotPeriodicAfter(final double argTimestamp) {
     }
 
-    private double simAngleRad = 0;
-    private double simVelRadPerSec = 0;
+    private double simPosRotations = 0;
+    private static final double SIM_VEL_RPS = 0.5;
     private static final double SIM_DT = 0.020;
 
     @Override
     public void simulationInit(final double argTimestamp) {
-        simAngleRad = 0;
-        simVelRadPerSec = 0;
+        simPosRotations = 0;
     }
 
     @Override
     public void simulationPeriodic(final double argTimestamp) {
         /* Simple constant-velocity rotation for encoder testing: 0.5 RPS */
-        simVelRadPerSec = 0.5 * 2.0 * Math.PI;
-        simAngleRad += simVelRadPerSec * SIM_DT;
-
-        double simPosRotations = simAngleRad / (2.0 * Math.PI);
-        double simVelRPS = simVelRadPerSec / (2.0 * Math.PI);
+        simPosRotations += SIM_VEL_RPS * SIM_DT;
 
         encCANCoder.setSimPosRotations(simPosRotations);
-        encCANCoder.setSimVelRotations(simVelRPS);
+        encCANCoder.setSimVelRotations(SIM_VEL_RPS);
 
         encCANCoder.simulationPeriodic(argTimestamp);
     }

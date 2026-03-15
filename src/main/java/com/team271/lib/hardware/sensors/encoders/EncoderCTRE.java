@@ -1,5 +1,7 @@
 package com.team271.lib.hardware.sensors.encoders;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.*;
 import com.team271.lib.TObj;
 import com.team271.lib.nt.NTEntry;
@@ -66,11 +68,11 @@ public abstract class EncoderCTRE extends EncoderBase {
     public void refresh() {
         /* Since these are already refreshed we don't need to inline the refresh call */
         if ((sigVel != null) && sigVel.getStatus().isOK()) {
-            velRotations = sigVel.getValueAsDouble();
+            velRotations = sigVel.getValue().in(RotationsPerSecond);
         }
 
         if ((sigPos != null) && sigPos.getStatus().isOK()) {
-            posRotations = sigPos.getValueAsDouble();
+            posRotations = sigPos.getValue().in(Rotations);
         }
     }
 

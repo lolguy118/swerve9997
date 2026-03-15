@@ -14,7 +14,6 @@ import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.NTEntry;
-import com.team271.lib.util.Util;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;

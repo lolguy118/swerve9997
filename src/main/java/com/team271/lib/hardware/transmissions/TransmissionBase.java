@@ -1,5 +1,7 @@
 package com.team271.lib.hardware.transmissions;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.team271.lib.TObj;
 import com.team271.lib.control.pid.PIDBase;
 import com.team271.lib.hardware.CANDeviceID;
@@ -16,7 +18,6 @@ import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchType;
 import com.team271.lib.hardware.sensors.switches.SwitchFX;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -165,11 +166,11 @@ public abstract class TransmissionBase extends TObj {
                 break;
             case KRAKENX44:
                 simDCMotor = new DCMotor(
-                        12.0, 4.05, 275.0, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(7530), tmpNumMotors);
+                        12.0, 4.05, 275.0, 1.4, RPM.of(7530).in(RadiansPerSecond), tmpNumMotors);
                 break;
             case CTRE_MINION:
                 simDCMotor =
-                        new DCMotor(0.0, 0.0, 0.0, 0.0, Units.rotationsPerMinuteToRadiansPerSecond(0.0), tmpNumMotors);
+                        new DCMotor(0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
                 break;
             case NEO:
                 simDCMotor = DCMotor.getNEO(tmpNumMotors);
@@ -182,7 +183,7 @@ public abstract class TransmissionBase extends TObj {
                 break;
             default:
                 simDCMotor =
-                        new DCMotor(0.0, 0.0, 0.0, 0.0, Units.rotationsPerMinuteToRadiansPerSecond(0.0), tmpNumMotors);
+                        new DCMotor(0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
                 break;
         }
     }

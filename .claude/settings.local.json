@@ -21,7 +21,8 @@
       "Bash(for file:*)",
       "Bash(do echo:*)",
       "Bash(sed 's/.*public void //')",
-      "Bash(sed 's/\\(.*\\)//')"
+      "Bash(sed 's/\\(.*\\)//')",
+      "Bash(find d:roboticssoftware2026RobotsTeam271-Libsrcmainjavacomteam271libtest -name *.java -type f)"
     ]
   }
 }

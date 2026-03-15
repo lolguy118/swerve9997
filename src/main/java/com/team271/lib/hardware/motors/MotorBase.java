@@ -1,8 +1,9 @@
 package com.team271.lib.hardware.motors;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.team271.lib.ConstantsLib;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 
 public class MotorBase {
     public enum MotorType {
@@ -49,13 +50,13 @@ public class MotorBase {
                 break;
 
             case KRAKENX44:
-                motor = new DCMotor(12.0, 4.05, 275.0, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(7530), 1);
+                motor = new DCMotor(12.0, 4.05, 275.0, 1.4, RPM.of(7530).in(RadiansPerSecond), 1);
 
                 motorControlType = MotorControlType.BRUSHLESS;
                 break;
 
             case CTRE_MINION:
-                motor = new DCMotor(0.0, 0.0, 0.0, 0.0, Units.rotationsPerMinuteToRadiansPerSecond(0.0), 0);
+                motor = new DCMotor(0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), 0);
 
                 motorControlType = MotorControlType.BRUSHLESS;
                 break;
@@ -79,7 +80,7 @@ public class MotorBase {
                 break;
 
             default:
-                motor = new DCMotor(0.0, 0.0, 0.0, 0.0, Units.rotationsPerMinuteToRadiansPerSecond(0.0), 0);
+                motor = new DCMotor(0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), 0);
 
                 motorControlType = MotorControlType.BRUSHLESS;
         }
@@ -126,6 +127,6 @@ public class MotorBase {
     }
 
     public double getFreeSpeed() {
-        return Units.radiansPerSecondToRotationsPerMinute(motor.freeSpeedRadPerSec);
+        return RadiansPerSecond.of(motor.freeSpeedRadPerSec).in(RPM);
     }
 }

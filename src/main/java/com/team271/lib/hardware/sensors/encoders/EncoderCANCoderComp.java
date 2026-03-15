@@ -36,7 +36,7 @@ public class EncoderCANCoderComp extends EncoderCANCoder {
         /* Use the helper function to apply latency compensation to the signals */
         /* Since these are already refreshed we don't need to inline the refresh call */
         if ((sigVel != null) && sigVel.getStatus().isOK()) {
-            velRotations = sigVel.getValueAsDouble();
+            velRotations = sigVel.getValue().in(RotationsPerSecond);
 
             if ((sigPos != null) && sigPos.getStatus().isOK()) {
                 posRotations = BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel)

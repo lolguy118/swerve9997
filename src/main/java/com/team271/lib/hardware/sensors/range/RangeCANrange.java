@@ -1,5 +1,7 @@
 package com.team271.lib.hardware.sensors.range;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.*;
@@ -105,7 +107,7 @@ public class RangeCANrange extends RangeCTRE {
     public void refresh() {
         /* Since these are already refreshed we don't need to inline the refresh call */
         if ((sigDist != null) && sigDist.getStatus().isOK()) {
-            dist = sigDist.getValueAsDouble();
+            dist = sigDist.getValue().in(Meters);
         }
     }
 

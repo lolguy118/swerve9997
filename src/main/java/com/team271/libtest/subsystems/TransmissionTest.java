@@ -1,10 +1,8 @@
 package com.team271.libtest.subsystems;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
+import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -14,9 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
-import static edu.wpi.first.units.Units.Volts;
-
-import com.ctre.phoenix6.sim.ChassisReference;
 import com.team271.libtest.Constants;
 import com.team271.libtest.Constants.ControlMode;
 import com.team271.libtest.subsystems.Input.InputDriver;
@@ -24,14 +19,11 @@ import com.team271.libtest.subsystems.Input.InputOp;
 
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
-import com.team271.lib.hardware.CTREManager;
-import com.team271.lib.hardware.controllers.ControllerBase;
 import com.team271.lib.hardware.controllers.ControllerBase.MotorDirection;
 import com.team271.lib.hardware.controllers.ControllerBase.NeutralState;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.hardware.motors.MotorBase.MotorType;
 import com.team271.lib.hardware.sensors.encoders.EncoderBase.EncoderDirection;
-import com.team271.lib.hardware.sensors.encoders.EncoderCANCoder;
 import com.team271.lib.hardware.transmissions.TransmissionFX;
 import com.team271.lib.subsystem.Subsystem;
 
@@ -74,11 +66,11 @@ public class TransmissionTest extends Subsystem {
 
         static final double kRatio = (1.0 / 9.0) * (1.0 / 5.0) * (16.0 / 60.0) * (28.0 / 80.0);
 
-        static final double kArmLengthMeters = Units.inchesToMeters(27);
-        static final double kArmMassKg = Units.lbsToKilograms(42.5);
+        static final double kArmLengthMeters = Inches.of(27).in(Meters);
+        static final double kArmMassKg = Pounds.of(42.5).in(Kilograms);
 
-        static final double kMinPos = Units.degreesToRadians(-75);
-        static final double kMaxPos = Units.degreesToRadians(255);
+        static final double kMinPos = Degrees.of(-75).in(Radians);
+        static final double kMaxPos = Degrees.of(255).in(Radians);
 
         // Calibration
         //static final double kRefLowPos = -15.7 - 75.05859375;
@@ -118,7 +110,7 @@ public class TransmissionTest extends Subsystem {
     private final MechanismLigament2d m_arm = m_armPivot.append( new MechanismLigament2d(
                 "Arm",
                 30,
-                Units.radiansToDegrees(0.0),
+                Radians.of(0.0).in(Degrees),
                 6,
                 new Color8Bit(Color.kYellow)));
 
@@ -262,15 +254,15 @@ public class TransmissionTest extends Subsystem {
         m_armSim.update(0.02);
 
         // Finally, we set our simulated encoder's readings and simulated battery voltage
-        transmission.setSimPosRotations(Units.radiansToRotations(m_armSim.getAngleRads()) / TransmissionTestConstants.kRatio);
-        transmission.setSimVelRotations((Units.radiansPerSecondToRotationsPerMinute(m_armSim.getVelocityRadPerSec()) / 60.0) / TransmissionTestConstants.kRatio);
+        transmission.setSimPosRotations(Radians.of(m_armSim.getAngleRads()).in(Rotations) / TransmissionTestConstants.kRatio);
+        transmission.setSimVelRotations(RadiansPerSecond.of(m_armSim.getVelocityRadPerSec()).in(RotationsPerSecond) / TransmissionTestConstants.kRatio);
 
         // SimBattery estimates loaded battery voltages
         RoboRioSim.setVInVoltage(
             BatterySim.calculateDefaultBatteryLoadedVoltage(m_armSim.getCurrentDrawAmps()));
 
         // Update the Mechanism Arm angle based on the simulated arm angle
-        m_arm.setAngle(Units.radiansToDegrees(m_armSim.getAngleRads()));
+        m_arm.setAngle(Radians.of(m_armSim.getAngleRads()).in(Degrees));
     }
 
     /*

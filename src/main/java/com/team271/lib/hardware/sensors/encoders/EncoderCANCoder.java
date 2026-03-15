@@ -1,5 +1,7 @@
 package com.team271.lib.hardware.sensors.encoders;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.*;
@@ -183,11 +185,11 @@ public class EncoderCANCoder extends EncoderCTRE {
 
         /* Since these are already refreshed we don't need to inline the refresh call */
         if ((sigPosBoot != null) && sigPosBoot.getStatus().isOK()) {
-            posBoot = sigPosBoot.getValueAsDouble();
+            posBoot = sigPosBoot.getValue().in(Rotations);
         }
 
         if ((sigPosAbs != null) && sigPosAbs.getStatus().isOK()) {
-            posAbs = sigPosAbs.getValueAsDouble();
+            posAbs = sigPosAbs.getValue().in(Rotations);
         }
     }
 

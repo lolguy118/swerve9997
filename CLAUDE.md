@@ -92,6 +92,13 @@ For each issue found, briefly explain the bug category (referencing the Known Bu
 - [ ] 4-space indentation (AOSP style via google-java-format)
 - [ ] Line length <= 120 characters (`.editorconfig` recommendation)
 
+### Logging & Telemetry Changes
+- [ ] Tunable parameters use `LoggedNTInput` with `hasChanged()` + `checkTuning()` in `outputTelemetry()`
+- [ ] New error conditions send `Elastic.sendNotification()` at appropriate severity
+- [ ] High-frequency Elastic notifications are rate-limited
+- [ ] State-change notifications fire only on transition (not every cycle)
+- [ ] Direct `Logger.recordOutput()` only for non-TObj classes (e.g., Balance, AutoMode)
+
 ### Code Quality
 - [ ] No `==` for String comparison (use `.equals()`)
 - [ ] No recursive calls missing `super.`
@@ -107,10 +114,10 @@ All dependencies must always use the **latest available version**. Versions are 
 
 - **WPILib** — core FRC framework (GradleRIO, Java 17)
 - **CTRE Phoenix 6** — motor controllers, sensors, CANivore + RIO CAN buses (vendordep: `Phoenix6-frc2026-latest.json`)
-- **AdvantageKit** — dependency available, integration pending (vendordep: `AdvantageKit.json`; new code should adopt `Logger.recordOutput()` and IO interfaces)
+- **AdvantageKit** — integrated for all logging and telemetry (vendordep: `AdvantageKit.json`; all output goes through `Logger.recordOutput()`)
 - **PathPlanner** — dependency available, integration pending (vendordep: `PathplannerLib.json`; new autonomous code should adopt PathPlanner paths)
 - **WPILib New Commands** — dependency available for command-based patterns (vendordep: `WPILibNewCommands.json`)
-- **Elastic Dashboard** — dashboard notification system via NetworkTables (no vendordep; uses `com.team271.lib.misc.Elastic` with Jackson JSON serialization)
+- **Elastic Dashboard** — integrated for live driver notifications (no vendordep; uses `com.team271.lib.misc.Elastic` with Jackson JSON serialization)
 
 ---
 
@@ -151,8 +158,8 @@ TObj (base class — name, NTTable, lifecycle hooks)
 ├── geometry/ (custom implementations, not WPILib wrappers)
 │   ├── Pose2d, Rotation2d, Translation2d, Twist2d, State
 │   └── Interfaces: IPose2d, IRotation2d, ITranslation2d
-├── nt/ (NTTable, NTEntry — NetworkTables pub/sub wrappers with value caching)
-├── wpilib/ (IterativeRobotBase, TimedRobot — custom WPILib base classes)
+├── nt/ (NTTable, NTEntry, LoggedNTInput — logging + tuning via AK Logger)
+├── wpilib/ (IterativeRobotBase, TimedRobot — custom WPILib base classes + AK lifecycle)
 ├── sysid/ (Logger, LoggerGeneral — SmartDashboard-based SysId characterization)
 ├── misc/ (Elastic — dashboard notifications via Elastic.Notification)
 ├── auto/ (AutoMode, AutoMove, AutoMoveSingle, AutoMoveTimed)
@@ -181,6 +188,7 @@ TObj (base class — name, NTTable, lifecycle hooks)
 
 - **`Main.java`** — WPILib `RobotBase` entry point (`RobotBase.startRobot(Robot::new)`)
 - **`Robot.java`** — extends `TimedRobot`, orchestrates lifecycle:
+  - Constructor: AK Logger setup (metadata, data receivers, `Logger.start()`) — must happen before any `Logger.recordOutput()` calls
   - `robotInit()`: subsystems init → `mSubsystemManager.robotInit()` → `CTREManager.init()` (must be AFTER subsystem init)
   - `robotPeriodicBefore()`: `CTREManager.refreshAll()` → timestamp update → `mSubsystemManager.robotPeriodicBefore()`
   - `robotPeriodicAfter()`: `mSubsystemManager.robotPeriodicAfter()` → `mSubsystemManager.outputTelemetry()` → `CTREManager.outputTelemetry()`
@@ -273,11 +281,154 @@ Simulation support is integrated throughout all hardware classes, not in a separ
 
 ---
 
+## Logging Architecture
+
+Data flows through three parallel systems:
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    LOGGING (Robot → Logs/Dashboard)               │
+│                                                                  │
+│  NTEntry.publish() ──→ Logger.recordOutput()                     │
+│                         ├──→ .wpilog (AdvantageScope replay)     │
+│                         └──→ NT4Publisher → NT → Elastic/Scope   │
+│                                                                  │
+│  CTRE SignalLogger ──→ .hoot files (raw CAN at 1kHz+, CANivore) │
+│                                                                  │
+│  Alert.set() ──→ Logger.recordOutput() + Elastic notification    │
+├──────────────────────────────────────────────────────────────────┤
+│                    TUNING (Dashboard → Robot)                    │
+│                                                                  │
+│  LoggedNTInput ──→ NT subscriber (reads operator changes)        │
+│                    + Logger.recordOutput() (records to AK log)   │
+│                    + NT publisher (sets default for dashboard)    │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### AdvantageKit Integration
+
+#### Logger Lifecycle
+- `IterativeRobotBase.loopFunc()` calls `LoggerBridge.periodicBeforeUser()` at start, `LoggerBridge.periodicAfterUser()` after simulation
+- `LoggerBridge` (`org.littletonrobotics.junction.LoggerBridge`) is a bridge class that exposes AK's package-private `Logger.periodicBeforeUser/AfterUser` methods for use in custom robot base classes that cannot extend `LoggedRobot`
+- `Robot()` constructor configures Logger before any subsystem init: metadata → data receivers → `Logger.start()`
+
+#### Config Modes and Logger Setup
+```java
+switch (Config.getMode()) {
+    case REAL:  WPILOGWriter + NT4Publisher  // .wpilog on USB + live NT
+    case SIM:   NT4Publisher                 // live NT only
+    case REPLAY: WPILOGReader → WPILOGWriter // replay from log, write sim output
+}
+```
+- `Config.FORCE_REPLAY = true` enables replay mode in simulation (reads from existing .wpilog)
+
+#### NTEntry (Output Only)
+- `publish()` calls `Logger.recordOutput(logPath, value)` — does NOT write to NetworkTables directly
+- AK Logger writes to .wpilog AND publishes via NT4Publisher, so data appears in both AdvantageScope and NT dashboards
+- `logPath` is built from `table.getPath() + "/" + topicName` in the constructor
+- `get*()` methods still read from NT subscriber (for input from other systems)
+- When `table` is null, `logPath` is null and `publish()` is a no-op
+
+#### LoggedNTInput (Tuning Input)
+- Maintains NT publisher (dashboard sees the field with default value) AND NT subscriber (reads operator changes)
+- Every `getDbl()`/`getBool()`/`getLong()`/`getString()` call also records to AK Logger for replay fidelity
+- `hasChanged()` compares current subscriber value to last-read value — returns true when operator changes a value on the dashboard
+- Default values are stored regardless of whether table is null (supports null-table fallback)
+- Constructors: `LoggedNTInput(NTTable, String name, double/boolean/long/String defaultValue)`
+
+### CTRE Hoot Logging
+- `CTREManager.init()` starts `SignalLogger` only if a CANivore bus exists (`isCANivore()` check)
+- Hoot logging does NOT work on the RIO CAN bus — CANivore required
+- `.hoot` files capture raw CAN frames at 1kHz+; AdvantageScope reads them natively
+- `CTREManager.stopLogging()` stops SignalLogger (also CANivore-guarded)
+
+### Review Checklist — Logging
+- [ ] New `NTEntry` fields use `logPath`-based output (automatic via constructor)
+- [ ] New tunable parameters use `LoggedNTInput` with `hasChanged()` + `checkTuning()` pattern
+- [ ] `outputTelemetry()` calls `checkTuning()` before publishing
+- [ ] No `SmartDashboard.putNumber/putString` — use `Logger.recordOutput()` or `NTEntry.publish()`
+- [ ] No `System.out.println` — use `Logger.recordOutput()` for data, `DriverStation.reportWarning` for errors
+- [ ] Direct `Logger.recordOutput()` OK for classes that don't extend TObj (e.g., Balance, AutoMode)
+
+---
+
+## Dashboard Tuning
+
+### Tunable Parameters (via LoggedNTInput)
+
+The `checkTuning()` pattern reads `LoggedNTInput` values in `outputTelemetry()` and applies changes via existing setter methods:
+
+#### PID (per PIDBase instance)
+- `Tune P`, `Tune I`, `Tune D` → `setP()`, `setI()`, `setD()`
+- `Tune Pos Tol` → `setTolerance()`
+- `Tune P Deadband` → `setPDeadband()`
+- `Tune I Zone` → `setIZone()`
+- `Tune Output Min`, `Tune Output Max` → `setOutputRange()`
+- PIDFX: `setP()`/`setI()`/`setD()` overrides also call `controller.setPSlot(0, val)` etc. to propagate to TalonFX hardware PID
+
+#### Motor Current/Voltage (per ControllerSmart)
+- `Tune Stator Enable`, `Tune Stator Limit` → `setCurrentLimitStator()`
+- `Tune Supply Enable`, `Tune Supply Limit` → `setCurrentLimitSupply()`
+- `Tune Voltage Peak Fwd`, `Tune Voltage Peak Rev` → `setVoltagePeak()`
+
+#### Motion Magic (per TransmissionFX)
+- `Tune MM Cruise Vel`, `Tune MM Accel`, `Tune MM Jerk` → `setMMConfig()`
+
+#### Balance
+- `Tune Speed Slow`, `Tune Speed Fast`, `Tune On Charge Deg`, `Tune Level Deg`, `Tune Debounce Time` → direct field updates
+
+### Review Checklist — Tuning
+- [ ] New tunable parameters initialized with safe defaults
+- [ ] `checkTuning()` called at start of `outputTelemetry()` (end of robot cycle)
+- [ ] PIDFX hardware sync: `setP/I/D` overrides propagate to TalonFX via `controller.setPSlot()`
+- [ ] No direct field mutation for tuning — always use setter methods (they may trigger config re-apply)
+
+---
+
+## Elastic Dashboard Notifications
+
+`Elastic.sendNotification()` sends live popup notifications to Elastic Dashboard via NetworkTables.
+
+### Notification Events
+| Event | Level | Title | Source File |
+|-------|-------|-------|-------------|
+| Autonomous started | INFO | Mode Change | `Infrastructure.java` |
+| Teleop started | INFO | Mode Change | `Infrastructure.java` |
+| Robot disabled | WARNING | Mode Change | `Infrastructure.java` |
+| State transition | INFO | Superstructure | `Superstructure.java` |
+| Subsystem exception | ERROR | Subsystem Error | `SubsystemManager.java` |
+| CAN signal refresh fail | ERROR | CAN Error | `CTREManager.java` (2s rate limit) |
+| Config apply failure | ERROR | Config Failed | `TransmissionBase.java` |
+| Auto started | INFO | Auto | `AutoMode.java` |
+| Auto complete | INFO | Auto | `AutoMode.java` |
+| Alert activated (ERROR) | ERROR | Alert | `Alert.java` |
+| Alert activated (WARNING) | WARNING | Alert | `Alert.java` |
+| Alert activated (INFO) | INFO | Alert | `Alert.java` |
+| Controller disconnected | WARNING | Controller | `Input.java` |
+
+### Review Checklist — Elastic
+- [ ] New error conditions send Elastic notifications with appropriate severity level
+- [ ] High-frequency events are rate-limited (e.g., CAN errors use 2s rate limit)
+- [ ] Notification title is short and descriptive (shown as popup heading)
+- [ ] State transitions fire only on actual transition, not every cycle
+
+---
+
+## Alert System
+
+`Alert.java` provides prioritized, grouped alerts that integrate with both AK Logger and Elastic Dashboard:
+
+- `Alert.set(true)` → logs to AK + sends Elastic notification + reports to DriverStation
+- `Alert.outputTelemetry()` → logs active alert string arrays per group to AK (called from `SubsystemManager.outputTelemetry()`)
+- AlertType maps to Elastic NotificationLevel: `ERROR` → `ERROR`, `WARNING` → `WARNING`, `INFO` → `INFO`
+
+---
+
 ## SysId / Characterization
 
 The `sysid/` package provides system identification support:
 
-- **`Logger.java`**: SmartDashboard-based data collection for quasistatic and dynamic tests. Collects voltage, position, and velocity data for feed-forward characterization.
+- **`Logger.java`**: Data collection for quasistatic and dynamic tests. Outputs via `Logger.recordOutput()` (AdvantageKit). Reads voltage commands from SmartDashboard (input from SysId tool). Collects voltage, position, and velocity data for feed-forward characterization.
 - **`LoggerGeneral.java`**: CSV-based data logging extension for general characterization.
 - **`SensorMode.SYSID`**: Triggers characterization mode in subsystems, allowing SysId voltage commands to override normal control.
 
@@ -285,10 +436,11 @@ The `sysid/` package provides system identification support:
 
 ## WPILib Required Patterns
 
-### NetworkTables
-- Use `NTEntry` wrapper for pub/sub — supports boolean, double, long, int, String
-- NTEntry caches last published value to avoid redundant network traffic (uses `Util.epsilonEquals()` for doubles, `.equals()` for strings)
-- All NT publishing happens in `outputTelemetry()` methods
+### NetworkTables / Logging
+- **`NTEntry`** — output-only wrapper. `publish()` calls `Logger.recordOutput()` (AdvantageKit), NOT NetworkTables directly. Subscribes to NT for input reading via `get*()` methods.
+- **`LoggedNTInput`** — tuning input wrapper. Maintains both a NT publisher (sets default for dashboard visibility) and NT subscriber (reads operator changes). Every `getDbl()`/`getBool()`/etc. call also records to AK Logger. Supports `hasChanged()` to detect dashboard edits.
+- All telemetry output happens in `outputTelemetry()` methods via `NTEntry.publish()` → AK Logger
+- All tuning input happens via `LoggedNTInput` checked in `outputTelemetry()` → `checkTuning()` pattern
 
 ### Units
 - CTRE Phoenix 6 uses the WPILib Units library (e.g., `Rotations`, `MetersPerSecond`, `Amps`)
@@ -344,7 +496,7 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 - **`hardware/transmissions/`**: `TransmissionFXTest`, `ShifterPneumaticTest`
 - **`hardware/Input/`**: `InputXBoxTest`, `InputPS4Test`, `Input8BitDuoTest`, `InputEnvisionProTest`
 - **`geometry/`**: `Translation2dTest`, `Rotation2dTest`, `Pose2dTest`, `Twist2dTest`
-- **`nt/`**: `NTTableTest`, `NTEntryTest`
+- **`nt/`**: `NTTableTest`, `NTEntryTest`, `LoggedNTInputTest`
 - **`auto/`**: `AutoModeTest`, `AutoMoveTest`, `AutoMoveSingleTest`, `AutoMoveTimedTest`
 - **`subsystem/`**: `SubsystemTest`, `SubsystemManagerTest`
 - **`sysid/`**: `LoggerTest`, `LoggerGeneralTest`

@@ -106,6 +106,17 @@ For each issue found, briefly explain the bug category (referencing the Known Bu
 - [ ] Gear ratio conversions consistent (rotor-to-mechanism vs sensor-to-mechanism)
 - [ ] Unit conversions correct (rotations vs radians, RPS vs RPM, meters vs inches)
 
+### Real-Time Constraints
+- [ ] No blocking I/O, `Thread.sleep()`, or unbounded loops in periodic methods
+- [ ] CAN config operations (`applyConfig()`, `applyConfigs()`) only in `robotInit()`, never in periodic methods
+- [ ] New periodic work fits within 20ms cycle budget (profile if uncertain)
+- [ ] No large object allocations or unbounded collection growth in periodic paths
+- [ ] High-frequency error notifications are rate-limited (2s minimum interval)
+- [ ] Control requests use timesync pattern (`withUseTimesync(true).withUpdateFreqHz(0)`)
+- [ ] Latency-compensated encoder variants (`Comp`) used where position accuracy matters
+- [ ] No `System.out.println` / `System.err.println` — blocking I/O that steals cycle time; use `Logger.recordOutput()` or `DriverStation.reportWarning()`
+- [ ] New StatusSignals registered at 250 Hz unless a different rate is justified
+
 ---
 
 ## Stack
@@ -179,6 +190,114 @@ TObj (base class — name, NTTable, lifecycle hooks)
 5. **TransmissionFX Wraps TalonFX**: Motor commands go through TransmissionFX, which handles encoder integration, gear ratios, unit conversions, and timesync control requests. Do not create raw TalonFX objects for subsystem motors.
 
 6. **Exception Isolation**: `SubsystemManager.forEachSafe()` wraps subsystem callbacks in try-catch to prevent one subsystem's exception from crashing the entire robot. Note: `robotInit()` rethrows exceptions because init must succeed.
+
+---
+
+## Real-Time System Constraints
+
+FRC robot code runs under hard real-time constraints. Every subsystem callback shares a fixed time budget per cycle. Violating timing constraints causes loop overruns, degraded control performance, and potentially unsafe robot behavior.
+
+### Timing Hierarchy
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  1 kHz   │ TalonFX hardware PID (PIDFX) — runs onboard motor   │
+│  1 kHz+  │ CTRE hoot logging — raw CAN frames (CANivore only)  │
+│  250 Hz  │ CAN signal refresh — StatusSignals via CTREManager   │
+│  250 Hz  │ Timesync — CANivore frame synchronization            │
+│  50 Hz   │ Robot loop — all subsystem callbacks (20ms budget)   │
+│  50 Hz   │ Software PID (PIDWPI, PIDSimple, etc.)               │
+│  10 Hz   │ NetworkTables publishing (NTEntry, 100ms default)    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Robot Loop (20ms / 50 Hz)
+
+- **Period**: `TimedRobot.kDefaultPeriod = 0.02` seconds, enforced by HAL Notifier via FPGA clock
+- **Watchdog**: `IterativeRobotBase` initializes a Watchdog that reports when any cycle exceeds 20ms
+- **Constraint**: All code in `robotPeriodicBefore()`, mode-specific periodic methods, `robotPeriodicAfter()`, and `outputTelemetry()` must complete within this budget combined
+
+### Execution Order Within a Single Cycle
+
+```
+1. LoggerBridge.periodicBeforeUser()          ← AK timestamp capture
+2. CTREManager.refreshAll()                   ← batched CAN signal read (250 Hz signals)
+3. Timestamp update (Timer.getFPGATimestamp)
+4. SubsystemManager.robotPeriodicBefore()     ← sensor reads, state prep
+5. Mode-specific periodic                     ← autonomousPeriodic / teleopPeriodic / etc.
+6. SubsystemManager.robotPeriodicAfter()      ← state machines apply desired → actual
+7. SubsystemManager.outputTelemetry()         ← NTEntry.publish(), checkTuning(), Alert output
+8. CTREManager.outputTelemetry()              ← CAN bus telemetry
+9. LoggerBridge.periodicAfterUser()           ← AK log flush
+10. NetworkTableInstance.flushLocal()          ← NT data push (if enabled)
+```
+
+Steps 4-8 run through `forEachSafe()` — a single subsystem throwing an exception will not block others.
+
+### CAN Bus Timing
+
+| Parameter | Value | Constant / Location |
+|-----------|-------|---------------------|
+| Signal update frequency | 250 Hz (4ms) | `ControllerTalonFX` lines 54-101, `EncoderCTRE`, `IMUCTRE`, etc. |
+| Timesync frequency | 250 Hz | `ControllerTalonFX:185` — `ControlTimesyncFreqHz = 250.0` |
+| Short timeout (runtime) | 10 ms | `ConstantsLib.CAN_TIMEOUT_MS` |
+| Long timeout (config) | 100 ms | `ConstantsLib.CAN_LONG_TIMEOUT_MS` |
+| Config retry count | 5 | `ConstantsLib.CAN_RETRY_COUNT` |
+| Hoot logging rate | 1 kHz+ | `CTREManager.init()` — CANivore buses only |
+
+- `BaseStatusSignal.refreshAll()` is called once per cycle for batched efficiency
+- `optimizeBusUtilizationForAll()` disables unused status frames to prevent bus saturation
+- CAN config operations (retries × timeout = up to 500ms) must only happen in `robotInit()`, never in periodic methods
+
+### Control Loop Frequencies
+
+- **Hardware PID (PIDFX)**: Runs at **1 kHz** onboard the TalonFX. Software sends setpoints via timesync control requests; the motor controller closes the loop internally. This is why PIDFX delegates entirely to hardware — software cannot match 1 kHz.
+- **Software PID (PIDWPI, PIDSimple, PIDTrap)**: Runs at **50 Hz** (robot loop rate, `0.02s` period). Suitable for mechanisms where hardware PID is not available or for outer control loops.
+- **Timesync requirement**: When `UseTimesync = true`, `UpdateFreqHz` must be `0` (CTRE requirement). All control requests in `ControllerTalonFX` and `TransmissionFX` follow this pattern.
+
+### Latency Compensation
+
+CAN frames arrive with transport delay. Latency compensation uses velocity to extrapolate position to the current time:
+- **EncoderFXComp / EncoderCANCoderComp**: `BaseStatusSignal.getLatencyCompensatedValue(posSignal, velSignal)` for accurate mechanism position
+- **IMUPigeon2**: Yaw latency-compensated using yaw rate as the reference signal
+- Use `Comp` encoder variants when position accuracy matters (e.g., odometry, closed-loop position)
+
+### Thread Priorities
+
+| Thread | Priority | Real-time | Notes |
+|--------|----------|-----------|-------|
+| HAL Notifier (robot loop) | System-managed | Yes | FPGA-timed, highest priority |
+| HAL thread (SysId) | 40 | Yes | `sysid/Logger.java:60` |
+| User thread (SysId) | 15 | Yes | `sysid/Logger.java:59` |
+| NetworkTables | Default | No | Background publishing |
+
+Thread priorities are only set in real mode (non-simulation). The main robot loop runs synchronously on the Notifier thread — all subsystem callbacks execute sequentially in registration order.
+
+### Exception Isolation & Rate Limiting
+
+- **`forEachSafe()`** (`SubsystemManager`): Wraps each subsystem callback in try-catch. One subsystem throwing does not prevent others from running. Errors are reported via `DriverStation.reportError()`.
+- **`robotInit()` rethrows**: Initialization failures must crash loudly — a subsystem that cannot initialize should not run.
+- **Error notification rate limit**: 2.0 seconds per subsystem (`SubsystemManager`) and per CAN refresh failure (`CTREManager`). Prevents flooding Elastic Dashboard during sustained failures.
+
+### Timing Budget Guidelines
+
+**DO in periodic methods:**
+- Read cached sensor values (already refreshed by `CTREManager`)
+- Set control requests (lightweight CAN writes)
+- Update state machines with simple logic
+- Call `NTEntry.publish()` / `Logger.recordOutput()` for telemetry
+
+**DO NOT in periodic methods:**
+- Call `applyConfig()` or any CAN config operation (up to 500ms blocking)
+- Perform blocking I/O (file reads, network calls)
+- Allocate large objects or create unbounded collections
+- Run unbounded loops or recursive algorithms
+- Call `Thread.sleep()` or any blocking wait
+
+**Measuring overruns:**
+- The Watchdog automatically logs when a cycle exceeds 20ms via `DriverStation.reportWarning()`
+- AdvantageKit logs cycle timing — check `LoggedRobot/FullCycleMs` in AdvantageScope
+- CTRE `CTREManager.getDt()` tracks time between CAN refreshes for drift detection
 
 ---
 

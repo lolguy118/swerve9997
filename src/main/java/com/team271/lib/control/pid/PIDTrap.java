@@ -224,51 +224,6 @@ public class PIDTrap extends PIDBase {
     }
 
     /*
-     * Returns the next output of the PID controller.
-     *
-     * @param argMeasurement The current argMeasurement of the process variable.
-     * @param goal           The new goal of the controller.
-     * @return The controller's next output.
-     */
-    /*
-     * public double calc(double argMeasurement, TrapezoidProfile.State argGoal) {
-     * setGoal(argGoal);
-     * return calc(argMeasurement);
-     * }
-     */
-
-    /*
-     * Returns the next output of the PIDController.
-     *
-     * @param argMeasurement The current argMeasurement of the process variable.
-     * @param goal           The new goal of the controller.
-     * @return The controller's next output.
-     */
-    /*
-     * @Override
-     * public double calc(double argMeasurement, double goal) {
-     * setGoal(goal);
-     * return calc(argMeasurement);
-     * }
-     */
-
-    /*
-     * Returns the next output of the PID controller.
-     *
-     * @param argMeasurement The current argMeasurement of the process variable.
-     * @param goal           The new goal of the controller.
-     * @param constraints    Velocity and acceleration constraints for goal.
-     * @return The controller's next output.
-     */
-    /*
-     * public double calc(double argMeasurement, TrapezoidProfile.State argGoal,
-     * TrapezoidProfile.Constraints argConstraints) {
-     * setConstraints(argConstraints);
-     * return calc(argMeasurement, argGoal);
-     * }
-     */
-
-    /*
      *
      * Telemetry
      *

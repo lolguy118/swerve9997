@@ -10,9 +10,8 @@ When reviewing this codebase, you should:
 
 1. **Review all Java source files** in `com.team271.lib` and `com.team271.libtest` for bugs, correctness, and adherence to the patterns documented below.
 2. **Fix issues directly** — do not just report problems, apply corrections to the code.
-3. **Remove debug artifacts** — delete commented-out `System.out.println` lines.
-4. **Verify dependency versions** — check that vendordep JSONs in `vendordeps/` are up to date with their `jsonUrl` sources.
-5. **Run validation** after changes:
+3. **Verify dependency versions** — check that vendordep JSONs in `vendordeps/` are up to date with their `jsonUrl` sources.
+4. **Run validation** after changes:
    - `./gradlew spotlessApply` (auto-format)
    - `./gradlew spotlessCheck` (verify formatting)
    - `./gradlew test` (all JUnit tests must pass)
@@ -32,6 +31,7 @@ For each issue found, briefly explain the bug category (referencing the Known Bu
 - [ ] Control requests use timesync (`withUseTimesync(true).withUpdateFreqHz(0)`)
 - [ ] Follower motors on same CAN bus as leader
 - [ ] No duplicate TalonFX/CANcoder objects for same CAN ID
+- [ ] No negative CAN IDs
 
 ### State Machine Changes
 - [ ] Desired state set in periodic methods, applied in `robotPeriodicAfter()`
@@ -45,12 +45,6 @@ For each issue found, briefly explain the bug category (referencing the Known Bu
 - [ ] Shared auto timer read consistently across subsystems
 - [ ] Velocity/state gates checked before dependent actions (e.g., confirm motor at speed before feeding)
 - [ ] Alliance flipping handled for new paths
-
-### PID / Closed-Loop Changes
-- [ ] PID gains set to correct slot (Slot 0, 1, or 2)
-- [ ] `getCLError()` used for error, `getCLOutput()` used for output (not swapped)
-- [ ] Feed-forward direction based on error sign, not output sign
-- [ ] `setOutputRange()` called (note: was previously misspelled as `setOutputRage`)
 
 ### Safety
 - [ ] Homing sequences have timeout protection
@@ -178,15 +172,6 @@ TObj (base class — name, NTTable, lifecycle hooks)
 
 6. **Exception Isolation**: `SubsystemManager.forEachSafe()` wraps subsystem callbacks in try-catch to prevent one subsystem's exception from crashing the entire robot. Note: `robotInit()` rethrows exceptions because init must succeed.
 
-### Existing Tests (`src/test/java/`)
-
-- `com/team271/lib/control/pid/PIDSimpleTest.java` — PID unit tests
-- `com/team271/lib/hardware/CANBusTest.java` — CAN bus type detection, constructors, equals/hashCode (68 tests)
-- `com/team271/lib/hardware/CANDeviceIDTest.java` — device ID creation, isSameBus, equals/hashCode (50+ tests)
-- `com/team271/lib/hardware/CTREManagerTest.java` — signal management, refresh, lifecycle
-
-All tests use JUnit 5 (Jupiter) with `@BeforeAll` for HAL initialization (`HAL.initialize(500, 0)`).
-
 ---
 
 ## Libtest Architecture (`com.team271.libtest`)
@@ -232,11 +217,9 @@ libtest/
 1. InputDriver
 2. InputOp
 3. Infrastructure
-4. EncoderTest
-5. TransmissionTest
-6. Superstructure
-7. `mSubsystemManager.robotInit()` (calls robotInit on all subsystems)
-8. `CTREManager.init()` (optimizes bus, builds signal arrays — must be AFTER subsystem init)
+4. Superstructure
+5. `mSubsystemManager.robotInit()` (calls robotInit on all subsystems)
+6. `CTREManager.init()` (optimizes bus, builds signal arrays — must be AFTER subsystem init)
 
 ---
 
@@ -259,7 +242,7 @@ When `UseTimesync = true`, `UpdateFreqHz` MUST be `0` (CTRE requirement). The Co
 
 ### Config Application
 - Motor configs are applied via `ControllerTalonFX.applyConfig()` which retries up to 5 times (`ConstantsLib.CAN_RETRY_COUNT`) with 50ms timeout per attempt
-- Encoder/IMU configs use `ConstantsLib.CAN_LONG_TIMEOUT_MS` (100ms) timeout with the same 5 retries
+- CTRE configs use `ConstantsLib.CAN_LONG_TIMEOUT_MS` (100ms) timeout with the same 5 retries
 - Always call `applyConfigs()` after changing config fields — config objects are mutable but not applied until explicitly sent
 
 ### Latency Compensation

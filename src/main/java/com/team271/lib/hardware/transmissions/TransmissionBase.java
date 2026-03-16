@@ -20,7 +20,7 @@ import com.team271.lib.hardware.sensors.switches.SwitchFX;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public abstract class TransmissionBase extends TObj {
@@ -40,7 +40,7 @@ public abstract class TransmissionBase extends TObj {
     protected ControllerSmart leader;
     protected ControllerSmart follower1;
     protected ControllerSmart follower2;
-    protected Set<ControllerSmart> allControllers = new HashSet<>();
+    protected Set<ControllerSmart> allControllers = new LinkedHashSet<>();
 
     /*
      *

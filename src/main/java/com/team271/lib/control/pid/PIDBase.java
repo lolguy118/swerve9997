@@ -377,6 +377,20 @@ public class PIDBase extends TObj {
     }
 
     /*
+     * Sets the proportional deadband. When the absolute value of the position
+     * error is less than the deadband, the proportional term output is zero.
+     * This prevents motor jitter near the setpoint.
+     *
+     * @param argPDeadband The deadband magnitude (must be non-negative).
+     */
+    public void setPDeadband(final double argPDeadband) {
+        if (argPDeadband < 0) {
+            throw new IllegalArgumentException("PDeadband must be a non-negative number!");
+        }
+        pidSlot.pDeadband = argPDeadband;
+    }
+
+    /*
      * Enables continuous input.
      * <p>
      * Rather than using the max and min input range as constraints, it considers

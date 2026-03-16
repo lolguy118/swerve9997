@@ -21,6 +21,7 @@ import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -65,6 +66,7 @@ public abstract class TransmissionBase extends TObj {
      * Limit Switches
      */
     protected static final double LIMIT_UPDATE_FREQ_HZ = 250.0;
+    private static double lastConfigErrorNotificationTime = 0;
     protected SwitchBase revLimit;
     protected SwitchBase fwdLimit;
 
@@ -242,11 +244,15 @@ public abstract class TransmissionBase extends TObj {
                                 + status
                                 + ")";
                 DriverStation.reportWarning(msg, false);
-                Elastic.sendNotification(
-                        new Elastic.Notification(
-                                Elastic.Notification.NotificationLevel.ERROR,
-                                "Config Apply Failed",
-                                msg));
+                double now = Timer.getFPGATimestamp();
+                if (now - lastConfigErrorNotificationTime > 2.0) {
+                    lastConfigErrorNotificationTime = now;
+                    Elastic.sendNotification(
+                            new Elastic.Notification(
+                                    Elastic.Notification.NotificationLevel.ERROR,
+                                    "Config Apply Failed",
+                                    msg));
+                }
             }
         }
     }

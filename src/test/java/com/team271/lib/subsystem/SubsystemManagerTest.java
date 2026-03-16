@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import edu.wpi.first.hal.HAL;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -725,5 +726,59 @@ class SubsystemManagerTest {
         assertDoesNotThrow(() -> mgr.testInit(0.0));
         assertDoesNotThrow(() -> mgr.testPeriodic(0.0));
         assertDoesNotThrow(() -> mgr.testExit(0.0));
+    }
+
+    /* --- forEachSafe rate limiting --- */
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Double> getRateLimitMap(SubsystemManager mgr) throws Exception {
+        Field field = SubsystemManager.class.getDeclaredField("lastErrorNotificationTime");
+        field.setAccessible(true);
+        return (Map<String, Double>) field.get(mgr);
+    }
+
+    @Test
+    void forEachSafeRecordsRateLimitTimeOnException() throws Exception {
+        SubsystemManager mgr = SubsystemManager.getInstance();
+        ThrowingSubsystem thrower = new ThrowingSubsystem("RateLimitTest");
+        mgr.addSubsystem(thrower);
+
+        mgr.robotPeriodicBefore(0.0);
+
+        Map<String, Double> map = getRateLimitMap(mgr);
+        assertTrue(
+                map.containsKey("RateLimitTest"),
+                "Rate limit map should track the throwing subsystem");
+        assertTrue(map.get("RateLimitTest") >= 0.0, "Recorded time should be non-negative");
+    }
+
+    @Test
+    void forEachSafeRateLimitIsPerSubsystem() throws Exception {
+        SubsystemManager mgr = SubsystemManager.getInstance();
+        ThrowingSubsystem throwerA = new ThrowingSubsystem("SubA");
+        ThrowingSubsystem throwerB = new ThrowingSubsystem("SubB");
+        mgr.addSubsystem(throwerA);
+        mgr.addSubsystem(throwerB);
+
+        mgr.robotPeriodicBefore(0.0);
+
+        Map<String, Double> map = getRateLimitMap(mgr);
+        assertTrue(map.containsKey("SubA"), "Rate limit map should track SubA independently");
+        assertTrue(map.containsKey("SubB"), "Rate limit map should track SubB independently");
+    }
+
+    @Test
+    void forEachSafeRateLimitMapResetBySingletonReset() throws Exception {
+        SubsystemManager mgr = SubsystemManager.getInstance();
+        ThrowingSubsystem thrower = new ThrowingSubsystem("Thrower");
+        mgr.addSubsystem(thrower);
+        mgr.robotPeriodicBefore(0.0);
+
+        // Reset singleton (same as @BeforeEach) and get fresh instance
+        resetSingleton();
+        SubsystemManager fresh = SubsystemManager.getInstance();
+
+        Map<String, Double> map = getRateLimitMap(fresh);
+        assertTrue(map.isEmpty(), "Fresh singleton should have empty rate limit map");
     }
 }

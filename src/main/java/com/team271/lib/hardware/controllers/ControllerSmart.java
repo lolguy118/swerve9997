@@ -3,6 +3,7 @@ package com.team271.lib.hardware.controllers;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.motors.MotorBase;
+import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.nt.NTEntry;
 
 public abstract class ControllerSmart extends ControllerBase {
@@ -36,6 +37,16 @@ public abstract class ControllerSmart extends ControllerBase {
     final NTEntry ntCLOutput = new NTEntry(table, "CL Output", 0);
 
     /*
+     * Tuning Inputs (LoggedNTInput)
+     */
+    private final LoggedNTInput tuneStatorEnable;
+    private final LoggedNTInput tuneStatorLimit;
+    private final LoggedNTInput tuneSupplyEnable;
+    private final LoggedNTInput tuneSupplyLimit;
+    private final LoggedNTInput tuneVoltagePeakFwd;
+    private final LoggedNTInput tuneVoltagePeakRev;
+
+    /*
      *
      * Constructors
      *
@@ -47,6 +58,13 @@ public abstract class ControllerSmart extends ControllerBase {
             final CANDeviceID argID,
             final MotorBase argMotor) {
         super(argParent, "(Smart)" + argName, argControllerType, argID, argMotor);
+
+        tuneStatorEnable = new LoggedNTInput(table, "Tune Stator Enable", false);
+        tuneStatorLimit = new LoggedNTInput(table, "Tune Stator Limit", 40.0);
+        tuneSupplyEnable = new LoggedNTInput(table, "Tune Supply Enable", false);
+        tuneSupplyLimit = new LoggedNTInput(table, "Tune Supply Limit", 30.0);
+        tuneVoltagePeakFwd = new LoggedNTInput(table, "Tune Voltage Peak Fwd", 16.0);
+        tuneVoltagePeakRev = new LoggedNTInput(table, "Tune Voltage Peak Rev", -16.0);
     }
 
     /*
@@ -159,11 +177,30 @@ public abstract class ControllerSmart extends ControllerBase {
 
     /*
      *
+     * Tuning
+     *
+     */
+    protected void checkTuning() {
+        if (tuneStatorEnable.hasBoolChanged() || tuneStatorLimit.hasChanged()) {
+            setCurrentLimitStator(tuneStatorEnable.getBool(), tuneStatorLimit.getDbl());
+        }
+        if (tuneSupplyEnable.hasBoolChanged() || tuneSupplyLimit.hasChanged()) {
+            setCurrentLimitSupply(tuneSupplyEnable.getBool(), tuneSupplyLimit.getDbl());
+        }
+        if (tuneVoltagePeakFwd.hasChanged() || tuneVoltagePeakRev.hasChanged()) {
+            setVoltagePeak(tuneVoltagePeakFwd.getDbl(), tuneVoltagePeakRev.getDbl(), 0.0);
+        }
+    }
+
+    /*
+     *
      * Telemetry
      *
      */
     @Override
     public void outputTelemetry() {
+        checkTuning();
+
         super.outputTelemetry();
 
         ntCurrentLimitStatorEnable.publish(getCurrentLimitStatorEnable());

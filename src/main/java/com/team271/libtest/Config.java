@@ -1,15 +1,16 @@
 package com.team271.libtest;
 
+import com.team271.libtest.Config.RobotType;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public final class Config {
-    public enum Mode {
+    public static enum Mode {
         REAL,
         SIM,
         REPLAY
     }
 
-    public enum RobotType {
+    public static enum RobotType {
         COMPETITION_BOT,
         PRACTICE_BOT,
         SIM_BOT

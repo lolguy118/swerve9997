@@ -1,9 +1,9 @@
 {
-    "recommendations": [
-        "anthropic.claude-code",
-        "vscjava.vscode-gradle",
-        "redhat.java",
-        "naco-siren.gradle-language",
-        "richardwillis.vscode-spotless-gradle"
-    ]
+  "recommendations": [
+    "anthropic.claude-code",
+    "vscjava.vscode-gradle",
+    "redhat.java",
+    "naco-siren.gradle-language",
+    "richardwillis.vscode-spotless-gradle"
+  ]
 }

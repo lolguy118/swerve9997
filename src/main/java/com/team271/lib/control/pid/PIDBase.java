@@ -1,6 +1,7 @@
 package com.team271.lib.control.pid;
 
 import com.team271.lib.TObj;
+import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.util.Util;
 import edu.wpi.first.math.MathUtil;
@@ -154,6 +155,20 @@ public class PIDBase extends TObj {
     final NTEntry pubPosError = new NTEntry(table, "Positional Error", 0.0);
     final NTEntry pubVelError = new NTEntry(table, "Velocity Error", 0.0);
 
+    final NTEntry ntAtSetpoint = new NTEntry(table, "At Setpoint", false);
+
+    /*
+     * Tuning Inputs (LoggedNTInput)
+     */
+    private LoggedNTInput tuneP;
+    private LoggedNTInput tuneI;
+    private LoggedNTInput tuneD;
+    private LoggedNTInput tunePosTol;
+    private LoggedNTInput tunePDeadband;
+    private LoggedNTInput tuneIZone;
+    private LoggedNTInput tuneOutputMin;
+    private LoggedNTInput tuneOutputMax;
+
     /*
      * Allocate a PID Base object with the given constants for P, I, D, and
      * Tolerance
@@ -182,6 +197,15 @@ public class PIDBase extends TObj {
          */
         setPID(argP, argI, argD);
         setTolerance(argTol);
+
+        tuneP = new LoggedNTInput(table, "Tune P", argP);
+        tuneI = new LoggedNTInput(table, "Tune I", argI);
+        tuneD = new LoggedNTInput(table, "Tune D", argD);
+        tunePosTol = new LoggedNTInput(table, "Tune Pos Tol", argTol);
+        tunePDeadband = new LoggedNTInput(table, "Tune P Deadband", 0.0);
+        tuneIZone = new LoggedNTInput(table, "Tune I Zone", Double.POSITIVE_INFINITY);
+        tuneOutputMin = new LoggedNTInput(table, "Tune Output Min", -1.0);
+        tuneOutputMax = new LoggedNTInput(table, "Tune Output Max", 1.0);
 
         reset();
     }
@@ -494,10 +518,29 @@ public class PIDBase extends TObj {
 
     /*
      *
+     * Tuning
+     *
+     */
+    protected void checkTuning() {
+        if (tuneP.hasChanged()) setP(tuneP.getDbl());
+        if (tuneI.hasChanged()) setI(tuneI.getDbl());
+        if (tuneD.hasChanged()) setD(tuneD.getDbl());
+        if (tunePosTol.hasChanged()) setTolerance(tunePosTol.getDbl());
+        if (tunePDeadband.hasChanged()) setPDeadband(tunePDeadband.getDbl());
+        if (tuneIZone.hasChanged()) setIZone(tuneIZone.getDbl());
+        if (tuneOutputMin.hasChanged() || tuneOutputMax.hasChanged()) {
+            setOutputRange(tuneOutputMin.getDbl(), tuneOutputMax.getDbl());
+        }
+    }
+
+    /*
+     *
      * Telemetry
      *
      */
     public void outputTelemetry() {
+        checkTuning();
+
         contEnabled.publish(continuousMode.enabled);
         contInputMin.publish(continuousMode.minInput);
         contInputMax.publish(continuousMode.maxInput);
@@ -531,6 +574,8 @@ public class PIDBase extends TObj {
         pubTotalError.publish(totalError);
         pubPosError.publish(posError);
         pubVelError.publish(velError);
+
+        ntAtSetpoint.publish(atSetpoint());
 
         table.publish();
     }

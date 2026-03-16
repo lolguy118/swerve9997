@@ -8,6 +8,8 @@ import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
 import com.team271.lib.hardware.motors.MotorBase;
+import com.team271.lib.nt.LoggedNTInput;
+import com.team271.lib.nt.NTEntry;
 
 public class TransmissionFX extends TransmissionBase {
     /*
@@ -80,6 +82,16 @@ public class TransmissionFX extends TransmissionBase {
      * Telemetry (NT)
      *
      */
+    final NTEntry ntMMCruiseVel = new NTEntry(table, "MM Cruise Vel", 0.0);
+    final NTEntry ntMMAccel = new NTEntry(table, "MM Accel", 0.0);
+    final NTEntry ntMMJerk = new NTEntry(table, "MM Jerk", 0.0);
+
+    /*
+     * Tuning Inputs (LoggedNTInput)
+     */
+    private LoggedNTInput tuneMMCruiseVel;
+    private LoggedNTInput tuneMMAccel;
+    private LoggedNTInput tuneMMJerk;
 
     /*
      *
@@ -99,6 +111,13 @@ public class TransmissionFX extends TransmissionBase {
         // UpdateFreqHz already set to 0 in field initializers (required for timesync)
 
         configMM = getLeaderController().getConfigMM();
+
+        double defaultCruise = (configMM != null) ? configMM.MotionMagicCruiseVelocity : 0.0;
+        double defaultAccel = (configMM != null) ? configMM.MotionMagicAcceleration : 0.0;
+        double defaultJerk = (configMM != null) ? configMM.MotionMagicJerk : 0.0;
+        tuneMMCruiseVel = new LoggedNTInput(table, "Tune MM Cruise Vel", defaultCruise);
+        tuneMMAccel = new LoggedNTInput(table, "Tune MM Accel", defaultAccel);
+        tuneMMJerk = new LoggedNTInput(table, "Tune MM Jerk", defaultJerk);
 
         // FOC is enabled by default in Phoenix 6 v26 for all control requests
     }
@@ -575,8 +594,22 @@ public class TransmissionFX extends TransmissionBase {
      * Telemetry
      *
      */
+    protected void checkTuning() {
+        if (tuneMMCruiseVel.hasChanged() || tuneMMAccel.hasChanged() || tuneMMJerk.hasChanged()) {
+            setMMConfig(tuneMMCruiseVel.getDbl(), tuneMMAccel.getDbl(), tuneMMJerk.getDbl());
+        }
+    }
+
     @Override
     public void outputTelemetry() {
+        checkTuning();
+
         super.outputTelemetry();
+
+        if (configMM != null) {
+            ntMMCruiseVel.publish(configMM.MotionMagicCruiseVelocity);
+            ntMMAccel.publish(configMM.MotionMagicAcceleration);
+            ntMMJerk.publish(configMM.MotionMagicJerk);
+        }
     }
 }

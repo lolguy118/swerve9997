@@ -1,5 +1,9 @@
 package com.team271.lib.control;
 
+import com.team271.lib.nt.LoggedNTInput;
+import com.team271.lib.nt.NTTable;
+import org.littletonrobotics.junction.Logger;
+
 public class Balance {
     private boolean isFwd = false;
     private int state;
@@ -10,8 +14,22 @@ public class Balance {
     private double levelDegree;
     private double debounceTime;
 
+    private final NTTable table = new NTTable("Balance");
+
+    private final LoggedNTInput tuneSpeedSlow;
+    private final LoggedNTInput tuneSpeedFast;
+    private final LoggedNTInput tuneOnChargeDeg;
+    private final LoggedNTInput tuneLevelDeg;
+    private final LoggedNTInput tuneDebounceTime;
+
     public Balance(final boolean argIsFwd) {
         isFwd = argIsFwd;
+
+        tuneSpeedSlow = new LoggedNTInput(table, "Tune Speed Slow", 0.2);
+        tuneSpeedFast = new LoggedNTInput(table, "Tune Speed Fast", 0.6);
+        tuneOnChargeDeg = new LoggedNTInput(table, "Tune On Charge Deg", 13.0);
+        tuneLevelDeg = new LoggedNTInput(table, "Tune Level Deg", 6.0);
+        tuneDebounceTime = new LoggedNTInput(table, "Tune Debounce Time", 0.1);
     }
 
     public void init() {
@@ -144,5 +162,28 @@ public class Balance {
             default:
                 return 0;
         }
+    }
+
+    protected void checkTuning() {
+        if (tuneSpeedSlow.hasChanged()) robotSpeedSlow = tuneSpeedSlow.getDbl();
+        if (tuneSpeedFast.hasChanged()) robotSpeedFast = tuneSpeedFast.getDbl();
+        if (tuneOnChargeDeg.hasChanged()) {
+            onChargeStationDegree = isFwd ? -tuneOnChargeDeg.getDbl() : tuneOnChargeDeg.getDbl();
+        }
+        if (tuneLevelDeg.hasChanged()) {
+            levelDegree = isFwd ? -tuneLevelDeg.getDbl() : tuneLevelDeg.getDbl();
+        }
+        if (tuneDebounceTime.hasChanged()) debounceTime = tuneDebounceTime.getDbl();
+    }
+
+    public void outputTelemetry() {
+        checkTuning();
+
+        Logger.recordOutput("Balance/State", state);
+        Logger.recordOutput("Balance/DebounceCount", debounceCount);
+        Logger.recordOutput("Balance/RobotSpeedSlow", robotSpeedSlow);
+        Logger.recordOutput("Balance/RobotSpeedFast", robotSpeedFast);
+        Logger.recordOutput("Balance/OnChargeStationDegree", onChargeStationDegree);
+        Logger.recordOutput("Balance/LevelDegree", levelDegree);
     }
 }

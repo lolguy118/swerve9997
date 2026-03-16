@@ -15,7 +15,7 @@ public class SwitchCANCoder extends SwitchBase {
     protected static final int RETRY_COUNT_CAN = 5;
 
     /*
-     * TalonFX
+     * TalonFX (remote limit via CANCoder)
      */
     protected final ControllerTalonFX controller;
     protected double updateFreqHz = 250.0;

@@ -3,17 +3,16 @@ package com.team271.lib.hardware.sensors.encoders;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
 
+/**
+ * Marker subclass of EncoderFX for latency-compensated TalonFX internal encoders.
+ *
+ * <p>Note: {@link EncoderFX#refresh()} already applies latency compensation via {@code
+ * BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel)}. This subclass exists as a
+ * type-level distinction so that {@link
+ * com.team271.lib.hardware.transmissions.TransmissionBase#addEncoderFX} can differentiate between
+ * compensated and non-compensated encoder configurations.
+ */
 public class EncoderFXComp extends EncoderFX {
-
-    /*
-     * Variables
-     */
-
-    /*
-     *
-     * Telemetry (NT)
-     *
-     */
 
     /*
      *

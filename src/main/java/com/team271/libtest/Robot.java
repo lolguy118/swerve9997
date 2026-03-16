@@ -4,9 +4,14 @@
 
 package com.team271.libtest;
 
+import com.team271.lib.TRobot;
 import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.subsystem.SubsystemManager;
 import com.team271.lib.wpilib.TimedRobot;
+import com.team271.libtest.subsystems.Infrastructure;
+import com.team271.libtest.subsystems.Input.InputDriver;
+import com.team271.libtest.subsystems.Input.InputOp;
+import com.team271.libtest.subsystems.Superstructure;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
@@ -33,13 +38,31 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        TRobot root = new TRobot();
+
+        /*
+         * Create Subsystems (order matters — producers before consumers)
+         */
+        Globals.inputDriver = new InputDriver(root);
+        Globals.inputOp = new InputOp(root);
+        Globals.infrastructure = new Infrastructure(root);
+        Globals.superstructure = new Superstructure(root);
+
+        /*
+         * Register Subsystems (iteration order = update order)
+         */
+        mSubsystemManager.addSubsystem(Globals.inputDriver);
+        mSubsystemManager.addSubsystem(Globals.inputOp);
+        mSubsystemManager.addSubsystem(Globals.infrastructure);
+        mSubsystemManager.addSubsystem(Globals.superstructure);
+
         /*
          * Subsystem Init
          */
         mSubsystemManager.robotInit(mTimestamp);
 
         /*
-         * CTRE Init
+         * CTRE Init (must be AFTER subsystem init — optimizes bus, builds signal arrays)
          */
         CTREManager.init();
     }
@@ -74,6 +97,11 @@ public class Robot extends TimedRobot {
         mSubsystemManager.disabledPeriodic(mTimestamp);
     }
 
+    @Override
+    public void disabledExit() {
+        mSubsystemManager.disabledExit(mTimestamp);
+    }
+
     /*
      * Auto
      */
@@ -87,6 +115,11 @@ public class Robot extends TimedRobot {
         mSubsystemManager.autonomousPeriodic(mTimestamp);
     }
 
+    @Override
+    public void autonomousExit() {
+        mSubsystemManager.autonomousExit(mTimestamp);
+    }
+
     /*
      * Teleop
      */
@@ -98,6 +131,29 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         mSubsystemManager.teleopPeriodic(mTimestamp);
+    }
+
+    @Override
+    public void teleopExit() {
+        mSubsystemManager.teleopExit(mTimestamp);
+    }
+
+    /*
+     * Test
+     */
+    @Override
+    public void testInit() {
+        mSubsystemManager.testInit(mTimestamp);
+    }
+
+    @Override
+    public void testPeriodic() {
+        mSubsystemManager.testPeriodic(mTimestamp);
+    }
+
+    @Override
+    public void testExit() {
+        mSubsystemManager.testExit(mTimestamp);
     }
 
     /*

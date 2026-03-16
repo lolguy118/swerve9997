@@ -1,10 +1,7 @@
 package com.team271.lib.control;
 
-// import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-
 public class Balance {
     private boolean isFwd = false;
-    // private BuiltInAccelerometer mRioAccel;
     private int state;
     private int debounceCount;
     private double robotSpeedSlow;
@@ -13,39 +10,11 @@ public class Balance {
     private double levelDegree;
     private double debounceTime;
 
-    // private double singleTapTime;
-    // private double scoringBackUpTime;
-    // private double doubleTapTime;
-
     public Balance(final boolean argIsFwd) {
         isFwd = argIsFwd;
     }
 
-    /*
-     * public double getPitch() {
-     * return Math.atan2((-mRioAccel.getX()),
-     * Math.sqrt(mRioAccel.getY() * mRioAccel.getY() + mRioAccel.getZ() *
-     * mRioAccel.getZ())) * 57.3;
-     * }
-     *
-     * public double getRoll() {
-     * return Math.atan2(mRioAccel.getY(), mRioAccel.getZ()) * 57.3;
-     * }
-     *
-     * // returns the magnitude of the robot's tilt calculated by the root of
-     * // pitch^2 + roll^2, used to compensate for diagonally mounted rio
-     * public double getTilt() {
-     * double pitch = getPitch();
-     * double roll = getRoll();
-     * if ((pitch + roll) >= 0) {
-     * return Math.sqrt(pitch * pitch + roll * roll);
-     * } else {
-     * return -Math.sqrt(pitch * pitch + roll * roll);
-     * }
-     * }
-     */
     public void init() {
-        // mRioAccel = new BuiltInAccelerometer();
         state = 0;
         debounceCount = 0;
 
@@ -74,18 +43,6 @@ public class Balance {
         // slower, default = 0.2
         debounceTime = 0.1;
 
-        // Amount of time to drive towards to scoring target when trying to bump the
-        // game piece off
-        // Time it takes to go from starting position to hit the scoring target
-        // singleTapTime = 0.4;
-
-        // Amount of time to drive away from knocked over gamepiece before the second
-        // tap
-        // scoringBackUpTime = 0.2;
-
-        // Amount of time to drive forward to secure the scoring of the gamepiece
-        // doubleTapTime = 0.3;
-
         if (isFwd) {
             onChargeStationDegree = onChargeStationDegree * -1;
             levelDegree = levelDegree * -1;
@@ -100,7 +57,6 @@ public class Balance {
     // returns a value from -1.0 to 1.0, which left and right motors should be set
     // to.
     public double autoBalanceRoutineReverse(final double argTilt) {
-        // System.out.println("argTilt: " + argTilt);
         switch (state) {
             // drive forwards to approach station, exit when tilt is detected
             case 0:
@@ -126,7 +82,7 @@ public class Balance {
                 return robotSpeedSlow;
             // on charge station, stop motors and wait for end of auto
             case 2:
-                if (Math.abs(argTilt) <= levelDegree / 2) {
+                if (Math.abs(argTilt) <= Math.abs(levelDegree) / 2) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -146,7 +102,6 @@ public class Balance {
     }
 
     public double autoBalanceRoutineForward(final double argTilt) {
-        // System.out.println("argTilt: " + argTilt);
         switch (state) {
             // drive forwards to approach station, exit when tilt is detected
             case 0:
@@ -190,70 +145,4 @@ public class Balance {
                 return 0;
         }
     }
-
-    /*
-     * // Same as auto balance above, but starts auto period by scoring
-     * // a game piece on the back bumper of the robot
-     * public double scoreAndBalance() {
-     * switch (state) {
-     * // drive back, then forwards, then back again to knock off and score game
-     * piece
-     * case 0:
-     * debounceCount++;
-     * if (debounceCount < secondsToTicks(singleTapTime)) {
-     * return -robotSpeedFast;
-     * } else if (debounceCount < secondsToTicks(singleTapTime + scoringBackUpTime))
-     * {
-     * return robotSpeedFast;
-     * } else if (debounceCount < secondsToTicks(singleTapTime + scoringBackUpTime +
-     * doubleTapTime)) {
-     * return -robotSpeedFast;
-     * } else {
-     * debounceCount = 0;
-     * state = 1;
-     * return 0;
-     * }
-     * // drive forwards until on charge station
-     * case 1:
-     * if (getTilt() > onChargeStationDegree) {
-     * debounceCount++;
-     * }
-     * if (debounceCount > secondsToTicks(debounceTime)) {
-     * state = 2;
-     * debounceCount = 0;
-     * return robotSpeedSlow;
-     * }
-     * return robotSpeedFast;
-     * // driving up charge station, drive slower, stopping when level
-     * case 2:
-     * if (getTilt() < levelDegree) {
-     * debounceCount++;
-     * }
-     * if (debounceCount > secondsToTicks(debounceTime)) {
-     * state = 3;
-     * debounceCount = 0;
-     * return 0;
-     * }
-     * return robotSpeedSlow;
-     * // on charge station, ensure robot is flat, then end auto
-     * case 3:
-     * if (Math.abs(getTilt()) <= levelDegree / 2) {
-     * debounceCount++;
-     * }
-     * if (debounceCount > secondsToTicks(debounceTime)) {
-     * state = 4;
-     * debounceCount = 0;
-     * return 0;
-     * }
-     * if (getTilt() >= levelDegree) {
-     * return robotSpeedSlow / 2;
-     * } else if (getTilt() <= -levelDegree) {
-     * return -robotSpeedSlow / 2;
-     * }
-     * case 4:
-     * return 0;
-     * }
-     * return 0;
-     * }
-     */
 }

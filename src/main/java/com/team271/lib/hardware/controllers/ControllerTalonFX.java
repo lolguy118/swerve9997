@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.MotorOutputStatusValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.*;
+import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.CTREManager;
@@ -296,8 +297,8 @@ public class ControllerTalonFX extends ControllerSmart {
     public ControllerStatus applyConfig() {
         ControllerStatus status = ControllerStatus.UNKNOWN;
 
-        /* Retry config apply up to 5 times with 50ms timeout per attempt */
-        for (int i = 0; i < 5; ++i) {
+        /* Retry config apply up to CAN_RETRY_COUNT times with 50ms timeout per attempt */
+        for (int i = 0; i < ConstantsLib.CAN_RETRY_COUNT; ++i) {
             fxStatus = talonFX.getConfigurator().apply(config, 0.050);
             if (fxStatus.isOK()) {
                 status = ControllerStatus.OK;
@@ -775,9 +776,7 @@ public class ControllerTalonFX extends ControllerSmart {
         /*
          * Check if the controller is still alive
          */
-        if (talonFX.isConnected()) {
-            isConnected = true;
-        }
+        isConnected = talonFX.isConnected();
     }
 
     /*

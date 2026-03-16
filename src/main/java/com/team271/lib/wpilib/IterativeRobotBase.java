@@ -424,12 +424,7 @@ public abstract class IterativeRobotBase extends RobotBase {
         robotPeriodicAfter();
         m_watchdog.addEpoch("robotPeriodicAfter()");
 
-        // SmartDashboard.updateValues();
-        // m_watchdog.addEpoch("SmartDashboard.updateValues()");
-        // LiveWindow.updateValues();
-        // m_watchdog.addEpoch("LiveWindow.updateValues()");
-        // Shuffleboard.update();
-        // m_watchdog.addEpoch("Shuffleboard.update()");
+        /* SmartDashboard/LiveWindow/Shuffleboard updates intentionally omitted — telemetry uses NTEntry */
 
         if (isSimulation()) {
             HAL.simPeriodicBefore();

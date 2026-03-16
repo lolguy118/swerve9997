@@ -6,6 +6,7 @@ import com.team271.lib.TObj;
 import com.team271.lib.control.pid.PIDBase;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.controllers.ControllerBase;
+import com.team271.lib.hardware.controllers.ControllerBase.ControllerStatus;
 import com.team271.lib.hardware.controllers.ControllerBase.MotorDirection;
 import com.team271.lib.hardware.controllers.ControllerBase.NeutralState;
 import com.team271.lib.hardware.controllers.ControllerSmart;
@@ -18,6 +19,7 @@ import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchType;
 import com.team271.lib.hardware.sensors.switches.SwitchFX;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DriverStation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -225,7 +227,19 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void applyConfigs() {
-        allControllers.forEach(ControllerBase::applyConfig);
+        for (ControllerBase c : allControllers) {
+            ControllerStatus status = c.applyConfig();
+            if (status != ControllerStatus.OK) {
+                DriverStation.reportWarning(
+                        getName()
+                                + ": config apply failed for "
+                                + c.getName()
+                                + " (status="
+                                + status
+                                + ")",
+                        false);
+            }
+        }
     }
 
     /*
@@ -299,12 +313,12 @@ public abstract class TransmissionBase extends TObj {
      * Current Limits
      */
     public void configCurrentLimitStator(final boolean argEnable, final double argStatorCurrent) {
-        // Omar: Good Idea to apply to all
+        /* Apply to all controllers (leader + followers) */
         allControllers.forEach(t -> t.setCurrentLimitStator(argEnable, argStatorCurrent));
     }
 
     public void configCurrentLimitSupply(final boolean argEnable, final double argSupplyCurrent) {
-        // Omar: Good Idea to apply to all
+        /* Apply to all controllers (leader + followers) */
         allControllers.forEach(t -> t.setCurrentLimitSupply(argEnable, argSupplyCurrent));
     }
 
@@ -312,7 +326,7 @@ public abstract class TransmissionBase extends TObj {
             final double argSupplyCurrentLimit,
             final double argTime,
             double argSupplyCurrentLowerLimit) {
-        // Omar: Good Idea to apply to all
+        /* Apply to all controllers (leader + followers) */
         allControllers.forEach(
                 t ->
                         t.setCurrentLimitSupply(
@@ -324,7 +338,7 @@ public abstract class TransmissionBase extends TObj {
      */
     public void configVoltagePeak(
             final double argFwdVoltage, final double argRevVoltage, final double argTimeFilter) {
-        // Omar: Only Apply to Leader
+        /* Apply to leader only */
         leader.setVoltagePeak(argFwdVoltage, argRevVoltage, argTimeFilter);
     }
 
@@ -332,12 +346,12 @@ public abstract class TransmissionBase extends TObj {
      * Ramping Open Loop
      */
     public void configRampOpenLoopDuty(final double argRampRateSec) {
-        // Omar: Only Apply to Leader
+        /* Apply to leader only */
         leader.setRampOpenLoopDuty(argRampRateSec);
     }
 
     public void configRampOpenLoopVoltage(final double argRampRateSec) {
-        // Omar: Only Apply to Leader
+        /* Apply to leader only */
         leader.setRampOpenLoopVoltage(argRampRateSec);
     }
 
@@ -345,12 +359,12 @@ public abstract class TransmissionBase extends TObj {
      * Ramping Closed Loop
      */
     public void configRampClosedLoopDuty(final double argRampRateSec) {
-        // Omar: Only Apply to Leader
+        /* Apply to leader only */
         leader.setRampClosedLoopDuty(argRampRateSec);
     }
 
     public void configRampClosedLoopVoltage(final double argRampRateSec) {
-        // Omar: Only Apply to Leader
+        /* Apply to leader only */
         leader.setRampClosedLoopVoltage(argRampRateSec);
     }
 

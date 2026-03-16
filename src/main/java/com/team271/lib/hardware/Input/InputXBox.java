@@ -15,31 +15,34 @@ public class InputXBox extends Input {
 
     /*
      * Joysticks
+     *
+     * Note: Y axes are NOT inverted here (unlike Input8BitDuo, InputPS4, InputEnvisionPro).
+     * This is intentional — inversion is handled by the consumer code.
      */
     public double getRightY() {
         if (mController.isConnected()) {
-            return axis[XboxController.Axis.kRightY.value] * 1.0;
+            return axis[XboxController.Axis.kRightY.value];
         }
         return 0.0;
     }
 
     public double getRightX() {
         if (mController.isConnected()) {
-            return axis[XboxController.Axis.kRightX.value] * 1.0;
+            return axis[XboxController.Axis.kRightX.value];
         }
         return 0.0;
     }
 
     public double getLeftY() {
         if (mController.isConnected()) {
-            return axis[XboxController.Axis.kLeftY.value] * 1.0;
+            return axis[XboxController.Axis.kLeftY.value];
         }
         return 0.0;
     }
 
     public double getLeftX() {
         if (mController.isConnected()) {
-            return axis[XboxController.Axis.kLeftX.value] * 1.0;
+            return axis[XboxController.Axis.kLeftX.value];
         }
         return 0.0;
     }

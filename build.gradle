@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
     id "com.diffplug.spotless" version "7.0.4"
+    id "jacoco"
 }
 
 java {
@@ -79,6 +80,28 @@ dependencies {
 test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                'com/team271/libtest/**',
+                'com/team271/lib/wpilib/**'
+            ])
+        })
+    }
 }
 
 // Code formatting — run `./gradlew spotlessApply` to auto-format

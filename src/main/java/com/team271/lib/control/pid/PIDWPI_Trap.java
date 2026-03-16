@@ -82,21 +82,27 @@ public class PIDWPI_Trap extends PIDBase {
     public void setTolerance(final double argTolerance) {
         super.setTolerance(argTolerance);
 
-        controller.setTolerance(pidSlot.posTolerance);
+        if (controller != null) {
+            controller.setTolerance(pidSlot.posTolerance);
+        }
     }
 
     @Override
     public void setP(final double argP) {
         super.setP(argP);
 
-        controller.setP(pidSlot.kP);
+        if (controller != null) {
+            controller.setP(pidSlot.kP);
+        }
     }
 
     @Override
     public void setI(final double argI) {
         super.setI(argI);
 
-        controller.setI(pidSlot.kI);
+        if (controller != null) {
+            controller.setI(pidSlot.kI);
+        }
     }
 
     @Override
@@ -104,21 +110,27 @@ public class PIDWPI_Trap extends PIDBase {
             final double argMinimumIntegral, final double argMaximumIntegral) {
         super.setIntegratorRange(argMinimumIntegral, argMaximumIntegral);
 
-        controller.setIntegratorRange(pidSlot.iMin, pidSlot.iMax);
+        if (controller != null) {
+            controller.setIntegratorRange(pidSlot.iMin, pidSlot.iMax);
+        }
     }
 
     @Override
     public void setD(final double argD) {
         super.setD(argD);
 
-        controller.setD(pidSlot.kD);
+        if (controller != null) {
+            controller.setD(pidSlot.kD);
+        }
     }
 
     @Override
     public void setPID(final double argP, final double argI, final double argD) {
         super.setPID(argP, argI, argD);
 
-        controller.setPID(pidSlot.kP, pidSlot.kI, pidSlot.kD);
+        if (controller != null) {
+            controller.setPID(pidSlot.kP, pidSlot.kI, pidSlot.kD);
+        }
     }
 
     /*

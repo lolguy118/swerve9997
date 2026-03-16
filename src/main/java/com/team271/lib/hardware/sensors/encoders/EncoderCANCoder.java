@@ -38,6 +38,7 @@ public class EncoderCANCoder extends EncoderCTRE {
      */
     final NTEntry ntPosBoot = new NTEntry(table, "PosBoot", 0.0);
     final NTEntry ntPosAbs = new NTEntry(table, "PosAbs", 0.0);
+    final NTEntry ntMagnetOffset = new NTEntry(table, "Magnet Offset", 0.0);
 
     /*
      *
@@ -235,5 +236,6 @@ public class EncoderCANCoder extends EncoderCTRE {
 
         ntPosBoot.publish(getPosBootRotations());
         ntPosAbs.publish(getPosAbsRotations());
+        ntMagnetOffset.publish(encConfig.MagnetSensor.MagnetOffset);
     }
 }

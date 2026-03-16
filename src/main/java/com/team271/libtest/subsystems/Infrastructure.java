@@ -2,6 +2,7 @@ package com.team271.libtest.subsystems;
 
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.sensors.imu.IMUPigeon2;
+import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.subsystem.Subsystem;
 import com.team271.libtest.Constants;
@@ -66,16 +67,31 @@ public class Infrastructure extends Subsystem {
     @Override
     public void disabledInit(final double argTimestamp) {
         robotMode = RobotMode.DISABLED;
+        Elastic.sendNotification(
+                new Elastic.Notification(
+                        Elastic.Notification.NotificationLevel.WARNING,
+                        "Robot Mode",
+                        "Robot Disabled"));
     }
 
     @Override
     public void autonomousInit(final double argTimestamp) {
         robotMode = RobotMode.AUTONOMOUS;
+        Elastic.sendNotification(
+                new Elastic.Notification(
+                        Elastic.Notification.NotificationLevel.INFO,
+                        "Robot Mode",
+                        "Autonomous Enabled"));
     }
 
     @Override
     public void teleopInit(final double argTimestamp) {
         robotMode = RobotMode.TELEOP;
+        Elastic.sendNotification(
+                new Elastic.Notification(
+                        Elastic.Notification.NotificationLevel.INFO,
+                        "Robot Mode",
+                        "Teleop Enabled"));
     }
 
     @Override

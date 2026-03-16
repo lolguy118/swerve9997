@@ -1,8 +1,10 @@
 package com.team271.lib.auto;
 
+import com.team271.lib.misc.Elastic;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 import java.util.List;
+import org.littletonrobotics.junction.Logger;
 
 public abstract class AutoMode {
     protected boolean isRunning = false;
@@ -50,6 +52,10 @@ public abstract class AutoMode {
             if (currentMove != null) {
                 currentMove.start();
             }
+
+            Elastic.sendNotification(
+                    new Elastic.Notification(
+                            Elastic.Notification.NotificationLevel.INFO, "Auto", "Auto Started"));
         }
     }
 
@@ -59,6 +65,12 @@ public abstract class AutoMode {
         elapsedTimer.stop();
 
         setCompleted();
+
+        Logger.recordOutput("Auto/Running", false);
+        Logger.recordOutput("Auto/Complete", true);
+        Elastic.sendNotification(
+                new Elastic.Notification(
+                        Elastic.Notification.NotificationLevel.INFO, "Auto", "Auto Complete"));
     }
 
     public boolean isDelayDone() {
@@ -95,6 +107,10 @@ public abstract class AutoMode {
         if (isRunning()) {
             lastTime = currentTime;
             currentTime = elapsedTimer.get();
+
+            Logger.recordOutput("Auto/Running", true);
+            Logger.recordOutput("Auto/CurrentTime", currentTime);
+            Logger.recordOutput("Auto/MoveIndex", currentMoveIdx);
 
             /*
              * Do Moves

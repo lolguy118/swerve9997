@@ -166,4 +166,8 @@ public class IMUPigeon2 extends IMUCTRE {
      * Telemetry
      *
      */
+    @Override
+    public void outputTelemetry() {
+        super.outputTelemetry();
+    }
 }

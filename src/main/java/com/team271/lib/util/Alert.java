@@ -1,16 +1,17 @@
 package com.team271.lib.util;
 
+import com.team271.lib.misc.Elastic;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import org.littletonrobotics.junction.Logger;
 
 /* Class for managing persistent alerts to be sent over NetworkTables. */
 public class Alert {
@@ -43,7 +44,6 @@ public class Alert {
     public Alert(String group, String text, AlertType type) {
         if (!groups.containsKey(group)) {
             groups.put(group, new SendableAlerts());
-            SmartDashboard.putData(group, groups.get(group));
         }
 
         this.text = text;
@@ -61,12 +61,21 @@ public class Alert {
             switch (type) {
                 case ERROR:
                     DriverStation.reportError(text, false);
+                    Elastic.sendNotification(
+                            new Elastic.Notification(
+                                    Elastic.Notification.NotificationLevel.ERROR, "Alert", text));
                     break;
                 case WARNING:
                     DriverStation.reportWarning(text, false);
+                    Elastic.sendNotification(
+                            new Elastic.Notification(
+                                    Elastic.Notification.NotificationLevel.WARNING, "Alert", text));
                     break;
                 case INFO:
                     DriverStation.reportWarning(text, false);
+                    Elastic.sendNotification(
+                            new Elastic.Notification(
+                                    Elastic.Notification.NotificationLevel.INFO, "Alert", text));
                     break;
             }
         }
@@ -89,6 +98,17 @@ public class Alert {
             }
         }
         this.text = text;
+    }
+
+    /** Logs all alert string arrays per group via AK Logger. */
+    public static void outputTelemetry() {
+        for (Map.Entry<String, SendableAlerts> entry : groups.entrySet()) {
+            String group = entry.getKey();
+            SendableAlerts alerts = entry.getValue();
+            Logger.recordOutput(group + "/errors", alerts.getStrings(AlertType.ERROR));
+            Logger.recordOutput(group + "/warnings", alerts.getStrings(AlertType.WARNING));
+            Logger.recordOutput(group + "/infos", alerts.getStrings(AlertType.INFO));
+        }
     }
 
     private static class SendableAlerts implements Sendable {

@@ -17,6 +17,7 @@ import com.team271.lib.hardware.sensors.switches.SwitchBase;
 import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchTrigger;
 import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchType;
 import com.team271.lib.hardware.sensors.switches.SwitchFX;
+import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -112,6 +113,9 @@ public abstract class TransmissionBase extends TObj {
 
     final NTEntry tMechVelFX = new NTEntry(table, "Mech Vel FX", 0.0);
     final NTEntry tMechVelEnc = new NTEntry(table, "Mech Vel Enc", 0.0);
+
+    final NTEntry ntRotorToMechanism = new NTEntry(table, "Rotor To Mechanism", 1.0);
+    final NTEntry ntSensorRelToMechanism = new NTEntry(table, "Sensor Rel To Mechanism", 1.0);
 
     /*
      *
@@ -230,14 +234,19 @@ public abstract class TransmissionBase extends TObj {
         for (ControllerBase c : allControllers) {
             ControllerStatus status = c.applyConfig();
             if (status != ControllerStatus.OK) {
-                DriverStation.reportWarning(
+                String msg =
                         getName()
                                 + ": config apply failed for "
                                 + c.getName()
                                 + " (status="
                                 + status
-                                + ")",
-                        false);
+                                + ")";
+                DriverStation.reportWarning(msg, false);
+                Elastic.sendNotification(
+                        new Elastic.Notification(
+                                Elastic.Notification.NotificationLevel.ERROR,
+                                "Config Apply Failed",
+                                msg));
             }
         }
     }
@@ -870,5 +879,8 @@ public abstract class TransmissionBase extends TObj {
 
         tMechVelFX.publish(getVelFX());
         tMechVelEnc.publish(getVel());
+
+        ntRotorToMechanism.publish(rotorToMechanism);
+        ntSensorRelToMechanism.publish(sensorRelToMechanism);
     }
 }

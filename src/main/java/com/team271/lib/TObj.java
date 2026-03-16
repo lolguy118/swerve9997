@@ -38,6 +38,11 @@ public abstract class TObj {
         return name;
     }
 
+    /** Build an AdvantageKit log key from this object's NT path. */
+    protected String logKey(final String suffix) {
+        return table.getPath() + "/" + suffix;
+    }
+
     /*
      *
      * Robot

@@ -113,6 +113,9 @@ public class ControllerTalonFX extends ControllerSmart {
     final NTEntry ntOutputVoltage = new NTEntry(table, "Output Voltage", 0);
     final NTEntry ntOutputTorqueCurrent = new NTEntry(table, "Output Torque Current", 0);
 
+    final NTEntry ntSupplyVoltage = new NTEntry(table, "Supply Voltage", 0.0);
+    final NTEntry ntSupplyCurrent = new NTEntry(table, "Supply Current", 0.0);
+
     /*
      *
      * Constructors
@@ -721,6 +724,20 @@ public class ControllerTalonFX extends ControllerSmart {
         return 0;
     }
 
+    public double getSupplyVoltage() {
+        if ((supplyVoltage != null) && supplyVoltage.getStatus().isOK()) {
+            return supplyVoltage.getValueAsDouble();
+        }
+        return 0;
+    }
+
+    public double getSupplyCurrent() {
+        if ((supplyCurrent != null) && supplyCurrent.getStatus().isOK()) {
+            return supplyCurrent.getValueAsDouble();
+        }
+        return 0;
+    }
+
     public void setOutputTorqueCurrent(final double outputTorqueCurrent) {
         valueOutputTorqueCurrent = outputTorqueCurrent;
         motorOutTC.Output = valueOutputTorqueCurrent;
@@ -851,5 +868,8 @@ public class ControllerTalonFX extends ControllerSmart {
         ntOutputDuty.publish(getOutputDuty());
         ntOutputVoltage.publish(getOutputVoltage());
         ntOutputTorqueCurrent.publish(getOutputTorqueCurrent());
+
+        ntSupplyVoltage.publish(getSupplyVoltage());
+        ntSupplyCurrent.publish(getSupplyCurrent());
     }
 }

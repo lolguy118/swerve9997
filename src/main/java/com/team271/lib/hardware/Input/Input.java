@@ -1,6 +1,7 @@
 package com.team271.lib.hardware.Input;
 
 import com.team271.lib.TObj;
+import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.subsystem.Subsystem;
 import com.team271.lib.util.Util;
@@ -37,6 +38,8 @@ public class Input extends Subsystem {
 
     protected boolean isConnected = false;
     protected boolean isConnectedPrev = false;
+
+    protected final NTEntry ntIsConnected = new NTEntry(table, "Is Connected", false);
 
     // Axis
     protected double[] axis;
@@ -250,6 +253,11 @@ public class Input extends Subsystem {
             /*
              * Connection Lost
              */
+            Elastic.sendNotification(
+                    new Elastic.Notification(
+                            Elastic.Notification.NotificationLevel.WARNING,
+                            "Controller Disconnected",
+                            getName() + " has been disconnected"));
             axisCount = DriverStationJNI.kMaxJoystickAxes;
             buttonCount = kMaxButtons;
             povCount = DriverStationJNI.kMaxJoystickPOVs;
@@ -313,6 +321,8 @@ public class Input extends Subsystem {
      */
     @Override
     public void outputTelemetry() {
+        ntIsConnected.publish(isConnected);
+
         /*
          * Publish All Axis
          */

@@ -12,10 +12,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DSControlWord;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import java.util.ConcurrentModificationException;
+import org.littletonrobotics.junction.LoggerBridge;
 
 /*
  * IterativeRobotBase implements a specific type of robot program framework, extending the RobotBase
@@ -323,6 +325,8 @@ public abstract class IterativeRobotBase extends RobotBase {
         DriverStation.refreshData();
         m_watchdog.reset();
 
+        LoggerBridge.periodicBeforeUser();
+
         m_word.refresh();
 
         // Get current mode
@@ -432,6 +436,8 @@ public abstract class IterativeRobotBase extends RobotBase {
             HAL.simPeriodicAfter();
             m_watchdog.addEpoch("simulationPeriodic()");
         }
+
+        LoggerBridge.periodicAfterUser((long) (m_period * 1e6), RobotController.getFPGATime());
 
         m_watchdog.disable();
 

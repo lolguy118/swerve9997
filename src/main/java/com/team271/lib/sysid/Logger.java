@@ -60,13 +60,13 @@ public class Logger {
     protected static final int HAL_THREAD_PRIORITY = 40;
 
     public Logger() {
-        SmartDashboard.putNumber("SysIdVoltageCommand", 0.0);
-        SmartDashboard.putString("SysIdTestType", "");
-        SmartDashboard.putString("SysIdTest", "");
-        SmartDashboard.putBoolean("SysIdRotate", false);
-        SmartDashboard.putBoolean("SysIdOverflow", false);
-        SmartDashboard.putBoolean("SysIdWrongMech", false);
-        SmartDashboard.putNumber("SysIdAckNumber", ackNum);
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/VoltageCommand", 0.0);
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/TestType", "");
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/Test", "");
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/Rotate", false);
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/Overflow", false);
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/WrongMech", false);
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/AckNumber", ackNum);
     }
 
     public void initLogger(final double argTimestamp) {
@@ -74,20 +74,22 @@ public class Logger {
 
         mechanism = SmartDashboard.getString("SysIdTest", "");
         if (!mechanism.equals("")) {
-            SmartDashboard.putBoolean("SysIdWrongMech", isWrongMechanism());
+            org.littletonrobotics.junction.Logger.recordOutput(
+                    "SysId/WrongMech", isWrongMechanism());
         }
 
         testType = SmartDashboard.getString("SysIdTestType", "");
         rotate = SmartDashboard.getBoolean("SysIdRotate", false);
         voltageCommand = SmartDashboard.getNumber("SysIdVoltageCommand", 0.0);
-        SmartDashboard.putString("SysIdTelemetry", "");
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/Telemetry", "");
         ackNum = (int) SmartDashboard.getNumber("SysIdAckNumber", 0);
 
         startTime = argTimestamp;
     }
 
     public void sendData() {
-        SmartDashboard.putBoolean("SysIdOverflow", data.size() >= DATA_VECTOR_SIZE);
+        org.littletonrobotics.junction.Logger.recordOutput(
+                "SysId/Overflow", data.size() >= DATA_VECTOR_SIZE);
 
         StringBuilder ss = new StringBuilder();
 
@@ -102,13 +104,14 @@ public class Logger {
         String direction = voltageCommand > 0 ? "forward" : "backward";
         String test = String.format("%s-%s", type, direction);
 
-        SmartDashboard.putString("SysIdTelemetry", String.format("%s;%s", test, ss.toString()));
-        SmartDashboard.putNumber("SysIdAckNumber", ++ackNum);
+        org.littletonrobotics.junction.Logger.recordOutput(
+                "SysId/Telemetry", String.format("%s;%s", test, ss.toString()));
+        org.littletonrobotics.junction.Logger.recordOutput("SysId/AckNumber", ++ackNum);
     }
 
     public void clearWhenReceived() {
         if (SmartDashboard.getNumber("SysIdAckNumber", 0.0) > ackNum) {
-            SmartDashboard.putString("SysIdTelemetry", "");
+            org.littletonrobotics.junction.Logger.recordOutput("SysId/Telemetry", "");
             ackNum = (int) SmartDashboard.getNumber("SysIdAckNumber", 0.0);
         }
     }

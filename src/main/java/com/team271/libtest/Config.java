@@ -18,9 +18,12 @@ public final class Config {
 
     private static final RobotType ROBOT_TYPE = RobotType.COMPETITION_BOT;
 
+    /** Set to true to enable AdvantageKit log replay mode (only works in simulation). */
+    private static final boolean FORCE_REPLAY = false;
+
     public static Mode getMode() {
         if (RobotBase.isSimulation()) {
-            return Mode.SIM;
+            return FORCE_REPLAY ? Mode.REPLAY : Mode.SIM;
         }
         return Mode.REAL;
     }

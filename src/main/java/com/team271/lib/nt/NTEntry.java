@@ -2,33 +2,30 @@ package com.team271.lib.nt;
 
 import static com.team271.lib.ConstantsLib.*;
 
-import com.team271.lib.util.Util;
-import edu.wpi.first.networktables.GenericPublisher;
 import edu.wpi.first.networktables.GenericSubscriber;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.Topic;
+import org.littletonrobotics.junction.Logger;
 
 public class NTEntry {
     protected final NTTable table;
 
     protected final Topic topic;
 
-    protected GenericSubscriber sub = null;
-    protected GenericPublisher pub = null;
+    /** AK log key built from table path + topic name. Null when table is null. */
+    private final String logPath;
 
-    boolean valueBool = false;
-    double valueDbl = 0.0;
-    long valueLong = 0;
-    long valueInt = 0;
-    String valueStr = "";
+    protected GenericSubscriber sub = null;
 
     public NTEntry(final NTTable argTable, final String argTopicName) {
         table = argTable;
 
         if (table != null) {
             topic = table.getTopic(argTopicName);
+            logPath = table.getPath() + "/" + argTopicName;
         } else {
             topic = null;
+            logPath = null;
         }
     }
 
@@ -107,15 +104,6 @@ public class NTEntry {
                             PubSubOption.periodic(argRate),
                             PubSubOption.pollStorage(20),
                             PubSubOption.sendAll(false));
-            pub =
-                    topic.genericPublish(
-                            "boolean",
-                            PubSubOption.keepDuplicates(false),
-                            PubSubOption.periodic(argRate),
-                            PubSubOption.pollStorage(20),
-                            PubSubOption.sendAll(false));
-
-            pub.setDefaultBoolean(argDefaultValue);
         }
     }
 
@@ -135,15 +123,6 @@ public class NTEntry {
                             PubSubOption.periodic(argRate),
                             PubSubOption.pollStorage(20),
                             PubSubOption.sendAll(false));
-            pub =
-                    topic.genericPublish(
-                            "double",
-                            PubSubOption.keepDuplicates(false),
-                            PubSubOption.periodic(argRate),
-                            PubSubOption.pollStorage(20),
-                            PubSubOption.sendAll(false));
-
-            pub.setDefaultDouble(argDefaultValue);
         }
     }
 
@@ -163,15 +142,6 @@ public class NTEntry {
                             PubSubOption.periodic(argRate),
                             PubSubOption.pollStorage(20),
                             PubSubOption.sendAll(false));
-            pub =
-                    topic.genericPublish(
-                            "int",
-                            PubSubOption.keepDuplicates(false),
-                            PubSubOption.periodic(argRate),
-                            PubSubOption.pollStorage(20),
-                            PubSubOption.sendAll(false));
-
-            pub.setDefaultInteger(argDefaultValue);
         }
     }
 
@@ -191,15 +161,6 @@ public class NTEntry {
                             PubSubOption.periodic(argRate),
                             PubSubOption.pollStorage(20),
                             PubSubOption.sendAll(false));
-            pub =
-                    topic.genericPublish(
-                            "int",
-                            PubSubOption.keepDuplicates(false),
-                            PubSubOption.periodic(argRate),
-                            PubSubOption.pollStorage(20),
-                            PubSubOption.sendAll(false));
-
-            pub.setDefaultInteger(argDefaultValue);
         }
     }
 
@@ -219,15 +180,6 @@ public class NTEntry {
                             PubSubOption.periodic(argRate),
                             PubSubOption.pollStorage(20),
                             PubSubOption.sendAll(false));
-            pub =
-                    topic.genericPublish(
-                            "string",
-                            PubSubOption.keepDuplicates(false),
-                            PubSubOption.periodic(argRate),
-                            PubSubOption.pollStorage(20),
-                            PubSubOption.sendAll(false));
-
-            pub.setDefaultString(argDefaultValue);
         }
     }
 
@@ -262,37 +214,32 @@ public class NTEntry {
      * Publish
      */
     public void publish(final boolean argData) {
-        if ((pub != null) && (valueBool != argData)) {
-            valueBool = argData;
-            pub.setBoolean(valueBool, 0);
+        if (logPath != null) {
+            Logger.recordOutput(logPath, argData);
         }
     }
 
     public void publish(final double argData) {
-        if ((pub != null) && (!Util.epsilonEquals(valueDbl, argData))) {
-            valueDbl = argData;
-            pub.setDouble(valueDbl, 0);
+        if (logPath != null) {
+            Logger.recordOutput(logPath, argData);
         }
     }
 
     public void publish(final long argData) {
-        if ((pub != null) && (valueLong != argData)) {
-            valueLong = argData;
-            pub.setInteger(valueLong, 0);
+        if (logPath != null) {
+            Logger.recordOutput(logPath, argData);
         }
     }
 
     public void publish(final int argData) {
-        if ((pub != null) && (valueInt != argData)) {
-            valueInt = argData;
-            pub.setInteger(valueInt, 0);
+        if (logPath != null) {
+            Logger.recordOutput(logPath, (long) argData);
         }
     }
 
     public void publish(final String argData) {
-        if ((pub != null) && !valueStr.equals(argData)) {
-            valueStr = argData;
-            pub.setString(valueStr, 0);
+        if (logPath != null) {
+            Logger.recordOutput(logPath, argData);
         }
     }
 }

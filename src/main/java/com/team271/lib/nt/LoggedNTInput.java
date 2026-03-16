@@ -35,6 +35,7 @@ public class LoggedNTInput {
 
     /* Double */
     public LoggedNTInput(final NTTable table, final String name, final double defaultValue) {
+        lastDbl = defaultValue;
         if (table != null) {
             logPath = table.getPath() + "/" + name;
             Topic topic = table.getTopic(name);
@@ -45,7 +46,6 @@ public class LoggedNTInput {
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("double", PubSubOption.keepDuplicates(false));
             pub.setDefaultDouble(defaultValue);
-            lastDbl = defaultValue;
         } else {
             logPath = null;
             sub = null;
@@ -55,6 +55,7 @@ public class LoggedNTInput {
 
     /* Boolean */
     public LoggedNTInput(final NTTable table, final String name, final boolean defaultValue) {
+        lastBool = defaultValue;
         if (table != null) {
             logPath = table.getPath() + "/" + name;
             Topic topic = table.getTopic(name);
@@ -65,7 +66,6 @@ public class LoggedNTInput {
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("boolean", PubSubOption.keepDuplicates(false));
             pub.setDefaultBoolean(defaultValue);
-            lastBool = defaultValue;
         } else {
             logPath = null;
             sub = null;
@@ -75,6 +75,7 @@ public class LoggedNTInput {
 
     /* Long */
     public LoggedNTInput(final NTTable table, final String name, final long defaultValue) {
+        lastLong = defaultValue;
         if (table != null) {
             logPath = table.getPath() + "/" + name;
             Topic topic = table.getTopic(name);
@@ -85,7 +86,6 @@ public class LoggedNTInput {
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("int", PubSubOption.keepDuplicates(false));
             pub.setDefaultInteger(defaultValue);
-            lastLong = defaultValue;
         } else {
             logPath = null;
             sub = null;
@@ -95,6 +95,7 @@ public class LoggedNTInput {
 
     /* String */
     public LoggedNTInput(final NTTable table, final String name, final String defaultValue) {
+        lastStr = defaultValue;
         if (table != null) {
             logPath = table.getPath() + "/" + name;
             Topic topic = table.getTopic(name);
@@ -105,7 +106,6 @@ public class LoggedNTInput {
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("string", PubSubOption.keepDuplicates(false));
             pub.setDefaultString(defaultValue);
-            lastStr = defaultValue;
         } else {
             logPath = null;
             sub = null;

@@ -34,7 +34,7 @@ public abstract class Subsystem extends TObj {
     protected SensorMode mode = SensorMode.SENSORED_AUTO;
     protected boolean isZeroed = false;
 
-    final NTEntry ntMode = new NTEntry(table, "Mode", 0);
+    final NTEntry ntMode = new NTEntry(table, "Mode", "SENSORED_AUTO");
     final NTEntry ntIsZeroed = new NTEntry(table, "IsZeroed", isZeroed);
 
     /*
@@ -94,17 +94,7 @@ public abstract class Subsystem extends TObj {
      *
      */
     public void outputTelemetry() {
-        if (mode == SensorMode.SENSORLESS) {
-            ntMode.publish(0);
-        } else if (mode == SensorMode.SENSORED_AUTO) {
-            ntMode.publish(1);
-        } else if (mode == SensorMode.SENSORED_MANUAL) {
-            ntMode.publish(2);
-        } else if (mode == SensorMode.SYSID) {
-            ntMode.publish(3);
-        } else {
-            ntMode.publish(-1);
-        }
+        ntMode.publish(mode.name());
 
         ntIsZeroed.publish(isZeroed());
     }

@@ -2,6 +2,7 @@ package com.team271.libtest.subsystems;
 
 import com.team271.lib.TObj;
 import com.team271.lib.auto.AutoMode;
+import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.subsystem.Subsystem;
 import com.team271.libtest.auto.auto_modes.Auto0;
@@ -31,8 +32,8 @@ public class Superstructure extends Subsystem {
     /*
      * Telemetry
      */
-    private final NTEntry ntDesiredState = new NTEntry(table, "Desired State", 0);
-    private final NTEntry ntActualState = new NTEntry(table, "Actual State", 0);
+    private final NTEntry ntDesiredState = new NTEntry(table, "Desired State", "IDLE");
+    private final NTEntry ntActualState = new NTEntry(table, "Actual State", "IDLE");
 
     /*
      * Constructor
@@ -70,6 +71,11 @@ public class Superstructure extends Subsystem {
     public void robotPeriodicAfter(final double argTimestamp) {
         /* State transition logic */
         if (desiredState != actualState) {
+            Elastic.sendNotification(
+                    new Elastic.Notification(
+                            Elastic.Notification.NotificationLevel.INFO,
+                            "State Transition",
+                            actualState.name() + " -> " + desiredState.name()));
             actualState = desiredState;
         }
 
@@ -118,7 +124,7 @@ public class Superstructure extends Subsystem {
     public void outputTelemetry() {
         super.outputTelemetry();
 
-        ntDesiredState.publish(desiredState.ordinal());
-        ntActualState.publish(actualState.ordinal());
+        ntDesiredState.publish(desiredState.name());
+        ntActualState.publish(actualState.name());
     }
 }

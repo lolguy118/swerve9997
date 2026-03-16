@@ -2,6 +2,7 @@ package com.team271.lib.control.pid;
 
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
+import com.team271.lib.nt.NTEntry;
 
 /**
  * PID controller that delegates to the TalonFX motor controller's onboard PID.
@@ -15,6 +16,14 @@ public class PIDFX extends PIDBase {
 
     protected double goal = 0.0;
     protected double feedForward = 0.0;
+
+    /*
+     *
+     * Telemetry (NT)
+     *
+     */
+    final NTEntry ntGoal = new NTEntry(table, "Goal", 0.0);
+    final NTEntry ntFeedForward = new NTEntry(table, "Feed Forward", 0.0);
 
     /*
      *
@@ -57,6 +66,23 @@ public class PIDFX extends PIDBase {
      * PID
      *
      */
+    @Override
+    public void setP(final double argP) {
+        super.setP(argP);
+        controller.setPSlot(0, argP);
+    }
+
+    @Override
+    public void setI(final double argI) {
+        super.setI(argI);
+        controller.setISlot(0, argI);
+    }
+
+    @Override
+    public void setD(final double argD) {
+        super.setD(argD);
+        controller.setDSlot(0, argD);
+    }
 
     /**
      * Sends a position goal to the TalonFX closed-loop controller.
@@ -119,5 +145,8 @@ public class PIDFX extends PIDBase {
     @Override
     public void outputTelemetry() {
         super.outputTelemetry();
+
+        ntGoal.publish(goal);
+        ntFeedForward.publish(feedForward);
     }
 }

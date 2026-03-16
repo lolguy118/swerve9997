@@ -1,8 +1,10 @@
 package com.team271.lib.hardware;
 
 import com.ctre.phoenix6.*;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.team271.lib.ConstantsLib;
+import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.nt.NTTable;
 import java.util.ArrayList;
@@ -71,6 +73,8 @@ public class CTREManager {
     private static final NTEntry ntBusCount = new NTEntry(table, "Bus Count", 0);
     private static final NTEntry ntDt = new NTEntry(table, "dt", 0.0);
     private static final NTEntry ntRefreshStatus = new NTEntry(table, "Refresh Status", "");
+
+    private static double lastErrorNotificationTime = 0;
 
     private CTREManager() {}
 
@@ -175,6 +179,22 @@ public class CTREManager {
                 ParentDevice.optimizeBusUtilizationForAll(busDevices);
             }
         }
+
+        /* Start CTRE hoot logging if a CANivore bus exists (not supported on RIO) */
+        boolean hasCANivore = buses.values().stream().anyMatch(CANBus::isCANivore);
+        if (hasCANivore) {
+            SignalLogger.setPath("/U/logs");
+            SignalLogger.enableAutoLogging(true);
+            SignalLogger.start();
+        }
+    }
+
+    /** Stop CTRE hoot file logging. */
+    public static void stopLogging() {
+        boolean hasCANivore = buses.values().stream().anyMatch(CANBus::isCANivore);
+        if (hasCANivore) {
+            SignalLogger.stop();
+        }
     }
 
     /*
@@ -210,6 +230,18 @@ public class CTREManager {
 
         if (signalsAllArray.length > 0) {
             tmpReturn = BaseStatusSignal.refreshAll(signalsAllArray);
+
+            if (tmpReturn != StatusCode.OK) {
+                double now = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                if (now - lastErrorNotificationTime > 2.0) {
+                    lastErrorNotificationTime = now;
+                    Elastic.sendNotification(
+                            new Elastic.Notification(
+                                    Elastic.Notification.NotificationLevel.ERROR,
+                                    "CAN Refresh Error",
+                                    "CTREManager.refreshAll() returned " + tmpReturn.getName()));
+                }
+            }
 
             if (lastRefreshTime == null) {
                 lastRefreshTime = signalsAllArray[0].getAllTimestamps();

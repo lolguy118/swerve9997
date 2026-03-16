@@ -1,9 +1,12 @@
 package com.team271.lib.subsystem;
 
+import com.team271.lib.misc.Elastic;
+import com.team271.lib.util.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import org.littletonrobotics.junction.Logger;
 
 /*
  * Used to reset, start, stop, and update all subsystems at once
@@ -69,6 +72,11 @@ public class SubsystemManager {
             } catch (Throwable t) {
                 DriverStation.reportError(
                         s.getName() + " threw in " + phase + ": " + t.getMessage(), true);
+                Elastic.sendNotification(
+                        new Elastic.Notification(
+                                Elastic.Notification.NotificationLevel.ERROR,
+                                "Subsystem Error",
+                                s.getName() + " threw in " + phase + ": " + t.getMessage()));
             }
         }
     }
@@ -182,6 +190,10 @@ public class SubsystemManager {
      *
      */
     public void outputTelemetry() {
+        Logger.recordOutput("SubsystemManager/Count", mAllSubsystems.size());
+
         forEachSafe("outputTelemetry", l -> l.outputTelemetry());
+
+        Alert.outputTelemetry();
     }
 }

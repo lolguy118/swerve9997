@@ -775,6 +775,7 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     public void setOutputVelocity(final double argRPS, final double argFFVolt) {
+        motorVelocity.Slot = 0;
         motorVelocity.Velocity = argRPS;
         motorVelocity.FeedForward = argFFVolt;
 

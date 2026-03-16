@@ -739,4 +739,34 @@ class ControllerTalonFXTest {
         assertEquals(ControllerStatus.OK, status);
         assertFalse(follower.getOpposeLeader());
     }
+
+    /* Slot Assignment Regression */
+
+    @Test
+    void setOutputPositionSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(300);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+
+        controller.setOutputPosition(5.0, 0.5);
+
+        Field posField = ControllerTalonFX.class.getDeclaredField("motorPosition");
+        posField.setAccessible(true);
+        Object pos = posField.get(controller);
+        Field slotField = pos.getClass().getField("Slot");
+        assertEquals(0, slotField.getInt(pos));
+    }
+
+    @Test
+    void setOutputVelocitySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(301);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+
+        controller.setOutputVelocity(10.0, 0.2);
+
+        Field velField = ControllerTalonFX.class.getDeclaredField("motorVelocity");
+        velField.setAccessible(true);
+        Object vel = velField.get(controller);
+        Field slotField = vel.getClass().getField("Slot");
+        assertEquals(0, slotField.getInt(vel));
+    }
 }

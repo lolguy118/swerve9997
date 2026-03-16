@@ -262,6 +262,7 @@ public class TransmissionFX extends TransmissionBase {
      */
     @Override
     public void setOutputPosition(final double argPosition, final double argFFVolt) {
+        motorPositionFF.Slot = 0;
         if (encCANCoder != null) {
             motorPositionFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -277,6 +278,7 @@ public class TransmissionFX extends TransmissionBase {
 
     @Override
     public void setOutputVelocity(final double argRPS, final double argFFVolt) {
+        motorVelocityFF.Slot = 0;
         if (encCANCoder != null) {
             motorVelocityFF.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -304,6 +306,7 @@ public class TransmissionFX extends TransmissionBase {
      * Closed Loop - Position
      */
     public void setOutputPositionDuty(final double argPosition, final double argFF) {
+        motorPositionDuty.Slot = 0;
         if (encCANCoder != null) {
             motorPositionDuty.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -318,6 +321,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputPositionTorqueCurrent(final double argPosition, final double argFF) {
+        motorPositionTC.Slot = 0;
         if (encCANCoder != null) {
             motorPositionTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -335,6 +339,7 @@ public class TransmissionFX extends TransmissionBase {
      * Closed Loop - Velocity
      */
     public void setOutputVelocityDuty(final double argRPS, final double argFF) {
+        motorVelocityDuty.Slot = 0;
         if (encCANCoder != null) {
             motorVelocityDuty.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -349,6 +354,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputVelocityTorqueCurrent(final double argRPS, final double argFF) {
+        motorVelocityTC.Slot = 0;
         if (encCANCoder != null) {
             motorVelocityTC.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -377,6 +383,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMPositionDuty(double argPosition, double argFFVolt) {
+        motorMMOut.Slot = 0;
         if (encCANCoder != null) {
             motorMMOut.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -391,6 +398,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMPositionVoltage(final double argPosition, final double argFFVolt) {
+        motorMMFF.Slot = 0;
         if (encCANCoder != null) {
             motorMMFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -405,6 +413,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMPositionTorqueCurrent(final double argPosition, final double argFF) {
+        motorMMTC.Slot = 0;
         if (encCANCoder != null) {
             motorMMTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -422,6 +431,7 @@ public class TransmissionFX extends TransmissionBase {
      * Motion Magic - Velocity
      */
     public void setOutputMMVelocityDuty(final double argRPS, final double argFF) {
+        motorMMVelOut.Slot = 0;
         if (encCANCoder != null) {
             motorMMVelOut.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -436,6 +446,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMVelocityVoltage(final double argRPS, final double argFF) {
+        motorMMVelFF.Slot = 0;
         if (encCANCoder != null) {
             motorMMVelFF.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -450,6 +461,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMVelocityTorqueCurrent(final double argRPS, final double argFF) {
+        motorMMVelTC.Slot = 0;
         if (encCANCoder != null) {
             motorMMVelTC.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -467,6 +479,7 @@ public class TransmissionFX extends TransmissionBase {
      * Motion Magic - Expo (Exponential profile)
      */
     public void setOutputMMExpoPositionDuty(final double argPosition, final double argFF) {
+        motorMMExpoOut.Slot = 0;
         if (encCANCoder != null) {
             motorMMExpoOut.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -481,6 +494,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMExpoPositionVoltage(final double argPosition, final double argFF) {
+        motorMMExpoFF.Slot = 0;
         if (encCANCoder != null) {
             motorMMExpoFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -495,6 +509,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMExpoPositionTorqueCurrent(final double argPosition, final double argFF) {
+        motorMMExpoTC.Slot = 0;
         if (encCANCoder != null) {
             motorMMExpoTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -517,6 +532,7 @@ public class TransmissionFX extends TransmissionBase {
             final double argAccel,
             final double argJerk,
             final double argFF) {
+        motorDynMMOut.Slot = 0;
         if (encCANCoder != null) {
             motorDynMMOut.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -539,6 +555,7 @@ public class TransmissionFX extends TransmissionBase {
             final double argAccel,
             final double argJerk,
             final double argFF) {
+        motorDynMMFF.Slot = 0;
         if (encCANCoder != null) {
             motorDynMMFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {
@@ -561,6 +578,7 @@ public class TransmissionFX extends TransmissionBase {
             final double argAccel,
             final double argJerk,
             final double argFF) {
+        motorDynMMTC.Slot = 0;
         if (encCANCoder != null) {
             motorDynMMTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
         } else if (encFX != null) {

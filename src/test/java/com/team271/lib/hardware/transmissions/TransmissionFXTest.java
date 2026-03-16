@@ -1111,4 +1111,212 @@ class TransmissionFXTest {
         assertDoesNotThrow(
                 () -> tx.setOutputDynMMPositionTorqueCurrent(2.0, 80.0, 160.0, 800.0, 0.1));
     }
+
+    /* Slot Assignment Regression */
+
+    private int getSlot(TransmissionFX tx, String fieldName) throws Exception {
+        Field f = TransmissionFX.class.getDeclaredField(fieldName);
+        f.setAccessible(true);
+        Object req = f.get(tx);
+        Field slotField = req.getClass().getField("Slot");
+        return slotField.getInt(req);
+    }
+
+    @Test
+    void setOutputPositionSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(300);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputPosition(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorPositionFF"));
+    }
+
+    @Test
+    void setOutputVelocitySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(301);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputVelocity(10.0, 0.2);
+
+        assertEquals(0, getSlot(tx, "motorVelocityFF"));
+    }
+
+    @Test
+    void setOutputPositionDutySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(302);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputPositionDuty(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorPositionDuty"));
+    }
+
+    @Test
+    void setOutputVelocityDutySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(303);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputVelocityDuty(10.0, 0.2);
+
+        assertEquals(0, getSlot(tx, "motorVelocityDuty"));
+    }
+
+    @Test
+    void setOutputMMPositionVoltageSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(304);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMPositionVoltage(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorMMFF"));
+    }
+
+    @Test
+    void setOutputDynMMPositionVoltageSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(305);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputDynMMPositionVoltage(1.0, 100.0, 200.0, 1000.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorDynMMFF"));
+    }
+
+    @Test
+    void setOutputPositionTorqueCurrentSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(306);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputPositionTorqueCurrent(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorPositionTC"));
+    }
+
+    @Test
+    void setOutputVelocityTorqueCurrentSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(307);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputVelocityTorqueCurrent(10.0, 0.2);
+
+        assertEquals(0, getSlot(tx, "motorVelocityTC"));
+    }
+
+    @Test
+    void setOutputMMPositionDutySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(308);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMPositionDuty(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorMMOut"));
+    }
+
+    @Test
+    void setOutputMMPositionTorqueCurrentSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(309);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMPositionTorqueCurrent(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorMMTC"));
+    }
+
+    @Test
+    void setOutputMMVelocityDutySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(310);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMVelocityDuty(10.0, 0.2);
+
+        assertEquals(0, getSlot(tx, "motorMMVelOut"));
+    }
+
+    @Test
+    void setOutputMMVelocityVoltageSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(311);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMVelocityVoltage(10.0, 0.2);
+
+        assertEquals(0, getSlot(tx, "motorMMVelFF"));
+    }
+
+    @Test
+    void setOutputMMVelocityTorqueCurrentSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(312);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMVelocityTorqueCurrent(10.0, 0.2);
+
+        assertEquals(0, getSlot(tx, "motorMMVelTC"));
+    }
+
+    @Test
+    void setOutputMMExpoPositionDutySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(313);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMExpoPositionDuty(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorMMExpoOut"));
+    }
+
+    @Test
+    void setOutputMMExpoPositionVoltageSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(314);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMExpoPositionVoltage(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorMMExpoFF"));
+    }
+
+    @Test
+    void setOutputMMExpoPositionTorqueCurrentSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(315);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputMMExpoPositionTorqueCurrent(1.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorMMExpoTC"));
+    }
+
+    @Test
+    void setOutputDynMMPositionDutySetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(316);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputDynMMPositionDuty(1.0, 100.0, 200.0, 1000.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorDynMMOut"));
+    }
+
+    @Test
+    void setOutputDynMMPositionTorqueCurrentSetsSlotToZero() throws Exception {
+        CANDeviceID id = new CANDeviceID(317);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
+        tx.addEncoderFX(250.0);
+
+        tx.setOutputDynMMPositionTorqueCurrent(1.0, 100.0, 200.0, 1000.0, 0.1);
+
+        assertEquals(0, getSlot(tx, "motorDynMMTC"));
+    }
 }

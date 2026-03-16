@@ -717,6 +717,11 @@ public abstract class TransmissionBase extends TObj {
         }
     }
 
+    /* Torque Current */
+    public void setOutputTorqueCurrent(final double argTorqueCurrent) {
+        // Override in TransmissionFX to delegate to ControllerTalonFX
+    }
+
     /*
      * Closed Loop (CL)
      */

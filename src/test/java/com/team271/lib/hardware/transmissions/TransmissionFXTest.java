@@ -824,4 +824,291 @@ class TransmissionFXTest {
 
         assertDoesNotThrow(() -> tx.robotPeriodicAfter(0.0));
     }
+
+    /* --- setOutputTorqueCurrent --- */
+
+    @Test
+    void setOutputTorqueCurrentDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(182);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputTorqueCurrent(10.0));
+    }
+
+    @Test
+    void setOutputTorqueCurrentBaseDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(183);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        TransmissionBase base = tx;
+        assertDoesNotThrow(() -> base.setOutputTorqueCurrent(5.0));
+    }
+
+    /* --- setOutputPositionDuty --- */
+
+    @Test
+    void setOutputPositionDutyDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(184);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputPositionDuty(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputPositionDutyWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(185);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputPositionDuty(2.0, 0.1));
+    }
+
+    /* --- setOutputPositionTorqueCurrent --- */
+
+    @Test
+    void setOutputPositionTorqueCurrentDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(186);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputPositionTorqueCurrent(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputPositionTorqueCurrentWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(187);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputPositionTorqueCurrent(2.0, 0.1));
+    }
+
+    /* --- setOutputVelocityDuty --- */
+
+    @Test
+    void setOutputVelocityDutyDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(188);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputVelocityDuty(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputVelocityDutyWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(189);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputVelocityDuty(5.0, 0.2));
+    }
+
+    /* --- setOutputVelocityTorqueCurrent --- */
+
+    @Test
+    void setOutputVelocityTorqueCurrentDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(190);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputVelocityTorqueCurrent(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputVelocityTorqueCurrentWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(191);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputVelocityTorqueCurrent(5.0, 0.2));
+    }
+
+    /* --- setOutputMMPositionTorqueCurrent --- */
+
+    @Test
+    void setOutputMMPositionTorqueCurrentDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(192);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputMMPositionTorqueCurrent(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMPositionTorqueCurrentWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(193);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMPositionTorqueCurrent(2.0, 0.1));
+    }
+
+    /* --- setOutputMMVelocityDuty --- */
+
+    @Test
+    void setOutputMMVelocityDutyDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(194);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityDuty(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMVelocityDutyWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(195);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityDuty(5.0, 0.2));
+    }
+
+    /* --- setOutputMMVelocityVoltage --- */
+
+    @Test
+    void setOutputMMVelocityVoltageDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(196);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityVoltage(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMVelocityVoltageWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(197);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityVoltage(5.0, 0.2));
+    }
+
+    /* --- setOutputMMVelocityTorqueCurrent --- */
+
+    @Test
+    void setOutputMMVelocityTorqueCurrentDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(198);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityTorqueCurrent(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMVelocityTorqueCurrentWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(199);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityTorqueCurrent(5.0, 0.2));
+    }
+
+    /* --- setOutputMMExpoPositionDuty --- */
+
+    @Test
+    void setOutputMMExpoPositionDutyDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(200);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionDuty(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMExpoPositionDutyWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(201);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionDuty(2.0, 0.1));
+    }
+
+    /* --- setOutputMMExpoPositionVoltage --- */
+
+    @Test
+    void setOutputMMExpoPositionVoltageDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(202);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionVoltage(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMExpoPositionVoltageWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(203);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionVoltage(2.0, 0.1));
+    }
+
+    /* --- setOutputMMExpoPositionTorqueCurrent --- */
+
+    @Test
+    void setOutputMMExpoPositionTorqueCurrentDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(204);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionTorqueCurrent(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMExpoPositionTorqueCurrentWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(205);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionTorqueCurrent(2.0, 0.1));
+    }
+
+    /* --- setOutputDynMMPositionDuty --- */
+
+    @Test
+    void setOutputDynMMPositionDutyDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(206);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputDynMMPositionDuty(1.0, 100.0, 200.0, 1000.0, 0.5));
+    }
+
+    @Test
+    void setOutputDynMMPositionDutyWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(207);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputDynMMPositionDuty(2.0, 80.0, 160.0, 800.0, 0.1));
+    }
+
+    /* --- setOutputDynMMPositionVoltage --- */
+
+    @Test
+    void setOutputDynMMPositionVoltageDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(208);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(() -> tx.setOutputDynMMPositionVoltage(1.0, 100.0, 200.0, 1000.0, 0.5));
+    }
+
+    @Test
+    void setOutputDynMMPositionVoltageWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(209);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputDynMMPositionVoltage(2.0, 80.0, 160.0, 800.0, 0.1));
+    }
+
+    /* --- setOutputDynMMPositionTorqueCurrent --- */
+
+    @Test
+    void setOutputDynMMPositionTorqueCurrentDoesNotThrow() {
+        CANDeviceID leaderId = new CANDeviceID(210);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertDoesNotThrow(
+                () -> tx.setOutputDynMMPositionTorqueCurrent(1.0, 100.0, 200.0, 1000.0, 0.5));
+    }
+
+    @Test
+    void setOutputDynMMPositionTorqueCurrentWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(211);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(
+                () -> tx.setOutputDynMMPositionTorqueCurrent(2.0, 80.0, 160.0, 800.0, 0.1));
+    }
 }

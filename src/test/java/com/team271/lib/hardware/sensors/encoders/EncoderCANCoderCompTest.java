@@ -114,4 +114,72 @@ class EncoderCANCoderCompTest {
 
         assertDoesNotThrow(() -> encoder.refresh());
     }
+
+    /* --- Values remain zero when signals don't have OK status (expected in sim) --- */
+
+    @Test
+    void refreshAfterRobotInitValuesRemainZero() {
+        CANDeviceID canId = new CANDeviceID(81);
+        EncoderCANCoderComp encoder =
+                new EncoderCANCoderComp(parent, "TestCANCoder", canId, EncoderDirection.CW, 250.0);
+
+        encoder.robotInit(0.0);
+        encoder.refresh();
+
+        /* In sim without real CAN traffic, signals won't have OK status */
+        assertEquals(0.0, encoder.getPosRotations(), 1e-9);
+        assertEquals(0.0, encoder.getVelRPS(), 1e-9);
+    }
+
+    /* --- Simulation lifecycle --- */
+
+    @Test
+    void simulationInitDoesNotThrow() {
+        CANDeviceID canId = new CANDeviceID(81);
+        EncoderCANCoderComp encoder =
+                new EncoderCANCoderComp(parent, "TestCANCoder", canId, EncoderDirection.CW, 250.0);
+
+        encoder.robotInit(0.0);
+
+        assertDoesNotThrow(() -> encoder.simulationInit(0.0));
+    }
+
+    @Test
+    void simulationPeriodicDoesNotThrow() {
+        CANDeviceID canId = new CANDeviceID(81);
+        EncoderCANCoderComp encoder =
+                new EncoderCANCoderComp(parent, "TestCANCoder", canId, EncoderDirection.CW, 250.0);
+
+        encoder.robotInit(0.0);
+        encoder.simulationInit(0.0);
+
+        assertDoesNotThrow(() -> encoder.simulationPeriodic(0.0));
+    }
+
+    @Test
+    void outputTelemetryDoesNotThrowAfterRefresh() {
+        CANDeviceID canId = new CANDeviceID(81);
+        EncoderCANCoderComp encoder =
+                new EncoderCANCoderComp(parent, "TestCANCoder", canId, EncoderDirection.CW, 250.0);
+
+        encoder.robotInit(0.0);
+        encoder.refresh();
+
+        assertDoesNotThrow(() -> encoder.outputTelemetry());
+    }
+
+    @Test
+    void multipleRefreshCallsDoNotThrow() {
+        CANDeviceID canId = new CANDeviceID(81);
+        EncoderCANCoderComp encoder =
+                new EncoderCANCoderComp(parent, "TestCANCoder", canId, EncoderDirection.CW, 250.0);
+
+        encoder.robotInit(0.0);
+
+        for (int i = 0; i < 10; i++) {
+            assertDoesNotThrow(() -> encoder.refresh());
+        }
+
+        assertEquals(0.0, encoder.getPosRotations(), 1e-9);
+    }
 }

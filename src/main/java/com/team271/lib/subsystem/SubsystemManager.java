@@ -3,8 +3,11 @@ package com.team271.lib.subsystem;
 import com.team271.lib.misc.Elastic;
 import com.team271.lib.util.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import org.littletonrobotics.junction.Logger;
 
@@ -33,6 +36,7 @@ public class SubsystemManager {
      *
      */
     private ArrayList<Subsystem> mAllSubsystems = new ArrayList<>();
+    private final Map<String, Double> lastErrorNotificationTime = new HashMap<>();
 
     /*
      *
@@ -72,11 +76,16 @@ public class SubsystemManager {
             } catch (Throwable t) {
                 DriverStation.reportError(
                         s.getName() + " threw in " + phase + ": " + t.getMessage(), true);
-                Elastic.sendNotification(
-                        new Elastic.Notification(
-                                Elastic.Notification.NotificationLevel.ERROR,
-                                "Subsystem Error",
-                                s.getName() + " threw in " + phase + ": " + t.getMessage()));
+                double now = Timer.getFPGATimestamp();
+                double lastTime = lastErrorNotificationTime.getOrDefault(s.getName(), 0.0);
+                if (now - lastTime > 2.0) {
+                    lastErrorNotificationTime.put(s.getName(), now);
+                    Elastic.sendNotification(
+                            new Elastic.Notification(
+                                    Elastic.Notification.NotificationLevel.ERROR,
+                                    "Subsystem Error",
+                                    s.getName() + " threw in " + phase + ": " + t.getMessage()));
+                }
             }
         }
     }

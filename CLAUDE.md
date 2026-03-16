@@ -110,6 +110,7 @@ All dependencies must always use the **latest available version**. Versions are 
 - **AdvantageKit** — dependency available, integration pending (vendordep: `AdvantageKit.json`; new code should adopt `Logger.recordOutput()` and IO interfaces)
 - **PathPlanner** — dependency available, integration pending (vendordep: `PathplannerLib.json`; new autonomous code should adopt PathPlanner paths)
 - **WPILib New Commands** — dependency available for command-based patterns (vendordep: `WPILibNewCommands.json`)
+- **Elastic Dashboard** — dashboard notification system via NetworkTables (no vendordep; uses `com.team271.lib.misc.Elastic` with Jackson JSON serialization)
 
 ---
 
@@ -176,11 +177,7 @@ TObj (base class — name, NTTable, lifecycle hooks)
 
 ## Libtest Architecture (`com.team271.libtest`)
 
-> **NOTE: PLANNED IMPLEMENTATION — MOSTLY NOT YET CREATED**
->
-> Currently only `Main.java` and `Robot.java` exist. The files listed below are the **planned architecture** for the test robot. When reviewing, focus on the two existing files and verify they follow the patterns below. Do NOT create the planned files unless explicitly asked.
-
-### Existing Files
+### Files
 
 - **`Main.java`** — WPILib `RobotBase` entry point (`RobotBase.startRobot(Robot::new)`)
 - **`Robot.java`** — extends `TimedRobot`, orchestrates lifecycle:
@@ -188,32 +185,30 @@ TObj (base class — name, NTTable, lifecycle hooks)
   - `robotPeriodicBefore()`: `CTREManager.refreshAll()` → timestamp update → `mSubsystemManager.robotPeriodicBefore()`
   - `robotPeriodicAfter()`: `mSubsystemManager.robotPeriodicAfter()` → `mSubsystemManager.outputTelemetry()` → `CTREManager.outputTelemetry()`
 
-### Planned Files (Not Yet Created)
-
 ```
 libtest/
-├── Main.java                    ← EXISTS
-├── Robot.java                   ← EXISTS
-├── Config.java                  ← PLANNED (Mode: REAL/SIM/REPLAY, RobotType enum)
-├── Constants.java               ← PLANNED (CAN IDs, bus names, controller ports, physical dimensions)
-├── Globals.java                 ← PLANNED (static singleton references to all subsystems)
+├── Main.java                    (WPILib entry point)
+├── Robot.java                   (TimedRobot lifecycle orchestrator)
+├── Config.java                  (Mode: REAL/SIM/REPLAY, RobotType enum)
+├── Constants.java               (CAN IDs, bus names, controller ports, physical dimensions)
+├── Globals.java                 (static singleton references to all subsystems)
 ├── subsystems/
-│   ├── Infrastructure.java      ← PLANNED (PDH, gyro, teleop/auto mode tracking)
-│   ├── Superstructure.java      ← PLANNED (high-level coordination, ROBOT_STATE enum)
+│   ├── Infrastructure.java      (PDH, gyro, teleop/auto mode tracking)
+│   ├── Superstructure.java      (high-level coordination, ROBOT_STATE enum)
 │   └── Input/
-│       ├── InputDriver.java     ← PLANNED (driver controller)
-│       └── InputOp.java         ← PLANNED (operator controller)
+│       ├── InputDriver.java     (driver controller)
+│       └── InputOp.java         (operator controller)
 └── auto/
-    ├── auto_modes/Auto0.java    ← PLANNED (default autonomous mode)
-    └── auto_moves/              ← PLANNED (autonomous movement actions)
+    ├── auto_modes/Auto0.java    (default autonomous mode)
+    └── auto_moves/              (autonomous movement actions)
 ```
 
-### Planned Config Modes
+### Config Modes
 - `Mode.REAL` — running on physical robot hardware
 - `Mode.SIM` — running in WPILib simulation (uses `DriverStationSim`, simbot type)
 - `Mode.REPLAY` — replaying from a log file (real robot types in sim environment)
 
-### Planned Subsystem Init Order (in `Robot.robotInit()` — order matters)
+### Subsystem Init Order (in `Robot.robotInit()` — order matters)
 1. InputDriver
 2. InputOp
 3. Infrastructure
@@ -338,6 +333,24 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 - Static state: Classes like `CTREManager` that use static state require `@BeforeEach` cleanup between tests (via reflection if necessary)
 - Sim devices: `TalonFX`, `CANcoder`, `Pigeon2`, etc. create simulated device instances in the HAL — no real hardware needed
 - Test coverage: Target 100% method and branch coverage for utility/infrastructure classes (`CANBus`, `CANDeviceID`, `CTREManager`)
+
+### Existing Tests (`src/test/java/`)
+
+46 test classes spanning the full library:
+
+- **`control/`**: `BalanceTest`, `PIDSimpleTest`, `PIDTrapTest`, `PIDWPITest`, `PIDWPITrapTest`, `PIDFXTest`
+- **`hardware/`**: `CANBusTest` (68 tests), `CANDeviceIDTest` (50+ tests), `CTREManagerTest`, `MotorBaseTest`, `ControllerTalonFXTest`
+- **`hardware/sensors/`**: `EncoderFXTest`, `EncoderFXCompTest`, `EncoderCANCoderTest`, `EncoderCANCoderCompTest`, `IMUPigeon2Test`, `RangeCANrangeTest`, `SwitchFXTest`, `SwitchCANCoderTest`
+- **`hardware/transmissions/`**: `TransmissionFXTest`, `ShifterPneumaticTest`
+- **`hardware/Input/`**: `InputXBoxTest`, `InputPS4Test`, `Input8BitDuoTest`, `InputEnvisionProTest`
+- **`geometry/`**: `Translation2dTest`, `Rotation2dTest`, `Pose2dTest`, `Twist2dTest`
+- **`nt/`**: `NTTableTest`, `NTEntryTest`
+- **`auto/`**: `AutoModeTest`, `AutoMoveTest`, `AutoMoveSingleTest`, `AutoMoveTimedTest`
+- **`subsystem/`**: `SubsystemTest`, `SubsystemManagerTest`
+- **`sysid/`**: `LoggerTest`, `LoggerGeneralTest`
+- **`misc/`**: `ElasticTest`
+- **`util/`**: `UtilTest`, `DriveSignalTest`, `AlertTest`
+- **Root**: `ConstantsLibTest`, `TObjTest`, `TRobotTest`
 
 ---
 

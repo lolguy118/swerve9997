@@ -16,6 +16,10 @@ class TObjTest {
         ConcreteTObj(TObj p, String n) {
             super(p, n);
         }
+
+        String testLogKey(String suffix) {
+            return logKey(suffix);
+        }
     }
 
     @BeforeAll
@@ -117,5 +121,22 @@ class TObjTest {
         ConcreteTObj obj = new ConcreteTObj("Lifecycle");
 
         assertDoesNotThrow(obj::outputTelemetry);
+    }
+
+    /* --- logKey --- */
+
+    @Test
+    void logKeyBuildsSuffix() {
+        ConcreteTObj obj = new ConcreteTObj("MyObj");
+        String key = obj.testLogKey("Position");
+        assertTrue(key.endsWith("/Position"));
+    }
+
+    /* --- null parent table behavior --- */
+
+    @Test
+    void nullParentConstructorCreatesTable() {
+        ConcreteTObj child = new ConcreteTObj(null, "Orphan");
+        assertNotNull(child.getTable());
     }
 }

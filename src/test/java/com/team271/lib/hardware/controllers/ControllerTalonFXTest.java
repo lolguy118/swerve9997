@@ -769,4 +769,119 @@ class ControllerTalonFXTest {
         Field slotField = vel.getClass().getField("Slot");
         assertEquals(0, slotField.getInt(vel));
     }
+
+    /* ========== Coverage: ControllerBase branches ========== */
+
+    @Test
+    void isDeviceReturnsTrueForMatchingId() {
+        CANDeviceID id = new CANDeviceID(400);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        assertTrue(controller.isDevice(id));
+    }
+
+    @Test
+    void isDeviceReturnsFalseForDifferentId() {
+        CANDeviceID id = new CANDeviceID(401);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        assertFalse(controller.isDevice(new CANDeviceID(999)));
+    }
+
+    @Test
+    void getFollowingIDNumReturnsNegativeOneWhenNull() {
+        CANDeviceID id = new CANDeviceID(402);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        assertEquals(-1, controller.getFollowingIDNum());
+    }
+
+    @Test
+    void getFollowingBusReturnsEmptyWhenNull() {
+        CANDeviceID id = new CANDeviceID(403);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        assertEquals("", controller.getFollowingBus());
+    }
+
+    @Test
+    void getFollowingIDNumAfterFollow() {
+        CANDeviceID leaderId = new CANDeviceID(404);
+        CANDeviceID followerId = new CANDeviceID(405);
+        ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
+        ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
+
+        follower.follow(leader, false);
+        assertEquals(leaderId.getDeviceNumber(), follower.getFollowingIDNum());
+        assertEquals(leaderId.getBus(), follower.getFollowingBus());
+    }
+
+    @Test
+    void outputTelemetryWithFollowerExercisesFollowingBranch() {
+        CANDeviceID leaderId = new CANDeviceID(406);
+        CANDeviceID followerId = new CANDeviceID(407);
+        ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
+        ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
+
+        follower.follow(leader, true);
+        assertDoesNotThrow(follower::outputTelemetry);
+    }
+
+    @Test
+    void robotInitRegistersSignals() {
+        CANDeviceID id = new CANDeviceID(408);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+
+        assertDoesNotThrow(() -> controller.robotInit(0.0));
+    }
+
+    @Test
+    void outputTelemetryAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(409);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        controller.robotInit(0.0);
+
+        assertDoesNotThrow(controller::outputTelemetry);
+    }
+
+    @Test
+    void applyConfigReturnsErrorInSim() {
+        CANDeviceID id = new CANDeviceID(410);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+
+        ControllerStatus result = controller.applyConfig();
+        assertEquals(ControllerStatus.ERROR, result);
+        assertFalse(controller.isConfigured());
+    }
+
+    @Test
+    void getSupplyVoltageReturnsZeroBeforeInit() {
+        CANDeviceID id = new CANDeviceID(411);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+
+        assertEquals(0.0, controller.getSupplyVoltage(), 1e-6);
+    }
+
+    @Test
+    void getSupplyCurrentReturnsZeroBeforeInit() {
+        CANDeviceID id = new CANDeviceID(412);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+
+        assertEquals(0.0, controller.getSupplyCurrent(), 1e-6);
+    }
+
+    @Test
+    void getFollowingIDReturnsNullBeforeFollow() {
+        CANDeviceID id = new CANDeviceID(413);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+
+        assertNull(controller.getFollowingID());
+    }
+
+    @Test
+    void getFollowingIDReturnsLeaderIdAfterFollow() {
+        CANDeviceID leaderId = new CANDeviceID(414);
+        CANDeviceID followerId = new CANDeviceID(415);
+        ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
+        ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
+
+        follower.follow(leader, false);
+        assertEquals(leaderId, follower.getFollowingID());
+    }
 }

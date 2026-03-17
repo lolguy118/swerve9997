@@ -147,4 +147,51 @@ class EncoderCANCoderTest {
         assertDoesNotThrow(() -> encoder.setSimVelRotations(10.0));
         assertDoesNotThrow(() -> encoder.setSimPosRotations(5.0));
     }
+
+    /* ========== Additional coverage tests ========== */
+
+    @Test
+    void refreshBeforeRobotInit() {
+        CANDeviceID id = new CANDeviceID(40);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(encoder::refresh);
+    }
+
+    @Test
+    void refreshAfterRobotInitReturnsZero() {
+        CANDeviceID id = new CANDeviceID(41);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+        encoder.robotInit(0.0);
+        encoder.refresh();
+
+        assertEquals(0.0, encoder.getPosRotations(), 1e-9);
+        assertEquals(0.0, encoder.getVelRPS(), 1e-9);
+    }
+
+    @Test
+    void outputTelemetryAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(42);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+        encoder.robotInit(0.0);
+
+        assertDoesNotThrow(encoder::outputTelemetry);
+    }
+
+    @Test
+    void simulationInitDoesNotThrow() {
+        CANDeviceID id = new CANDeviceID(43);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> encoder.simulationInit(0.0));
+    }
+
+    @Test
+    void simulationPeriodicDoesNotThrow() {
+        CANDeviceID id = new CANDeviceID(44);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+        encoder.simulationInit(0.0);
+
+        assertDoesNotThrow(() -> encoder.simulationPeriodic(0.0));
+    }
 }

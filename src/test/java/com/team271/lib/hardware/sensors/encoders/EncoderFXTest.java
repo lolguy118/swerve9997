@@ -124,4 +124,46 @@ class EncoderFXTest {
         assertDoesNotThrow(() -> encoder.setSimVelRotations(10.0));
         assertDoesNotThrow(() -> encoder.setSimPosRotations(5.0));
     }
+
+    /* ========== Additional coverage tests ========== */
+
+    @Test
+    void refreshBeforeRobotInit() {
+        CANDeviceID id = new CANDeviceID(28);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        EncoderFX encoder = new EncoderFX(null, "Enc", controller, 250.0);
+
+        assertDoesNotThrow(encoder::refresh);
+    }
+
+    @Test
+    void refreshAfterRobotInitReturnsZero() {
+        CANDeviceID id = new CANDeviceID(29);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        EncoderFX encoder = new EncoderFX(null, "Enc", controller, 250.0);
+        encoder.robotInit(0.0);
+        encoder.refresh();
+
+        assertEquals(0.0, encoder.getPosRotations(), 1e-9);
+        assertEquals(0.0, encoder.getVelRPS(), 1e-9);
+    }
+
+    @Test
+    void simulationInitDoesNotThrow() {
+        CANDeviceID id = new CANDeviceID(30);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        EncoderFX encoder = new EncoderFX(null, "Enc", controller, 250.0);
+
+        assertDoesNotThrow(() -> encoder.simulationInit(0.0));
+    }
+
+    @Test
+    void simulationPeriodicDoesNotThrow() {
+        CANDeviceID id = new CANDeviceID(31);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        EncoderFX encoder = new EncoderFX(null, "Enc", controller, 250.0);
+        encoder.simulationInit(0.0);
+
+        assertDoesNotThrow(() -> encoder.simulationPeriodic(0.0));
+    }
 }

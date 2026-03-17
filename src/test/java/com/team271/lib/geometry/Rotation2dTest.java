@@ -299,4 +299,66 @@ class Rotation2dTest {
         assertNotNull(Rotation2d.fromDegrees(90.0).toString());
         assertTrue(Rotation2d.fromDegrees(90.0).toString().contains("deg"));
     }
+
+    /* --- Lazy computation and edge cases --- */
+
+    @Test
+    void fromRadiansOnlyThenGetCos() {
+        Rotation2d r = Rotation2d.fromRadians(Math.PI / 4.0);
+        assertEquals(Math.sqrt(2.0) / 2.0, r.cos(), kEps);
+    }
+
+    @Test
+    void fromRadiansOnlyThenGetSin() {
+        Rotation2d r = Rotation2d.fromRadians(Math.PI / 4.0);
+        assertEquals(Math.sqrt(2.0) / 2.0, r.sin(), kEps);
+    }
+
+    @Test
+    void fromXYOnlyThenGetRadians() {
+        Rotation2d r = new Rotation2d(1, 0, false);
+        assertEquals(0.0, r.getRadians(), kEps);
+    }
+
+    @Test
+    void rotateByRadiansOnly() {
+        Rotation2d a = Rotation2d.fromRadians(Math.PI / 6.0);
+        Rotation2d b = Rotation2d.fromRadians(Math.PI / 3.0);
+        Rotation2d result = a.rotateBy(b);
+        assertEquals(Math.PI / 2.0, result.getRadians(), kEps);
+    }
+
+    @Test
+    void normalRadiansOnly() {
+        Rotation2d r = Rotation2d.fromRadians(Math.PI / 2.0);
+        Rotation2d n = r.normal();
+        assertEquals(0.0, n.getDegrees(), kEps);
+    }
+
+    @Test
+    void inverseRadiansOnly() {
+        Rotation2d r = Rotation2d.fromRadians(Math.PI / 4.0);
+        Rotation2d inv = r.inverse();
+        assertEquals(-45.0, inv.getDegrees(), kEps);
+    }
+
+    @Test
+    void equalsNonRotation2d() {
+        assertNotEquals(Rotation2d.fromDegrees(0.0), new Object());
+    }
+
+    @Test
+    void isParallelFalseCase() {
+        Rotation2d a = Rotation2d.fromDegrees(10.0);
+        Rotation2d b = Rotation2d.fromDegrees(55.0);
+        assertFalse(a.isParallel(b));
+    }
+
+    @Test
+    void normalizeSmallMagnitude() {
+        Rotation2d r = new Rotation2d(0.0, 0.0, true);
+        // Zero-magnitude defaults to identity (cos=1, sin=0)
+        assertEquals(1.0, r.cos(), kEps);
+        assertEquals(0.0, r.sin(), kEps);
+    }
 }

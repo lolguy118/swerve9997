@@ -154,4 +154,36 @@ class IMUPigeon2Test {
 
         assertDoesNotThrow(() -> imu.simulationPeriodic(0.0));
     }
+
+    /* ========== Additional coverage tests ========== */
+
+    @Test
+    void refreshAfterRobotInitReturnsZeroValues() {
+        CANDeviceID id = new CANDeviceID(74);
+        IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
+        imu.robotInit(0.0);
+        imu.refresh();
+
+        /* In sim, signals won't have OK status */
+        assertEquals(0.0, imu.getYaw(), 1e-6);
+        assertEquals(0.0, imu.getRoll(), 1e-6);
+        assertEquals(0.0, imu.getPitch(), 1e-6);
+    }
+
+    @Test
+    void outputTelemetryAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(75);
+        IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
+        imu.robotInit(0.0);
+
+        assertDoesNotThrow(imu::outputTelemetry);
+    }
+
+    @Test
+    void simulationInitDoesNotThrow() {
+        CANDeviceID id = new CANDeviceID(76);
+        IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
+
+        assertDoesNotThrow(() -> imu.simulationInit(0.0));
+    }
 }

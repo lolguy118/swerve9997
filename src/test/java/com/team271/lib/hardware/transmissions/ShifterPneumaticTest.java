@@ -18,7 +18,7 @@ class ShifterPneumaticTest {
 
     @Test
     void twoArgConstructorDoesNotThrow() {
-        assertDoesNotThrow(() -> new ShifterPneumatic(0, 1));
+        assertDoesNotThrow(() -> new ShifterPneumatic(1, 0, 1));
     }
 
     @Test

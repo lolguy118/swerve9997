@@ -599,7 +599,7 @@ public abstract class TransmissionBase extends TObj {
 
     /** Convenience method: create a pneumatic shifter with per-gear sensor ratios. */
     public void addShifter(
-            final int pneumaticHubCanId, 
+            final int pneumaticHubCanId,
             final int chGear1,
             final double argSensorRatio1,
             final int chGear2,
@@ -607,7 +607,7 @@ public abstract class TransmissionBase extends TObj {
         sensorRatioGear1 = argSensorRatio1;
         sensorRatioGear2 = argSensorRatio2;
 
-        addShifter(pneumaticHubCanId,chGear1, chGear2);
+        addShifter(pneumaticHubCanId, chGear1, chGear2);
     }
 
     public ShifterState shift(final ShifterState argShiftTo) {

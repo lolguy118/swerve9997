@@ -163,4 +163,101 @@ class SwitchCANCoderTest {
 
         assertDoesNotThrow(() -> sw.robotInit(0.0));
     }
+
+    /* ========== Additional coverage tests ========== */
+
+    @Test
+    void setAutoSetFwd() {
+        CANDeviceID id = new CANDeviceID(96);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setAutoSet(true);
+        assertTrue(sw.getAutoSet());
+    }
+
+    @Test
+    void setAutoSetPosFwd() {
+        CANDeviceID id = new CANDeviceID(97);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setAutoSetPos(7.5);
+        assertEquals(7.5, sw.getAutoSetPos(), 1e-6);
+    }
+
+    @Test
+    void setEnabledTrueFwd() {
+        CANDeviceID id = new CANDeviceID(98);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setEnabled(true);
+        assertTrue(controller.getConfig().HardwareLimitSwitch.ForwardLimitEnable);
+    }
+
+    @Test
+    void setEnabledTrueRev() {
+        CANDeviceID id = new CANDeviceID(99);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setEnabled(true);
+        assertTrue(controller.getConfig().HardwareLimitSwitch.ReverseLimitEnable);
+    }
+
+    @Test
+    void robotInitRevRegistersSignals() {
+        CANDeviceID id = new CANDeviceID(200);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        assertDoesNotThrow(() -> sw.robotInit(0.0));
+    }
+
+    @Test
+    void getTriggeredFwdAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(201);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.robotInit(0.0);
+        assertFalse(sw.getTriggered());
+    }
+
+    @Test
+    void getTriggeredRevAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(202);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.robotInit(0.0);
+        assertFalse(sw.getTriggered());
+    }
+
+    @Test
+    void outputTelemetryAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(203);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchCANCoder sw =
+                new SwitchCANCoder(
+                        null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.robotInit(0.0);
+        assertDoesNotThrow(sw::outputTelemetry);
+    }
 }

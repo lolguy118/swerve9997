@@ -623,4 +623,26 @@ class CTREManagerTest {
         /* All 3 buses present */
         assertEquals(3, CTREManager.getAllBuses().size());
     }
+
+    /* ================================================================
+     * stopLogging
+     * ================================================================ */
+
+    @Test
+    void stopLoggingDoesNotThrowBeforeInit() {
+        assertDoesNotThrow(CTREManager::stopLogging);
+    }
+
+    @Test
+    void stopLoggingDoesNotThrowAfterInit() {
+        CTREManager.addBus("rio");
+        CTREManager.init();
+
+        assertDoesNotThrow(CTREManager::stopLogging);
+    }
+
+    @Test
+    void initWithNoBusesDoesNotThrow() {
+        assertDoesNotThrow(CTREManager::init);
+    }
 }

@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.team271.lib.util.Alert.AlertType;
 import edu.wpi.first.hal.HAL;
+import java.lang.reflect.Field;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AlertTest {
@@ -12,6 +15,14 @@ class AlertTest {
     @BeforeAll
     static void initHAL() {
         HAL.initialize(500, 0);
+    }
+
+    @BeforeEach
+    @SuppressWarnings("unchecked")
+    void resetGroups() throws Exception {
+        Field groupsField = Alert.class.getDeclaredField("groups");
+        groupsField.setAccessible(true);
+        ((Map<String, ?>) groupsField.get(null)).clear();
     }
 
     // ── AlertType enum ──
@@ -94,5 +105,50 @@ class AlertTest {
         Alert alert = new Alert("TextTest3", "same", AlertType.ERROR);
         alert.set(true);
         assertDoesNotThrow(() -> alert.setText("same"));
+    }
+
+    // ── setText while active for each type ──
+
+    @Test
+    void setTextWhileActiveError() {
+        Alert alert = new Alert("ErrText", "original error", AlertType.ERROR);
+        alert.set(true);
+        assertDoesNotThrow(() -> alert.setText("updated error"));
+    }
+
+    @Test
+    void setTextWhileActiveWarning() {
+        Alert alert = new Alert("WarnText", "original warning", AlertType.WARNING);
+        alert.set(true);
+        assertDoesNotThrow(() -> alert.setText("updated warning"));
+    }
+
+    @Test
+    void setTextWhileActiveInfo() {
+        Alert alert = new Alert("InfoText", "original info", AlertType.INFO);
+        alert.set(true);
+        assertDoesNotThrow(() -> alert.setText("updated info"));
+    }
+
+    // ── outputTelemetry ──
+
+    @Test
+    void outputTelemetryDoesNotThrow() {
+        assertDoesNotThrow(Alert::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithMultipleGroupsAndTypes() {
+        Alert errAlert = new Alert("GroupA", "error alert", AlertType.ERROR);
+        Alert warnAlert = new Alert("GroupA", "warning alert", AlertType.WARNING);
+        Alert infoAlert = new Alert("GroupB", "info alert", AlertType.INFO);
+        Alert inactiveAlert = new Alert("GroupB", "inactive", AlertType.ERROR);
+
+        errAlert.set(true);
+        warnAlert.set(true);
+        infoAlert.set(true);
+        // inactiveAlert stays inactive
+
+        assertDoesNotThrow(Alert::outputTelemetry);
     }
 }

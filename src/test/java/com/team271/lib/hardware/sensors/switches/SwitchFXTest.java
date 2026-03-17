@@ -163,4 +163,117 @@ class SwitchFXTest {
 
         assertDoesNotThrow(() -> sw.robotInit(0.0));
     }
+
+    /* ========== Additional coverage tests ========== */
+
+    @Test
+    void setAutoSetFwd() {
+        CANDeviceID id = new CANDeviceID(86);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setAutoSet(true);
+        assertTrue(sw.getAutoSet());
+        sw.setAutoSet(false);
+        assertFalse(sw.getAutoSet());
+    }
+
+    @Test
+    void setAutoSetPosFwd() {
+        CANDeviceID id = new CANDeviceID(87);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setAutoSetPos(10.0);
+        assertEquals(10.0, sw.getAutoSetPos(), 1e-6);
+    }
+
+    @Test
+    void setAutoSetRev() {
+        CANDeviceID id = new CANDeviceID(88);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setAutoSet(true);
+        assertTrue(sw.getAutoSet());
+    }
+
+    @Test
+    void setAutoSetPosRev() {
+        CANDeviceID id = new CANDeviceID(89);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setAutoSetPos(3.0);
+        assertEquals(3.0, sw.getAutoSetPos(), 1e-6);
+    }
+
+    @Test
+    void setEnabledTrueFwd() {
+        CANDeviceID id = new CANDeviceID(90);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setEnabled(true);
+        assertTrue(controller.getConfig().HardwareLimitSwitch.ForwardLimitEnable);
+    }
+
+    @Test
+    void setEnabledTrueRev() {
+        CANDeviceID id = new CANDeviceID(91);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.setEnabled(true);
+        assertTrue(controller.getConfig().HardwareLimitSwitch.ReverseLimitEnable);
+    }
+
+    @Test
+    void robotInitRevRegistersSignals() {
+        CANDeviceID id = new CANDeviceID(92);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        assertDoesNotThrow(() -> sw.robotInit(0.0));
+    }
+
+    @Test
+    void getTriggeredFwdAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(93);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.robotInit(0.0);
+        assertFalse(sw.getTriggered());
+    }
+
+    @Test
+    void getTriggeredRevAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(94);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.robotInit(0.0);
+        assertFalse(sw.getTriggered());
+    }
+
+    @Test
+    void outputTelemetryAfterRobotInit() {
+        CANDeviceID id = new CANDeviceID(95);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        sw.robotInit(0.0);
+        assertDoesNotThrow(sw::outputTelemetry);
+    }
 }

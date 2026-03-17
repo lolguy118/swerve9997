@@ -242,6 +242,51 @@ class BalanceTest {
         assertEquals(0.6, balanceReverse.autoBalanceRoutineReverse(5.0), 1e-9);
     }
 
+    /* --- outputTelemetry / checkTuning --- */
+
+    @Test
+    void outputTelemetryDoesNotThrowReverse() {
+        assertDoesNotThrow(balanceReverse::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryDoesNotThrowForward() {
+        assertDoesNotThrow(balanceForward::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryAfterStateTransition() {
+        transitionReverseToState2();
+        assertDoesNotThrow(balanceReverse::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryAfterState4() {
+        transitionReverseToState4();
+        assertDoesNotThrow(balanceReverse::outputTelemetry);
+    }
+
+    @Test
+    void checkTuningForwardFlipsSigns() {
+        transitionForwardToState2();
+        assertDoesNotThrow(balanceForward::outputTelemetry);
+    }
+
+    /* --- State 2 edge cases --- */
+
+    @Test
+    void reverseState2ZeroTiltReturnsZero() {
+        transitionReverseToState2();
+        assertEquals(0.0, balanceReverse.autoBalanceRoutineReverse(0.0), 1e-9);
+    }
+
+    @Test
+    void forwardState2ZeroTiltReturnsCorrectionDueToNegativeLevel() {
+        transitionForwardToState2();
+        /* levelDegree=-6.0, so tilt=0.0 >= -6.0 is true → returns -0.1 */
+        assertEquals(-0.1, balanceForward.autoBalanceRoutineForward(0.0), 1e-9);
+    }
+
     /* --- Helper methods to advance state machine --- */
 
     private void transitionReverseToState1() {

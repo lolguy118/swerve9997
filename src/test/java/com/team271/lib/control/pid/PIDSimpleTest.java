@@ -338,4 +338,49 @@ class PIDSimpleTest {
     void setIZoneAcceptsInfinity() {
         assertDoesNotThrow(() -> pid.setIZone(Double.POSITIVE_INFINITY));
     }
+
+    /* --- PIDBase coverage --- */
+
+    @Test
+    void outputTelemetryCallsCheckTuning() {
+        pid.calc(0.0, 1.0, 0.0);
+        assertDoesNotThrow(pid::outputTelemetry);
+    }
+
+    @Test
+    void calcWithContinuousInputEnabled() {
+        pid.enableContinuousInput(0, 360);
+        // measurement=350, setpoint=10, wrapped error should be small positive
+        double output = pid.calc(350.0, 10.0, 0.0);
+        assertTrue(output > 0.0, "Should wrap to positive direction via shortest path");
+    }
+
+    @Test
+    void calcWithPDeadband() {
+        pid.setPDeadband(0.5);
+        // error = 0.3, which is < deadband 0.5 → P term should be 0
+        double output = pid.calc(0.0, 0.3, 0.0);
+        assertEquals(0.0, output, 1e-9);
+    }
+
+    @Test
+    void calcWithIZone() {
+        PIDSimple iPid = new PIDSimple(null, "IZ2", 0.0, 1.0, 0.0, 0.05);
+        iPid.setIZone(1.0);
+
+        // error = 2.0, which is > iZone = 1.0 → integral resets to 0
+        iPid.calc(0.0, 2.0, 0.0);
+        double output = iPid.calc(0.0, 2.0, 0.1);
+        assertEquals(0.0, output, 1e-9, "Integral should not accumulate when error > iZone");
+    }
+
+    @Test
+    void atSetpointWithVelTolerance() {
+        pid.setTolerance(1.0, 100.0);
+        // First call to initialize
+        pid.calc(0.0, 0.5, 0.0);
+        // Second call with same error → velError = 0
+        pid.calc(0.0, 0.5, 0.1);
+        assertTrue(pid.atSetpoint(), "Should be at setpoint with pos and vel within tolerance");
+    }
 }

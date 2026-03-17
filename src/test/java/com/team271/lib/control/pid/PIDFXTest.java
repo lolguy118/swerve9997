@@ -123,4 +123,49 @@ class PIDFXTest {
         pid = new PIDFX(null, "Type", talonFX);
         assertEquals(PIDBase.PIDType.TALONFX, pid.type);
     }
+
+    /* --- Additional coverage --- */
+
+    @Test
+    void calcPopulatesFields() {
+        pid = new PIDFX(null, "Calc", talonFX, 1.0, 0.0, 0.0);
+        pid.setGoal(5.0);
+
+        double output = pid.calc(0.0, 5.0, 0.0);
+        // In sim, CL error and output are 0 since no real hardware loop
+        assertEquals(0.0, output, 1e-6);
+    }
+
+    @Test
+    void setGoalWithFeedForward() {
+        pid = new PIDFX(null, "FF", talonFX, 1.0, 0.0, 0.0);
+        assertDoesNotThrow(() -> pid.setGoal(3.0, 0.5));
+    }
+
+    @Test
+    void setPSyncsToController() {
+        pid = new PIDFX(null, "SyncP", talonFX, 0.0, 0.0, 0.0);
+        pid.setP(2.5);
+
+        assertEquals(2.5, pid.getP(), 1e-6);
+        assertEquals(2.5, talonFX.getPSlot(0), 1e-6);
+    }
+
+    @Test
+    void setISyncsToController() {
+        pid = new PIDFX(null, "SyncI", talonFX, 0.0, 0.0, 0.0);
+        pid.setI(0.3);
+
+        assertEquals(0.3, pid.getI(), 1e-6);
+        assertEquals(0.3, talonFX.getISlot(0), 1e-6);
+    }
+
+    @Test
+    void setDSyncsToController() {
+        pid = new PIDFX(null, "SyncD", talonFX, 0.0, 0.0, 0.0);
+        pid.setD(0.05);
+
+        assertEquals(0.05, pid.getD(), 1e-6);
+        assertEquals(0.05, talonFX.getDSlot(0), 1e-6);
+    }
 }

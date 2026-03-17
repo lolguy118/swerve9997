@@ -1525,13 +1525,15 @@ class TransmissionFXTest {
 
     /* ========== Shifter Operations ========== */
 
+    /* Simple no-op Shifter for test isolation (avoids HAL port conflicts with ShifterPneumatic) */
+    private static final Shifter TEST_SHIFTER = argShiftTo -> {};
+
     @Test
     void setShifterWithRatios() {
         CANDeviceID leaderId = new CANDeviceID(434);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
-        ShifterPneumatic shifter = new ShifterPneumatic(0, 1);
-        tx.setShifter(shifter, 2.5, 1.5);
+        tx.setShifter(TEST_SHIFTER, 2.5, 1.5);
 
         ShifterState result = tx.shift(ShifterState.GEAR_1);
         assertEquals(ShifterState.GEAR_1, result);
@@ -1542,21 +1544,10 @@ class TransmissionFXTest {
         CANDeviceID leaderId = new CANDeviceID(435);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
-        ShifterPneumatic shifter = new ShifterPneumatic(2, 3);
-        tx.setShifter(shifter);
+        tx.setShifter(TEST_SHIFTER);
 
         ShifterState result = tx.shift(ShifterState.GEAR_1);
         assertEquals(ShifterState.GEAR_1, result);
-    }
-
-    @Test
-    void addShifterValidChannels() {
-        CANDeviceID leaderId = new CANDeviceID(436);
-        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-
-        tx.addShifter(4, 5);
-        ShifterState result = tx.shift(ShifterState.GEAR_2);
-        assertEquals(ShifterState.GEAR_2, result);
     }
 
     @Test
@@ -1565,18 +1556,8 @@ class TransmissionFXTest {
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         /* 99 is the sentinel value for "no channel" */
-        tx.addShifter(99, 99);
+        tx.addShifter(1, 99, 99);
         /* No shifter created, shift still changes state */
-        ShifterState result = tx.shift(ShifterState.GEAR_1);
-        assertEquals(ShifterState.GEAR_1, result);
-    }
-
-    @Test
-    void addShifterWithRatios() {
-        CANDeviceID leaderId = new CANDeviceID(438);
-        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-
-        tx.addShifter(6, 3.0, 7, 2.0);
         ShifterState result = tx.shift(ShifterState.GEAR_1);
         assertEquals(ShifterState.GEAR_1, result);
     }
@@ -1586,8 +1567,7 @@ class TransmissionFXTest {
         CANDeviceID leaderId = new CANDeviceID(439);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
-        ShifterPneumatic shifter = new ShifterPneumatic(8, 9);
-        tx.setShifter(shifter);
+        tx.setShifter(TEST_SHIFTER);
 
         tx.shift(ShifterState.GEAR_1);
         tx.shift(ShifterState.GEAR_2);
@@ -1610,7 +1590,7 @@ class TransmissionFXTest {
     void shiftToGear1UpdatesRotorRatio() {
         CANDeviceID leaderId = new CANDeviceID(441);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.setShifter(new ShifterPneumatic(10, 11), 3.5, 2.0);
+        tx.setShifter(TEST_SHIFTER, 3.5, 2.0);
 
         tx.shift(ShifterState.GEAR_1);
 
@@ -1621,7 +1601,7 @@ class TransmissionFXTest {
     void shiftToGear2UpdatesRotorRatio() {
         CANDeviceID leaderId = new CANDeviceID(442);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.setShifter(new ShifterPneumatic(12, 13), 3.5, 2.0);
+        tx.setShifter(TEST_SHIFTER, 3.5, 2.0);
 
         tx.shift(ShifterState.GEAR_2);
 

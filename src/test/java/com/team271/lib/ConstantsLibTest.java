@@ -32,12 +32,18 @@ class ConstantsLibTest {
     }
 
     @Test
-    void canIdPhIsMutable() {
-        int original = ConstantsLib.CAN_ID_PH;
-        ConstantsLib.CAN_ID_PH = 42;
+    void sensorModeValues() {
+        assertEquals(3, ConstantsLib.SensorMode.values().length);
+        assertNotNull(ConstantsLib.SensorMode.valueOf("SENSORED"));
+        assertNotNull(ConstantsLib.SensorMode.valueOf("SENSORLESS"));
+        assertNotNull(ConstantsLib.SensorMode.valueOf("SYSID"));
+    }
 
-        assertEquals(42, ConstantsLib.CAN_ID_PH);
-
-        ConstantsLib.CAN_ID_PH = original;
+    @Test
+    void controlModeValues() {
+        assertEquals(3, ConstantsLib.ControlMode.values().length);
+        assertNotNull(ConstantsLib.ControlMode.valueOf("MANUAL"));
+        assertNotNull(ConstantsLib.ControlMode.valueOf("HOMING"));
+        assertNotNull(ConstantsLib.ControlMode.valueOf("AUTO"));
     }
 }

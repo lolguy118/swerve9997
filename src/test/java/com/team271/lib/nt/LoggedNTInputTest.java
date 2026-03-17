@@ -112,4 +112,64 @@ class LoggedNTInputTest {
         input.getDbl(); // prime the cached value
         assertFalse(input.hasChanged());
     }
+
+    // ── hasChanged variants on valid table ──
+
+    @Test
+    void validTable_hasBoolChanged_falseBeforeAnyChange() {
+        NTTable table = new NTTable("LoggedNTInputBoolChange");
+        LoggedNTInput input = new LoggedNTInput(table, "boolStable", false);
+        input.getBool();
+        assertFalse(input.hasBoolChanged());
+    }
+
+    @Test
+    void validTable_hasLongChanged_falseBeforeAnyChange() {
+        NTTable table = new NTTable("LoggedNTInputLongChange");
+        LoggedNTInput input = new LoggedNTInput(table, "longStable", 10L);
+        input.getLong();
+        assertFalse(input.hasLongChanged());
+    }
+
+    @Test
+    void validTable_hasStringChanged_falseBeforeAnyChange() {
+        NTTable table = new NTTable("LoggedNTInputStrChange");
+        LoggedNTInput input = new LoggedNTInput(table, "strStable", "test");
+        input.getString();
+        assertFalse(input.hasStringChanged());
+    }
+
+    // ── Repeated getDbl/getBool/getLong/getString calls with valid table ──
+
+    @Test
+    void validTable_repeatedDblCalls() {
+        NTTable table = new NTTable("LoggedNTInputRepeatDbl");
+        LoggedNTInput input = new LoggedNTInput(table, "dblRepeat", 2.0);
+        assertEquals(2.0, input.getDbl());
+        assertEquals(2.0, input.getDbl());
+    }
+
+    @Test
+    void validTable_repeatedBoolCalls() {
+        NTTable table = new NTTable("LoggedNTInputRepeatBool");
+        LoggedNTInput input = new LoggedNTInput(table, "boolRepeat", true);
+        assertTrue(input.getBool());
+        assertTrue(input.getBool());
+    }
+
+    @Test
+    void validTable_repeatedLongCalls() {
+        NTTable table = new NTTable("LoggedNTInputRepeatLong");
+        LoggedNTInput input = new LoggedNTInput(table, "longRepeat", 7L);
+        assertEquals(7L, input.getLong());
+        assertEquals(7L, input.getLong());
+    }
+
+    @Test
+    void validTable_repeatedStringCalls() {
+        NTTable table = new NTTable("LoggedNTInputRepeatStr");
+        LoggedNTInput input = new LoggedNTInput(table, "strRepeat", "abc");
+        assertEquals("abc", input.getString());
+        assertEquals("abc", input.getString());
+    }
 }

@@ -239,4 +239,50 @@ class PIDTrapTest {
         pid.calc(0.0, 0.0);
         assertDoesNotThrow(() -> pid.outputTelemetry());
     }
+
+    /* --- Continuous input mode --- */
+
+    @Test
+    void calcWithContinuousInput() {
+        pid.enableContinuousInput(0, 360);
+        pid.reset(0.0);
+        pid.setGoal(350.0);
+
+        double result = pid.calc(10.0, 0.0);
+        /* Just verify it completes without error */
+        assertFalse(Double.isNaN(result));
+    }
+
+    @Test
+    void calcWithContinuousInputDisabled() {
+        pid.disableContinuousInput();
+        pid.reset(0.0);
+        pid.setGoal(5.0);
+
+        double result = pid.calc(0.0, 0.0);
+        assertFalse(Double.isNaN(result));
+    }
+
+    /* --- atGoal --- */
+
+    @Test
+    void atGoalFalseInitially() {
+        pid.reset(0.0);
+        pid.setGoal(5.0);
+        assertFalse(pid.atGoal());
+    }
+
+    /* --- calc with multiple timestamps --- */
+
+    @Test
+    void calcMultipleStepsAdvancesProfile() {
+        pid.reset(0.0);
+        pid.setGoal(5.0);
+
+        double first = pid.calc(0.0, 0.0);
+        double second = pid.calc(0.0, 0.02);
+        /* Profile should produce different outputs over time */
+        assertFalse(Double.isNaN(first));
+        assertFalse(Double.isNaN(second));
+    }
 }

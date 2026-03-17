@@ -591,14 +591,15 @@ public abstract class TransmissionBase extends TObj {
      * Convenience method: create a pneumatic shifter from solenoid channels. Equivalent to {@code
      * setShifter(new ShifterPneumatic(chGear1, chGear2))}.
      */
-    public void addShifter(final int chGear1, final int chGear2) {
+    public void addShifter(final int pneumaticHubCanId, final int chGear1, final int chGear2) {
         if (chGear1 != 99 && chGear2 != 99) {
-            setShifter(new ShifterPneumatic(chGear1, chGear2));
+            setShifter(new ShifterPneumatic(pneumaticHubCanId, chGear1, chGear2));
         }
     }
 
     /** Convenience method: create a pneumatic shifter with per-gear sensor ratios. */
     public void addShifter(
+            final int pneumaticHubCanId, 
             final int chGear1,
             final double argSensorRatio1,
             final int chGear2,
@@ -606,7 +607,7 @@ public abstract class TransmissionBase extends TObj {
         sensorRatioGear1 = argSensorRatio1;
         sensorRatioGear2 = argSensorRatio2;
 
-        addShifter(chGear1, chGear2);
+        addShifter(pneumaticHubCanId,chGear1, chGear2);
     }
 
     public ShifterState shift(final ShifterState argShiftTo) {

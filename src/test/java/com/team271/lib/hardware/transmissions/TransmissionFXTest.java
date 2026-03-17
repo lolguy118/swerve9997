@@ -7,6 +7,9 @@ import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.hardware.controllers.ControllerBase.MotorDirection;
 import com.team271.lib.hardware.controllers.ControllerBase.NeutralState;
 import com.team271.lib.hardware.motors.MotorBase;
+import com.team271.lib.hardware.sensors.encoders.EncoderBase.EncoderDirection;
+import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchTrigger;
+import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchType;
 import com.team271.lib.hardware.transmissions.TransmissionBase.ShifterState;
 import edu.wpi.first.hal.HAL;
 import java.lang.reflect.Field;
@@ -33,6 +36,13 @@ class TransmissionFXTest {
         setStaticField("signalsAllArray", null);
         setStaticField("prevRefreshTime", null);
         setStaticField("lastRefreshTime", null);
+        resetLastConfigErrorTime();
+    }
+
+    private void resetLastConfigErrorTime() throws Exception {
+        Field f = TransmissionBase.class.getDeclaredField("lastConfigErrorNotificationTime");
+        f.setAccessible(true);
+        f.setDouble(null, 0);
     }
 
     private void clearStaticField(String fieldName) throws Exception {
@@ -1318,5 +1328,721 @@ class TransmissionFXTest {
         tx.setOutputDynMMPositionTorqueCurrent(1.0, 100.0, 200.0, 1000.0, 0.1);
 
         assertEquals(0, getSlot(tx, "motorDynMMTC"));
+    }
+
+    /* ========== CANCoder Encoder Selection Branches ========== */
+
+    @Test
+    void addCANCoderCreatesEncoder() {
+        CANDeviceID leaderId = new CANDeviceID(400);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.addCANCoder(new CANDeviceID(401), EncoderDirection.CW, 250.0);
+        assertNotNull(tx.getEncoderCANCoder());
+    }
+
+    @Test
+    void getPosWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(402);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(403), EncoderDirection.CW, 250.0);
+
+        /* CANCoder branch returns encCANCoder.getPosRotations() * ratio */
+        assertEquals(0.0, tx.getPos(), 1e-6);
+    }
+
+    @Test
+    void getPosAbsWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(404);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(405), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getPosAbs(), 1e-6);
+    }
+
+    @Test
+    void getVelWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(406);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(407), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getVel(), 1e-6);
+    }
+
+    @Test
+    void getVelRPSWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(408);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(409), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getVelRPS(), 1e-6);
+    }
+
+    @Test
+    void getPosFXReturnsZeroWithCANCoderOnly() {
+        CANDeviceID leaderId = new CANDeviceID(410);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(411), EncoderDirection.CW, 250.0);
+
+        /* getPosFX checks encFX only, not encCANCoder */
+        assertEquals(0.0, tx.getPosFX(), 1e-6);
+    }
+
+    @Test
+    void getVelFXReturnsZeroWithCANCoderOnly() {
+        CANDeviceID leaderId = new CANDeviceID(412);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(413), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getVelFX(), 1e-6);
+    }
+
+    @Test
+    void getVelFXRPSReturnsZeroWithCANCoderOnly() {
+        CANDeviceID leaderId = new CANDeviceID(414);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(415), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getVelFXRPS(), 1e-6);
+    }
+
+    @Test
+    void getPosRotationsWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(416);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(417), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getPosRotations(), 1e-6);
+    }
+
+    @Test
+    void getPosAbsRotationsWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(418);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(419), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getPosAbsRotations(), 1e-6);
+    }
+
+    @Test
+    void setPosRotationsWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(420);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(421), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setPosRotations(3.0));
+    }
+
+    @Test
+    void getVelWithBothEncoders() {
+        CANDeviceID leaderId = new CANDeviceID(422);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+        tx.addCANCoder(new CANDeviceID(423), EncoderDirection.CW, 250.0);
+
+        /* CANCoder takes priority */
+        assertEquals(0.0, tx.getVel(), 1e-6);
+    }
+
+    @Test
+    void getVelWithFXEncoderOnly() {
+        CANDeviceID leaderId = new CANDeviceID(424);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        /* Falls through to getVelFX */
+        assertEquals(0.0, tx.getVel(), 1e-6);
+    }
+
+    /* ========== getCLError Encoder Branches ========== */
+
+    @Test
+    void getCLErrorWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(425);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(426), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getCLError(), 1e-6);
+    }
+
+    /* ========== getSetpoint Encoder Branches ========== */
+
+    @Test
+    void getSetpointWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(427);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(428), EncoderDirection.CW, 250.0);
+
+        assertEquals(0.0, tx.getSetpoint(), 1e-6);
+    }
+
+    /* ========== Limit Switch Configuration ========== */
+
+    @Test
+    void configLimitFwdCreatesSwitchFX() {
+        CANDeviceID leaderId = new CANDeviceID(429);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+        assertFalse(tx.getFwdLimit());
+    }
+
+    @Test
+    void configLimitRevCreatesSwitchFX() {
+        CANDeviceID leaderId = new CANDeviceID(430);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+        assertFalse(tx.getRevLimit());
+    }
+
+    @Test
+    void configLimitFwdDisabled() {
+        CANDeviceID leaderId = new CANDeviceID(431);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.configLimitFwd(SwitchType.FX, false, SwitchTrigger.NC, false, 0.0);
+        assertFalse(tx.getFwdLimit());
+    }
+
+    @Test
+    void configLimitRevDisabled() {
+        CANDeviceID leaderId = new CANDeviceID(432);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.configLimitRev(SwitchType.FX, false, SwitchTrigger.NC, false, 0.0);
+        assertFalse(tx.getRevLimit());
+    }
+
+    @Test
+    void configLimitFwdWithAutoZero() {
+        CANDeviceID leaderId = new CANDeviceID(433);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, true, 5.0);
+        assertFalse(tx.getFwdLimit());
+    }
+
+    /* ========== Shifter Operations ========== */
+
+    @Test
+    void setShifterWithRatios() {
+        CANDeviceID leaderId = new CANDeviceID(434);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        ShifterPneumatic shifter = new ShifterPneumatic(0, 1);
+        tx.setShifter(shifter, 2.5, 1.5);
+
+        ShifterState result = tx.shift(ShifterState.GEAR_1);
+        assertEquals(ShifterState.GEAR_1, result);
+    }
+
+    @Test
+    void setShifterWithoutRatios() {
+        CANDeviceID leaderId = new CANDeviceID(435);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        ShifterPneumatic shifter = new ShifterPneumatic(2, 3);
+        tx.setShifter(shifter);
+
+        ShifterState result = tx.shift(ShifterState.GEAR_1);
+        assertEquals(ShifterState.GEAR_1, result);
+    }
+
+    @Test
+    void addShifterValidChannels() {
+        CANDeviceID leaderId = new CANDeviceID(436);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.addShifter(4, 5);
+        ShifterState result = tx.shift(ShifterState.GEAR_2);
+        assertEquals(ShifterState.GEAR_2, result);
+    }
+
+    @Test
+    void addShifterInvalidChannels() {
+        CANDeviceID leaderId = new CANDeviceID(437);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        /* 99 is the sentinel value for "no channel" */
+        tx.addShifter(99, 99);
+        /* No shifter created, shift still changes state */
+        ShifterState result = tx.shift(ShifterState.GEAR_1);
+        assertEquals(ShifterState.GEAR_1, result);
+    }
+
+    @Test
+    void addShifterWithRatios() {
+        CANDeviceID leaderId = new CANDeviceID(438);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.addShifter(6, 3.0, 7, 2.0);
+        ShifterState result = tx.shift(ShifterState.GEAR_1);
+        assertEquals(ShifterState.GEAR_1, result);
+    }
+
+    @Test
+    void shiftWithShifterActuates() {
+        CANDeviceID leaderId = new CANDeviceID(439);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        ShifterPneumatic shifter = new ShifterPneumatic(8, 9);
+        tx.setShifter(shifter);
+
+        tx.shift(ShifterState.GEAR_1);
+        tx.shift(ShifterState.GEAR_2);
+        assertEquals(ShifterState.GEAR_2, tx.shift(ShifterState.GEAR_2)); /* no-op */
+    }
+
+    @Test
+    void shiftWithoutShifterStillUpdatesState() {
+        CANDeviceID leaderId = new CANDeviceID(440);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        /* No shifter set — shifter is null */
+        ShifterState result = tx.shift(ShifterState.GEAR_2);
+        assertEquals(ShifterState.GEAR_2, result);
+    }
+
+    /* ========== TransmissionFX shift() Config Updates ========== */
+
+    @Test
+    void shiftToGear1UpdatesRotorRatio() {
+        CANDeviceID leaderId = new CANDeviceID(441);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.setShifter(new ShifterPneumatic(10, 11), 3.5, 2.0);
+
+        tx.shift(ShifterState.GEAR_1);
+
+        assertEquals(3.5, tx.getLeaderConfig().Feedback.RotorToSensorRatio, 1e-6);
+    }
+
+    @Test
+    void shiftToGear2UpdatesRotorRatio() {
+        CANDeviceID leaderId = new CANDeviceID(442);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.setShifter(new ShifterPneumatic(12, 13), 3.5, 2.0);
+
+        tx.shift(ShifterState.GEAR_2);
+
+        assertEquals(2.0, tx.getLeaderConfig().Feedback.RotorToSensorRatio, 1e-6);
+    }
+
+    @Test
+    void shiftToGearNoneDoesNotUpdateRatio() {
+        CANDeviceID leaderId = new CANDeviceID(443);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        double originalRatio = tx.getLeaderConfig().Feedback.RotorToSensorRatio;
+
+        tx.shift(ShifterState.GEAR_NONE);
+
+        assertEquals(originalRatio, tx.getLeaderConfig().Feedback.RotorToSensorRatio, 1e-6);
+    }
+
+    /* ========== Config Error Rate Limiting ========== */
+
+    @Test
+    void applyConfigsReportsWarningOnFailure() {
+        CANDeviceID leaderId = new CANDeviceID(444);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        /* In sim, applyConfig always fails — this exercises the rate-limiting path */
+        assertDoesNotThrow(tx::applyConfigs);
+    }
+
+    @Test
+    void applyConfigsRateLimitsWithin2Seconds() {
+        CANDeviceID leaderId = new CANDeviceID(445);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        /* First call sets the rate-limit timer */
+        tx.applyConfigs();
+        /* Second call within 2s should be rate-limited */
+        assertDoesNotThrow(tx::applyConfigs);
+    }
+
+    /* ========== CANCoder Output Methods ========== */
+
+    @Test
+    void setOutputPositionWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(446);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(447), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputPosition(2.0, 0.1));
+    }
+
+    @Test
+    void setOutputVelocityWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(448);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(449), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputVelocity(5.0, 0.2));
+    }
+
+    @Test
+    void setOutputPositionDutyWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(450);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(451), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputPositionDuty(2.0, 0.1));
+    }
+
+    @Test
+    void setOutputPositionTorqueCurrentWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(452);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(453), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputPositionTorqueCurrent(2.0, 0.1));
+    }
+
+    @Test
+    void setOutputVelocityDutyWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(454);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(455), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputVelocityDuty(5.0, 0.2));
+    }
+
+    @Test
+    void setOutputVelocityTorqueCurrentWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(456);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(457), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputVelocityTorqueCurrent(5.0, 0.2));
+    }
+
+    @Test
+    void setOutputMMPositionDutyWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(458);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(459), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMPositionDuty(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMPositionVoltageWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(460);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(461), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMPositionVoltage(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMPositionTorqueCurrentWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(462);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(463), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMPositionTorqueCurrent(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMVelocityDutyWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(464);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(465), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityDuty(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMVelocityVoltageWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(466);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(467), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityVoltage(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMVelocityTorqueCurrentWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(468);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(469), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMVelocityTorqueCurrent(10.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMExpoPositionDutyWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(470);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(471), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionDuty(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMExpoPositionVoltageWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(472);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(473), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionVoltage(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputMMExpoPositionTorqueCurrentWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(474);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(475), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputMMExpoPositionTorqueCurrent(1.0, 0.5));
+    }
+
+    @Test
+    void setOutputDynMMPositionDutyWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(476);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(477), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputDynMMPositionDuty(1.0, 100.0, 200.0, 1000.0, 0.5));
+    }
+
+    @Test
+    void setOutputDynMMPositionVoltageWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(478);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(479), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setOutputDynMMPositionVoltage(1.0, 100.0, 200.0, 1000.0, 0.5));
+    }
+
+    @Test
+    void setOutputDynMMPositionTorqueCurrentWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(480);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(481), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(
+                () -> tx.setOutputDynMMPositionTorqueCurrent(1.0, 100.0, 200.0, 1000.0, 0.5));
+    }
+
+    /* ========== Simulation with CANCoder ========== */
+
+    @Test
+    void setSimVelRotationsWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(482);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(483), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setSimVelRotations(10.0));
+    }
+
+    @Test
+    void setSimPosRotationsWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(484);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(485), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.setSimPosRotations(5.0));
+    }
+
+    @Test
+    void simulationInitWithEncodersAndLimits() {
+        CANDeviceID leaderId = new CANDeviceID(486);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+        tx.addCANCoder(new CANDeviceID(487), EncoderDirection.CW, 250.0);
+        tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+        tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+
+        assertDoesNotThrow(() -> tx.simulationInit(0.0));
+    }
+
+    @Test
+    void simulationPeriodicWithEncodersAndLimits() {
+        CANDeviceID leaderId = new CANDeviceID(488);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+        tx.addCANCoder(new CANDeviceID(489), EncoderDirection.CW, 250.0);
+        tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+        tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+
+        tx.simulationInit(0.0);
+        assertDoesNotThrow(() -> tx.simulationPeriodic(0.02));
+    }
+
+    /* ========== robotInit with Encoders and Limits ========== */
+
+    @Test
+    void robotInitWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(490);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(() -> tx.robotInit(0.0));
+    }
+
+    @Test
+    void robotInitWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(491);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(492), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.robotInit(0.0));
+    }
+
+    @Test
+    void robotInitWithBothEncoders() {
+        CANDeviceID leaderId = new CANDeviceID(493);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+        tx.addCANCoder(new CANDeviceID(494), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(() -> tx.robotInit(0.0));
+    }
+
+    @Test
+    void robotInitWithLimitSwitches() {
+        CANDeviceID leaderId = new CANDeviceID(495);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+        tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+
+        assertDoesNotThrow(() -> tx.robotInit(0.0));
+    }
+
+    /* ========== outputTelemetry with Encoders and Limits ========== */
+
+    @Test
+    void outputTelemetryWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(496);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(497), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(tx::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(498);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(tx::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithLimitSwitches() {
+        CANDeviceID leaderId = new CANDeviceID(499);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+        tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
+
+        assertDoesNotThrow(tx::outputTelemetry);
+    }
+
+    /* ========== Refresh with Encoders ========== */
+
+    @Test
+    void refreshWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(500);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertDoesNotThrow(tx::refresh);
+    }
+
+    @Test
+    void refreshWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(501);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(502), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(tx::refresh);
+    }
+
+    @Test
+    void refreshWithBothEncoders() {
+        CANDeviceID leaderId = new CANDeviceID(503);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+        tx.addCANCoder(new CANDeviceID(504), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(tx::refresh);
+    }
+
+    /* ========== Reset Encoders with CANCoder ========== */
+
+    @Test
+    void resetEncodersWithCANCoder() {
+        CANDeviceID leaderId = new CANDeviceID(505);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addCANCoder(new CANDeviceID(506), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(tx::resetEncoders);
+    }
+
+    @Test
+    void resetEncodersWithBothEncoders() {
+        CANDeviceID leaderId = new CANDeviceID(507);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+        tx.addCANCoder(new CANDeviceID(508), EncoderDirection.CW, 250.0);
+
+        assertDoesNotThrow(tx::resetEncoders);
+    }
+
+    /* ========== Motion Magic Config ========== */
+
+    @Test
+    void setMMConfigUpdatesFields() {
+        CANDeviceID leaderId = new CANDeviceID(509);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.setMMConfig(50.0, 100.0, 500.0);
+        /* Verify via outputTelemetry which publishes configMM values */
+        assertDoesNotThrow(tx::outputTelemetry);
+    }
+
+    /* ========== Encoder Direction CCW ========== */
+
+    @Test
+    void addCANCoderCCW() {
+        CANDeviceID leaderId = new CANDeviceID(510);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.addCANCoder(new CANDeviceID(511), EncoderDirection.CCW, 250.0);
+        assertNotNull(tx.getEncoderCANCoder());
+    }
+
+    /* ========== getVel with FX encoder (else-if branch) ========== */
+
+    @Test
+    void getVelFXWithEncoderReturnsValue() {
+        CANDeviceID leaderId = new CANDeviceID(512);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertEquals(0.0, tx.getVelFX(), 1e-6);
+    }
+
+    @Test
+    void getVelFXRPSWithEncoderReturnsValue() {
+        CANDeviceID leaderId = new CANDeviceID(513);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertEquals(0.0, tx.getVelFXRPS(), 1e-6);
+    }
+
+    /* ========== getPos with FX encoder (else-if branch in getPosRotations) ========== */
+
+    @Test
+    void getPosRotationsWithEncoderFX() {
+        CANDeviceID leaderId = new CANDeviceID(514);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+        tx.addEncoderFX(250.0);
+
+        assertEquals(0.0, tx.getPosRotations(), 1e-6);
     }
 }

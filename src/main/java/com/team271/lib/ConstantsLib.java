@@ -10,9 +10,19 @@ public final class ConstantsLib {
     public static final String S_INVALID = "Invalid";
 
     /*
-     * Pneumatics Hub CAN ID — set this before creating transmissions with shifters
+     * Enums
      */
-    public static int CAN_ID_PH = 1;
+    public enum SensorMode {
+        SENSORED,
+        SENSORLESS,
+        SYSID
+    }
+
+    public enum ControlMode {
+        MANUAL,
+        HOMING,
+        AUTO
+    }
 
     private ConstantsLib() {}
 }

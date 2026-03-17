@@ -1,5 +1,8 @@
 package com.team271.lib.util;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.List;
 
 public class Util {
@@ -137,5 +140,33 @@ public class Util {
         tmpOutput = output_start + slope * (input - input_start);
 
         return tmpOutput;
+    }
+
+    /**
+     * @return the MAC address of the robot
+     */
+    public static String getMACAddress() {
+        try {
+            Enumeration<NetworkInterface> nwInterface = NetworkInterface.getNetworkInterfaces();
+            StringBuilder ret = new StringBuilder();
+            while (nwInterface.hasMoreElements()) {
+                NetworkInterface nis = nwInterface.nextElement();
+                if (nis != null && "eth0".equals(nis.getDisplayName())) {
+                    byte[] mac = nis.getHardwareAddress();
+                    if (mac != null) {
+                        for (int i = 0; i < mac.length; i++) {
+                            ret.append(
+                                    String.format(
+                                            "%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
+                        }
+                        return ret.toString();
+                    }
+                }
+            }
+        } catch (SocketException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }

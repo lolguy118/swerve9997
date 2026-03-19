@@ -184,6 +184,66 @@ class PIDWPITest {
         assertDoesNotThrow(() -> pid.calc(0.0));
     }
 
+    /* --- reset with initialized controller --- */
+
+    @Test
+    void resetWithInitializedControllerClearsState() {
+        pid.setSetpoint(10.0);
+        pid.calc(0.0);
+        pid.calc(5.0);
+
+        pid.reset();
+
+        // After reset, the controller's internal state is cleared
+        pid.setSetpoint(0.0);
+        pid.setTolerance(0.1);
+        pid.calc(0.0);
+        assertTrue(pid.atSetpoint(), "After reset and zero error, should be at setpoint");
+    }
+
+    /* --- atSetpoint delegation --- */
+
+    @Test
+    void atSetpointReturnsFalseBeforeAnyCalc() {
+        PIDWPI fresh = new PIDWPI(null, "Fresh", 0.02, 1.0, 0.0, 0.0, 0.05);
+        assertFalse(fresh.atSetpoint());
+    }
+
+    /* --- setSetpoint then calc --- */
+
+    @Test
+    void setSetpointThenCalcProducesCorrectOutput() {
+        pid.setSetpoint(10.0);
+        double output = pid.calc(8.0);
+        // P=1.0, error=10-8=2, output=2.0
+        assertEquals(2.0, output, 1e-9);
+    }
+
+    /* --- Two-arg constructor --- */
+
+    @Test
+    void twoArgConstructorSetsGainsAndZeroTolerance() {
+        PIDWPI twoArg = new PIDWPI(null, "TwoArg", 0.02, 3.0, 1.0, 0.5);
+        assertEquals(3.0, twoArg.getP());
+        assertEquals(1.0, twoArg.getI());
+        assertEquals(0.5, twoArg.getD());
+        // Controller should be synced
+        assertEquals(3.0, twoArg.getController().getP(), 1e-9);
+        assertEquals(1.0, twoArg.getController().getI(), 1e-9);
+        assertEquals(0.5, twoArg.getController().getD(), 1e-9);
+    }
+
+    /* --- One-arg constructor --- */
+
+    @Test
+    void oneArgConstructorDefaultsToZeroGains() {
+        PIDWPI oneArg = new PIDWPI(null, "OneArg", 0.02);
+        assertEquals(0.0, oneArg.getP());
+        assertEquals(0.0, oneArg.getI());
+        assertEquals(0.0, oneArg.getD());
+        assertEquals(0.0, oneArg.getController().getP(), 1e-9);
+    }
+
     /* --- refresh --- */
 
     @Test
@@ -198,5 +258,15 @@ class PIDWPITest {
         pid.setSetpoint(1.0);
         pid.calc(0.0);
         assertDoesNotThrow(() -> pid.outputTelemetry());
+    }
+
+    /* --- Continuous input --- */
+
+    @Test
+    void enableContinuousInputOnController() {
+        pid.getController().enableContinuousInput(-Math.PI, Math.PI);
+        pid.setSetpoint(3.0);
+        double output = pid.calc(-3.0);
+        assertNotEquals(0.0, output);
     }
 }

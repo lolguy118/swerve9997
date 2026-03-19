@@ -96,4 +96,11 @@ class MotorBaseTest {
         assertEquals("Neo 550", new MotorBase(MotorType.NEO550).getMotorName());
         assertEquals("Neo Vortex", new MotorBase(MotorType.NEO_VORTEX).getMotorName());
     }
+
+    @ParameterizedTest
+    @EnumSource(MotorType.class)
+    void getControlName_allTypesReturnBrushless(MotorType type) {
+        MotorBase motor = new MotorBase(type);
+        assertEquals("Brushless", motor.getControlName());
+    }
 }

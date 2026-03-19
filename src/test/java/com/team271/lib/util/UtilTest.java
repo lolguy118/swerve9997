@@ -289,4 +289,70 @@ class UtilTest {
         assertTrue(Util.kEpsilon > 0);
         assertTrue(Util.kEpsilon < 1e-6);
     }
+
+    // ── getMACAddress ──
+
+    @Test
+    void getMACAddress_returnsString() {
+        String mac = Util.getMACAddress();
+        assertNotNull(mac);
+    }
+
+    // ── epsilonEquals edge cases ──
+
+    @Test
+    void epsilonEquals_firstConditionFalse() {
+        assertFalse(Util.epsilonEquals(10.0, 5.0, 1.0));
+    }
+
+    @Test
+    void epsilonEquals_secondConditionFalse() {
+        assertFalse(Util.epsilonEquals(5.0, 10.0, 1.0));
+    }
+
+    @Test
+    void epsilonEquals_intFirstConditionFalse() {
+        assertFalse(Util.epsilonEquals(10, 5, 1));
+    }
+
+    @Test
+    void epsilonEquals_intSecondConditionFalse() {
+        assertFalse(Util.epsilonEquals(5, 10, 1));
+    }
+
+    // ── allCloseTo: short-circuit ──
+
+    @Test
+    void allCloseTo_firstFarRestClose() {
+        assertFalse(Util.allCloseTo(Arrays.asList(100.0, 1.0, 1.0), 1.0, 0.05));
+    }
+
+    // ── inRange: outsideLow ──
+
+    @Test
+    void inRange_outsideLow() {
+        assertFalse(Util.inRange(1.0, 2.0, 8.0));
+    }
+
+    // ── handleDeadzone: negative value past deadzone ──
+
+    @Test
+    void handleDeadzone_negativeFullValue() {
+        double result = Util.handleDeadzone(-1.0, 0.0);
+        assertEquals(-1.0, result, 1e-9);
+    }
+
+    // ── handleDeadzone: deadband above one ──
+
+    @Test
+    void handleDeadzone_deadbandAboveOne() {
+        assertEquals(0.0, Util.handleDeadzone(0.5, 1.5));
+    }
+
+    // ── interpolate: negative clamps to a ──
+
+    @Test
+    void interpolate_negativeClampsToA() {
+        assertEquals(2.0, Util.interpolate(2.0, 8.0, -1.0), 1e-9);
+    }
 }

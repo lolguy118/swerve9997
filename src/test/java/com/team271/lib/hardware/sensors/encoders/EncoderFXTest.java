@@ -166,4 +166,13 @@ class EncoderFXTest {
 
         assertDoesNotThrow(() -> encoder.simulationPeriodic(0.0));
     }
+
+    @Test
+    void setPosRotationsUpdatesPosition() {
+        CANDeviceID id = new CANDeviceID(32);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        EncoderFX encoder = new EncoderFX(null, "Enc", controller, 250.0);
+        encoder.setPosRotations(2.5);
+        assertEquals(2.5, encoder.getPosRotations(), 1e-9);
+    }
 }

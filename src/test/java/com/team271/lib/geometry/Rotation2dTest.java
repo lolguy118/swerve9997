@@ -361,4 +361,111 @@ class Rotation2dTest {
         assertEquals(1.0, r.cos(), kEps);
         assertEquals(0.0, r.sin(), kEps);
     }
+
+    /* --- Additional branch coverage --- */
+
+    @Test
+    void constructorWithoutNormalize() {
+        Rotation2d r = new Rotation2d(3.0 * Math.PI, false);
+        // Without normalize, radians should be stored as-is
+        assertEquals(3.0 * Math.PI, r.getRadians(), kEps);
+    }
+
+    @Test
+    void getRotationReturnsSelf() {
+        Rotation2d r = Rotation2d.fromDegrees(45.0);
+        assertSame(r, r.getRotation());
+    }
+
+    @Test
+    void isParallelWithRadiansOnlyInstances() {
+        // fromRadians sets radians_ but leaves trig as NaN, so hasRadians() is true
+        Rotation2d a = Rotation2d.fromRadians(Math.PI);
+        Rotation2d b = Rotation2d.fromRadians(Math.PI);
+        assertTrue(a.isParallel(b));
+    }
+
+    @Test
+    void isParallelNonParallelRadiansOnly() {
+        Rotation2d a = Rotation2d.fromRadians(Math.PI);
+        Rotation2d b = Rotation2d.fromRadians(Math.PI / 2);
+        assertFalse(a.isParallel(b));
+    }
+
+    @Test
+    void normalFromRadiansOnly() {
+        // fromRadians creates an instance without trig, exercising the else branch in normal()
+        Rotation2d r = Rotation2d.fromRadians(Math.PI / 4);
+        Rotation2d n = r.normal();
+        assertNotNull(n);
+        // normal subtracts PI/2 from radians
+        assertEquals(Math.PI / 4 - Math.PI / 2, n.getRadians(), kEps);
+    }
+
+    @Test
+    void equalsWithSameObject() {
+        Rotation2d r = Rotation2d.fromDegrees(90);
+        assertTrue(r.equals(r));
+    }
+
+    /* --- isParallel branch coverage --- */
+
+    @Test
+    void isParallelTrigOnlySameAngle() {
+        // (x, y, false) sets cos/sin but radians=NaN → hasTrig()=true, hasRadians()=false
+        Rotation2d a = new Rotation2d(1.0, 0.0, false);
+        Rotation2d b = new Rotation2d(1.0, 0.0, false);
+        assertTrue(a.isParallel(b));
+    }
+
+    @Test
+    void isParallelTrigOnlyDifferentAngle() {
+        Rotation2d a = new Rotation2d(1.0, 0.0, false);
+        Rotation2d b = new Rotation2d(0.0, 1.0, false);
+        assertFalse(a.isParallel(b));
+    }
+
+    @Test
+    void isParallelMixedRadiansAndTrig() {
+        Rotation2d a = Rotation2d.fromRadians(0.0); // radians only
+        Rotation2d b = new Rotation2d(1.0, 0.0, false); // trig only
+        assertTrue(a.isParallel(b));
+    }
+
+    @Test
+    void isParallelOppositeRadiansOnly() {
+        Rotation2d a = Rotation2d.fromRadians(0.0);
+        Rotation2d b = Rotation2d.fromRadians(Math.PI);
+        assertTrue(a.isParallel(b));
+    }
+
+    @Test
+    void xyConstructorWithoutNormalize() {
+        Rotation2d r = new Rotation2d(3.0, 4.0, false);
+        assertEquals(3.0, r.cos(), kEps);
+        assertEquals(4.0, r.sin(), kEps);
+    }
+
+    @Test
+    void interpolateAboveOne() {
+        Rotation2d a = Rotation2d.fromDegrees(0.0);
+        Rotation2d b = Rotation2d.fromDegrees(90.0);
+        Rotation2d result = a.interpolate(b, 1.5);
+        assertEquals(90.0, result.getDegrees(), kEps);
+    }
+
+    @Test
+    void interpolateBelowZero() {
+        Rotation2d a = Rotation2d.fromDegrees(45.0);
+        Rotation2d b = Rotation2d.fromDegrees(90.0);
+        Rotation2d result = a.interpolate(b, -0.5);
+        assertEquals(45.0, result.getDegrees(), kEps);
+    }
+
+    @Test
+    void toCSVReturnsString() {
+        String csv = Rotation2d.fromDegrees(90).toCSV();
+        assertNotNull(csv);
+        assertFalse(csv.isEmpty());
+    }
 }

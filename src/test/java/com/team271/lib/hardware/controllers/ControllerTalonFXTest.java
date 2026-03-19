@@ -10,6 +10,7 @@ import com.team271.lib.hardware.controllers.ControllerBase.NeutralState;
 import com.team271.lib.hardware.motors.MotorBase;
 import edu.wpi.first.hal.HAL;
 import java.lang.reflect.Field;
+import java.util.EnumSet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -883,5 +884,102 @@ class ControllerTalonFXTest {
 
         follower.follow(leader, false);
         assertEquals(leaderId, follower.getFollowingID());
+    }
+
+    /* --- ControllerBase outputTelemetry: status switch branches --- */
+
+    @Test
+    void outputTelemetryWithBrakeMode() {
+        CANDeviceID id = new CANDeviceID(416);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        controller.setNeutralMode(NeutralState.BRAKE);
+        assertDoesNotThrow(controller::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithCWDirection() {
+        CANDeviceID id = new CANDeviceID(417);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        controller.setDirection(MotorDirection.CW);
+        assertDoesNotThrow(controller::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithNoneNeutralMode() {
+        CANDeviceID id = new CANDeviceID(418);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        controller.setNeutralMode(NeutralState.NONE);
+        assertDoesNotThrow(controller::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithStatusUnknown() throws Exception {
+        CANDeviceID id = new CANDeviceID(419);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        Field statusField = ControllerBase.class.getDeclaredField("status");
+        statusField.setAccessible(true);
+        statusField.set(controller, ControllerBase.ControllerStatus.UNKNOWN);
+        assertDoesNotThrow(controller::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithStatusError() throws Exception {
+        CANDeviceID id = new CANDeviceID(420);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        Field statusField = ControllerBase.class.getDeclaredField("status");
+        statusField.setAccessible(true);
+        statusField.set(controller, ControllerBase.ControllerStatus.ERROR);
+        assertDoesNotThrow(controller::outputTelemetry);
+    }
+
+    @Test
+    void outputTelemetryWithStatusErrorInvalidBus() throws Exception {
+        CANDeviceID id = new CANDeviceID(421);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        Field statusField = ControllerBase.class.getDeclaredField("status");
+        statusField.setAccessible(true);
+        statusField.set(controller, ControllerBase.ControllerStatus.ERROR_INVALID_BUS);
+        assertDoesNotThrow(controller::outputTelemetry);
+    }
+
+    /* --- Signal selection branches in robotInit --- */
+
+    @Test
+    void robotInitWithSignalsNone() throws Exception {
+        CANDeviceID id = new CANDeviceID(422);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        Field signalsField = ControllerTalonFX.class.getDeclaredField("signals");
+        signalsField.setAccessible(true);
+        signalsField.set(controller, EnumSet.of(ControllerTalonFX.Signals.NONE));
+        assertDoesNotThrow(() -> controller.robotInit(0.0));
+        assertEquals(0.0, controller.getOutputDuty(), 1e-6);
+        assertEquals(0.0, controller.getOutputVoltage(), 1e-6);
+        assertEquals(0.0, controller.getOutputTorqueCurrent(), 1e-6);
+        assertEquals(0.0, controller.getSupplyVoltage(), 1e-6);
+        assertEquals(0.0, controller.getSupplyCurrent(), 1e-6);
+        assertEquals(0.0, controller.getCLError(), 1e-6);
+        assertEquals(0.0, controller.getCLOutput(), 1e-6);
+    }
+
+    @Test
+    void robotInitWithSpecificSignals() throws Exception {
+        CANDeviceID id = new CANDeviceID(423);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        Field signalsField = ControllerTalonFX.class.getDeclaredField("signals");
+        signalsField.setAccessible(true);
+        signalsField.set(
+                controller,
+                EnumSet.of(
+                        ControllerTalonFX.Signals.SUPPLY_VOLT,
+                        ControllerTalonFX.Signals.OUTPUT_DUTY));
+        assertDoesNotThrow(() -> controller.robotInit(0.0));
+    }
+
+    @Test
+    void setNeutralModeNoneDefaultsToCoast() {
+        CANDeviceID id = new CANDeviceID(425);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
+        controller.setNeutralMode(NeutralState.NONE);
+        assertEquals(NeutralState.COAST, controller.getNeutralMode());
     }
 }

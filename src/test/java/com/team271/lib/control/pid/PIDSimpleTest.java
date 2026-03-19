@@ -3,6 +3,7 @@ package com.team271.lib.control.pid;
 import static org.junit.jupiter.api.Assertions.*;
 
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -382,5 +383,110 @@ class PIDSimpleTest {
         // Second call with same error → velError = 0
         pid.calc(0.0, 0.5, 0.1);
         assertTrue(pid.atSetpoint(), "Should be at setpoint with pos and vel within tolerance");
+    }
+
+    /* --- PIDBase: setPDeadband negative --- */
+
+    @Test
+    void setPDeadbandRejectsNegative() {
+        assertThrows(IllegalArgumentException.class, () -> pid.setPDeadband(-1.0));
+    }
+
+    /* --- PIDBase: setTolerance two-arg --- */
+
+    @Test
+    void setToleranceWithVelToleranceChecksBoth() {
+        pid.setTolerance(0.1, 5.0);
+        // error = 0.05 < posTolerance 0.1, velError will be ~0 < velTolerance 5.0
+        pid.calc(0.0, 0.05, 0.0);
+        pid.calc(0.0, 0.05, 0.1);
+        assertTrue(pid.atSetpoint());
+    }
+
+    /* --- PIDBase: setIntegratorRange --- */
+
+    @Test
+    void setIntegratorRangeClampsOutput() {
+        PIDSimple iPid = new PIDSimple(null, "IR", 0.0, 1.0, 0.0, 0.05);
+        iPid.setIntegratorRange(-0.1, 0.1);
+        // Accumulate integral over many cycles
+        iPid.calc(0.0, 1.0, 0.0);
+        for (int i = 1; i <= 50; i++) {
+            iPid.calc(0.0, 1.0, i * 0.1);
+        }
+        double output = iPid.calc(0.0, 1.0, 5.1);
+        assertTrue(output <= 0.1 + 1e-6, "Output should be clamped by integrator range");
+    }
+
+    /* --- checkTuning via NT --- */
+
+    private void setNT(String tablePath, String key, double val) {
+        NetworkTableInstance.getDefault()
+                .getTable(tablePath)
+                .getDoubleTopic(key)
+                .publish()
+                .set(val);
+    }
+
+    @Test
+    void checkTuningUpdatesP() {
+        PIDSimple tunePid = new PIDSimple(null, "TuneP", 1.0, 0.0, 0.0, 0.05);
+        setNT("PID(PIDSimple)TuneP", "Tune P", 5.0);
+        tunePid.outputTelemetry();
+        assertEquals(5.0, tunePid.getP(), 1e-9);
+    }
+
+    @Test
+    void checkTuningUpdatesI() {
+        PIDSimple tunePid = new PIDSimple(null, "TuneI", 0.0, 1.0, 0.0, 0.05);
+        setNT("PID(PIDSimple)TuneI", "Tune I", 3.0);
+        tunePid.outputTelemetry();
+        assertEquals(3.0, tunePid.getI(), 1e-9);
+    }
+
+    @Test
+    void checkTuningUpdatesD() {
+        PIDSimple tunePid = new PIDSimple(null, "TuneD", 0.0, 0.0, 1.0, 0.05);
+        setNT("PID(PIDSimple)TuneD", "Tune D", 2.0);
+        tunePid.outputTelemetry();
+        assertEquals(2.0, tunePid.getD(), 1e-9);
+    }
+
+    @Test
+    void checkTuningUpdatesTolerance() {
+        PIDSimple tunePid = new PIDSimple(null, "TuneTol", 1.0, 0.0, 0.0, 0.05);
+        setNT("PID(PIDSimple)TuneTol", "Tune Pos Tol", 0.5);
+        tunePid.outputTelemetry();
+        tunePid.calc(0.0, 0.3, 0.0);
+        assertTrue(tunePid.atSetpoint());
+    }
+
+    @Test
+    void checkTuningUpdatesPDeadband() {
+        PIDSimple tunePid = new PIDSimple(null, "TuneDB", 1.0, 0.0, 0.0, 0.05);
+        setNT("PID(PIDSimple)TuneDB", "Tune P Deadband", 1.0);
+        tunePid.outputTelemetry();
+        double output = tunePid.calc(0.0, 0.5, 0.0);
+        assertEquals(0.0, output, 1e-9);
+    }
+
+    @Test
+    void checkTuningUpdatesIZone() {
+        PIDSimple tunePid = new PIDSimple(null, "TuneIZ", 0.0, 1.0, 0.0, 0.05);
+        setNT("PID(PIDSimple)TuneIZ", "Tune I Zone", 0.5);
+        tunePid.outputTelemetry();
+        tunePid.calc(0.0, 2.0, 0.0);
+        double output = tunePid.calc(0.0, 2.0, 0.1);
+        assertEquals(0.0, output, 1e-9);
+    }
+
+    @Test
+    void checkTuningUpdatesOutputRange() {
+        PIDSimple tunePid = new PIDSimple(null, "TuneOR", 1.0, 0.0, 0.0, 0.05);
+        setNT("PID(PIDSimple)TuneOR", "Tune Output Min", -0.5);
+        setNT("PID(PIDSimple)TuneOR", "Tune Output Max", 0.5);
+        tunePid.outputTelemetry();
+        double output = tunePid.calc(0.0, 10.0, 0.0);
+        assertEquals(0.5, output, 1e-9);
     }
 }

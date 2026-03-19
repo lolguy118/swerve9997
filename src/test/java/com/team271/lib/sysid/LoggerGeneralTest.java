@@ -128,4 +128,15 @@ class LoggerGeneralTest {
         assertTrue(logger.data.isEmpty());
         assertEquals(0.0, logger.getMotorVoltage(), 1e-9);
     }
+
+    @Test
+    void log_doesNotAddBeyondCapacity() {
+        logger.testType = "Dynamic";
+        logger.voltageCommand = 1.0;
+        for (int i = 0; i < Logger.DATA_VECTOR_SIZE; i++) {
+            logger.data.add(0.0);
+        }
+        logger.log(0.0, 0.0, 0.0, 0.0);
+        assertEquals(Logger.DATA_VECTOR_SIZE, logger.data.size());
+    }
 }

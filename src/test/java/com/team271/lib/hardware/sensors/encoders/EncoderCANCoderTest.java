@@ -194,4 +194,27 @@ class EncoderCANCoderTest {
 
         assertDoesNotThrow(() -> encoder.simulationPeriodic(0.0));
     }
+
+    @Test
+    void setMagnetSensorDoesNotThrow() {
+        CANDeviceID id = new CANDeviceID(45);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+        assertDoesNotThrow(() -> encoder.setMagnetSensor(0.5));
+    }
+
+    @Test
+    void setPosAbsRotationsAndGet() {
+        CANDeviceID id = new CANDeviceID(46);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+        encoder.setPosAbsRotations(0.25);
+        assertEquals(0.25, encoder.getPosAbsRotations(), 1e-9);
+    }
+
+    @Test
+    void setPosRotationsUpdatesHardware() {
+        CANDeviceID id = new CANDeviceID(47);
+        EncoderCANCoder encoder = new EncoderCANCoder(null, "Enc", id, EncoderDirection.CW, 250.0);
+        encoder.setPosRotations(1.5);
+        assertEquals(1.5, encoder.getPosRotations(), 1e-9);
+    }
 }

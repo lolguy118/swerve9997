@@ -318,4 +318,36 @@ class AutoModeTest {
         TestAutoMode delayed = new TestAutoMode(3.0);
         assertEquals(3.0, delayed.delay, 1e-9);
     }
+
+    @Test
+    void robotPeriodicAfterDoesNothingWhenNotRunning() {
+        TestMove first = new TestMove();
+        mode.addMove(first);
+        // Don't start - currentMove is null, isRunning is false
+        assertDoesNotThrow(() -> mode.robotPeriodicAfter(0.0));
+    }
+
+    @Test
+    void robotPeriodicBeforeWithNullCurrentMoveWhileRunning() {
+        TestMove move = new TestMove();
+        mode.addMove(move);
+        mode.start();
+        mode.nextMove(); // exhausts moves, sets currentMove=null and ends
+        // Reset running state to test the null currentMove branch in robotPeriodicBefore
+        mode.isRunning = true;
+        assertDoesNotThrow(() -> mode.robotPeriodicBefore(0.0));
+    }
+
+    @Test
+    void autonomousPeriodicWithNullCurrentMove() {
+        // currentMove is null when mode has no moves
+        assertDoesNotThrow(() -> mode.autonomousPeriodic(0.0));
+    }
+
+    @Test
+    void setCompletedSetsComplete() {
+        assertFalse(mode.isComplete());
+        mode.setCompleted();
+        assertTrue(mode.isComplete());
+    }
 }

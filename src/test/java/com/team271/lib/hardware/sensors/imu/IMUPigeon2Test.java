@@ -186,4 +186,23 @@ class IMUPigeon2Test {
 
         assertDoesNotThrow(() -> imu.simulationInit(0.0));
     }
+
+    @Test
+    void refreshBeforeRobotInitDoesNotChangeValues() {
+        CANDeviceID id = new CANDeviceID(77);
+        IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
+        imu.refresh();
+        assertEquals(0.0, imu.getYaw(), 1e-6);
+        assertEquals(0.0, imu.getYawRate(), 1e-6);
+        assertEquals(0.0, imu.getRoll(), 1e-6);
+        assertEquals(0.0, imu.getPitch(), 1e-6);
+    }
+
+    @Test
+    void getHeadingReturnsZeroDegInitially() {
+        CANDeviceID id = new CANDeviceID(78);
+        IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
+        assertNotNull(imu.getHeading());
+        assertEquals(0.0, imu.getHeading().getDegrees(), 1e-6);
+    }
 }

@@ -152,4 +152,30 @@ class LoggerTest {
     void clearWhenReceived_doesNotThrow() {
         assertDoesNotThrow(() -> logger.clearWhenReceived());
     }
+
+    @Test
+    void sendData_quasistatic_negativeVoltage() {
+        logger.testType = "Quasistatic";
+        logger.voltageCommand = -1.0;
+        logger.data.add(0.1);
+        assertDoesNotThrow(() -> logger.sendData());
+    }
+
+    @Test
+    void sendData_quasistatic_positiveVoltage() {
+        logger.testType = "Quasistatic";
+        logger.voltageCommand = 1.0;
+        assertDoesNotThrow(() -> logger.sendData());
+    }
+
+    @Test
+    void initLogger_withNonEmptyMechanism() {
+        edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putString("SysIdTest", "Simple");
+        assertDoesNotThrow(() -> logger.initLogger(0.0));
+    }
+
+    @Test
+    void updateThreadPriority_inSimDoesNotThrow() {
+        assertDoesNotThrow(() -> logger.updateThreadPriority());
+    }
 }

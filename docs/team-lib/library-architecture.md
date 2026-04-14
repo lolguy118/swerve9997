@@ -19,7 +19,7 @@ Team271-Lib/docs/
 │   ├── hardware-abstraction.md
 │   ├── control-system.md
 │   └── ...
-├── team271-java-coding-standard.md   ← shared coding rules
+├── team271-java-coding-standard.md   ← shared coding rules (in team-lib/)
 └── prompts/                          ← review prompts
 
 Robot-2026-Comp/docs/          ← robot-specific (separate repo)
@@ -167,7 +167,7 @@ Robot.robotPeriodic()
   → SubsystemManager.outputTelemetry()     — publish to NT + check tunables
 ```
 
-See [coding standard Appendix D](../team271-java-coding-standard.md) for
+See [coding standard Appendix D](team271-java-coding-standard.md) for
 the full lifecycle reference.
 
 ### Exception Isolation

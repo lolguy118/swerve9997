@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD013 MD060 -->
-# Team 271 FRC 2026 Robot
+# Team271-Lib
 
-Please comprehensively review our FRC robot library codebase. We are Team 271 building a robot for the FRC games. The codebase uses the latest version of WPILib, CTRE Phoenix 6, PathPlanner, and AdvantageKit for logging.
+Team 271's reusable FRC robot library. The codebase uses WPILib, CTRE Phoenix 6, PathPlanner, and AdvantageKit for logging.
 
 ## Reference Documentation
 
@@ -19,7 +19,8 @@ Please comprehensively review our FRC robot library codebase. We are Team 271 bu
 - Elastic Dashboard Source: <https://github.com/Gold872/elastic_dashboard>
 
 ## Design Documents
-- [Java Coding Standard](docs/team271-java-coding-standard.md) — formatting, safety rules, naming conventions, state machine patterns
+
+- [Java Coding Standard](docs/team-lib/team271-java-coding-standard.md) — formatting, safety rules, naming conventions, state machine patterns
 - [Contributing Guide](CONTRIBUTING.md) — pre-commit checks, build verification, commit conventions
 - [Library Architecture](docs/team-lib/library-architecture.md) — TObj hierarchy, subsystem lifecycle, hardware abstraction stack
 - [Auto Design](docs/team-lib/auto-design.md) — move composition, AutoMode lifecycle, sequencing patterns
@@ -33,7 +34,6 @@ Please comprehensively review our FRC robot library codebase. We are Team 271 bu
 - [Vendor Dependencies](docs/team-lib/vendor-dependencies.md) — vendordep management and upgrades
 
 ---
-
 
 ## Software Architecture
 
@@ -50,7 +50,7 @@ Please comprehensively review our FRC robot library codebase. We are Team 271 bu
 
 ### Lifecycle Flow
 
-See `docs/team271-java-coding-standard.md` Appendix D for the full lifecycle reference.
+See `docs/team-lib/team271-java-coding-standard.md` Appendix D for the full lifecycle reference.
 
 ```text
 Robot.robotPeriodic()
@@ -65,7 +65,7 @@ Robot.robotPeriodic()
 
 ## Constants Reference
 
-All tunable values (voltages, speeds, current limits, timing windows, thresholds) live in code, not in this document. All configurable values must be dashboard-tunable at runtime per [CODE-BUG-004](docs/team271-java-coding-standard.md).
+All tunable values (voltages, speeds, current limits, timing windows, thresholds) live in code, not in this document. All configurable values must be dashboard-tunable at runtime per [CODE-BUG-004](docs/team-lib/team271-java-coding-standard.md).
 
 ---
 
@@ -125,7 +125,6 @@ Remove the callout when the feature is implemented. This prevents someone from a
 
 When multiple design docs describe the same cross-subsystem behavior, **one doc is the authoritative source** and the others link to it. Do not copy details between docs.
 
-
 ### CLAUDE.md Stays High-Level
 
 CLAUDE.md provides the **overview** and links to design docs for details. Do not expand CLAUDE.md sections to match design doc depth. If a CLAUDE.md section grows past ~5 lines of detail, move the content to the appropriate design doc and replace it with a link.
@@ -149,21 +148,45 @@ Applies to: homing sequences (coding standard 4.9c), launcher spin-up waits, pat
 
 ---
 
-## What to Look For
+## Code Review
 
-See `docs/team271-java-coding-standard.md` for the full coding standard,
-safety rules (Section 4.9), and code review checklist (Section 5.4).
-The items below are **robot-specific review concerns** not covered by
-the general coding standard:
+See `docs/team-lib/team271-java-coding-standard.md` for the full coding standard, safety rules (Section 4.9), and code review checklist (Section 5.4).
 
-### Robot-Specific Review Items
+### Library Review Items
 
-- Unit errors specific to this robot (rotations vs radians, RPS vs RPM, meters vs inches)
-- Correct Phoenix 6 v26.1.3 API patterns, no deprecated calls
+These apply to all projects using Team271-Lib:
+
+- Unit consistency (rotations vs radians, RPS vs RPM, meters vs inches)
+- Correct Phoenix 6 API patterns, no deprecated calls
 - No duplicate device objects on the same CAN ID
 - Proper use of timesync and latency compensation
 - StatusSignal refresh patterns correct
 - Sensor enable/disable propagating current limits correctly
-- Is the 250 Hz CAN refresh rate sustainable under load?
+- CAN refresh rate sustainable under load
 - All operations that wait for a condition have timeout protection with driver notification (coding standard 4.9c)
 - Fault tolerance scenarios handled per [Fault Tolerance](docs/team-lib/fault-tolerance.md) and coding standard Section 4.9 (CODE-SAF-008–011)
+
+---
+---
+
+## Project-Specific Configuration
+
+> **Everything below this line is specific to this project / season.**
+> The sections above are generic to Team271-Lib and can be shared
+> across robot projects. When copying this CLAUDE.md to a new robot
+> project, keep everything above and replace everything below with
+> your project-specific details.
+
+### Current Versions
+
+| Dependency | Version |
+|-----------|---------|
+| Phoenix 6 | 26.1.3 |
+| AdvantageKit | 26.0.2 |
+| PathplannerLib | 2026.1.2 |
+| GradleRIO | 2026.2.1 |
+| Java | 17 |
+
+### Project-Specific Review Items
+
+- Verify Phoenix 6 v26.1.3 API patterns specifically — check release notes for any breaking changes from prior versions

@@ -1,9 +1,9 @@
-# Contributing to Robot-2026-Comp
+# Contributing to Team271-Lib
 
 ## Prerequisites
 
-- **Java 17** (required by GradleRIO 2026)
-- **WPILib 2026** VS Code extension (includes the Gradle wrapper and toolchain)
+- **Java 17+** (required by GradleRIO)
+- **WPILib** VS Code extension (includes the Gradle wrapper and toolchain)
 - Clone the repo and verify it builds: `./gradlew build`
 
 ## Before Every Commit

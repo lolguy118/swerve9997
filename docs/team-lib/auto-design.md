@@ -1,9 +1,10 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Auto System Architecture
 
-This document describes the autonomous routine framework in Team271-Lib.
-The library provides composable building blocks for constructing complex
-autonomous sequences without shared timers or tight coupling to subsystems.
+> **Scope:** This document covers the library's autonomous move
+> composition framework — the reusable building blocks. Robot-specific
+> auto routines (path definitions, move implementations, auto selector
+> configuration) belong in each robot project's auto design docs.
 
 ---
 

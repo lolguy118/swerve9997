@@ -1,8 +1,9 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Testing Strategy
 
-This document describes the test architecture, patterns, and conventions
-in Team271-Lib.
+> **Scope:** This document covers Team271-Lib's test architecture and
+> patterns. Robot projects follow the same patterns for their own tests
+> but may add physics-based simulation tests that are robot-specific.
 
 ---
 
@@ -243,9 +244,93 @@ JaCoCo reports are generated after every test run. The `libtest` package
 is excluded from metrics (it's the test robot harness, not library code).
 
 Focus coverage on:
+
 - **Constructor paths** — verify objects initialize without errors
 - **Configuration API** — verify getters return what setters store
 - **Validation logic** — verify boundary checks, null guards, bus validation
 - **State transitions** — verify sensor mode changes, completion flags
 - **Math functions** — verify PID calculations, geometry transforms,
   unit conversions
+
+---
+
+## Simulation-Based Testing
+
+### CTRE SimState in Unit Tests
+
+When `HAL.initialize()` is called, CTRE devices create functional
+SimState objects. You can use these in unit tests to verify
+simulation wiring:
+
+```java
+@Test
+void simulationInitSetsMotorType() {
+    CANDeviceID id = new CANDeviceID(10);
+    ControllerTalonFX controller =
+        new ControllerTalonFX(null, "Sim", id, KRAKEN);
+
+    controller.simulationInit(0.0);
+
+    // SimState should now be initialized
+    assertNotNull(controller.getSimState());
+}
+
+@Test
+void setSimPosRotationsPropagates() {
+    CANDeviceID id = new CANDeviceID(11);
+    TransmissionFX transmission =
+        new TransmissionFX(null, "Sim", Motor.kKrakenX60, id);
+    transmission.simulationInit(0.0);
+
+    // Set simulated position — should not throw
+    transmission.setSimPosRotations(5.0);
+    transmission.setSimVelRotations(1.0);
+}
+```
+
+### What Simulation Tests Can Verify
+
+- SimState objects are created during `simulationInit()`
+- `setSimPosRotations()` / `setSimVelRotations()` propagate without errors
+- Supply voltage updates don't throw during `simulationPeriodic()`
+- Motor type and orientation are configured correctly
+- DCMotor model is created with the correct motor count
+
+### What Simulation Tests Cannot Verify
+
+- Physics accuracy (depends on robot-specific WPILib sim classes)
+- Closed-loop PID response (requires firmware simulation loop)
+- CAN signal values (StatusSignals return defaults in unit tests)
+- Real-world timing and latency compensation
+
+### Desktop Simulation vs Unit Tests
+
+| Aspect | Unit Tests (`./gradlew test`) | Desktop Sim (`./gradlew simulateJava`) |
+|--------|-------------------------------|---------------------------------------|
+| Speed | Fast (seconds) | Slow (requires GUI) |
+| Physics | No physics models | Full WPILib physics models |
+| Dashboard | No dashboard | Full NT + dashboard |
+| Tuning | No `LoggedNTInput` changes | Live tuning via dashboard |
+| Scope | Library correctness | Robot behavior validation |
+| CI-friendly | Yes | No |
+
+**Guideline:** Use unit tests for library correctness (construction,
+config, math, state machines). Use desktop simulation for full-stack
+validation with physics and dashboard tuning. Robot projects should
+have both.
+
+---
+
+## Robot Project Testing
+
+Robot projects follow the same patterns as the library, with additions:
+
+- **Physics model tests** — verify that `simulationPeriodic()` produces
+  expected position/velocity for known voltage inputs
+- **Auto sequence tests** — verify that `AutoMode` compositions complete
+  in expected order using simulated time
+- **State machine integration tests** — verify cross-subsystem
+  coordination using SubsystemManager lifecycle
+
+Robot-specific tests live in the robot project's `src/test/` directory,
+not in Team271-Lib.

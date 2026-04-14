@@ -1,8 +1,10 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Control System Design
 
-This document describes the PID control hierarchy and Balance algorithm
-in Team271-Lib.
+> **Scope:** This document covers the library's PID control hierarchy
+> and Balance algorithm. Robot-specific PID tuning values, mechanism
+> constraints, and feedforward characterization belong in each robot
+> project's subsystem design docs.
 
 ---
 
@@ -56,9 +58,47 @@ wrap point instead of going the long way around.
 
 ### Live Tuning
 
-Every PIDBase creates `LoggedNTInput` fields for P, I, D, tolerances,
-iZone, and output range. The `checkTuning()` method detects dashboard
-changes and applies them. This is called from `outputTelemetry()`.
+Every PIDBase creates `LoggedNTInput` fields for dashboard tuning.
+Changes are detected in `checkTuning()`, called from `outputTelemetry()`.
+
+**PIDBase tunable inventory:**
+
+| LoggedNTInput | NT Key | Default | Applies To |
+|---------------|--------|---------|------------|
+| `tuneP` | `Tune P` | Constructor arg | `pidSlot.kP` |
+| `tuneI` | `Tune I` | Constructor arg | `pidSlot.kI` |
+| `tuneD` | `Tune D` | Constructor arg | `pidSlot.kD` |
+| `tunePosTol` | `Tune Pos Tol` | Constructor arg | `pidSlot.posTolerance` |
+| `tunePDeadband` | `Tune P Deadband` | 0.0 | `pidSlot.pDeadband` |
+| `tuneIZone` | `Tune I Zone` | +Infinity | `pidSlot.iZone` |
+| `tuneOutputMin` | `Tune Output Min` | -1.0 | `minOutput` |
+| `tuneOutputMax` | `Tune Output Max` | 1.0 | `maxOutput` |
+
+**checkTuning() implementation:**
+
+```java
+protected void checkTuning() {
+    if (tuneP.hasChanged()) setP(tuneP.getDbl());
+    if (tuneI.hasChanged()) setI(tuneI.getDbl());
+    if (tuneD.hasChanged()) setD(tuneD.getDbl());
+    if (tunePosTol.hasChanged()) setTolerance(tunePosTol.getDbl());
+    if (tunePDeadband.hasChanged()) setPDeadband(tunePDeadband.getDbl());
+    if (tuneIZone.hasChanged()) setIZone(tuneIZone.getDbl());
+    if (tuneOutputMin.hasChanged() || tuneOutputMax.hasChanged()) {
+        setOutputRange(tuneOutputMin.getDbl(), tuneOutputMax.getDbl());
+    }
+}
+```
+
+For `PIDFX`, `setP()`, `setI()`, `setD()` additionally sync gains
+to the TalonFX hardware via `ControllerTalonFX.setPSlot()`.
+
+**PIDBase telemetry output** (read-only NTEntry fields, published
+every cycle after `checkTuning()`):
+
+- P/I/D contributions: `outputP`, `outputI`, `outputD`, `output`
+- Error tracking: `prevError`, `totalError`, `posError`, `velError`
+- State: `lastInputMeasurement`, `lastTimestamp`, `atSetpoint`
 
 ---
 
@@ -209,7 +249,18 @@ balancing. Unlike the PID classes, it does not extend TObj or PIDBase.
 | `levelDegree` | Tilt threshold for "level" detection |
 | `debounceTime` | Stability time before declaring balanced |
 
-All parameters are dashboard-tunable via `LoggedNTInput`.
+**Balance tunable inventory:**
+
+| LoggedNTInput | NT Key | Default | Notes |
+|---------------|--------|---------|-------|
+| `tuneSpeedSlow` | `Tune Speed Slow` | 0.2 | Leveling speed |
+| `tuneSpeedFast` | `Tune Speed Fast` | 0.6 | Approach/climb speed |
+| `tuneOnChargeDeg` | `Tune On Charge Deg` | 13.0 | Sign-inverted if reverse |
+| `tuneLevelDeg` | `Tune Level Deg` | 6.0 | Sign-inverted if reverse |
+| `tuneDebounceTime` | `Tune Debounce Time` | 0.1 | Stability time (seconds) |
+
+Balance's `checkTuning()` applies sign inversion based on `isFwd`:
+tilt thresholds are negated for reverse-facing balance routines.
 
 ### Usage
 
@@ -221,3 +272,29 @@ balance.init();  // call once at start
 double speed = balance.autoBalanceRoutineForward(imu.getPitch());
 drivetrain.setOutputVoltage(speed);
 ```
+
+---
+
+## Tuning PID in Simulation
+
+The library's tuning infrastructure works identically in simulation
+and on real hardware. This enables a rapid tuning workflow:
+
+1. Run `./gradlew simulateJava`
+2. Connect Elastic Dashboard or Shuffleboard to `localhost`
+3. Navigate to the mechanism's NT path → `Tune/` subtable
+4. Adjust P, I, D gains while watching simulated response
+5. Once the sim response looks right, deploy to real robot for fine-tuning
+6. Copy final values back to `Constants.java`
+
+For software PID (PIDSimple, PIDTrap, PIDWPI), the full control loop
+runs on the RoboRIO — simulation accuracy depends on the physics model.
+
+For hardware PID (PIDFX, TransmissionFX closed-loop), the CTRE firmware
+simulation models the TalonFX's 1 kHz PID loop, so sim tuning is a
+reasonable starting point for real-hardware tuning.
+
+> **Robot project responsibility:** The library provides tuning
+> infrastructure and change detection. Robot projects define initial
+> gain values in their `Constants` classes and implement physics models
+> in `simulationPeriodic()` for accurate sim-based tuning.

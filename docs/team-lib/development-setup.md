@@ -1,7 +1,9 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Development Setup
 
-Getting started guide for new contributors to Team271-Lib.
+> **Scope:** Setup for contributing to Team271-Lib itself. Robot projects
+> that depend on this library follow the same prerequisites but have
+> their own build and deploy instructions.
 
 ---
 

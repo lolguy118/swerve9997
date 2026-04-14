@@ -1,9 +1,39 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Library Architecture
 
-This document is the authoritative reference for Team271-Lib's design.
-It describes the core abstractions, lifecycle model, and package structure
-that robot projects build on top of.
+> **Scope:** This is the authoritative reference for Team271-Lib's design —
+> the reusable library that all robot projects build on. Robot-specific
+> design docs (subsystem state machines, CAN ID assignments, controller
+> bindings, auto paths) belong in each robot project's own `docs/` folder.
+> This document describes the framework; robot docs describe how a specific
+> robot uses it.
+
+---
+
+## How Library and Robot Docs Coexist
+
+```text
+Team271-Lib/docs/
+├── team-lib/                  ← YOU ARE HERE — library design docs
+│   ├── library-architecture.md
+│   ├── hardware-abstraction.md
+│   ├── control-system.md
+│   └── ...
+├── team271-java-coding-standard.md   ← shared coding rules
+└── prompts/                          ← review prompts
+
+Robot-2026-Comp/docs/          ← robot-specific (separate repo)
+├── drivetrain-design.md
+├── intake-design.md
+├── auto-paths.md
+└── ...
+```
+
+The library docs describe *what building blocks exist and how to use them*.
+Robot docs describe *how a specific robot is assembled from those blocks*.
+When both cover the same topic (e.g., simulation), the library doc covers
+the infrastructure and the robot doc covers the physics models and tuning
+values specific to that robot.
 
 ---
 
@@ -20,13 +50,6 @@ com.team271.lib
 │   └── SubsystemManager.java  Singleton lifecycle orchestrator
 │
 ├── auto/                      Autonomous move composition (see auto-design.md)
-│   ├── AutoMode.java
-│   ├── AutoMove.java
-│   ├── AutoMoveSingle.java
-│   ├── AutoMoveSequence.java
-│   ├── AutoMoveParallel.java
-│   ├── AutoMoveConditional.java
-│   └── AutoMoveTimed.java
 │
 ├── hardware/                  Hardware abstractions (see hardware-abstraction.md)
 │   ├── CANBus.java            CAN bus wrapper
@@ -39,35 +62,21 @@ com.team271.lib
 │   └── Input/                 Gamepad/joystick abstraction
 │
 ├── control/                   Control algorithms (see control-system.md)
-│   ├── pid/                   PID variants
+│   ├── pid/                   PID variants (5 types)
 │   └── Balance.java           Charge station balancing
 │
 ├── nt/                        NetworkTables integration
-│   ├── NTEntry.java           Topic subscription/publication
+│   ├── NTEntry.java           Topic subscription/publication (output only)
 │   ├── NTTable.java           Hierarchical table manager
-│   └── LoggedNTInput.java     Dashboard-tunable values
+│   └── LoggedNTInput.java     Dashboard-tunable values (input with change detection)
 │
 ├── sysid/                     System identification logging
-│   ├── Logger.java            Base SysID logger
-│   └── LoggerGeneral.java     General characterization
-│
 ├── geometry/                  2D pose and transformation utilities
-│   ├── Pose2d.java, Rotation2d.java, Translation2d.java, Twist2d.java
-│   └── Interfaces: IPose2d, IRotation2d, ITranslation2d
-│
-├── util/                      Utilities
-│   ├── Util.java              Math helpers (limit, interpolate, epsilonEquals)
-│   ├── Alert.java             Driver notification system
-│   ├── DriveSignal.java       Drivetrain voltage pair
-│   ├── CSVWritable.java       CSV export interface
-│   └── Interpolable.java      Interpolation interface
-│
+├── util/                      Utilities (math, alerts, signals)
 ├── misc/
-│   └── Elastic.java           Elastic Dashboard integration
+│   └── Elastic.java           Elastic Dashboard notification API
 │
 └── wpilib/                    WPILib framework extensions
-    ├── IterativeRobot.java
-    └── TimedRobot.java
 ```
 
 ---
@@ -89,7 +98,7 @@ robotPeriodicAfter(double timestamp)
 disabledInit / disabledPeriodic / disabledExit
 autonomousInit / autonomousPeriodic / autonomousExit
 teleopInit / teleopPeriodic / teleopExit
-simulationInit / simulationPeriodic
+simulationInit / simulationPeriodic              // ← simulation hooks
 testInit / testPeriodic / testExit
 outputTelemetry()
 ```
@@ -108,6 +117,8 @@ new ControllerTalonFX(transmission, "Leader", ...);
 ```
 
 This hierarchy flows automatically — no manual path construction needed.
+Every component's tunables and telemetry appear under its parent's
+NT path, making it easy to find in a dashboard.
 
 ---
 
@@ -131,7 +142,6 @@ Subsystems that require zeroing/calibration implement:
 ```java
 @Override
 public void sensorsZero() {
-    // Reset encoder to known position
     transmission.setPosRotations(0.0);
     isZeroed = true;
 }
@@ -154,7 +164,7 @@ Robot.robotPeriodic()
   → SubsystemManager.robotPeriodicBefore() — read sensors
   → <mode>Periodic()                      — state machine logic
   → SubsystemManager.robotPeriodicAfter()  — apply outputs
-  → SubsystemManager.outputTelemetry()     — publish to NT
+  → SubsystemManager.outputTelemetry()     — publish to NT + check tunables
 ```
 
 See [coding standard Appendix D](../team271-java-coding-standard.md) for
@@ -191,11 +201,13 @@ A static singleton that manages all CTRE Phoenix 6 devices and signals.
 
 ### Signal Registration
 
-Devices register signals during `robotInit()`:
+Type-specific registration helpers ensure correct per-bus optimization:
 
 ```java
 CTREManager.addSignalTalonFX(talonFX.getPosition(), updateFreqHz);
 CTREManager.addSignalCANCoder(cancoder.getAbsolutePosition(), updateFreqHz);
+CTREManager.addSignalPigeon(pigeon.getYaw(), updateFreqHz);
+CTREManager.addSignalCANrange(canrange.getDistance(), updateFreqHz);
 ```
 
 ### Timing
@@ -205,24 +217,6 @@ CTREManager.addSignalCANCoder(cancoder.getAbsolutePosition(), updateFreqHz);
   one Elastic notification per 2 seconds
 - `getDt()` calculates frame time delta from signal timestamps
 - `getLastRefreshTime()` provides the best timestamp from the last refresh
-
----
-
-## Hardware Abstraction Stack
-
-The hardware layer follows a layered architecture:
-
-```text
-TransmissionFX          (multi-motor + MM + shifting + telemetry)
-  └── ControllerTalonFX (single motor + signals + config)
-      └── ControllerSmart (current/voltage/PID abstractions)
-          └── ControllerBase (type system + follower validation)
-              └── TObj (lifecycle + NT)
-```
-
-Transmissions aggregate motors, encoders, switches, and shifters into
-a single coordinated unit. See [Hardware Abstraction](hardware-abstraction.md)
-for the full design.
 
 ---
 
@@ -236,57 +230,250 @@ The library enforces a **desired-to-actual** state machine pattern:
    reads the desired state and commands hardware
 
 This separation ensures:
+
 - All sensor reads complete before state decisions
 - All state decisions complete before hardware commands
 - No cross-subsystem race conditions within a single cycle
 
 ---
 
-## NetworkTables & Telemetry
+## Tuning Infrastructure
 
-### NTEntry
+The library provides a complete dashboard-tuning system that lets
+operators adjust values at runtime without redeploying code.
 
-Wrapper around NT4 topic subscriptions. Provides typed constructors
-for boolean, double, and array values. Integrates with AdvantageKit
-log keys via `logKey()`.
+### Three NT Classes — Different Purposes
 
-### LoggedNTInput
+| Class | Direction | Change Detection | Use For |
+|-------|-----------|-----------------|---------|
+| `NTTable` | — | — | Hierarchical namespace container |
+| `NTEntry` | Output only | No | Publishing telemetry to dashboard |
+| `LoggedNTInput` | Input + Output | Yes (`hasChanged()`) | Dashboard-tunable parameters |
 
-Dashboard-tunable values that can be adjusted at runtime without
-redeploying code. Used for PID gains, current limits, voltage limits,
-and other tunables. Changes are detected in `checkTuning()` methods
-and applied to hardware.
+### NTEntry — Output Telemetry
+
+Wraps NT4 topic subscriptions. Publishes values via AdvantageKit Logger:
 
 ```java
-// In constructor:
-tuneP = new LoggedNTInput(table, "Tune/kP", pidSlot.kP);
+NTEntry ntPos = new NTEntry(table, "Position", 0.0);
 
 // In outputTelemetry():
+ntPos.publish(currentPosition);  // logs to AdvantageKit
+```
+
+Supports boolean, double, long, int, and string types.
+
+### LoggedNTInput — Dashboard Tunables
+
+The primary tuning API. Maintains both a publisher (sets defaults on
+dashboard) and a subscriber (reads operator changes). All reads are
+automatically logged to AdvantageKit.
+
+```java
+// In constructor — register with default:
+LoggedNTInput tuneP = new LoggedNTInput(table, "Tune/kP", 0.1);
+
+// In checkTuning() — detect and apply:
 if (tuneP.hasChanged()) {
-    setP(tuneP.get());
+    setP(tuneP.getDbl());
 }
 ```
 
+**Change detection methods by type:**
+
+| Type | Check | Get |
+|------|-------|-----|
+| double | `hasChanged()` | `getDbl()` |
+| boolean | `hasBoolChanged()` | `getBool()` |
+| long | `hasLongChanged()` | `getLong()` |
+| String | `hasStringChanged()` | `getString()` |
+
+**Null-safe:** If table is null, LoggedNTInput still works (returns
+cached default values) but change detection always returns false.
+
+### The checkTuning() Pattern
+
+Every class with tunables follows this pattern:
+
+```java
+@Override
+public void outputTelemetry() {
+    checkTuning();           // 1. Detect and apply dashboard changes
+    super.outputTelemetry(); // 2. Call parent telemetry
+    // 3. Publish current values via NTEntry
+}
+
+protected void checkTuning() {
+    if (tuneP.hasChanged()) setP(tuneP.getDbl());
+    if (tuneI.hasChanged()) setI(tuneI.getDbl());
+    // ...
+}
+```
+
+The tuning check runs every robot cycle as part of `outputTelemetry()`,
+which is called by `SubsystemManager.outputTelemetry()`.
+
+### Where Tunables Live
+
+| Layer | What's Tunable | NT Path Example |
+|-------|---------------|-----------------|
+| PIDBase | P, I, D, tolerances, iZone, output range | `/Arm/PID/Tune P` |
+| ControllerSmart | Stator/supply current limits, voltage limits | `/Arm/Trans/Leader/Tune Stator Limit` |
+| TransmissionFX | Motion Magic profile, PID gains (kP-kS) | `/Arm/Trans/Tune MM Cruise Vel` |
+| Balance | Speeds, tilt thresholds, debounce time | `/Balance/Tune Speed Slow` |
+
+See [Hardware Abstraction](hardware-abstraction.md) and
+[Control System](control-system.md) for complete tunable inventories.
+
+### Tuning Workflow
+
+1. Deploy code to robot (or run `./gradlew simulateJava`)
+2. Open Elastic Dashboard / Shuffleboard / AdvantageScope
+3. Navigate to the component's NT path → `Tune/` subtable
+4. Modify values — changes apply on the next robot cycle
+5. Once dialed in, copy values back to `Constants.java`
+
+### Elastic Dashboard Notifications
+
+`Elastic` sends JSON notifications to the Elastic Dashboard:
+
+```java
+Elastic.sendNotification(new Elastic.Notification(
+    Elastic.NotificationLevel.WARNING,
+    "Homing Timeout",
+    "Arm homing timed out after 2.0s"));
+```
+
+Levels: `INFO` (green), `WARNING` (yellow), `ERROR` (red).
+Supports builder pattern for display time, width, height.
+
 ### Alert System
 
-`Alert` provides driver notifications at three severity levels
-(ERROR, WARNING, INFO). Notifications appear on the Elastic Dashboard
-and are logged via AdvantageKit.
+`Alert` manages persistent, categorized alerts logged to AdvantageKit
+and SmartDashboard. Unlike Elastic notifications (one-shot), Alerts
+have active/inactive state:
+
+```java
+Alert homingAlert = new Alert("Arm", "Homing failed", AlertType.WARNING);
+homingAlert.set(true);   // activate — sends Elastic + DriverStation
+homingAlert.set(false);  // deactivate
+```
+
+`Alert.outputTelemetry()` is called once per cycle by SubsystemManager
+to log all active alerts to AdvantageKit.
 
 ---
 
-## Simulation Support
+## Simulation Architecture
 
-Every hardware class provides simulation hooks:
+The library provides two complementary simulation layers:
 
-- `simulationInit(double)` — lazy-initialize sim state
-- `simulationPeriodic(double)` — update sim state each cycle
-- `setSimPosRotations(double)` / `setSimVelRotations(double)` — set
-  simulated sensor values
+### Layer 1: CTRE SimState (Device-Level)
 
-TransmissionBase creates the appropriate `DCMotor` model
-(Falcon500Foc, KrakenX60Foc, etc.) based on the motor type,
-enabling physics-accurate simulation.
+Every CTRE device has a SimState object that models device behavior
+in the WPILib simulation environment:
+
+| Device | SimState | Initialized In |
+|--------|----------|----------------|
+| TalonFX | `TalonFXSimState` | `ControllerTalonFX.simulationInit()` |
+| CANcoder | `CANcoderSimState` | `EncoderCANCoder.create()` |
+| Pigeon 2 | `Pigeon2SimState` | `IMUPigeon2.create()` |
+| CANrange | `CANrangeSimState` | `RangeCANrange.create()` |
+
+SimState allows setting simulated position, velocity, and supply voltage.
+The CTRE firmware simulation uses these to model device responses.
+
+### Layer 2: WPILib DCMotor (Physics-Level)
+
+`TransmissionBase.robotInit()` creates a `DCMotor` model matching the
+actual motor hardware:
+
+| Motor Type | DCMotor Model |
+|-----------|--------------|
+| `FALCON500` | `DCMotor.getFalcon500Foc(numMotors)` |
+| `KRAKENX60` | `DCMotor.getKrakenX60Foc(numMotors)` |
+| `KRAKENX44` | Custom (12V, 4.05A, 275Nm, 7530 RPM) |
+| `NEO` / `NEO550` / `NEO_VORTEX` | Matching WPILib model |
+
+The `numMotors` parameter is the total count (leader + followers),
+giving accurate aggregate torque for physics simulation. Access via
+`transmission.getDCMotor()`.
+
+### Simulation Lifecycle
+
+```text
+robotInit()
+  → TransmissionBase creates DCMotor model
+  → CTRE devices create SimState objects
+
+simulationInit()                        (once, on first sim cycle)
+  → ControllerTalonFX: configures motor type + orientation on SimState
+  → Delegated to all sensors via TransmissionBase
+
+simulationPeriodic()                    (every 20 ms sim cycle)
+  → All CTRE devices: set supply voltage from RobotController.getBatteryVoltage()
+  → [Robot-specific]: update physics model, feed results back via setSimPos/Vel
+```
+
+### Position/Velocity Propagation
+
+When a robot-specific physics model computes new state, it propagates
+through the entire hardware stack:
+
+```text
+transmission.setSimPosRotations(position)
+  → encCANCoder.setSimPosRotations()     → CANcoderSimState.setRawPosition()
+  → allControllers.setSimPosRotations()  → TalonFXSimState.setRawRotorPosition()
+  → EncoderFX reads from TalonFXSimState automatically
+```
+
+### Robot Project Simulation Pattern
+
+The library provides infrastructure; robot projects implement the physics:
+
+```java
+// In a robot project subsystem:
+private SingleJointedArmSim armSim;
+
+@Override
+public void simulationInit(double timestamp) {
+    super.simulationInit(timestamp);  // sets up CTRE SimStates
+    armSim = new SingleJointedArmSim(
+        transmission.getDCMotor(),    // DCMotor from library
+        gearRatio, jKgMetersSquared, armLengthMeters,
+        minAngleRad, maxAngleRad, simulateGravity, startAngleRad);
+}
+
+@Override
+public void simulationPeriodic(double timestamp) {
+    super.simulationPeriodic(timestamp);  // updates supply voltages
+
+    // Read what the motor is commanding
+    armSim.setInputVoltage(
+        transmission.getSimState().getMotorVoltage());
+
+    // Step physics (20 ms)
+    armSim.update(0.020);
+
+    // Feed results back into hardware sim
+    double rotorPos = Units.radiansToRotations(armSim.getAngleRads()) * gearRatio;
+    double rotorVel = Units.radiansToRotations(armSim.getVelocityRadPerSec()) * gearRatio;
+    transmission.setSimPosRotations(rotorPos);
+    transmission.setSimVelRotations(rotorVel);
+}
+```
+
+### WPILib Simulation Classes Reference
+
+These WPILib classes pair with library DCMotor models:
+
+| WPILib Class | Use With |
+|-------------|----------|
+| `SingleJointedArmSim` | Arms, wrists |
+| `ElevatorSim` | Elevators, linear mechanisms |
+| `FlywheelSim` | Flywheels, shooters |
+| `DCMotorSim` | Generic rotational mechanisms |
+| `DifferentialDrivetrainSim` | Tank drivetrains |
 
 ---
 
@@ -295,6 +482,7 @@ enabling physics-accurate simulation.
 ### Why Singletons for Managers
 
 SubsystemManager and CTREManager use the singleton pattern because:
+
 - There is exactly one robot with one set of subsystems
 - There is exactly one CAN bus system
 - The lifecycle must be globally coordinated
@@ -303,15 +491,28 @@ SubsystemManager and CTREManager use the singleton pattern because:
 
 WPILib's `SubsystemBase` is designed for the command-based framework.
 Team 271 uses a state machine pattern instead, which requires:
+
 - Finer-grained lifecycle hooks (before/after periodic)
 - Explicit execution ordering
 - Exception isolation per subsystem
+- Simulation hooks built into the lifecycle
 
 ### Why Centralized CAN Refresh
 
 Per-device signal refresh causes CAN bus contention and inconsistent
 timestamps. `CTREManager.refreshAll()` batches all signals into a single
 CAN frame exchange, ensuring:
+
 - Consistent timestamps across all devices
 - Lower bus utilization
 - Simpler latency compensation
+
+### Why LoggedNTInput Instead of Raw NT
+
+Raw NT subscriptions require manual logging and change detection.
+`LoggedNTInput` provides:
+
+- Automatic AdvantageKit logging on every read
+- Built-in change detection (`hasChanged()`)
+- Null-safe operation (works with or without a live NT connection)
+- Type-specific constructors with default values published to dashboard

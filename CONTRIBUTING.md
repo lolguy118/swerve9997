@@ -43,7 +43,7 @@ constants), use `// spotless:off` / `// spotless:on` markers sparingly.
 ## Coding Standard
 
 The full coding standard lives in
-[`docs/team271-java-coding-standard.md`](docs/team271-java-coding-standard.md).
+[`docs/team-lib/team271-java-coding-standard.md`](docs/team-lib/team271-java-coding-standard.md).
 Key sections:
 
 - **Section 4** — Language rules (naming, safety, state machines, GC)
@@ -55,12 +55,9 @@ Read at least Sections 4 and 5 before your first contribution.
 ## Code Review Checklist
 
 Before opening a PR, verify the items in
-[Section 5.4](docs/team271-java-coding-standard.md) of the coding
+[Section 5.4](docs/team-lib/team271-java-coding-standard.md) of the coding
 standard. These include state machine completeness, motor safety,
 subsystem lifecycle ordering, naming conventions, and timeout protection.
-
-For a comprehensive architecture reference and detailed review checklist,
-see the [Code Review Prompt](docs/prompts/code-review-prompt-teamlib.md).
 
 ## Documentation Updates
 

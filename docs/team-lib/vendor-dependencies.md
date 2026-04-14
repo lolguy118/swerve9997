@@ -1,8 +1,10 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Vendor Dependency Management
 
-This document describes how to manage vendor dependencies (vendordeps)
-in Team271-Lib.
+> **Scope:** Vendordep management for Team271-Lib. Robot projects that
+> depend on this library inherit these vendordeps and may add their own
+> (e.g., Limelight, PhotonVision). Each robot project's vendordeps are
+> managed independently.
 
 ---
 

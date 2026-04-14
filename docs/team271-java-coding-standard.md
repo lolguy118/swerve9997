@@ -3,13 +3,13 @@
 
 Document No: 271-JCS\
 Revision: Draft\
-Date of Release: 2026-04-13
+Date of Release: (see revision history)
 
 ## Revision History
 
 | Revision | Date | Author | Description |
 | -------- | ---- | ------ | ----------- |
-| Draft | 2026-04-13 | Team 271 | Initial draft |
+| Draft | (initial) | Team 271 | Initial draft |
 
 ---
 
@@ -200,7 +200,7 @@ Spotless runs automatically before compilation
 Every `.java` file shall follow this structure:
 
 ```java
-package com.team271.frc2026;
+package com.team271.frc<year>;
 
 import com.team271.lib.TObj;
 import edu.wpi.first.wpilibj.Timer;
@@ -341,7 +341,7 @@ public final class Constants {
 
     /* CAN Bus Names */
     public static final String CAN_BUS_RIO = "rio";
-    public static final String CAN_BUS_CANIVORE_DRIVE = "Drive";
+    public static final String CAN_BUS_CANIVORE_A = "BusA";
 
     public static final class CAN {
         public static final CANDeviceID INDEXER_LEADER =
@@ -350,11 +350,11 @@ public final class Constants {
         private CAN() {}
     }
 
-    public static final class IndexConstants {
-        public static final double INDEX_SPEED = 1.0;
+    public static final class ExampleSubsystemConstants {
+        public static final double EXAMPLE_SPEED = 1.0;
         public static final double IDLE_SPEED = 0.0;
         // ...
-        private IndexConstants() {}
+        private ExampleSubsystemConstants() {}
     }
 
     private Constants() {}
@@ -434,7 +434,7 @@ b. The `final` keyword **shall** be used:
 
 c. The `static` keyword **shall** be used for:
    - Constants: `public static final double SHOOT_RPS = 38.0;`
-   - Singleton instances: `private static Index mInstance;`
+   - Singleton instances: `private static ExampleSubsystem mInstance;`
    - Utility methods that do not depend on instance state.
 
 d. The `@Override` annotation **shall** be used on every method that
@@ -686,14 +686,14 @@ d. After creation, subsystem references **shall** be stored in
 
    ```java
    /* In Robot.robotInit() */
-   Globals.drive = Drive.getInstance(ntRobot);
-   mSubsystemManager.addSubsystem(Globals.drive);
+   Globals.subsystemA = SubsystemA.getInstance(ntRobot);
+   mSubsystemManager.addSubsystem(Globals.subsystemA);
 
    /* In Globals.java */
-   public static Drive drive;
-   public static Intake intake;
-   public static Launcher launcher;
-   public static Index index;
+   public static SubsystemA subsystemA;
+   public static SubsystemB subsystemB;
+   public static SubsystemC subsystemC;
+   public static SubsystemD subsystemD;
    public static InputDriver controllerDriver;
    ```
 
@@ -705,7 +705,7 @@ a. Object comparison **shall** use `.equals()`, not `==`, unless
    ```java
    /* WRONG: compares references, not values */
    if (statusCode == StatusCode.OK) { ... }  // Actually OK for enums (see below)
-   if (name == "Hub") { ... }                // WRONG: use .equals()
+   if (name == "TargetName") { ... }                // WRONG: use .equals()
 
    /* CORRECT */
    if (name.equals("Hub")) { ... }
@@ -716,7 +716,7 @@ b. Enum comparison with `==` is acceptable and preferred (enums are
    singletons in Java):
 
    ```java
-   if (mControlState == IndexControlState.IDLE) { ... } // OK
+   if (mControlState == ExampleControlState.IDLE) { ... } // OK
    ```
 
 c. If a class overrides `equals()`, it **shall** also override
@@ -874,14 +874,14 @@ c. Import order is managed by Spotless. Do not manually reorder.
 
 #### CODE-MAF-001 -- Class and File Naming
 
-a. Class names **shall** use PascalCase: `Drive`, `Launcher`,
-   `IntakeExtConstants`.
+a. Class names **shall** use PascalCase: `ExampleDrive`, `ExampleShooter`,
+   `ExampleSubsystemConstants`.
 
 b. Each `.java` file **shall** contain exactly one top-level public
    class. The file name **shall** match the class name.
 
 c. Inner classes and enums **shall** also use PascalCase:
-   `IndexControlState`, `LauncherMode`.
+   `ExampleControlState`, `ExampleMode`.
 
 d. Test classes **shall** be named `<ClassName>Test.java`.
 
@@ -896,10 +896,10 @@ b. Reusable library code **shall** be in `com.team271.lib` and its
 c. Subsystems **shall** be in the `subsystems` subpackage. Input
    handling **shall** be in `subsystems.Input`.
 
-   **Exception:** `TimedSwerveDrivetrain` implements the WPILib
+   **Exception:** the swerve drivetrain class implements the WPILib
    `edu.wpi.first.wpilibj2.command.Subsystem` interface (not the
    team271 `com.team271.lib.subsystem.Subsystem` base class) because
-   it extends CTRE's `TunerSwerveDrivetrain`. It is owned by `Drive`
+   it extends the CTRE-generated drivetrain class. It is owned by the drive subsystem
    and does not participate in the `SubsystemManager` lifecycle
    directly.
 
@@ -911,7 +911,7 @@ a. Absolute imports **shall** be used. No relative imports.
 
 b. Static imports **should** be used for frequently referenced
    constants when it improves readability (e.g.,
-   `import static com.team271.frc2026.Constants.CAN_BUS_CANIVORE_SUBSYSTEMS`).
+   `import static com.team271.frc<year>.Constants.CAN_BUS_CANIVORE_SUBSYSTEMS`).
 
 c. Each source file **shall** be free of unused imports (enforced
    by Spotless).
@@ -923,8 +923,8 @@ a. Robot-wide constants **shall** be organized in `Constants.java`
    by subsystem or function:
 
    ```java
-   public static final class IndexConstants { ... }
-   public static final class LauncherConstants { ... }
+   public static final class ExampleSubsystemConstants { ... }
+   public static final class ExampleSubsystemConstants { ... }
    public static final class AutoConstants { ... }
    ```
 
@@ -942,7 +942,7 @@ a. Generated files (`BuildConstants.java`, `TunerConstants.java`)
    **shall** not be manually edited. Changes to generated code
    should be made through the generating tool.
    Note: `BuildConstants.java` is generated by gversion into the
-   `frc.robot` package (not `com.team271.frc2026`) as configured
+   `frc.robot` package (not `com.team271.frc<year>`) as configured
    in `build.gradle`.
 
 b. Generated files are exempt from formatting rules in this standard
@@ -1070,13 +1070,13 @@ a. Subsystems that use state machines **shall** maintain two state
 
    ```java
    /* Set in teleopPeriodic */
-   mDesiredControlState = IndexControlState.INDEX;
+   mDesiredControlState = ExampleControlState.INDEX;
 
    /* Applied in robotPeriodicAfter */
    mControlState = mDesiredControlState;
    switch (mControlState) {
        case INDEX:
-           setValue(IndexConstants.INDEX_SPEED);
+           setValue(ExampleSubsystemConstants.EXAMPLE_SPEED);
            break;
        // ...
    }
@@ -1100,7 +1100,7 @@ a. Every `switch` statement on an enum **shall** include a `default`
    ```java
    default:
        DriverStation.reportError(
-           "Unexpected IndexControlState: " + mControlState, false);
+           "Unexpected ExampleControlState: " + mControlState, false);
        break;
    ```
 
@@ -1120,7 +1120,7 @@ a. Instance fields (non-static, non-final) **shall** use the `m`
    prefix followed by camelCase:
 
    ```java
-   private IndexControlState mControlState = IndexControlState.IDLE;
+   private ExampleControlState mControlState = ExampleControlState.IDLE;
    private double mTimestamp = 0;
    private boolean mWasIndexing = false;
    ```
@@ -1130,7 +1130,7 @@ b. Method parameters **shall** use the `arg` prefix followed by
 
    ```java
    public void robotInit(final double argTimestamp) { ... }
-   public static Index getInstance(final TObj argParent) { ... }
+   public static ExampleSubsystem getInstance(final TObj argParent) { ... }
    ```
 
    **Note:** The team's `TObj` base class defines lifecycle methods
@@ -1163,7 +1163,7 @@ e. Static final constants **shall** use one of two naming
 
      ```java
      public static final double SHOOT_RPS = 38.0;
-     public static final String CAN_BUS_CANIVORE_DRIVE = "Drive";
+     public static final String CAN_BUS_CANIVORE_A = "BusA";
      private static final int TELEMETRY_PERIOD = 5;
      ```
 
@@ -1173,9 +1173,9 @@ e. Static final constants **shall** use one of two naming
 
      ```java
      public static final double kTranslationKp = 2.0;
-     public static final int kIndexCurrentStatorLimit = 120;
+     public static final int kExampleCurrentStatorLimit = 120;
      public static final double kHomingTimeoutSec = 4.0;
-     public static final String kPathNameStation1 = "2026HubPath1";
+     public static final String kPathNameStation1 = "<year>PathName1";
      ```
 
    The `k` prefix signals "this value is likely to be tuned during
@@ -1201,7 +1201,7 @@ a. All instance fields **shall** be initialized at the point of
    declaration or in the constructor:
 
    ```java
-   private IndexControlState mControlState = IndexControlState.IDLE;
+   private ExampleControlState mControlState = ExampleControlState.IDLE;
    private double mSpeed = 0.0;
    private boolean mIsHomed = false;
    ```
@@ -1254,7 +1254,7 @@ b. Be aware of `Double.NaN`, `Double.POSITIVE_INFINITY`, and
 a. Enum values **shall** use UPPER_SNAKE_CASE:
 
    ```java
-   public enum LauncherControlState {
+   public enum ExampleControlState {
        IDLE,
        SHOOT
    }
@@ -1264,7 +1264,7 @@ b. Enums used for state machines **shall** include a brief comment
    or JavaDoc describing each value's purpose:
 
    ```java
-   public enum IndexControlState {
+   public enum ExampleControlState {
        IDLE,
        INDEX,
        COAST_DOWN, // brief neutral coast before reversing
@@ -1284,7 +1284,7 @@ a. Physical units **shall** be documented in the constant name or in
 
    ```java
    public static final double WHEEL_RADIUS_M = 0.0508; // meters
-   public static final double HOMING_TIMEOUT_SEC = 2.0;
+   public static final double kHomingTimeoutSec = 2.0;
    public static final double MAX_SPEED_MPS = 4.5; // meters per second
    ```
 
@@ -1390,8 +1390,8 @@ c. Switch expressions using the `->` syntax are permitted and
 
    ```java
    double targetRps = switch (mShotMode) {
-       case HUB -> LauncherConstants.HUB_RPS;
-       case FERRY -> LauncherConstants.FERRY_RPS;
+       case MODE_A -> ExampleSubsystemConstants.MODE_A_VALUE;
+       case MODE_B -> ExampleSubsystemConstants.MODE_B_VALUE;
    };
    ```
 
@@ -1555,16 +1555,16 @@ c. Load-bearing ordering **shall** be documented with a `WARNING`
    ```java
    /*
     * *** SUBSYSTEM ADD ORDER IS LOAD-BEARING ***
-    * Launcher MUST be added before Index so that
-    * Launcher.robotPeriodicBefore() updates launcherIsAtMaxVelocity
-    * before Index reads it in the same cycle.
+    * SubsystemA MUST be added before SubsystemB so that
+    * SubsystemA.robotPeriodicBefore() updates its shared state
+    * before SubsystemB reads it in the same cycle.
     */
    ```
 
 d. `TODO:` comments **shall** include the author or a tracking issue:
 
    ```java
-   // TODO(jane): Define hood motor API
+   // TODO(jane): Define subsystem motor API
    // TODO: #42 - Implement auto path for depot
    ```
 
@@ -1597,8 +1597,8 @@ c. Telemetry key naming **shall** follow the pattern
    `"SubsystemName/ValueName"`:
 
    ```java
-   Logger.recordOutput("Index/ControlState", mControlState.toString());
-   Logger.recordOutput("Index/Speed", indexSpeed);
+   Logger.recordOutput("ExampleSubsystem/ControlState", mControlState.toString());
+   Logger.recordOutput("ExampleSubsystem/Speed", indexSpeed);
    ```
 
 d. Telemetry **may** be rate-limited to reduce CAN bus load. The
@@ -1696,7 +1696,7 @@ b. Auto chooser values **shall** be validated. The `default` case
 
    ```java
    switch (mAutoChooser.getSelected()) {
-       case 1: return AutoPaths.HUB;
+       case 1: return AutoPaths.PATH_NAME;
        // ...
        default:
            DriverStation.reportWarning("Unknown auto: " + selected, false);
@@ -1714,11 +1714,11 @@ a. All motors **shall** have stator and supply current limits
 
    ```java
    transmission.configCurrentLimitStator(
-       IndexConstants.kIndexStatorLimitEnabled,
-       IndexConstants.kIndexCurrentStatorLimit);   // int widens to double
+       ExampleSubsystemConstants.kExampleStatorLimitEnabled,
+       ExampleSubsystemConstants.kExampleCurrentStatorLimit);   // int widens to double
    transmission.configCurrentLimitSupply(
-       IndexConstants.kIndexSupplyLimitEnabled,
-       IndexConstants.kIndexCurrentSupplyLimit);   // int widens to double
+       ExampleSubsystemConstants.kExampleSupplyLimitEnabled,
+       ExampleSubsystemConstants.kExampleCurrentSupplyLimit);   // int widens to double
    ```
 
 b. Mechanisms with physical travel limits **shall** use soft limits
@@ -1728,9 +1728,9 @@ c. Homing sequences **shall** have timeout protection to prevent
    indefinite stalling:
 
    ```java
-   if (mHomingTimer.hasElapsed(IntakeExtConstants.HOMING_TIMEOUT_SEC)) {
+   if (mHomingTimer.hasElapsed(ExampleSubsystemConstants.kHomingTimeoutSec)) {
        /* Homing timed out -- assume position and continue */
-       DriverStation.reportError("Intake homing timed out", false);
+       DriverStation.reportError("Subsystem homing timed out", false);
        mIsHomed = true;
    }
    ```
@@ -1756,14 +1756,14 @@ c. State transitions **shall** be documented (at minimum in the
 #### CODE-SAF-004 -- Subsystem Coordination
 
 a. Cross-subsystem dependencies **shall** be documented. When one
-   subsystem reads state from another (e.g., Index reads
-   `Launcher.isAtMaxVelocity()`), the dependency and its timing
+   subsystem reads state from another (e.g., SubsystemB reads
+   `SubsystemA.isReady()`), the dependency and its timing
    requirements **shall** be documented:
 
    ```java
    /*
     * *** SUBSYSTEM ADD ORDER IS LOAD-BEARING ***
-    * Launcher MUST be added before Index ...
+    * SubsystemA MUST be added before SubsystemB ...
     */
    ```
 
@@ -1818,8 +1818,8 @@ c. Timers used for autonomous coordination **shall** be stopped
 
 #### CODE-SAF-008 -- Fault Tolerance
 
-See [Fault Tolerance](team-lib/fault-tolerance.md) for library-level fault
-patterns and implementation guidance.
+See [Fault Tolerance](robot-<year>-reference.md#fault-tolerance) for
+detailed behavioral expectations under each failure scenario.
 
 a. Subsystems **shall** check `hasResetOccurred()` (or equivalent
    sticky fault) on each motor in `robotPeriodicBefore()` and, on
@@ -1868,7 +1868,7 @@ b. The sustained-current threshold and duration **shall** be named
 #### CODE-SAF-011 -- CAN Bus Partition Resilience
 
 a. Subsystems on one CANivore bus **shall not** block or stall
-   subsystems on the other bus. If the `"Drive"` bus fails, subsystem
+   subsystems on the other bus. If the primary bus fails, subsystem
    motors on `"Subsystems"` **shall** continue to operate normally,
    and vice versa.
 
@@ -2091,7 +2091,7 @@ and registered with `SubsystemManager.addSubsystem()` in
 - Input/controller subsystems **shall** be registered first so that
   other subsystems can read their state during the same cycle.
 - Subsystems that produce data consumed by other subsystems (e.g., a
-  launcher whose velocity gates a feeder) **shall** be registered
+  subsystem whose state gates another (e.g., a shooter gating a feeder)) **shall** be registered
   before their consumers.
 - Actuator subsystems that depend on sensor data from other subsystems
   **shall** be registered after their data sources.
@@ -2135,10 +2135,10 @@ mMotor.setControl(mVoltageRequest.withOutput(voltage));
 **Avoid string concatenation in hot paths:**
 ```java
 /* BAD: creates new String every cycle */
-Logger.recordOutput("Index/" + "Speed", speed);
+Logger.recordOutput("ExampleSubsystem/" + "Speed", speed);
 
 /* GOOD: use a constant key */
-private static final String LOG_KEY_SPEED = "Index/Speed";
+private static final String LOG_KEY_SPEED = "ExampleSubsystem/Speed";
 Logger.recordOutput(LOG_KEY_SPEED, speed);
 ```
 
@@ -2290,20 +2290,20 @@ if (!status.isOK()) {
 
 | Context | Convention | Prefix | Example |
 | ------- | ---------- | ------ | ------- |
-| Classes | PascalCase | (none) | `Drive`, `Launcher` |
-| Inner classes | PascalCase | (none) | `IntakeExtConstants` |
-| Enums (type) | PascalCase | (none) | `LauncherControlState` |
+| Classes | PascalCase | (none) | `ExampleDrive`, `ExampleShooter` |
+| Inner classes | PascalCase | (none) | `ExampleSubsystemConstants` |
+| Enums (type) | PascalCase | (none) | `ExampleControlState` |
 | Enum values | UPPER_SNAKE_CASE | (none) | `IDLE`, `SHOOT`, `PATH_FOLLOWING` |
 | Interfaces | PascalCase | (none) | `Interpolable` |
 | Methods | camelCase | (none) | `robotInit()`, `isZeroed()` |
 | Instance fields | camelCase | `m` | `mInstance`, `mControlState` |
-| Operational constants | UPPER_SNAKE_CASE | (none) | `SHOOT_RPS`, `INDEX_SPEED` |
+| Operational constants | UPPER_SNAKE_CASE | (none) | `SHOOT_RPS`, `EXAMPLE_SPEED` |
 | Tunable constants | camelCase | `k` | `kTranslationKp`, `kHomingVoltage` |
 | Static mutable fields | camelCase | `m` | `mInstance` (singleton) |
 | Method parameters | camelCase | `arg` | `argParent`, `argTimestamp` |
 | Local variables | camelCase | (none) | `speed`, `voltage` |
 | Temporary locals | camelCase | `tmp` | `tmpStatusReturn` |
 | NetworkTables fields | camelCase | `nt` | `ntRobot`, `ntMMCruiseVel` |
-| Packages | lowercase | (none) | `com.team271.frc2026.subsystems` |
+| Packages | lowercase | (none) | `com.team271.frc<year>.subsystems` |
 | Boolean fields | camelCase | `mIs`/`mHas` | `mIsHomed`, `mHasTarget` |
 | Boolean methods | camelCase | `is`/`has`/`can` | `isZeroed()`, `hasTarget()` |

@@ -1,9 +1,11 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Fault Tolerance Patterns
 
-This document describes library-level fault tolerance patterns in
-Team271-Lib. Robot-specific fault scenarios belong in each robot
-project's own documentation.
+> **Scope:** This document covers library-level fault tolerance — the
+> infrastructure that all robot projects inherit. Robot-specific fault
+> scenarios (e.g., "what happens when the intake jams") belong in each
+> robot project's own design docs. The [Library vs. Robot Responsibilities](#library-vs-robot-responsibilities)
+> table at the end clarifies the boundary.
 
 See coding standard Section 4.9 (CODE-SAF-008 through CODE-SAF-011)
 for the rules these patterns implement.

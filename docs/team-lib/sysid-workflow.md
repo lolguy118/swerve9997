@@ -1,9 +1,10 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # System Identification Workflow
 
-This document describes the SysID (system identification) logging
-infrastructure in Team271-Lib. SysID characterizes motor/mechanism
-behavior to determine feedforward gains (kS, kV, kA).
+> **Scope:** This document covers the library's SysID logging
+> infrastructure. The actual SysID test runs and gain extraction happen
+> in each robot project — the library provides the data collection
+> framework that robot projects wire into their mechanisms.
 
 ---
 

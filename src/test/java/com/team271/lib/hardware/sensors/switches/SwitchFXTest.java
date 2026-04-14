@@ -277,4 +277,14 @@ class SwitchFXTest {
         sw.robotInit(0.0);
         assertDoesNotThrow(sw::outputTelemetry);
     }
+
+    @Test
+    void autoZeroDisabledByDefault() {
+        CANDeviceID id = new CANDeviceID(96);
+        ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
+        SwitchFX sw =
+                new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
+
+        assertFalse(sw.getAutoSet(), "Auto-zero should be disabled by default (safe default)");
+    }
 }

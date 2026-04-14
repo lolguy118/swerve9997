@@ -166,6 +166,11 @@ public abstract class TransmissionBase extends TObj {
             fwdLimit.robotInit(argTimestamp);
         }
 
+        if (leader == null) {
+            DriverStation.reportError(getName() + ": leader is null in robotInit()", false);
+            return;
+        }
+
         switch (leader.getMotor().getMotorType()) {
             case FALCON500:
                 simDCMotor = DCMotor.getFalcon500Foc(tmpNumMotors);

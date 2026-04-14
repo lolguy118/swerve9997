@@ -17,6 +17,7 @@ import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import java.util.EnumSet;
 
@@ -140,7 +141,17 @@ public class ControllerTalonFX extends ControllerSmart {
             final boolean argOpposeLeader) {
         this(argParent, argName, argID, argMotor);
 
-        follow(argLeader, argOpposeLeader);
+        ControllerStatus followStatus = follow(argLeader, argOpposeLeader);
+        if (followStatus != ControllerStatus.OK) {
+            DriverStation.reportError(
+                    getName()
+                            + ": follow() failed for leader "
+                            + argLeader.getName()
+                            + " (status="
+                            + followStatus
+                            + ")",
+                    false);
+        }
     }
 
     /*

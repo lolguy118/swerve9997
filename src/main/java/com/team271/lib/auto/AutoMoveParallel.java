@@ -50,6 +50,11 @@ public class AutoMoveParallel extends AutoMove {
         }
     }
 
+    /**
+     * Delegates to all non-complete children every cycle, regardless of canRun(). This is
+     * intentional -- timed and conditional moves check completion in robotPeriodicBefore, which
+     * must fire even after the move's delay expires.
+     */
     @Override
     public void robotPeriodicBefore(final double argTimestamp) {
         super.robotPeriodicBefore(argTimestamp);

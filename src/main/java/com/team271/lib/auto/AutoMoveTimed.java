@@ -1,5 +1,7 @@
 package com.team271.lib.auto;
 
+import com.team271.lib.ConstantsLib;
+
 public class AutoMoveTimed extends AutoMove {
     protected final double length;
     protected final double timeout;
@@ -34,7 +36,7 @@ public class AutoMoveTimed extends AutoMove {
             /*
              * Check for Move Timeout
              */
-            if ((timeout > 0.01) && (currentTime > timeout)) {
+            if ((timeout > ConstantsLib.DELAY_THRESHOLD_SEC) && (currentTime > timeout)) {
                 end();
             }
             /*

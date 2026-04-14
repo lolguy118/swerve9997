@@ -9,6 +9,12 @@ public final class ConstantsLib {
 
     public static final String S_INVALID = "Invalid";
 
+    /**
+     * Delays below this threshold are treated as "no delay configured." Applied in AutoMove,
+     * AutoMode, and AutoMoveTimed to distinguish zero-delay moves from explicitly timed ones.
+     */
+    public static final double DELAY_THRESHOLD_SEC = 0.01;
+
     /*
      * Enums
      */

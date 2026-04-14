@@ -4,6 +4,7 @@
 
 package com.team271.libtest;
 
+import com.ctre.phoenix6.StatusCode;
 import com.team271.lib.TRobot;
 import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.subsystem.SubsystemManager;
@@ -114,7 +115,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodicBefore() {
-        CTREManager.refreshAll();
+        StatusCode refreshStatus = CTREManager.refreshAll();
+        org.littletonrobotics.junction.Logger.recordOutput(
+                "Robot/CAN Refresh Status", refreshStatus.getName());
 
         mTimestamp = CTREManager.getLastRefreshTime();
 

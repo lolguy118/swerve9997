@@ -1,5 +1,6 @@
 package com.team271.lib.auto;
 
+import com.team271.lib.ConstantsLib;
 import com.team271.lib.misc.Elastic;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public abstract class AutoMode {
     protected double lastTime = 0.0;
 
     private List<AutoMove> moves = new ArrayList<>();
-    protected long currentMoveIdx = 0;
+    protected int currentMoveIdx = 0;
     protected AutoMove currentMove;
 
     protected AutoMode(double argDelay) {
@@ -43,7 +44,7 @@ public abstract class AutoMode {
     public void start() {
         if (!moves.isEmpty()) {
             currentMoveIdx = 0;
-            currentMove = moves.get((int) currentMoveIdx);
+            currentMove = moves.get(currentMoveIdx);
 
             isRunning = true;
 
@@ -77,7 +78,8 @@ public abstract class AutoMode {
         /*
          * Check for Delay
          */
-        return (delay < 0.01) || ((delay > 0.0) && (currentTime >= delay));
+        return (delay < ConstantsLib.DELAY_THRESHOLD_SEC)
+                || ((delay > 0.0) && (currentTime >= delay));
     }
 
     public void addMove(AutoMove argMove) {
@@ -88,7 +90,7 @@ public abstract class AutoMode {
         currentMoveIdx++;
 
         if (currentMoveIdx < moves.size()) {
-            currentMove = moves.get((int) currentMoveIdx);
+            currentMove = moves.get(currentMoveIdx);
         } else {
             currentMove = null;
             end();

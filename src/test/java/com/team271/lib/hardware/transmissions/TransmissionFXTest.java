@@ -37,13 +37,8 @@ class TransmissionFXTest {
         setStaticField("prevRefreshTime", null);
         setStaticField("lastRefreshTime", null);
         setStaticField("lastErrorNotificationTime", 0.0);
-        resetLastConfigErrorTime();
-    }
-
-    private void resetLastConfigErrorTime() throws Exception {
-        Field f = TransmissionBase.class.getDeclaredField("lastConfigErrorNotificationTime");
-        f.setAccessible(true);
-        f.setDouble(null, 0);
+        // lastConfigErrorNotificationTime is an instance field on TransmissionBase,
+        // not static — each test creates fresh instances, so no reset needed here.
     }
 
     private void clearStaticField(String fieldName) throws Exception {

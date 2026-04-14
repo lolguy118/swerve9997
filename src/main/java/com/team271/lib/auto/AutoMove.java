@@ -1,5 +1,6 @@
 package com.team271.lib.auto;
 
+import com.team271.lib.ConstantsLib;
 import edu.wpi.first.wpilibj.Timer;
 import org.littletonrobotics.junction.Logger;
 
@@ -73,7 +74,8 @@ public abstract class AutoMove {
      * <p>Note: AutoMode.isDelayDone() has OPPOSITE semantics (true AFTER delay elapses).
      */
     public boolean isWithinTimeLimit() {
-        return (delay < 0.01) || ((delay > 0.0) && (currentTime <= delay));
+        return (delay < ConstantsLib.DELAY_THRESHOLD_SEC)
+                || ((delay > 0.0) && (currentTime <= delay));
     }
 
     public boolean canRun() {

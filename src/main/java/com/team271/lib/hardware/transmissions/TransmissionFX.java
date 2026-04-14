@@ -321,6 +321,13 @@ public class TransmissionFX extends TransmissionBase {
         }
     }
 
+    /**
+     * Sets closed-loop velocity output with voltage feedforward.
+     *
+     * @param argRPS velocity in mechanism output units per second. The library converts to
+     *     rotor/sensor units internally via the gear ratio chain.
+     * @param argFFVolt feedforward voltage (volts)
+     */
     @Override
     public void setOutputVelocity(final double argRPS, final double argFFVolt) {
         motorVelocityFF.Slot = 0;
@@ -383,6 +390,13 @@ public class TransmissionFX extends TransmissionBase {
     /*
      * Closed Loop - Velocity
      */
+    /**
+     * Sets closed-loop velocity output with duty cycle feedforward.
+     *
+     * @param argRPS velocity in mechanism output units per second. The library converts to
+     *     rotor/sensor units internally via the gear ratio chain.
+     * @param argFF feedforward duty cycle [-1.0, 1.0]
+     */
     public void setOutputVelocityDuty(final double argRPS, final double argFF) {
         motorVelocityDuty.Slot = 0;
         if (encCANCoder != null) {
@@ -398,6 +412,13 @@ public class TransmissionFX extends TransmissionBase {
         }
     }
 
+    /**
+     * Sets closed-loop velocity output with torque current feedforward.
+     *
+     * @param argRPS velocity in mechanism output units per second. The library converts to
+     *     rotor/sensor units internally via the gear ratio chain.
+     * @param argFF feedforward torque current (amps)
+     */
     public void setOutputVelocityTorqueCurrent(final double argRPS, final double argFF) {
         motorVelocityTC.Slot = 0;
         if (encCANCoder != null) {
@@ -415,6 +436,14 @@ public class TransmissionFX extends TransmissionBase {
 
     /*
      * Motion Magic - Position
+     */
+    /**
+     * Configures Motion Magic profile parameters.
+     *
+     * @param argCruiseVelRPS cruise velocity in rotor rotations per second (raw, not
+     *     mechanism-scaled)
+     * @param argCruiseAccelRPSS cruise acceleration in rotor rotations per second squared (raw)
+     * @param argJerkRPSSS jerk in rotor rotations per second cubed (raw)
      */
     public void setMMConfig(
             final double argCruiseVelRPS,

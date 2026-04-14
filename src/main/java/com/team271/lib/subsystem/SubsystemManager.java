@@ -77,9 +77,11 @@ public class SubsystemManager {
                 DriverStation.reportError(
                         s.getName() + " threw in " + phase + ": " + t.getMessage(), true);
                 double now = Timer.getFPGATimestamp();
-                double lastTime = lastErrorNotificationTime.getOrDefault(s.getName(), 0.0);
+                double lastTime =
+                        lastErrorNotificationTime.getOrDefault(
+                                s.getName(), Double.NEGATIVE_INFINITY);
+                lastErrorNotificationTime.put(s.getName(), now);
                 if (now - lastTime > 2.0) {
-                    lastErrorNotificationTime.put(s.getName(), now);
                     Elastic.sendNotification(
                             new Elastic.Notification(
                                     Elastic.Notification.NotificationLevel.ERROR,

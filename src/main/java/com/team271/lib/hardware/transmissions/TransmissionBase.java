@@ -42,6 +42,7 @@ public abstract class TransmissionBase extends TObj {
     protected ControllerSmart leader;
     protected ControllerSmart follower1;
     protected ControllerSmart follower2;
+    protected ControllerSmart follower3;
     protected Set<ControllerSmart> allControllers = new LinkedHashSet<>();
 
     /*
@@ -66,7 +67,7 @@ public abstract class TransmissionBase extends TObj {
      * Limit Switches
      */
     protected static final double LIMIT_UPDATE_FREQ_HZ = 250.0;
-    private static double lastConfigErrorNotificationTime = 0;
+    private double lastConfigErrorNotificationTime = 0;
     protected SwitchBase revLimit;
     protected SwitchBase fwdLimit;
 
@@ -656,6 +657,14 @@ public abstract class TransmissionBase extends TObj {
         return leader.getDSlot(argSlot);
     }
 
+    public double getVSlot(final int argSlot) {
+        return leader.getVSlot(argSlot);
+    }
+
+    public double getSSlot(final int argSlot) {
+        return leader.getSSlot(argSlot);
+    }
+
     public void setPIDFSlot(
             final int argSlot,
             final double argP,
@@ -695,7 +704,7 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void stop() {
-        leader.stop();
+        allControllers.forEach(t -> t.stop());
     }
 
     /*

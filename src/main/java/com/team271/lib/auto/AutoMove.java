@@ -1,6 +1,7 @@
 package com.team271.lib.auto;
 
 import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
 
 public abstract class AutoMove {
     protected boolean isRunning = false;
@@ -8,16 +9,27 @@ public abstract class AutoMove {
 
     protected final Timer elapsedTimer = new Timer();
     protected final double delay;
+    protected final String name;
 
     protected double currentTime = 0.0;
     protected double lastTime = 0.0;
 
-    protected AutoMove(double argDelay) {
+    protected AutoMove(final String argName, final double argDelay) {
+        name = argName;
         delay = argDelay;
+    }
+
+    protected AutoMove(double argDelay) {
+        this(null, argDelay);
     }
 
     protected AutoMove() {
         this(0.0);
+    }
+
+    /** Returns the move name for telemetry. Defaults to the class simple name if not set. */
+    public String getName() {
+        return (name != null) ? name : getClass().getSimpleName();
     }
 
     public boolean isComplete() {
@@ -48,6 +60,10 @@ public abstract class AutoMove {
         elapsedTimer.stop();
 
         setCompleted();
+
+        String prefix = "Auto/Moves/" + getName() + "/";
+        Logger.recordOutput(prefix + "Running", false);
+        Logger.recordOutput(prefix + "Complete", true);
     }
 
     /**
@@ -82,6 +98,10 @@ public abstract class AutoMove {
         if (isRunning() == true) {
             lastTime = currentTime;
             currentTime = elapsedTimer.get();
+
+            String prefix = "Auto/Moves/" + getName() + "/";
+            Logger.recordOutput(prefix + "Running", true);
+            Logger.recordOutput(prefix + "ElapsedTime", currentTime);
         }
     }
 

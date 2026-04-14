@@ -111,6 +111,9 @@ public abstract class AutoMode {
             Logger.recordOutput("Auto/Running", true);
             Logger.recordOutput("Auto/CurrentTime", currentTime);
             Logger.recordOutput("Auto/MoveIndex", currentMoveIdx);
+            if (currentMove != null) {
+                Logger.recordOutput("Auto/CurrentMoveName", currentMove.getName());
+            }
 
             /*
              * Do Moves

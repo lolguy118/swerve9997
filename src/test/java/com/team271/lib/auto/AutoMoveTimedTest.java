@@ -241,26 +241,29 @@ class AutoMoveTimedTest {
     }
 
     @Test
-    void realRobotPeriodicBeforeCompletesOnLength() throws InterruptedException {
-        AutoMoveTimed timedMove = new AutoMoveTimed(0.0);
+    void realRobotPeriodicBeforeCompletesOnLength() {
+        FakeTimedMove timedMove = new FakeTimedMove(0.0);
         timedMove.start();
 
-        /* Even a tiny sleep ensures the timer advances past length=0 */
-        Thread.sleep(5);
+        /* Inject a small elapsed time that deterministically exceeds length=0 */
+        timedMove.setFakeElapsed(0.001);
         timedMove.robotPeriodicBefore(0.0);
 
-        assertTrue(timedMove.isComplete(), "Move with length=0 should complete quickly");
+        assertTrue(
+                timedMove.isComplete(), "Move with length=0 should complete when any time elapses");
     }
 
     @Test
-    void realRobotPeriodicBeforeCompletesOnTimeout() throws InterruptedException {
-        AutoMoveTimed timedMove = new AutoMoveTimed(100.0, 0.0, 0.02);
+    void realRobotPeriodicBeforeCompletesOnTimeout() {
+        FakeTimedMove timedMove = new FakeTimedMove(100.0, 0.0, 0.02);
         timedMove.start();
 
-        Thread.sleep(30);
+        /* Inject elapsed time that deterministically exceeds timeout=0.02s */
+        timedMove.setFakeElapsed(0.03);
         timedMove.robotPeriodicBefore(0.0);
 
-        assertTrue(timedMove.isComplete(), "Move should timeout after 20ms");
+        assertTrue(
+                timedMove.isComplete(), "Move should timeout when elapsed exceeds timeout=0.02s");
     }
 
     @Test

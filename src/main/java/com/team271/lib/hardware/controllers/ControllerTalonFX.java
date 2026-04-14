@@ -633,6 +633,32 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    public double getVSlot(final int argSlot) {
+        switch (argSlot) {
+            case 0:
+                return config.Slot0.kV;
+            case 1:
+                return config.Slot1.kV;
+            case 2:
+                return config.Slot2.kV;
+            default:
+                return 0;
+        }
+    }
+
+    public double getSSlot(final int argSlot) {
+        switch (argSlot) {
+            case 0:
+                return config.Slot0.kS;
+            case 1:
+                return config.Slot1.kS;
+            case 2:
+                return config.Slot2.kS;
+            default:
+                return 0;
+        }
+    }
+
     public void setPIDFSlot(
             final int argSlot,
             final double argP,

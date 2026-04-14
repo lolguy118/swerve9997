@@ -219,8 +219,8 @@ spotless {
             include "**/*.gradle"
             exclude "**/build/**", "**/build-*/**"
         }
-        greclipse()
-        indentWithSpaces(4)
+        //greclipse()
+        leadingTabsToSpaces(4)
         trimTrailingWhitespace()
         endWithNewline()
     }
@@ -230,7 +230,7 @@ spotless {
             exclude "**/build/**", "**/build-*/**"
         }
         trimTrailingWhitespace()
-        indentWithSpaces(2)
+        leadingTabsToSpaces(2)
         endWithNewline()
     }
 }

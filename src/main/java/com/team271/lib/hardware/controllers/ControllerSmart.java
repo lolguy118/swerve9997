@@ -150,6 +150,10 @@ public abstract class ControllerSmart extends ControllerBase {
 
     public abstract double getDSlot(final int argSlot);
 
+    public abstract double getVSlot(final int argSlot);
+
+    public abstract double getSSlot(final int argSlot);
+
     public abstract void setPIDFSlot(
             final int argSlot,
             final double argP,

@@ -36,6 +36,7 @@ class TransmissionFXTest {
         setStaticField("signalsAllArray", null);
         setStaticField("prevRefreshTime", null);
         setStaticField("lastRefreshTime", null);
+        setStaticField("lastErrorNotificationTime", 0.0);
         resetLastConfigErrorTime();
     }
 

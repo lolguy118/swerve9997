@@ -93,6 +93,12 @@ public class TransmissionFX extends TransmissionBase {
     private LoggedNTInput tuneMMAccel;
     private LoggedNTInput tuneMMJerk;
 
+    private LoggedNTInput tunePIDkP;
+    private LoggedNTInput tunePIDkI;
+    private LoggedNTInput tunePIDkD;
+    private LoggedNTInput tunePIDkV;
+    private LoggedNTInput tunePIDkS;
+
     /*
      *
      * Constructors
@@ -118,6 +124,12 @@ public class TransmissionFX extends TransmissionBase {
         tuneMMCruiseVel = new LoggedNTInput(table, "Tune MM Cruise Vel", defaultCruise);
         tuneMMAccel = new LoggedNTInput(table, "Tune MM Accel", defaultAccel);
         tuneMMJerk = new LoggedNTInput(table, "Tune MM Jerk", defaultJerk);
+
+        tunePIDkP = new LoggedNTInput(table, "Tune PID kP", leader.getPSlot(0));
+        tunePIDkI = new LoggedNTInput(table, "Tune PID kI", leader.getISlot(0));
+        tunePIDkD = new LoggedNTInput(table, "Tune PID kD", leader.getDSlot(0));
+        tunePIDkV = new LoggedNTInput(table, "Tune PID kV", leader.getVSlot(0));
+        tunePIDkS = new LoggedNTInput(table, "Tune PID kS", leader.getSSlot(0));
 
         // FOC is enabled by default in Phoenix 6 v26 for all control requests
     }
@@ -170,6 +182,39 @@ public class TransmissionFX extends TransmissionBase {
                         argFollower2OpposeLeader);
 
         allControllers.add(follower2);
+    }
+
+    public TransmissionFX(
+            final TObj argParent,
+            final String argName,
+            final MotorBase argMotor,
+            final CANDeviceID argCANIDLeader,
+            final CANDeviceID argCANIDFollower1,
+            final boolean argFollower1OpposeLeader,
+            final CANDeviceID argCANIDFollower2,
+            final boolean argFollower2OpposeLeader,
+            final CANDeviceID argCANIDFollower3,
+            final boolean argFollower3OpposeLeader) {
+        this(
+                argParent,
+                argName,
+                argMotor,
+                argCANIDLeader,
+                argCANIDFollower1,
+                argFollower1OpposeLeader,
+                argCANIDFollower2,
+                argFollower2OpposeLeader);
+
+        follower3 =
+                new ControllerTalonFX(
+                        this,
+                        "(FX3)" + argName,
+                        argCANIDFollower3,
+                        argMotor,
+                        getLeaderController(),
+                        argFollower3OpposeLeader);
+
+        allControllers.add(follower3);
     }
 
     /*
@@ -615,6 +660,20 @@ public class TransmissionFX extends TransmissionBase {
     protected void checkTuning() {
         if (tuneMMCruiseVel.hasChanged() || tuneMMAccel.hasChanged() || tuneMMJerk.hasChanged()) {
             setMMConfig(tuneMMCruiseVel.getDbl(), tuneMMAccel.getDbl(), tuneMMJerk.getDbl());
+        }
+        if (tunePIDkP.hasChanged()
+                || tunePIDkI.hasChanged()
+                || tunePIDkD.hasChanged()
+                || tunePIDkV.hasChanged()
+                || tunePIDkS.hasChanged()) {
+            configPIDFSlot(
+                    0,
+                    tunePIDkP.getDbl(),
+                    tunePIDkI.getDbl(),
+                    tunePIDkD.getDbl(),
+                    tunePIDkV.getDbl(),
+                    tunePIDkS.getDbl());
+            applyConfigs();
         }
     }
 

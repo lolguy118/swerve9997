@@ -154,4 +154,18 @@ public class Input8BitDuo extends Input {
         }
         return false;
     }
+
+    public boolean getL4() {
+        if (mController.isConnected()) {
+            return buttons[XboxController.Button.kLeftStick.value - 1];
+        }
+        return false;
+    }
+
+    public boolean getR4() {
+        if (mController.isConnected()) {
+            return buttons[XboxController.Button.kRightStick.value - 1];
+        }
+        return false;
+    }
 }

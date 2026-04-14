@@ -31,6 +31,7 @@ class EncoderFXTest {
         setStaticField("signalsAllArray", null);
         setStaticField("prevRefreshTime", null);
         setStaticField("lastRefreshTime", null);
+        setStaticField("lastErrorNotificationTime", 0.0);
     }
 
     private void clearStaticField(String fieldName) throws Exception {

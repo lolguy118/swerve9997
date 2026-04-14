@@ -58,8 +58,8 @@ wrap point instead of going the long way around.
 
 ### Live Tuning
 
-Every PIDBase creates `LoggedNTInput` fields for dashboard tuning.
-Changes are detected in `checkTuning()`, called from `outputTelemetry()`.
+PIDBase follows the standard `checkTuning()` pattern documented in
+[Library Architecture — Tuning Infrastructure](library-architecture.md#tuning-infrastructure).
 
 **PIDBase tunable inventory:**
 
@@ -73,22 +73,6 @@ Changes are detected in `checkTuning()`, called from `outputTelemetry()`.
 | `tuneIZone` | `Tune I Zone` | +Infinity | `pidSlot.iZone` |
 | `tuneOutputMin` | `Tune Output Min` | -1.0 | `minOutput` |
 | `tuneOutputMax` | `Tune Output Max` | 1.0 | `maxOutput` |
-
-**checkTuning() implementation:**
-
-```java
-protected void checkTuning() {
-    if (tuneP.hasChanged()) setP(tuneP.getDbl());
-    if (tuneI.hasChanged()) setI(tuneI.getDbl());
-    if (tuneD.hasChanged()) setD(tuneD.getDbl());
-    if (tunePosTol.hasChanged()) setTolerance(tunePosTol.getDbl());
-    if (tunePDeadband.hasChanged()) setPDeadband(tunePDeadband.getDbl());
-    if (tuneIZone.hasChanged()) setIZone(tuneIZone.getDbl());
-    if (tuneOutputMin.hasChanged() || tuneOutputMax.hasChanged()) {
-        setOutputRange(tuneOutputMin.getDbl(), tuneOutputMax.getDbl());
-    }
-}
-```
 
 For `PIDFX`, `setP()`, `setI()`, `setD()` additionally sync gains
 to the TalonFX hardware via `ControllerTalonFX.setPSlot()`.
@@ -139,6 +123,29 @@ These bypass PIDBase entirely and run at 1 kHz on the motor. Use
 PIDBase only when you need software-side control logic (e.g.,
 combining sensor inputs, custom error calculations, or controlling
 non-TalonFX mechanisms).
+
+---
+
+## Unit Conventions for Velocity Parameters
+
+The `argRPS` parameter name appears in multiple TransmissionFX methods
+but refers to different unit spaces depending on context:
+
+| Method Family | Parameter | Unit Space | Library Converts? |
+|--------------|-----------|-----------|-------------------|
+| `setOutputVelocity*()` | `argRPS` | Mechanism output units/sec | Yes — divides by gear ratio chain |
+| `setOutputPosition*()` | `argPositionRot` | Mechanism output rotations | Yes — divides by gear ratio chain |
+| `setMMConfig()` | `argCruiseVelRPS` | Rotor rotations/sec (raw) | No — sent directly to TalonFX |
+| `setMMConfig()` | `argCruiseAccelRPSS` | Rotor rotations/sec² (raw) | No — sent directly to TalonFX |
+
+**Key distinction:** Velocity and position control methods accept values
+in the mechanism's output unit system (after gear ratios and
+`mechanismToUnits`). The library unscales them internally. Motion Magic
+configuration methods accept raw rotor values because they configure
+the TalonFX hardware directly.
+
+See the gear ratio conversion chain in
+[Hardware Abstraction — Gear Ratio Conversion](hardware-abstraction.md#gear-ratio-conversion-chain).
 
 ---
 

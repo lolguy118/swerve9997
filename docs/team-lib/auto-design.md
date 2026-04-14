@@ -32,7 +32,6 @@ top-level move sequence for a single autonomous routine.
 ```text
 AutoMode (top-level sequencer — one per auto routine)
   └─ List<AutoMove> moves
-       ├─ AutoMoveSingle        (leaf / placeholder)
        ├─ AutoMoveTimed         (duration-based completion)
        ├─ AutoMoveConditional   (event-driven completion)
        ├─ AutoMoveSequence      (sequential children)
@@ -77,7 +76,7 @@ autonomousExit()
 | Field | Type | Purpose |
 |-------|------|---------|
 | `moves` | `List<AutoMove>` | Ordered queue of moves |
-| `currentMoveIdx` | `long` | Index of the active move |
+| `currentMoveIdx` | `int` | Index of the active move (zero-based) |
 | `delay` | `double` | Startup delay (seconds) before first move |
 | `elapsedTimer` | `Timer` | Overall auto mode elapsed time |
 
@@ -146,12 +145,6 @@ public class ShootMove extends AutoMoveSingle {
 
 ## Move Types
 
-### AutoMoveSingle — Leaf Node
-
-A minimal concrete `AutoMove` with no additional behavior. Used as:
-- A base class for simple robot-specific moves
-- A placeholder / no-op in sequences
-
 ### AutoMoveTimed — Duration-Based
 
 Completes after a specified duration. Checks elapsed time in
@@ -163,8 +156,8 @@ Completes after a specified duration. Checks elapsed time in
 | `delay` | Delay before start (seconds) |
 | `timeout` | Safety timeout (seconds, 0 = disabled) |
 
-Termination priority: if `timeout > 0.01` and elapsed > timeout, ends
-immediately. Otherwise ends when elapsed > length.
+Termination priority: if `timeout > DELAY_THRESHOLD_SEC` and elapsed >
+timeout, ends immediately. Otherwise ends when elapsed > length.
 
 ### AutoMoveConditional — Event-Driven
 
@@ -179,9 +172,18 @@ new AutoMoveConditional(
 );
 ```
 
-On timeout: sends a WARNING notification via Elastic and ends the move.
-This follows the coding standard's requirement that all waiting operations
-have timeout protection.
+**Fail-safe behavior on timeout:**
+
+1. A WARNING notification is sent via Elastic (includes the move name
+   for debugging)
+2. `end()` is called, which invokes the move's `onEnd()` hook and marks
+   it complete
+3. The containing Sequence or AutoMode advances to the next move —
+   the auto routine is not blocked
+
+The move author's `onEnd()` is responsible for undoing any subsystem
+commands issued in `onStart()` (see [onEnd() Responsibility](#onend-responsibility)
+below).
 
 ### AutoMoveSequence — Sequential Composition
 
@@ -290,6 +292,41 @@ AutoMode.robotPeriodicAfter(dt)
   in `robotPeriodicAfter()` — after children have had a chance to act
 - **AutoMode** checks current move completion in `robotPeriodicAfter()`
   and advances
+
+### `canRun()` vs `robotPeriodicBefore()` Contract
+
+`robotPeriodicBefore()` runs every cycle for all non-complete moves,
+regardless of `canRun()` state. This is intentional — `AutoMoveTimed`
+and `AutoMoveConditional` check completion in `robotPeriodicBefore()`,
+which must fire even after the move's delay has expired or the move's
+time limit has passed.
+
+`autonomousPeriodic()` is gated by `canRun()` — it only fires while
+the move is running, within its time limit, and not yet complete. This
+is where the move's primary behavior (commanding subsystems, checking
+completion conditions) should execute.
+
+**Rule of thumb:** Time/condition checks go in `robotPeriodicBefore()`.
+Subsystem commands go in `autonomousPeriodic()`.
+
+### `onEnd()` Responsibility
+
+The library calls `onEnd()` automatically whenever a move ends — whether
+by normal completion, timeout, or early termination from a parent
+container. However, the library does not know what subsystem commands
+the move issued during its lifetime.
+
+**The move author must undo all subsystem commands in `onEnd()`.**
+
+If `onStart()` called `Globals.launcher.setAutoShoot(true)`, then
+`onEnd()` must call `Globals.launcher.setAutoShoot(false)`. If the
+move set a custom current limit, `onEnd()` must restore the default.
+Forgetting this causes subsystems to remain in auto-commanded states
+after the move finishes.
+
+This is especially important for `AutoMoveConditional` timeout paths —
+the move may end before the subsystem reached its target state, and
+any partial commands must be cleaned up.
 
 ---
 

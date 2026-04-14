@@ -475,6 +475,18 @@ These WPILib classes pair with library DCMotor models:
 | `DCMotorSim` | Generic rotational mechanisms |
 | `DifferentialDrivetrainSim` | Tank drivetrains |
 
+### Simulation Capability Matrix
+
+| Component | SimState | setSimPos | setSimVel | simulationInit | simulationPeriodic |
+|-----------|----------|-----------|-----------|----------------|-------------------|
+| TransmissionBase | DCMotor | Yes | Yes | Yes (delegates) | Yes (delegates) |
+| TransmissionFX | TalonFXSimState (via leader) | Inherited | Inherited | Inherited | Inherited |
+| ControllerTalonFX | TalonFXSimState | Yes | Yes | Yes (motor type) | Yes (voltage) |
+| EncoderFX | Via controller SimState | Yes | Yes | Stub | Stub |
+| EncoderCANCoder | CANcoderSimState | Yes | Yes | Stub | Yes (voltage) |
+| IMUPigeon2 | Pigeon2SimState | — | — | — | Yes (voltage) |
+| RangeCANrange | CANrangeSimState | — | — | — | Yes (voltage) |
+
 ---
 
 ## Key Design Decisions

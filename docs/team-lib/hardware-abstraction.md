@@ -68,6 +68,23 @@ Changes are detected in `checkTuning()` (called from `outputTelemetry()`)
 and applied to hardware automatically. See the
 [Tuning Infrastructure](#tuning-infrastructure) section for the full pattern.
 
+### Multi-Bus Considerations
+
+When a robot uses multiple CAN buses (RIO + one or more CANivores):
+
+- **Timesync is per-CANivore bus.** Each CANivore maintains an
+  independent time domain. The RIO CAN bus does not support timesync
+  at all — timesync only works on CANivore.
+- **`CTREManager.refreshAll()`** groups signals by bus and calls
+  `BaseStatusSignal.refreshAll()` per group for optimization.
+- **Follower validation** in `ControllerBase.follow()` enforces that
+  leader and follower are on the same CAN bus, preventing cross-bus
+  follower issues where the follower would silently sit at zero output.
+- **Per-bus timestamps:** `CTREManager.getDt()` uses the first signal's
+  timestamp, which may come from any bus. Robot projects that need
+  per-bus timing accuracy for multi-bus latency compensation should
+  track timestamps separately.
+
 ### ControllerTalonFX — Phoenix 6 Implementation
 
 The concrete TalonFX implementation.
@@ -207,24 +224,10 @@ new TransmissionFX(parent, "Left", Motor.kKrakenX60,
 
 ## Tuning Infrastructure
 
-The library provides dashboard-tunable parameters at multiple levels
-of the hardware stack. All tunables use the `LoggedNTInput` pattern.
-
-### How LoggedNTInput Works
-
-```java
-// In constructor — register with default value:
-tuneP = new LoggedNTInput(table, "Tune/kP", initialValue);
-
-// In checkTuning() — detect and apply changes:
-if (tuneP.hasChanged()) {
-    setPSlot(0, tuneP.get());
-}
-```
-
-`LoggedNTInput` publishes the value to NetworkTables and monitors for
-changes. When a dashboard (Elastic, Shuffleboard, AdvantageScope)
-modifies the value, `hasChanged()` returns true on the next call.
+The library's tuning infrastructure (`LoggedNTInput`, `checkTuning()` pattern,
+and workflow) is documented in
+[Library Architecture — Tuning Infrastructure](library-architecture.md#tuning-infrastructure).
+This section covers only the hardware-specific tunable inventories.
 
 ### TransmissionFX Tunables
 
@@ -248,174 +251,15 @@ When any tunable changes, `checkTuning()` applies the new values:
 Current limits and voltage limits are tunable at the controller level.
 See the [ControllerSmart section](#controllersmart--advanced-features--live-tuning) above.
 
-### Tuning Workflow
-
-1. Deploy code to robot (or run in simulation)
-2. Open Elastic Dashboard / Shuffleboard / AdvantageScope
-3. Navigate to the subsystem's NT table (e.g., `/Drivetrain/LeftTransmission/`)
-4. Find the `Tune/` subtable
-5. Modify values — changes apply immediately on the next robot cycle
-6. Once values are dialed in, copy them back to `Constants.java`
-
-> **Robot project responsibility:** The library provides the tuning
-> infrastructure. Robot projects define which values are tunable and
-> their initial defaults in their `Constants` classes.
-
 ---
 
 ## Simulation Support
 
-The library provides two layers of simulation:
-
-1. **CTRE SimState** — Phoenix 6 device-level simulation (TalonFXSimState,
-   CANcoderSimState, Pigeon2SimState, CANrangeSimState)
-2. **WPILib DCMotor** — physics-accurate motor models for mechanism simulation
-
-### CTRE SimState Architecture
-
-Every CTRE device has a corresponding SimState object that models the
-device's behavior in simulation:
-
-| Device | SimState Type | Initialized In |
-|--------|--------------|----------------|
-| TalonFX | `TalonFXSimState` | `ControllerTalonFX.simulationInit()` |
-| CANcoder | `CANcoderSimState` | `EncoderCANCoder.create()` |
-| Pigeon 2 | `Pigeon2SimState` | `IMUPigeon2.create()` |
-| CANrange | `CANrangeSimState` | `RangeCANrange.create()` |
-
-SimState objects allow you to:
-- Set simulated position and velocity values
-- Set supply voltage (from `RobotController.getBatteryVoltage()`)
-- Configure motor type and orientation
-- Read what the motor controller is commanding (for physics models)
-
-### Simulation Lifecycle
-
-```text
-robotInit()
-  → TransmissionBase.robotInit() creates DCMotor model based on motor type
-  → [robot-specific] Create physics simulation objects (e.g., SingleJointedArmSim)
-
-simulationInit()
-  → ControllerTalonFX: gets TalonFXSimState, sets motor type + orientation
-  → EncoderCANCoder: gets CANcoderSimState (already created in create())
-  → IMUPigeon2: gets Pigeon2SimState (already created in create())
-  → RangeCANrange: gets CANrangeSimState (already created in create())
-
-simulationPeriodic()  (every 20 ms cycle)
-  → ControllerTalonFX: sets supply voltage from battery
-  → EncoderCANCoder: sets supply voltage from battery
-  → IMUPigeon2: sets supply voltage from battery
-  → RangeCANrange: sets supply voltage from battery
-  → [robot-specific] Update physics model, call setSimPosRotations/setSimVelRotations
-```
-
-### Motor Type Configuration
-
-During `simulationInit()`, `ControllerTalonFX` configures the correct
-motor type for accurate torque/current simulation:
-
-| MotorBase Type | SimState Motor Type |
-|---------------|-------------------|
-| `KRAKENX60` | `TalonFXSimState.MotorType.KrakenX60` |
-| `KRAKENX44` | `TalonFXSimState.MotorType.KrakenX44` |
-| `FALCON500`, others | Falls back to `KrakenX60` |
-
-Follower orientation is also configured based on the `opposeLeader`
-flag and motor direction.
-
-### WPILib DCMotor Models
-
-TransmissionBase creates the appropriate WPILib `DCMotor` during
-`robotInit()` for use in physics simulations:
-
-| Motor Type | DCMotor Model | Notes |
-|-----------|--------------|-------|
-| `FALCON500` | `DCMotor.getFalcon500Foc(n)` | FOC variant |
-| `KRAKENX60` | `DCMotor.getKrakenX60Foc(n)` | FOC variant |
-| `KRAKENX44` | Custom DCMotor | 12V, 4.05A free, 275Nm stall, 7530 RPM |
-| `NEO` | `DCMotor.getNEO(n)` | REV NEO |
-| `NEO550` | `DCMotor.getNeo550(n)` | REV NEO 550 |
-| `NEO_VORTEX` | `DCMotor.getNeoVortex(n)` | REV NEO Vortex |
-| `CTRE_MINION` | Zero-valued stub | No physics model |
-
-The `n` parameter is the number of motors in the transmission
-(leader + followers), giving accurate aggregate torque.
-
-Access via `transmission.getDCMotor()` for use in WPILib simulation
-classes like `SingleJointedArmSim`, `ElevatorSim`, `FlywheelSim`, etc.
-
-### Position/Velocity Propagation
-
-When a robot project updates simulated position/velocity (from a
-physics model), the values propagate through the entire hardware stack:
-
-```text
-transmission.setSimPosRotations(position)
-  → encCANCoder.setSimPosRotations(position)     [if present]
-  │   → CANcoderSimState.setRawPosition(position)
-  → allControllers.forEach(motor →
-  │     motor.setSimPosRotations(position))
-  │   → TalonFXSimState.setRawRotorPosition(position)
-  └── EncoderFX reads from TalonFXSimState automatically
-
-transmission.setSimVelRotations(velocity)
-  → Same pattern for velocity
-```
-
-### Implementing Simulation in a Robot Project
-
-The library provides simulation infrastructure. Robot projects
-implement the physics:
-
-```java
-// In robot project's subsystem:
-private SingleJointedArmSim armSim;
-
-@Override
-public void simulationInit(double timestamp) {
-    super.simulationInit(timestamp);  // initializes CTRE sim states
-    armSim = new SingleJointedArmSim(
-        transmission.getDCMotor(),     // from library
-        gearRatio,
-        jKgMetersSquared,
-        armLengthMeters,
-        minAngleRad, maxAngleRad,
-        simulateGravity,
-        startingAngleRad
-    );
-}
-
-@Override
-public void simulationPeriodic(double timestamp) {
-    super.simulationPeriodic(timestamp);  // updates supply voltage
-
-    // Feed motor output voltage into physics model
-    armSim.setInputVoltage(
-        transmission.getSimState().getMotorVoltage());
-
-    // Step physics
-    armSim.update(0.020);  // 20 ms
-
-    // Feed physics results back into hardware sim
-    transmission.setSimPosRotations(
-        Units.radiansToRotations(armSim.getAngleRads()) * gearRatio);
-    transmission.setSimVelRotations(
-        Units.radiansToRotations(armSim.getVelocityRadPerSec()) * gearRatio);
-}
-```
-
-### Simulation Capability Matrix
-
-| Component | SimState | setSimPos | setSimVel | simulationInit | simulationPeriodic |
-|-----------|----------|-----------|-----------|----------------|-------------------|
-| TransmissionBase | DCMotor | Yes | Yes | Yes (delegates) | Yes (delegates) |
-| TransmissionFX | TalonFXSimState (via leader) | Inherited | Inherited | Inherited | Inherited |
-| ControllerTalonFX | TalonFXSimState | Yes | Yes | Yes (motor type) | Yes (voltage) |
-| EncoderFX | Via controller SimState | Yes | Yes | Stub | Stub |
-| EncoderCANCoder | CANcoderSimState | Yes | Yes | Stub | Yes (voltage) |
-| IMUPigeon2 | Pigeon2SimState | — | — | — | Yes (voltage) |
-| RangeCANrange | CANrangeSimState | — | — | — | Yes (voltage) |
+The simulation architecture (CTRE SimState, WPILib DCMotor models,
+lifecycle, and position/velocity propagation) is documented in
+[Library Architecture — Simulation Architecture](library-architecture.md#simulation-architecture).
+Each sensor and controller section above notes its specific SimState
+initialization.
 
 ---
 

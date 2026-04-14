@@ -10,17 +10,27 @@
 
 ## Classes
 
+### Class Hierarchy
+
+```text
+Logger              (base — data vector, NT commands, thread priority, voltage computation)
+└── LoggerGeneral   (concrete — 4-double logging for simple mechanisms)
+```
+
 ### Logger — Base SysID Logger
 
 Handles the data collection infrastructure:
 
-- Pre-allocates a data vector (`DATA_VECTOR_SIZE = 36000`) sized for
-  20 seconds at 200 Hz — avoids GC during data collection
+- Pre-allocates a data vector (`DATA_VECTOR_SIZE = 36000`) — avoids GC
+  during data collection (see [Data Vector Sizing](#data-vector-sizing))
 - Manages test lifecycle via NetworkTables commands
-- Runs data collection on a high-priority thread (`THREAD_PRIORITY = 15`)
+- Runs data collection on a high-priority thread (`THREAD_PRIORITY = 15`,
+  see [Thread Priority](#thread-priority))
 - Supports two test types:
-  - **Quasistatic** — ramps voltage slowly (V/s) to measure steady-state
-  - **Dynamic** — applies a step voltage to measure transient response
+  - **Quasistatic** — ramps voltage linearly (`voltageCommand * elapsed`)
+    to measure steady-state characteristics
+  - **Dynamic** — applies a constant step voltage to measure transient
+    response
 
 ### LoggerGeneral — General Mechanism Logger
 
@@ -32,6 +42,96 @@ void log(double timestamp, double voltage,
 ```
 
 Records 4 doubles per sample: timestamp, voltage, position, velocity.
+Calls `updateData()` on the base class to compute the current motor
+voltage before recording. Silently stops recording if the data vector
+reaches capacity (`DATA_VECTOR_SIZE`), and sets the `SysId/Overflow`
+flag for the SysID tool to detect.
+
+---
+
+## Architecture Details
+
+### Data Vector Sizing
+
+`DATA_VECTOR_SIZE = 36000` is calculated as:
+
+- 20 seconds of test data (maximum recommended characterization run)
+- 200 samples/second (50 Hz robot loop × 4 doubles per sample)
+- 9 doubles per sample at maximum (original design margin)
+- Rounded up for safety margin
+
+For `LoggerGeneral` (4 doubles/sample), the effective capacity is
+36000 / 4 = 9000 samples = 45 seconds at 200 Hz — well beyond the
+20-second target. Pre-allocation is critical because `ArrayList`
+resizing triggers garbage collection, which introduces timing jitter
+that corrupts the voltage-vs-velocity relationship SysID needs.
+
+### Thread Priority
+
+| Thread | Priority | Real-Time | Purpose |
+|--------|----------|-----------|---------|
+| SysID data collection | 15 | Yes (non-sim) | Consistent sampling timing |
+| HAL thread | 40 | Yes | Robot loop timing |
+| Default Java threads | 5 | No | General application logic |
+
+`updateThreadPriority()` sets both the HAL and current thread to
+real-time priority via `Threads.setCurrentThreadPriority()`. In
+simulation mode, priority setting is skipped (not supported). If
+priority setting fails on real hardware, the method throws
+`IllegalArgumentException` to fail loudly rather than silently
+collecting bad data with inconsistent timing.
+
+### NT Command Protocol
+
+The SysID tool communicates with the Logger via SmartDashboard keys:
+
+| NT Key | Type | Direction | Purpose |
+|--------|------|-----------|---------|
+| `SysIdTest` | String | Tool → Robot | Mechanism name (empty = default) |
+| `SysIdTestType` | String | Tool → Robot | `"Quasistatic"` or `"Dynamic"` |
+| `SysIdRotate` | Boolean | Tool → Robot | Spin test for drivetrains |
+| `SysIdVoltageCommand` | Double | Tool → Robot | Voltage (V) or ramp rate (V/s) |
+| `SysIdAckNumber` | Double | Bidirectional | Handshake for data receipt |
+
+Logger reads these in `initLogger()` at the start of each test run.
+
+### Data Encoding and Transmission
+
+`sendData()` serializes the data vector for the SysID tool:
+
+1. Joins all doubles as comma-separated values
+2. Prepends a test descriptor: `"fast-forward"`, `"fast-backward"`,
+   `"slow-forward"`, or `"slow-backward"` (fast = Dynamic, slow = Quasistatic)
+3. Publishes via `Logger.recordOutput("SysId/Telemetry", descriptor + ";" + data)`
+4. Increments `ackNum` and publishes it — the SysID tool increments its
+   own ack number when it has received the data, and `clearWhenReceived()`
+   clears the telemetry string once the handshake completes
+
+### Data Flow
+
+```text
+SysID Tool                              Robot
+─────────                               ─────
+  │  NT: SysIdTest, SysIdTestType,       │
+  │      SysIdVoltageCommand, SysIdRotate│
+  │ ──────────────────────────────────→  │
+  │                                      │ initLogger() reads commands
+  │                                      │ updateData() computes motorVoltage
+  │                                      │   Quasistatic: V = cmd × elapsed
+  │                                      │   Dynamic:     V = cmd
+  │                                      │
+  │                                      │ Robot project:
+  │                                      │   voltage = logger.getMotorVoltage()
+  │                                      │   transmission.setOutputVoltage(voltage)
+  │                                      │   logger.log(timestamp, voltage, pos, vel)
+  │                                      │
+  │                                      │ sendData() → encodes + publishes
+  │  NT: SysId/Telemetry (CSV data)      │
+  │ ←──────────────────────────────────  │
+  │  NT: SysId/AckNumber (handshake)     │
+  │ ──────────────────────────────────→  │
+  │                                      │ clearWhenReceived() clears telemetry
+```
 
 ---
 
@@ -99,17 +199,5 @@ transmission.configPIDFSlot(0, kP, kI, kD, kV, kS);
 | `"Elevator"` | Linear elevator mechanisms |
 | `"Simple"` | Single-motor mechanisms |
 
----
-
-## Thread Priority
-
-SysID logging runs at elevated thread priority to ensure consistent
-sampling:
-
-| Thread | Priority |
-|--------|----------|
-| SysID data collection | 15 |
-| HAL thread | 40 |
-
-This ensures data collection doesn't get preempted by lower-priority
-tasks during characterization runs.
+For thread priority details, see
+[Architecture Details — Thread Priority](#thread-priority) above.

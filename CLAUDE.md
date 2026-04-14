@@ -32,6 +32,11 @@ Team 271's reusable FRC robot library. The codebase uses WPILib, CTRE Phoenix 6,
 - [Development Setup](docs/team-lib/development-setup.md) — getting started guide for new contributors
 - [SysID Workflow](docs/team-lib/sysid-workflow.md) — system identification and characterization
 - [Vendor Dependencies](docs/team-lib/vendor-dependencies.md) — vendordep management and upgrades
+- [Geometry Package](docs/team-lib/geometry-package.md) — 2D pose and transformation utilities
+- [Utility Package](docs/team-lib/utility-package.md) — Alert, Elastic notifications, DriveSignal, math utilities
+- [Input Shaping Guide](docs/team-lib/input-shaping-guide.md) — joystick input curve selection and comparison
+- [Simulation Guide](docs/team-lib/simulation-guide.md) — robot project physics simulation implementation
+- [Documentation Index](docs/team-lib/documentation-index.md) — package-to-doc mapping and reading order
 
 ---
 

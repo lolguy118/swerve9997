@@ -511,32 +511,12 @@ switch (Config.getMode()) {
 
 ## Dashboard Tuning
 
-### Tunable Parameters (via LoggedNTInput)
-
-The `checkTuning()` pattern reads `LoggedNTInput` values in `outputTelemetry()` and applies changes via existing setter methods:
-
-#### PID (per PIDBase instance)
-
-- `Tune P`, `Tune I`, `Tune D` → `setP()`, `setI()`, `setD()`
-- `Tune Pos Tol` → `setTolerance()`
-- `Tune P Deadband` → `setPDeadband()`
-- `Tune I Zone` → `setIZone()`
-- `Tune Output Min`, `Tune Output Max` → `setOutputRange()`
-- PIDFX: `setP()`/`setI()`/`setD()` overrides also call `controller.setPSlot(0, val)` etc. to propagate to TalonFX hardware PID
-
-#### Motor Current/Voltage (per ControllerSmart)
-
-- `Tune Stator Enable`, `Tune Stator Limit` → `setCurrentLimitStator()`
-- `Tune Supply Enable`, `Tune Supply Limit` → `setCurrentLimitSupply()`
-- `Tune Voltage Peak Fwd`, `Tune Voltage Peak Rev` → `setVoltagePeak()`
-
-#### Motion Magic (per TransmissionFX)
-
-- `Tune MM Cruise Vel`, `Tune MM Accel`, `Tune MM Jerk` → `setMMConfig()`
-
-#### Balance
-
-- `Tune Speed Slow`, `Tune Speed Fast`, `Tune On Charge Deg`, `Tune Level Deg`, `Tune Debounce Time` → direct field updates
+The tuning infrastructure (`LoggedNTInput`, `checkTuning()` pattern, and
+workflow) is documented in
+[Library Architecture — Tuning Infrastructure](../team-lib/library-architecture.md#tuning-infrastructure).
+Per-component tunable inventories are in
+[Hardware Abstraction](../team-lib/hardware-abstraction.md#tuning-infrastructure) and
+[Control System](../team-lib/control-system.md#live-tuning).
 
 ### Review Checklist for Tuning
 
@@ -668,7 +648,7 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 - **`hardware/Input/`**: `InputXBoxTest`, `InputPS4Test`, `Input8BitDuoTest`, `InputEnvisionProTest`
 - **`geometry/`**: `Translation2dTest`, `Rotation2dTest`, `Pose2dTest`, `Twist2dTest`
 - **`nt/`**: `NTTableTest`, `NTEntryTest`, `LoggedNTInputTest`
-- **`auto/`**: `AutoModeTest`, `AutoMoveTest`, `AutoMoveConditionalTest`, `AutoMoveParallelTest`, `AutoMoveSequenceTest`, `AutoMoveTimedTest`
+- **`auto/`**: `AutoModeTest`, `AutoMoveTest`, `AutoMoveConditionalTest`, `AutoMoveParallelTest`, `AutoMoveSequenceTest`, `AutoMoveTimedTest`, `AutoIntegrationTest`
 - **`subsystem/`**: `SubsystemTest`, `SubsystemManagerTest`
 - **`sysid/`**: `LoggerTest`, `LoggerGeneralTest`
 - **`misc/`**: `ElasticTest`

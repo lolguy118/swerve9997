@@ -17,6 +17,12 @@ for the rules these patterns implement.
 The most fundamental fault tolerance pattern: one subsystem crash
 must not bring down the entire robot.
 
+**Why this matters:** Without isolation, a null pointer in one
+subsystem's `robotPeriodicBefore()` would crash the entire robot loop.
+In competition, this means losing control of the drivetrain because the
+intake threw an exception. Exception isolation ensures that only the
+faulting subsystem stops operating — the rest of the robot continues.
+
 `SubsystemManager.forEachSafe()` wraps every subsystem lifecycle
 call in a try/catch:
 
@@ -41,6 +47,12 @@ a partially initialized subsystem.
 ---
 
 ## CAN Bus Fault Handling
+
+**Why this matters:** CAN bus wiring is subject to vibration, connector
+wear, and brownout. A motor dropping off the CAN bus mid-match is not
+hypothetical — it happens. Without connection monitoring, the library
+would continue sending control requests to a device that cannot receive
+them, wasting cycle time and masking the failure from the driver.
 
 ### Connection Monitoring (ControllerTalonFX)
 
@@ -71,6 +83,12 @@ the control loop.
 
 ### Config Application Retries (ControllerTalonFX)
 
+**Why retries are needed:** CAN config frames are larger than status
+frames and more susceptible to collision. A single config write failing
+is normal under high bus load. The retry loop amortizes this, but the
+total blocking time (up to `CAN_RETRY_COUNT * CAN_TIMEOUT_MS`) is why
+config must happen only in `robotInit()`, never in periodic methods.
+
 `applyConfig()` retries up to `CAN_RETRY_COUNT` times with a 50 ms
 timeout per attempt. If all retries fail:
 - `isConfigured` is set to `false`
@@ -79,14 +97,26 @@ timeout per attempt. If all retries fail:
 
 ### Bus Validation for Followers
 
+**Why this matters:** TalonFX follower mode requires leader and follower
+on the same physical CAN bus. If they are on different buses (e.g., one
+on RIO CAN, one on CANivore), the follower will not receive the leader's
+frame — it will sit idle at zero output with no error indication. The
+bus validation catches this at construction time.
+
 `ControllerBase.follow()` validates that leader and follower are on
-the same CAN bus. Returns `ERROR_INVALID_BUS` if not. This prevents
-silent failures where a follower on a different bus would not receive
-timely updates.
+the same CAN bus. Returns `ERROR_INVALID_BUS` if not. Callers must
+check this return value and report errors (see D4 in the code fix log).
 
 ---
 
 ## Timeout Protection Pattern
+
+**Why this matters:** Any operation that blocks on a condition (current
+spike, velocity target, sensor signal) can block indefinitely if the
+expected condition never occurs. In competition, this means the robot
+freezes mid-auto because the launcher never reached its target speed
+due to a ball jam. Timeouts turn indefinite blocks into bounded waits
+with driver notification.
 
 Per coding standard 4.9c, any operation that waits for a condition
 must have a timeout. The library provides `AutoMoveConditional` as
@@ -137,6 +167,11 @@ Requirements per coding standard:
 
 ## Error Notification Throttling
 
+**Why this matters:** Without throttling, a persistent CAN error would
+send 50 Elastic notifications per second (one per 20 ms cycle), flooding
+the driver station and making it unusable. The 2-second throttle ensures
+the driver sees the error without being overwhelmed.
+
 Multiple components use time-based throttling to prevent flooding:
 
 | Component | Throttle | Field |
@@ -182,6 +217,7 @@ The library establishes safe defaults throughout:
 | Switch auto-zero | Disabled by default — must be explicitly enabled |
 | PID output | Clamped to `[minOutput, maxOutput]` range |
 | Integral wind-up | Bounded by `[iMin, iMax]` and `iZone` |
+| TransmissionBase leader | Null-checked in `robotInit()` — logs error and returns safely |
 
 ---
 

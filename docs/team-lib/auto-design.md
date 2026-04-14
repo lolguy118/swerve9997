@@ -112,11 +112,11 @@ Every move extends `AutoMove`. It provides:
 
 ### Implementing a Custom Move
 
-Robot projects extend `AutoMove` (or `AutoMoveSingle`) and override
-`onStart()`, `autonomousPeriodic()`, and `onEnd()` to command subsystems:
+Robot projects extend `AutoMove` and override `onStart()`,
+`autonomousPeriodic()`, and `onEnd()` to command subsystems:
 
 ```java
-public class ShootMove extends AutoMoveSingle {
+public class ShootMove extends AutoMove {
     public ShootMove(double argDelay) {
         super(argDelay);
     }

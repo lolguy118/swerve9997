@@ -21,6 +21,16 @@ Please comprehensively review our FRC robot library codebase. We are Team 271 bu
 ## Design Documents
 - [Java Coding Standard](docs/team271-java-coding-standard.md) — formatting, safety rules, naming conventions, state machine patterns
 - [Contributing Guide](CONTRIBUTING.md) — pre-commit checks, build verification, commit conventions
+- [Library Architecture](docs/team-lib/library-architecture.md) — TObj hierarchy, subsystem lifecycle, hardware abstraction stack
+- [Auto Design](docs/team-lib/auto-design.md) — move composition, AutoMode lifecycle, sequencing patterns
+- [Hardware Abstraction](docs/team-lib/hardware-abstraction.md) — controllers, transmissions, sensors, input system
+- [Control System](docs/team-lib/control-system.md) — PID variants, selection criteria, Balance algorithm
+- [Testing Strategy](docs/team-lib/testing-strategy.md) — HAL initialization, test isolation, coverage patterns
+- [Fault Tolerance](docs/team-lib/fault-tolerance.md) — library-level fault patterns, timeout protection, recovery
+- [Code Review Prompt](docs/prompts/code-review-prompt-teamlib.md) — architecture reference and review checklist
+- [Development Setup](docs/team-lib/development-setup.md) — getting started guide for new contributors
+- [SysID Workflow](docs/team-lib/sysid-workflow.md) — system identification and characterization
+- [Vendor Dependencies](docs/team-lib/vendor-dependencies.md) — vendordep management and upgrades
 
 ---
 
@@ -61,7 +71,7 @@ All tunable values (voltages, speeds, current limits, timing windows, thresholds
 
 ## Auto Coordination (move-based composition)
 
-Autonomous routines are built from composable `AutoMove` building blocks (see [Auto Design](docs/auto-design.md)). `Superstructure` selects and runs the active `AutoMode`, which sequences moves. Each move commands subsystems directly via `Globals.*.setAuto*()` methods — subsystems do not poll a shared timer. Timing is expressed through `AutoMoveParallel`, `AutoMoveSequence`, and `WaitMove` composition rather than timing-window constants.
+Autonomous routines are built from composable `AutoMove` building blocks (see [Auto Design](docs/team-lib/auto-design.md)). `Superstructure` selects and runs the active `AutoMode`, which sequences moves. Each move commands subsystems directly via `Globals.*.setAuto*()` methods — subsystems do not poll a shared timer. Timing is expressed through `AutoMoveParallel`, `AutoMoveSequence`, and `WaitMove` composition rather than timing-window constants.
 
 ---
 
@@ -118,7 +128,7 @@ When multiple design docs describe the same cross-subsystem behavior, **one doc 
 
 ### CLAUDE.md Stays High-Level
 
-CLAUDE.md provides the **overview** and links to design docs for details. Do not expand CLAUDE.md sections to match design doc depth. If a CLAUDE.md section grows past ~5 lines of detail, move the content to the appropriate design doc and replace it with a link. The Hardware Overview and Subsystem State Machines sections should remain summaries.
+CLAUDE.md provides the **overview** and links to design docs for details. Do not expand CLAUDE.md sections to match design doc depth. If a CLAUDE.md section grows past ~5 lines of detail, move the content to the appropriate design doc and replace it with a link.
 
 ### Telemetry Keys Must Match `outputTelemetry()`
 
@@ -156,4 +166,4 @@ the general coding standard:
 - Sensor enable/disable propagating current limits correctly
 - Is the 250 Hz CAN refresh rate sustainable under load?
 - All operations that wait for a condition have timeout protection with driver notification (coding standard 4.9c)
-- Fault tolerance scenarios handled per [Fault Tolerance](docs/robot-2026-reference.md#fault-tolerance) and CODE-SAF-008
+- Fault tolerance scenarios handled per [Fault Tolerance](docs/team-lib/fault-tolerance.md) and coding standard Section 4.9 (CODE-SAF-008–011)

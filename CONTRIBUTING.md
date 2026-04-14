@@ -59,6 +59,9 @@ Before opening a PR, verify the items in
 standard. These include state machine completeness, motor safety,
 subsystem lifecycle ordering, naming conventions, and timeout protection.
 
+For a comprehensive architecture reference and detailed review checklist,
+see the [Code Review Prompt](docs/prompts/code-review-prompt-teamlib.md).
+
 ## Documentation Updates
 
 If your code change affects any of the following, **update the

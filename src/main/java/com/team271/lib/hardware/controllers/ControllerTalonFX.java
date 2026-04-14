@@ -846,6 +846,26 @@ public class ControllerTalonFX extends ControllerSmart {
              * Get Sim State
              */
             simState = talonFX.getSimState();
+
+            // Set CTRE motor type for hardware-accurate current and torque simulation
+            switch (motor.getMotorType()) {
+                case KRAKENX60:
+                    simState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+                    break;
+                case KRAKENX44:
+                    simState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
+                    break;
+                default:
+                    // Falcon500, NEO, etc. — CTRE only supports Kraken types natively;
+                    // default to KrakenX60 as best approximation
+                    simState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+                    break;
+            }
+
+            // Set orientation for counter-rotating followers
+            if (opposeLeader) {
+                simState.Orientation = ChassisReference.Clockwise_Positive;
+            }
         }
     }
 

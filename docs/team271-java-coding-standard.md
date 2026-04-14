@@ -1818,8 +1818,8 @@ c. Timers used for autonomous coordination **shall** be stopped
 
 #### CODE-SAF-008 -- Fault Tolerance
 
-See [Fault Tolerance](robot-2026-reference.md#fault-tolerance) for
-detailed behavioral expectations under each failure scenario.
+See [Fault Tolerance](team-lib/fault-tolerance.md) for library-level fault
+patterns and implementation guidance.
 
 a. Subsystems **shall** check `hasResetOccurred()` (or equivalent
    sticky fault) on each motor in `robotPeriodicBefore()` and, on

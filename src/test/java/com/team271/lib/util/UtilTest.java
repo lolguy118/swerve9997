@@ -114,28 +114,6 @@ class UtilTest {
         assertEquals(0.0, Util.interpolate(0.0, 10.0, -0.5));
     }
 
-    // ── joinStrings ──
-
-    @Test
-    void joinStrings_multipleElements() {
-        assertEquals("a, b, c", Util.joinStrings(", ", Arrays.asList("a", "b", "c")));
-    }
-
-    @Test
-    void joinStrings_singleElement() {
-        assertEquals("a", Util.joinStrings(", ", Collections.singletonList("a")));
-    }
-
-    @Test
-    void joinStrings_emptyList() {
-        assertEquals("", Util.joinStrings(", ", Collections.emptyList()));
-    }
-
-    @Test
-    void joinStrings_nonStringObjects() {
-        assertEquals("1-2-3", Util.joinStrings("-", Arrays.asList(1, 2, 3)));
-    }
-
     // ── epsilonEquals ──
 
     @Test

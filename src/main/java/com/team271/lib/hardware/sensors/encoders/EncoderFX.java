@@ -70,10 +70,10 @@ public class EncoderFX extends EncoderCTRE {
          * Get Position and Velocity Objects
          */
         sigPos = controller.getTalonFX().getPosition();
-        CTREManager.addSignalTalonFX(sigPos, updateFreqHz);
+        CTREManager.addSignal(sigPos, updateFreqHz);
 
         sigVel = controller.getTalonFX().getVelocity();
-        CTREManager.addSignalTalonFX(sigVel, updateFreqHz);
+        CTREManager.addSignal(sigVel, updateFreqHz);
     }
 
     /*

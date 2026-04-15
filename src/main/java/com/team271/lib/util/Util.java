@@ -40,21 +40,6 @@ public class Util {
         return a + (b - a) * x;
     }
 
-    /**
-     * @deprecated Use {@link String#join} instead.
-     */
-    @Deprecated
-    public static String joinStrings(final String delim, final List<?> strings) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < strings.size(); ++i) {
-            sb.append(strings.get(i).toString());
-            if (i < strings.size() - 1) {
-                sb.append(delim);
-            }
-        }
-        return sb.toString();
-    }
-
     public static boolean epsilonEquals(double a, double b, double epsilon) {
         return (a - epsilon <= b) && (a + epsilon >= b);
     }

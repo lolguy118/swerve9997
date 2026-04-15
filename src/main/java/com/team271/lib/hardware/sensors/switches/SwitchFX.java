@@ -91,7 +91,7 @@ public class SwitchFX extends SwitchBase {
              * Get Switch Object
              */
             swFwd = controller.getTalonFX().getForwardLimit();
-            CTREManager.addSignalTalonFX(swFwd, updateFreqHz);
+            CTREManager.addSignal(swFwd, updateFreqHz);
 
             swRev = null;
         } else {
@@ -99,7 +99,7 @@ public class SwitchFX extends SwitchBase {
              * Get Switch Object
              */
             swRev = controller.getTalonFX().getReverseLimit();
-            CTREManager.addSignalTalonFX(swRev, updateFreqHz);
+            CTREManager.addSignal(swRev, updateFreqHz);
 
             swFwd = null;
         }

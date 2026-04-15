@@ -60,17 +60,17 @@ class BalanceTest {
     @Test
     void reverseState0ReturnsFastSpeed() {
         /* Tilt below threshold (13.0), stays in state 0 */
-        assertEquals(0.6, balanceReverse.autoBalanceRoutineReverse(5.0), 1e-9);
+        assertEquals(0.6, balanceReverse.autoBalanceRoutine(5.0), 1e-9);
     }
 
     @Test
     void reverseState0TransitionsToState1() {
         /* Feed tilt > 13.0 enough times to exceed debounce (5 ticks at 0.1s * 50) */
         for (int i = 0; i < 5; i++) {
-            balanceReverse.autoBalanceRoutineReverse(14.0);
+            balanceReverse.autoBalanceRoutine(14.0);
         }
         /* 6th call should trigger transition — debounceCount (6) > 5 */
-        double result = balanceReverse.autoBalanceRoutineReverse(14.0);
+        double result = balanceReverse.autoBalanceRoutine(14.0);
         assertEquals(0.2, result, 1e-9, "Should return robotSpeedSlow on transition to state 1");
     }
 
@@ -82,7 +82,7 @@ class BalanceTest {
         transitionReverseToState1();
 
         /* Tilt above levelDegree (6.0), stays in state 1 */
-        assertEquals(0.2, balanceReverse.autoBalanceRoutineReverse(8.0), 1e-9);
+        assertEquals(0.2, balanceReverse.autoBalanceRoutine(8.0), 1e-9);
     }
 
     @Test
@@ -91,9 +91,9 @@ class BalanceTest {
 
         /* Feed tilt < 6.0 enough times to exceed debounce */
         for (int i = 0; i < 5; i++) {
-            balanceReverse.autoBalanceRoutineReverse(4.0);
+            balanceReverse.autoBalanceRoutine(4.0);
         }
-        double result = balanceReverse.autoBalanceRoutineReverse(4.0);
+        double result = balanceReverse.autoBalanceRoutine(4.0);
         assertEquals(0.0, result, 1e-9, "Should return 0 on transition to state 2");
     }
 
@@ -103,14 +103,14 @@ class BalanceTest {
     void reverseState2ReturnsPositiveCorrectionWhenTiltAboveLevel() {
         transitionReverseToState2();
 
-        assertEquals(0.1, balanceReverse.autoBalanceRoutineReverse(7.0), 1e-9);
+        assertEquals(0.1, balanceReverse.autoBalanceRoutine(7.0), 1e-9);
     }
 
     @Test
     void reverseState2ReturnsNegativeCorrectionWhenTiltBelowNegativeLevel() {
         transitionReverseToState2();
 
-        assertEquals(-0.1, balanceReverse.autoBalanceRoutineReverse(-7.0), 1e-9);
+        assertEquals(-0.1, balanceReverse.autoBalanceRoutine(-7.0), 1e-9);
     }
 
     @Test
@@ -118,7 +118,7 @@ class BalanceTest {
         transitionReverseToState2();
 
         /* Tilt between -6 and +6 but above levelDegree/2 (3.0) */
-        assertEquals(0.0, balanceReverse.autoBalanceRoutineReverse(4.0), 1e-9);
+        assertEquals(0.0, balanceReverse.autoBalanceRoutine(4.0), 1e-9);
     }
 
     @Test
@@ -127,9 +127,9 @@ class BalanceTest {
 
         /* Feed |tilt| <= 3.0 enough times to exceed debounce */
         for (int i = 0; i < 5; i++) {
-            balanceReverse.autoBalanceRoutineReverse(2.0);
+            balanceReverse.autoBalanceRoutine(2.0);
         }
-        double result = balanceReverse.autoBalanceRoutineReverse(2.0);
+        double result = balanceReverse.autoBalanceRoutine(2.0);
         assertEquals(0.0, result, 1e-9, "Should return 0 on transition to state 4");
     }
 
@@ -139,7 +139,7 @@ class BalanceTest {
     void reverseDefaultReturnsZero() {
         transitionReverseToState4();
 
-        assertEquals(0.0, balanceReverse.autoBalanceRoutineReverse(15.0), 1e-9);
+        assertEquals(0.0, balanceReverse.autoBalanceRoutine(15.0), 1e-9);
     }
 
     /* --- Forward routine (isFwd=true): state 0 --- */
@@ -147,16 +147,16 @@ class BalanceTest {
     @Test
     void forwardState0ReturnsFastSpeed() {
         /* Tilt above threshold (-13.0), stays in state 0 */
-        assertEquals(0.6, balanceForward.autoBalanceRoutineForward(-5.0), 1e-9);
+        assertEquals(0.6, balanceForward.autoBalanceRoutine(-5.0), 1e-9);
     }
 
     @Test
     void forwardState0TransitionsToState1() {
         /* Feed tilt < -13.0 enough times */
         for (int i = 0; i < 5; i++) {
-            balanceForward.autoBalanceRoutineForward(-14.0);
+            balanceForward.autoBalanceRoutine(-14.0);
         }
-        double result = balanceForward.autoBalanceRoutineForward(-14.0);
+        double result = balanceForward.autoBalanceRoutine(-14.0);
         assertEquals(0.2, result, 1e-9, "Should return robotSpeedSlow on transition to state 1");
     }
 
@@ -167,7 +167,7 @@ class BalanceTest {
         transitionForwardToState1();
 
         /* Tilt below levelDegree (-6.0), stays in state 1 */
-        assertEquals(0.2, balanceForward.autoBalanceRoutineForward(-8.0), 1e-9);
+        assertEquals(0.2, balanceForward.autoBalanceRoutine(-8.0), 1e-9);
     }
 
     @Test
@@ -176,9 +176,9 @@ class BalanceTest {
 
         /* Feed tilt > -6.0 enough times */
         for (int i = 0; i < 5; i++) {
-            balanceForward.autoBalanceRoutineForward(-4.0);
+            balanceForward.autoBalanceRoutine(-4.0);
         }
-        double result = balanceForward.autoBalanceRoutineForward(-4.0);
+        double result = balanceForward.autoBalanceRoutine(-4.0);
         assertEquals(0.0, result, 1e-9, "Should return 0 on transition to state 2");
     }
 
@@ -189,7 +189,7 @@ class BalanceTest {
         transitionForwardToState2();
 
         /* tilt >= levelDegree (-6.0) → true for tilt=-4 (greater than -6) → returns -0.1 */
-        assertEquals(-0.1, balanceForward.autoBalanceRoutineForward(-4.0), 1e-9);
+        assertEquals(-0.1, balanceForward.autoBalanceRoutine(-4.0), 1e-9);
     }
 
     @Test
@@ -198,7 +198,7 @@ class BalanceTest {
 
         /* tilt <= -levelDegree → tilt <= 6.0? No — levelDegree is -6.0, so -levelDegree = 6.0.
          * tilt <= 6.0 is true for tilt=-8 → returns 0.1 */
-        assertEquals(0.1, balanceForward.autoBalanceRoutineForward(-8.0), 1e-9);
+        assertEquals(0.1, balanceForward.autoBalanceRoutine(-8.0), 1e-9);
     }
 
     @Test
@@ -206,7 +206,7 @@ class BalanceTest {
         transitionForwardToState2();
 
         /* levelDegree=-6.0, so tilt=-5.5 >= -6.0 is true → returns -0.1 */
-        assertEquals(-0.1, balanceForward.autoBalanceRoutineForward(-5.5), 1e-9);
+        assertEquals(-0.1, balanceForward.autoBalanceRoutine(-5.5), 1e-9);
     }
 
     @Test
@@ -215,9 +215,9 @@ class BalanceTest {
 
         /* |tilt| <= |levelDegree|/2 = 3.0 */
         for (int i = 0; i < 5; i++) {
-            balanceForward.autoBalanceRoutineForward(-2.0);
+            balanceForward.autoBalanceRoutine(-2.0);
         }
-        double result = balanceForward.autoBalanceRoutineForward(-2.0);
+        double result = balanceForward.autoBalanceRoutine(-2.0);
         assertEquals(0.0, result, 1e-9);
     }
 
@@ -227,7 +227,7 @@ class BalanceTest {
     void forwardDefaultReturnsZero() {
         transitionForwardToState4();
 
-        assertEquals(0.0, balanceForward.autoBalanceRoutineForward(-15.0), 1e-9);
+        assertEquals(0.0, balanceForward.autoBalanceRoutine(-15.0), 1e-9);
     }
 
     /* --- init() resets state --- */
@@ -239,7 +239,7 @@ class BalanceTest {
         balanceReverse.init();
 
         /* After re-init, should be back in state 0 returning fast speed */
-        assertEquals(0.6, balanceReverse.autoBalanceRoutineReverse(5.0), 1e-9);
+        assertEquals(0.6, balanceReverse.autoBalanceRoutine(5.0), 1e-9);
     }
 
     /* --- outputTelemetry / checkTuning --- */
@@ -277,55 +277,55 @@ class BalanceTest {
     @Test
     void reverseState2ZeroTiltReturnsZero() {
         transitionReverseToState2();
-        assertEquals(0.0, balanceReverse.autoBalanceRoutineReverse(0.0), 1e-9);
+        assertEquals(0.0, balanceReverse.autoBalanceRoutine(0.0), 1e-9);
     }
 
     @Test
     void forwardState2ZeroTiltReturnsCorrectionDueToNegativeLevel() {
         transitionForwardToState2();
         /* levelDegree=-6.0, so tilt=0.0 >= -6.0 is true → returns -0.1 */
-        assertEquals(-0.1, balanceForward.autoBalanceRoutineForward(0.0), 1e-9);
+        assertEquals(-0.1, balanceForward.autoBalanceRoutine(0.0), 1e-9);
     }
 
     /* --- Helper methods to advance state machine --- */
 
     private void transitionReverseToState1() {
         for (int i = 0; i <= 5; i++) {
-            balanceReverse.autoBalanceRoutineReverse(14.0);
+            balanceReverse.autoBalanceRoutine(14.0);
         }
     }
 
     private void transitionReverseToState2() {
         transitionReverseToState1();
         for (int i = 0; i <= 5; i++) {
-            balanceReverse.autoBalanceRoutineReverse(4.0);
+            balanceReverse.autoBalanceRoutine(4.0);
         }
     }
 
     private void transitionReverseToState4() {
         transitionReverseToState2();
         for (int i = 0; i <= 5; i++) {
-            balanceReverse.autoBalanceRoutineReverse(2.0);
+            balanceReverse.autoBalanceRoutine(2.0);
         }
     }
 
     private void transitionForwardToState1() {
         for (int i = 0; i <= 5; i++) {
-            balanceForward.autoBalanceRoutineForward(-14.0);
+            balanceForward.autoBalanceRoutine(-14.0);
         }
     }
 
     private void transitionForwardToState2() {
         transitionForwardToState1();
         for (int i = 0; i <= 5; i++) {
-            balanceForward.autoBalanceRoutineForward(-4.0);
+            balanceForward.autoBalanceRoutine(-4.0);
         }
     }
 
     private void transitionForwardToState4() {
         transitionForwardToState2();
         for (int i = 0; i <= 5; i++) {
-            balanceForward.autoBalanceRoutineForward(-2.0);
+            balanceForward.autoBalanceRoutine(-2.0);
         }
     }
 }

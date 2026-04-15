@@ -145,6 +145,24 @@ public class PIDWPI_Trap extends PIDBase {
      * Calculate
      *
      */
+
+    /**
+     * Calculates the profiled PID output by delegating to the WPILib ProfiledPIDController. Updates
+     * the goal on the controller before calculating.
+     */
+    @Override
+    public double calc(
+            final double argInputMeasurement, final double argSetpoint, final double argTimestamp) {
+        lastInputMeasurement = argInputMeasurement;
+        lastTimestamp = argTimestamp;
+
+        controller.setGoal(argSetpoint);
+        output = controller.calculate(argInputMeasurement);
+
+        return output;
+    }
+
+    /** Single-arg convenience — uses the controller's existing goal. */
     public double calc(final double argMeasurement) {
         return controller.calculate(argMeasurement);
     }

@@ -42,7 +42,7 @@ public class FaultMonitor {
     /** Register all fault signals with CTREManager. Call in robotInit(). */
     public void registerSignals() {
         for (FaultEntry f : faults) {
-            CTREManager.addSignalTalonFX(f.signal, f.updateFreqHz);
+            CTREManager.addSignal(f.signal, f.updateFreqHz);
         }
     }
 

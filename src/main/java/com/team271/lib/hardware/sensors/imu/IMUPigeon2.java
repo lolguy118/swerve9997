@@ -111,16 +111,16 @@ public class IMUPigeon2 extends IMUCTRE {
          * Get IMU Objects
          */
         sigYaw = imu.getYaw();
-        CTREManager.addSignalPigeon(sigYaw, updateFreqHz);
+        CTREManager.addSignal(sigYaw, updateFreqHz);
 
         sigYawRate = imu.getAngularVelocityZWorld();
-        CTREManager.addSignalPigeon(sigYawRate, updateFreqHz);
+        CTREManager.addSignal(sigYawRate, updateFreqHz);
 
         sigRoll = imu.getRoll();
-        CTREManager.addSignalPigeon(sigRoll, updateFreqHz);
+        CTREManager.addSignal(sigRoll, updateFreqHz);
 
         sigPitch = imu.getPitch();
-        CTREManager.addSignalPigeon(sigPitch, updateFreqHz);
+        CTREManager.addSignal(sigPitch, updateFreqHz);
 
         if (faultMonitor != null) {
             faultMonitor.registerSignals();

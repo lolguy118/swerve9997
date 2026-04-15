@@ -177,7 +177,7 @@ public class ControllerTalonFX extends ControllerSmart {
              */
             motorOutputStatus = talonFX.getMotorOutputStatus();
 
-            CTREManager.addSignalTalonFX(motorOutputStatus, UPDATE_FREQ_HZ_MOTOR_OUTPUT_STATUS);
+            CTREManager.addSignal(motorOutputStatus, UPDATE_FREQ_HZ_MOTOR_OUTPUT_STATUS);
 
             /*
              * Clear Sticky Faults
@@ -225,7 +225,7 @@ public class ControllerTalonFX extends ControllerSmart {
          */
         if (signals.contains(Signals.SUPPLY_VOLT) || signals.contains(Signals.ALL)) {
             supplyVoltage = talonFX.getSupplyVoltage();
-            CTREManager.addSignalTalonFX(supplyVoltage, UPDATE_FREQ_HZ_SUPPLY_VOLT);
+            CTREManager.addSignal(supplyVoltage, UPDATE_FREQ_HZ_SUPPLY_VOLT);
         }
 
         /*
@@ -233,7 +233,7 @@ public class ControllerTalonFX extends ControllerSmart {
          */
         if (signals.contains(Signals.SUPPLY_CURRENT) || signals.contains(Signals.ALL)) {
             supplyCurrent = talonFX.getSupplyCurrent();
-            CTREManager.addSignalTalonFX(supplyCurrent, UPDATE_FREQ_HZ_SUPPLY_CURRENT);
+            CTREManager.addSignal(supplyCurrent, UPDATE_FREQ_HZ_SUPPLY_CURRENT);
         }
 
         /*
@@ -241,7 +241,7 @@ public class ControllerTalonFX extends ControllerSmart {
          */
         if (signals.contains(Signals.OUTPUT_DUTY) || signals.contains(Signals.ALL)) {
             outputDuty = talonFX.getDutyCycle();
-            CTREManager.addSignalTalonFX(outputDuty, UPDATE_FREQ_HZ_OUTPUT_DUTY);
+            CTREManager.addSignal(outputDuty, UPDATE_FREQ_HZ_OUTPUT_DUTY);
         }
 
         /*
@@ -249,7 +249,7 @@ public class ControllerTalonFX extends ControllerSmart {
          */
         if (signals.contains(Signals.OUTPUT_VOLT) || signals.contains(Signals.ALL)) {
             outputVoltage = talonFX.getMotorVoltage();
-            CTREManager.addSignalTalonFX(outputVoltage, UPDATE_FREQ_HZ_OUTPUT_VOLT);
+            CTREManager.addSignal(outputVoltage, UPDATE_FREQ_HZ_OUTPUT_VOLT);
         }
 
         /*
@@ -257,7 +257,7 @@ public class ControllerTalonFX extends ControllerSmart {
          */
         if (signals.contains(Signals.OUTPUT_TORQUE_CURRENT) || signals.contains(Signals.ALL)) {
             outputTorqueCurrent = talonFX.getTorqueCurrent();
-            CTREManager.addSignalTalonFX(outputTorqueCurrent, UPDATE_FREQ_HZ_OUTPUT_TORQUE_CURRENT);
+            CTREManager.addSignal(outputTorqueCurrent, UPDATE_FREQ_HZ_OUTPUT_TORQUE_CURRENT);
         }
 
         /*
@@ -265,7 +265,7 @@ public class ControllerTalonFX extends ControllerSmart {
          */
         if (signals.contains(Signals.CLOSED_LOOP_ERROR) || signals.contains(Signals.ALL)) {
             clError = talonFX.getClosedLoopError();
-            CTREManager.addSignalTalonFX(clError, UPDATE_FREQ_HZ_CLOSED_LOOP);
+            CTREManager.addSignal(clError, UPDATE_FREQ_HZ_CLOSED_LOOP);
         }
 
         /*
@@ -273,7 +273,7 @@ public class ControllerTalonFX extends ControllerSmart {
          */
         if (signals.contains(Signals.CLOSED_LOOP_OUTPUT) || signals.contains(Signals.ALL)) {
             clOutput = talonFX.getClosedLoopOutput();
-            CTREManager.addSignalTalonFX(clOutput, UPDATE_FREQ_HZ_CLOSED_LOOP);
+            CTREManager.addSignal(clOutput, UPDATE_FREQ_HZ_CLOSED_LOOP);
         }
 
         if (faultMonitor != null) {

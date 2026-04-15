@@ -245,12 +245,12 @@ class CTREManagerTest {
     }
 
     @Test
-    void addSignalTalonFXRegistersSignal() {
+    void addSignalRegistersSignal() {
         TalonFX talon = new TalonFX(1, new com.ctre.phoenix6.CANBus("drivetrain"));
         CTREManager.addDevice(talon);
 
         var signal = talon.getPosition();
-        CTREManager.addSignalTalonFX(signal, 250.0);
+        CTREManager.addSignal(signal, 250.0);
 
         CTREManager.init();
         StatusCode status = CTREManager.refreshAll();
@@ -258,29 +258,9 @@ class CTREManagerTest {
     }
 
     @Test
-    void addSignalCANCoderReturnsSignal() {
-        TalonFX talon = new TalonFX(1, new com.ctre.phoenix6.CANBus("drivetrain"));
-        var signal = talon.getPosition();
-
-        var returned = CTREManager.addSignalCANCoder(signal, 250.0);
-
-        assertSame(signal, returned, "addSignalCANCoder should return the same signal passed in");
-    }
-
-    @Test
-    void addSignalCANCoderNullReturnsNull() {
-        var returned = CTREManager.addSignalCANCoder(null, 250.0);
-
-        assertNull(returned);
-    }
-
-    @Test
     void addSignalNullIsIgnored() throws Exception {
-        CTREManager.addSignalTalonFX(null, 250.0);
-        CTREManager.addSignalCANCoder(null, 250.0);
-        CTREManager.addSignalPigeon(null, 250.0);
-        CTREManager.addSignalCANrange(null, 250.0);
-        CTREManager.addSignalCANdi(null, 250.0);
+        CTREManager.addSignal(null, 250.0);
+        CTREManager.addSignal(null, 100.0);
 
         /* None of the nulls should have been added to the signals list */
         ArrayList<StatusSignal<?>> signals = getSignalsList();

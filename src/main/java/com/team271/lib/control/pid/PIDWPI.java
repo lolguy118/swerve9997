@@ -141,6 +141,24 @@ public class PIDWPI extends PIDBase {
      * Calculate
      *
      */
+
+    /**
+     * Calculates the PID output by delegating to the WPILib PIDController. Updates the setpoint on
+     * the controller before calculating.
+     */
+    @Override
+    public double calc(
+            final double argInputMeasurement, final double argSetpoint, final double argTimestamp) {
+        lastInputMeasurement = argInputMeasurement;
+        lastTimestamp = argTimestamp;
+
+        controller.setSetpoint(argSetpoint);
+        output = controller.calculate(argInputMeasurement);
+
+        return output;
+    }
+
+    /** Single-arg convenience — uses the controller's existing setpoint. */
     public double calc(final double argMeasurement) {
         return controller.calculate(argMeasurement);
     }

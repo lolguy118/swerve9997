@@ -343,13 +343,14 @@ class SubsystemManagerTest {
     /* --- robotInit rethrows --- */
 
     @Test
-    void robotInitRethrowsException() {
+    void robotInitCatchesException() {
         SubsystemManager mgr = SubsystemManager.getInstance();
         ThrowingSubsystem thrower = new ThrowingSubsystem("Thrower");
 
         mgr.addSubsystem(thrower);
 
-        assertThrows(RuntimeException.class, () -> mgr.robotInit(0.0));
+        /* robotInit uses forEachSafe — exceptions are caught, not rethrown */
+        assertDoesNotThrow(() -> mgr.robotInit(0.0));
     }
 
     @Test

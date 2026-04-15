@@ -87,7 +87,7 @@ public class RangeCANrange extends RangeCTRE {
          * Get Position and Velocity Objects
          */
         sigDist = range.getDistance();
-        CTREManager.addSignalCANrange(sigDist, updateFreqHz);
+        CTREManager.addSignal(sigDist, updateFreqHz);
     }
 
     @Override

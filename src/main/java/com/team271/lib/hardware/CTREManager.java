@@ -159,51 +159,6 @@ public class CTREManager {
         }
     }
 
-    /**
-     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
-     */
-    @Deprecated
-    public static void addSignalTalonFX(
-            final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignal(argSignal, argUpdateRate);
-    }
-
-    /**
-     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
-     */
-    @Deprecated
-    public static StatusSignal<?> addSignalCANCoder(
-            final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignal(argSignal, argUpdateRate);
-        return argSignal;
-    }
-
-    /**
-     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
-     */
-    @Deprecated
-    public static void addSignalPigeon(
-            final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignal(argSignal, argUpdateRate);
-    }
-
-    /**
-     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
-     */
-    @Deprecated
-    public static void addSignalCANrange(
-            final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignal(argSignal, argUpdateRate);
-    }
-
-    /**
-     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
-     */
-    @Deprecated
-    public static void addSignalCANdi(final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignal(argSignal, argUpdateRate);
-    }
-
     /*
      * Init — call after all subsystems have registered their devices and signals
      */

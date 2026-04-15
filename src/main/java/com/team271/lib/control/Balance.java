@@ -5,6 +5,11 @@ import com.team271.lib.nt.NTTable;
 import org.littletonrobotics.junction.Logger;
 
 public class Balance {
+    private static final int STATE_APPROACH = 0;
+    private static final int STATE_CLIMB = 1;
+    private static final int STATE_HOLD = 2;
+    private static final int STATE_DONE = 3;
+
     private boolean isFwd = false;
     private int state;
     private int debounceCount;
@@ -33,7 +38,7 @@ public class Balance {
     }
 
     public void init() {
-        state = 0;
+        state = STATE_APPROACH;
         debounceCount = 0;
 
         /*
@@ -71,94 +76,56 @@ public class Balance {
         return (int) (time * 50);
     }
 
-    // routine for automatically driving onto and engaging the charge station.
-    // returns a value from -1.0 to 1.0, which left and right motors should be set
-    // to.
-    public double autoBalanceRoutineReverse(final double argTilt) {
-        switch (state) {
-            // drive forwards to approach station, exit when tilt is detected
-            case 0:
-                if (argTilt > onChargeStationDegree) {
-                    debounceCount++;
-                }
-                if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 1;
-                    debounceCount = 0;
-                    return robotSpeedSlow;
-                }
-                return robotSpeedFast;
-            // driving up charge station, drive slower, stopping when level
-            case 1:
-                if (argTilt < levelDegree) {
-                    debounceCount++;
-                }
-                if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 2;
-                    debounceCount = 0;
-                    return 0;
-                }
-                return robotSpeedSlow;
-            // on charge station, stop motors and wait for end of auto
-            case 2:
-                if (Math.abs(argTilt) <= Math.abs(levelDegree) / 2) {
-                    debounceCount++;
-                }
-                if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 4;
-                    debounceCount = 0;
-                    return 0;
-                }
-                if (argTilt >= levelDegree) {
-                    return 0.1;
-                } else if (argTilt <= -levelDegree) {
-                    return -0.1;
-                }
-                return 0;
-            default:
-                return 0;
-        }
-    }
+    /**
+     * Drives onto and engages the charge station. Direction is determined by the constructor's
+     * isFwd parameter.
+     *
+     * @param argTilt current robot tilt in degrees
+     * @return motor output from -1.0 to 1.0
+     */
+    public double autoBalanceRoutine(final double argTilt) {
+        /* Direction multiplier: forward approach sees negative tilt, reverse sees positive */
+        double dirSign = isFwd ? -1.0 : 1.0;
 
-    public double autoBalanceRoutineForward(final double argTilt) {
         switch (state) {
-            // drive forwards to approach station, exit when tilt is detected
-            case 0:
-                if (argTilt < onChargeStationDegree) {
+            case STATE_APPROACH:
+                if ((argTilt * dirSign) > onChargeStationDegree * dirSign) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 1;
+                    state = STATE_CLIMB;
                     debounceCount = 0;
                     return robotSpeedSlow;
                 }
                 return robotSpeedFast;
-            // driving up charge station, drive slower, stopping when level
-            case 1:
-                if (argTilt > levelDegree) {
+
+            case STATE_CLIMB:
+                if ((argTilt * dirSign) < levelDegree * dirSign) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 2;
+                    state = STATE_HOLD;
                     debounceCount = 0;
                     return 0;
                 }
                 return robotSpeedSlow;
-            // on charge station, stop motors and wait for end of auto
-            case 2:
+
+            case STATE_HOLD:
                 if (Math.abs(argTilt) <= Math.abs(levelDegree) / 2) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 4;
+                    state = STATE_DONE;
                     debounceCount = 0;
                     return 0;
                 }
                 if (argTilt >= levelDegree) {
-                    return -0.1;
+                    return isFwd ? -0.1 : 0.1;
                 } else if (argTilt <= -levelDegree) {
-                    return 0.1;
+                    return isFwd ? 0.1 : -0.1;
                 }
                 return 0;
+
             default:
                 return 0;
         }

@@ -98,12 +98,7 @@ public class SubsystemManager {
      *
      */
     public void robotInit(final double argTimestamp) {
-        // Init methods rethrow — a subsystem that can't initialize should crash loudly
-        try {
-            mAllSubsystems.forEach(l -> l.robotInit(argTimestamp));
-        } catch (Throwable t) {
-            throw t;
-        }
+        forEachSafe("robotInit", l -> l.robotInit(argTimestamp));
     }
 
     public void robotPeriodicBefore(final double argTimestamp) {

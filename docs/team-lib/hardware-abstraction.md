@@ -139,9 +139,10 @@ between timesync mode (for CANivore buses) and standard update mode
 to `UseTimesync = true` and `UpdateFreqHz = 0`. In standard mode,
 they use the specified update frequency without timesync.
 
-**Config application:** `applyConfig()` retries up to `CAN_RETRY_COUNT`
-times with 50 ms timeout per attempt. Sets `isConfigured` flag on
-success/failure.
+**Config application:** `applyConfig()` retries up to
+`CAN_CONFIG_APPLY_RETRIES` (3) times with `CAN_CONFIG_APPLY_TIMEOUT_SEC`
+(20 ms) per attempt — 60 ms worst case, within the 20 ms loop budget.
+Sets `isConfigured` flag on success/failure.
 
 **Connection tracking:** `robotPeriodicBefore()` checks
 `talonFX.isConnected()` every cycle to detect CAN disconnection.

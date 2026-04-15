@@ -72,9 +72,7 @@ public abstract class SwitchBase extends TObj {
         return autoSetPos;
     }
 
-    public boolean getTriggered() {
-        return false;
-    }
+    public abstract boolean getTriggered();
 
     /*
      *

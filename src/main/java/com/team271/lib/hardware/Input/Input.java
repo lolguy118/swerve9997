@@ -110,12 +110,41 @@ public class Input extends Subsystem {
         return false;
     }
 
+    /**
+     * Returns the axis value clamped to [-1.0, 1.0]. Raw values are passed through without
+     * inversion; robot-specific input subclasses are responsible for applying axis inversion per
+     * their controller mapping.
+     */
     public double getAxis(final int argAxis) {
         if ((argAxis < axisCount) && mController.isConnected()) {
             return Util.limit(axis[argAxis], -1.0, 1.0);
         }
 
         return 0.0;
+    }
+
+    /** Returns true on the single cycle when the button transitions from released to pressed. */
+    public boolean getButtonPressed(final int argButton) {
+        if (argButton >= 0 && argButton < buttonCount) {
+            return buttons[argButton] && !buttonsPrev[argButton];
+        }
+        return false;
+    }
+
+    /** Returns true on the single cycle when the button transitions from pressed to released. */
+    public boolean getButtonReleased(final int argButton) {
+        if (argButton >= 0 && argButton < buttonCount) {
+            return !buttons[argButton] && buttonsPrev[argButton];
+        }
+        return false;
+    }
+
+    /** Returns true while the button is held down. */
+    public boolean getButton(final int argButton) {
+        if (argButton >= 0 && argButton < buttonCount) {
+            return buttons[argButton];
+        }
+        return false;
     }
 
     public double inputShaping(final InputShaping argShapingMode, final double argValue) {

@@ -189,9 +189,10 @@ public abstract class TransmissionBase extends TObj {
                                 tmpNumMotors);
                 break;
             case CTRE_MINION:
-                simDCMotor =
-                        new DCMotor(
-                                0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
+                // CTRE Minion specs not yet published; default to KrakenX60 for simulation
+                simDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
+                DriverStation.reportWarning(
+                        getName() + ": CTRE_MINION sim uses KrakenX60 approximation", false);
                 break;
             case NEO:
                 simDCMotor = DCMotor.getNEO(tmpNumMotors);
@@ -203,9 +204,14 @@ public abstract class TransmissionBase extends TObj {
                 simDCMotor = DCMotor.getNeoVortex(tmpNumMotors);
                 break;
             default:
-                simDCMotor =
-                        new DCMotor(
-                                0.0, 0.0, 0.0, 0.0, RPM.of(0).in(RadiansPerSecond), tmpNumMotors);
+                // Unknown motor type — default to KrakenX60 to avoid divide-by-zero in sim
+                simDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
+                DriverStation.reportWarning(
+                        getName()
+                                + ": unknown motor type "
+                                + leader.getMotor().getMotorType()
+                                + " — sim uses KrakenX60 approximation",
+                        false);
                 break;
         }
     }

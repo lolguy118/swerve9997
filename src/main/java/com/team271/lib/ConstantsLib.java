@@ -5,6 +5,11 @@ public final class ConstantsLib {
     public static final int CAN_TIMEOUT_MS = 10; // use for important on the fly updates
     public static final int CAN_LONG_TIMEOUT_MS = 100; // use for constructors
 
+    /** Config apply retries — fewer attempts with shorter timeout to stay within loop budget. */
+    public static final int CAN_CONFIG_APPLY_RETRIES = 3;
+
+    public static final double CAN_CONFIG_APPLY_TIMEOUT_SEC = 0.020;
+
     public static final double NT_UPDATE_MS = 100;
 
     public static final String S_INVALID = "Invalid";

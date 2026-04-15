@@ -557,6 +557,7 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     /* PID Values */
+
     public void setPSlot(final int argSlot, final double argSetP) {
         switch (argSlot) {
             case 0:
@@ -682,7 +683,6 @@ public class ControllerTalonFX extends ControllerSmart {
                 config.Slot0.kP = argP;
                 config.Slot0.kI = argI;
                 config.Slot0.kD = argD;
-
                 config.Slot0.kV = argV;
                 config.Slot0.kS = argS;
                 break;
@@ -690,7 +690,6 @@ public class ControllerTalonFX extends ControllerSmart {
                 config.Slot1.kP = argP;
                 config.Slot1.kI = argI;
                 config.Slot1.kD = argD;
-
                 config.Slot1.kV = argV;
                 config.Slot1.kS = argS;
                 break;
@@ -698,7 +697,6 @@ public class ControllerTalonFX extends ControllerSmart {
                 config.Slot2.kP = argP;
                 config.Slot2.kI = argI;
                 config.Slot2.kD = argD;
-
                 config.Slot2.kV = argV;
                 config.Slot2.kS = argS;
                 break;

@@ -111,15 +111,19 @@ public class IMUPigeon2 extends IMUCTRE {
         CTREManager.addSignalPigeon(sigPitch, updateFreqHz);
     }
 
-    /*
-     * Raw
+    /**
+     * Returns the heading as a Rotation2d using the latency-compensated yaw from {@link
+     * #refresh()}. Callers must ensure refresh() is called each cycle (e.g., in
+     * robotPeriodicBefore) for accurate data.
      */
+    @Override
     public Rotation2d getHeading() {
-        if (imu != null) {
-            return imu.getRotation2d();
-        }
+        return Rotation2d.fromDegrees(yaw);
+    }
 
-        return new Rotation2d();
+    @Override
+    public void robotPeriodicBefore(final double argTimestamp) {
+        refresh();
     }
 
     /*

@@ -365,6 +365,19 @@ StateMachine publishes both `Current State` and `Desired State` to NT,
 making state transitions visible in the dashboard. It also provides
 `isTransitioning()` for gating logic.
 
+**Transition callbacks (optional):** StateMachine supports `onEnter`
+and `onExit` callbacks via a fluent builder:
+
+```java
+sm = new StateMachine<>(table, ArmState.STOWED)
+    .withOnExit((from, to) -> stopMotors())
+    .withOnEnter((from, to) -> initializeState(to));
+```
+
+Callbacks fire only when the state actually changes (not on same-state
+transitions). `onExit` fires before `currentState` is updated;
+`onEnter` fires after. Both receive `(fromState, toState)`.
+
 This helper is **optional** — simple subsystems can continue using
 manual enum fields and switch statements.
 

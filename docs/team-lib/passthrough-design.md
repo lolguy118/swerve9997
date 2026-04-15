@@ -41,6 +41,9 @@ The underlying vendor object is always accessible. You can call any vendor metho
 | `ControllerTalonFX` | `getConfig()` | `TalonFXConfiguration` | Deferred config object — modify fields, then call `applyConfig()` |
 | `ControllerTalonFX` | `getSimState()` | `TalonFXSimState` | Simulation proxy |
 | `ControllerTalonFX` | `getConfigMM()` | `MotionMagicConfigs` | Shortcut into config.MotionMagic |
+| `ControllerTalonFXS` | `getTalonFXS()` | `com.ctre.phoenix6.hardware.TalonFXS` | Raw CTRE brushed motor controller |
+| `ControllerTalonFXS` | `getConfig()` | `TalonFXSConfiguration` | Deferred config object |
+| `ControllerTalonFXS` | `getSimState()` | `TalonFXSSimState` | Simulation proxy |
 
 ### Transmissions
 
@@ -50,7 +53,7 @@ The underlying vendor object is always accessible. You can call any vendor metho
 | `TransmissionFX` | `getLeaderConfig()` | `TalonFXConfiguration` | Leader's deferred config |
 | `TransmissionFX` | `getLeaderController()` | `ControllerTalonFX` | Leader's library wrapper (for multi-motor access) |
 | `TransmissionFX` | `getSimState()` | `TalonFXSimState` | Leader's simulation proxy |
-| `TransmissionFX` | `getAllControllers()` | `Set<ControllerSmart>` | All motors (leader + followers) |
+| `TransmissionFX` | `getAllControllers()` | `Set<SmartMotorController>` | All motors (leader + followers) |
 
 ### Encoders
 

@@ -11,12 +11,33 @@
 ## PID Hierarchy
 
 ```text
-PIDBase (abstract — error tracking, telemetry, tuning infrastructure)
-├── PIDSimple       Software PID — basic proportional-integral-derivative
-├── PIDTrap         Software PID with WPILib TrapezoidProfile
-├── PIDWPI          Wrapper around WPILib PIDController
-├── PIDWPI_Trap     Wrapper around WPILib ProfiledPIDController
-└── PIDFX           TalonFX onboard PID (reads closed-loop state from hardware)
+Interfaces (for swapping implementations):
+  PIDController                 (calculate, atSetpoint, gains, continuous input, reset)
+  └── ProfiledPIDController     (setGoal, setConstraints, atGoal, setpoint position/velocity)
+
+Implementation hierarchy:
+  TObj
+  └── PIDBase  implements PIDController
+      ├── PIDSimple             Software PID — basic proportional-integral-derivative
+      ├── PIDTrap               implements ProfiledPIDController — custom trapezoidal profile
+      ├── PIDWPI                Wrapper around WPILib PIDController
+      ├── PIDWPI_Trap           implements ProfiledPIDController — WPILib profiled PID
+      └── PIDFX                 TalonFX onboard PID (configurable slot, ContinuousWrap support)
+
+Feedforward (composable with any PID):
+  Feedforward                   @FunctionalInterface — simple(), elevator(), fromWPILib()
+  ArmFeedforward                Position-dependent: kS*sign(v) + kG*cos(pos) + kV*v + kA*a
+```
+
+All five PID implementations satisfy the `PIDController` interface,
+allowing code to swap between them without changing calling code:
+
+```java
+// Swap by changing the constructor — the rest stays the same
+PIDController pid = new PIDSimple(parent, "Arm", 1.0, 0.0, 0.05, 0.02);
+// or: PIDController pid = new PIDFX(parent, "Arm", talonFX, 1.0, 0.0, 0.05, 0.02);
+
+double output = pid.calculate(measurement, setpoint, timestamp);
 ```
 
 ---

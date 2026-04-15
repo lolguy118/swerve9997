@@ -13,10 +13,23 @@
 ## Controller Hierarchy
 
 ```text
-TObj
-└── ControllerBase              (type system, follower validation, basic output)
-    └── ControllerSmart         (current limits, voltage limits, ramping, PID slots, live tuning)
-        └── ControllerTalonFX   (Phoenix 6 concrete: signals, config, sim state)
+Interfaces (vendor-neutral contracts):
+  MotorController                (identity, open-loop, neutral mode, direction, following, sim)
+  └── SmartMotorController       (current limits, voltage limits, ramping, PID slots,
+                                  gravity type, continuous wrap, software limits,
+                                  closed-loop position/velocity with slot selection)
+
+Implementation hierarchy:
+  TObj
+  └── ControllerBase             implements MotorController
+      └── ControllerSmart        implements SmartMotorController
+          ├── ControllerTalonFX   (Phoenix 6 TalonFX/Kraken: brushless, FOC, all control modes)
+          └── ControllerTalonFXS  (Phoenix 6 TalonFXS: brushed motors, non-FOC subset)
+
+Value objects:
+  CurrentLimitConfig             (immutable stator + supply config, factory methods)
+  PIDGains                       (immutable kP/kI/kD/kV/kS/kG/kA, builder methods)
+  GravityType                    (ARM_COSINE, ELEVATOR_STATIC)
 ```
 
 ### ControllerBase — Abstract Foundation
@@ -199,7 +212,8 @@ duplicating feature lists.
 
 | Device | Wrapper Class | Sim State | Registered Signals |
 |--------|--------------|-----------|-------------------|
-| TalonFX | `ControllerTalonFX` | `TalonFXSimState` | 9 signal types via `Signals` enum (see [Signal Filtering](#controllertalonfx--phoenix-6-implementation)) |
+| TalonFX | `ControllerTalonFX` | `TalonFXSimState` | 11 signal types via `Signals` enum (see [Signal Filtering](#controllertalonfx--phoenix-6-implementation)) |
+| TalonFXS | `ControllerTalonFXS` | `TalonFXSSimState` | Supply voltage/current, duty cycle, voltage, closed-loop error/output |
 | CANCoder | `EncoderCANCoder` | `CANcoderSimState` | Position, velocity, absolute position, position-since-boot |
 | Pigeon 2 | `IMUPigeon2` | `Pigeon2SimState` | Yaw, roll, pitch, yaw rate (yaw uses latency compensation) |
 | CANrange | `RangeCANrange` | `CANrangeSimState` | Distance (FOV configurable) |
@@ -208,9 +222,6 @@ duplicating feature lists.
 >
 > **CANdi** — `CTREManager.addSignalCANdi()` exists for signal
 > registration, but no device wrapper class has been created.
->
-> **TalonFXS** — `ControllerType.TALONFXS` exists in the enum, but
-> no controller implementation has been created.
 
 ### Supported Control Modes
 
@@ -240,8 +251,18 @@ All control requests use timesync (`UseTimesync = true`,
 | **Dynamic Motion Magic** | `DynamicMotionMagicDutyCycle` | TransmissionFX | Real-time vel/accel/jerk, duty cycle |
 | | `DynamicMotionMagicVoltage` | TransmissionFX | Real-time vel/accel/jerk, voltage |
 | | `DynamicMotionMagicTorqueCurrentFOC` | TransmissionFX | Real-time vel/accel/jerk, torque current |
+| **Dynamic MM Expo** | `DynamicMotionMagicExpoDutyCycle` | TransmissionFX | Expo profile with runtime kV/kA/vel, duty cycle |
+| | `DynamicMotionMagicExpoVoltage` | TransmissionFX | Expo profile with runtime kV/kA/vel, voltage |
+| | `DynamicMotionMagicExpoTorqueCurrentFOC` | TransmissionFX | Expo profile with runtime kV/kA/vel, torque current |
 | **Follower** | `Follower` | ControllerTalonFX | Aligned or opposed via `MotorAlignmentValue` |
+| | `StrictFollower` | ControllerTalonFX | Mirrors leader output exactly |
 | **Neutral** | `NeutralOut` | ControllerTalonFX, TransmissionFX | Brake stop |
+| | `CoastOut` | ControllerTalonFX | Coast (releases all control) |
+
+**Slot selection:** All closed-loop methods on both ControllerTalonFX
+and TransmissionFX accept an `int argSlot` parameter (0, 1, or 2).
+Backward-compatible overloads without the slot parameter default to
+slot 0.
 
 **Note:** ControllerTalonFX exposes `PositionVoltage` and
 `VelocityVoltage` directly. For other position/velocity output types
@@ -257,7 +278,10 @@ TransmissionFX which provides the full control mode matrix.
 | Voltage limits | `VoltageConfigs` | `setVoltagePeak()` | Peak fwd/rev voltage + supply time constant |
 | Open-loop ramping | `OpenLoopRampsConfigs` | `setRampOpenLoopDuty/Voltage/Torque()` | Seconds from 0 to full output |
 | Closed-loop ramping | `ClosedLoopRampsConfigs` | `setRampClosedLoopDuty/Voltage/Torque()` | Seconds from 0 to full output |
-| PID gains (Slot 0/1/2) | `Slot0Configs` etc. | `setPSlot()`, `setISlot()`, `setDSlot()`, `setPIDFSlot()` | kP, kI, kD, kV, kS per slot |
+| PID gains (Slot 0/1/2) | `Slot0Configs` etc. | `setPSlot()`, `setISlot()`, `setDSlot()`, `setPIDFSlot()`, `setPIDGains()` | kP, kI, kD, kV, kS, kG, kA per slot via `PIDGains` record |
+| Gravity feedforward | `Slot0Configs.kG` | `setGravityGain()`, `setGravityType()` | kG gain + ARM_COSINE or ELEVATOR_STATIC type |
+| Continuous wrap | `ClosedLoopGeneralConfigs` | `setContinuousWrap()` | Hardware error wrapping for swerve azimuth, turrets |
+| Software limit switches | `SoftwareLimitSwitchConfigs` | `configSoftLimitForward/Reverse()` | Position-based safety limits |
 | Neutral mode | `MotorOutputConfigs` | `setNeutralMode()` | Brake or Coast |
 | Motor direction | `MotorOutputConfigs` | `setDirection()` | CW or CCW positive |
 | Control timesync | `MotorOutputConfigs` | `setControlUpdateFrequency()` | Timesync freq Hz or standard update freq |
@@ -278,6 +302,8 @@ TransmissionFX which provides the full control mode matrix.
 | `LIMIT_SW_REV` | (via `SwitchFX`) | 250 Hz | Reverse limit switch state |
 | `CLOSED_LOOP_ERROR` | `getClosedLoopError()` | 250 Hz | Hardware PID error |
 | `CLOSED_LOOP_OUTPUT` | `getClosedLoopOutput()` | 250 Hz | Hardware PID output |
+| `DEVICE_TEMP` | `getDeviceTemp()` | 250 Hz | Device temperature (°C) |
+| `ACCELERATION` | `getAcceleration()` | 250 Hz | Rotor acceleration (rot/s²) |
 | (always) | `getMotorOutputStatus()` | 250 Hz | Motor state (Motoring, Braking, etc.) |
 | (always) | `getStickyFault_BootDuringEnable()` | 250 Hz | Boot-during-enable fault |
 
@@ -294,15 +320,10 @@ CANrange 100 Hz.
 
 | Feature | Phoenix 6 API | Impact | Notes |
 |---------|--------------|--------|-------|
-| **kG gravity feedforward** | `Slot0Configs.kG`, `GravityTypeValue` | High — arm/elevator feedforward at 1 kHz | `setPIDFSlot()` accepts P, I, D, V, S but not G |
-| **ContinuousWrap** | `ClosedLoopGeneralConfigs.ContinuousWrap` | High — swerve azimuth, turrets | Enables hardware error wrapping for continuous rotation |
-| **Software limit switches** | `SoftwareLimitSwitchConfigs` | Medium — position-based safety limits | Only hardware limit switches are currently supported |
-| **Runtime slot selection** | Control request `.Slot` field | Medium — multi-profile PID | All control requests hardcode `.Slot = 0` |
-| **Device temperature** | `getDeviceTemp()` | Medium — thermal protection | Signal exists but not registered or published |
-| **Acceleration signal** | `getAcceleration()` | Low — diagnostics | Signal exists but not registered |
-| **Expanded fault monitoring** | `getFault_*()`, `getStickyFault_*()` | High — driver visibility | Only `BootDuringEnable` monitored; see [Fault Tolerance — CTRE Fault Coverage](fault-tolerance.md#ctre-fault-coverage) |
-| **Fault telemetry** | Fault signals → NT | High — dashboard diagnostics | No faults published to NetworkTables |
-| **Differential control** | `DifferentialControl` modes | Low — coupled motors | Beyond simple Follower synchronization |
+| **Expanded fault monitoring** | `getFault_*()`, `getStickyFault_*()` | High — driver visibility | FaultMonitor tracks 6 sticky faults per device; could be expanded |
+| **Differential control** | `DifferentialControl` modes | Low — coupled motors | Beyond simple Follower synchronization; available via passthrough |
+| **CANdi wrapper** | `CANdi`, `CANdiConfiguration` | Low | Infrastructure stub exists; no device wrapper class |
+| **StaticFeedforwardSign** | `SlotConfigs.StaticFeedforwardSign` | Low | Available via passthrough (`config.Slot0.StaticFeedforwardSign`) |
 | **Orchestra** | `Orchestra` class | Low — entertainment | Music playback through motors |
 | **Audio/beep configs** | `AudioConfigs` | Low — operator feedback | Startup/error beep configuration |
 | **CANdi device** | `CANdi` class | Medium — current distribution | `addSignalCANdi()` ready in CTREManager |

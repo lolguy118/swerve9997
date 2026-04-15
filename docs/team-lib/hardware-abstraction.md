@@ -406,13 +406,13 @@ All control requests default to timesync (`UpdateFreqHz = 0`) and
 `Slot = 0`. Use `configTimesync(false, 250.0)` to disable timesync
 for robots using the RIO CAN bus instead of a CANivore.
 
-**Control request management:** TransmissionFX pre-allocates all 23
+**Control request management:** TransmissionFX pre-allocates all 20
 control request objects at construction to avoid GC pressure during
-match play. These are stored in both named fields (for direct use)
-and an `allRequests` array (for bulk operations). The
-`configTimesync()` method loops over `allRequests` to apply
-timesync settings uniformly, rather than updating each field
-individually.
+match play. These are stored in named fields (for direct use in
+output methods) and a `timesyncApplicators` array of lambdas (for
+bulk operations). The `configTimesync()` method loops over
+`timesyncApplicators` to apply timesync settings uniformly, rather
+than updating each field individually.
 
 For control modes not wrapped by TransmissionFX, use the passthrough:
 

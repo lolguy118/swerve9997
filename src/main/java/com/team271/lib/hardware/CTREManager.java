@@ -82,6 +82,22 @@ public class CTREManager {
 
     private CTREManager() {}
 
+    /**
+     * Resets all internal state for test isolation. Call in {@code @BeforeEach} to ensure tests
+     * start with a clean CTREManager. Replaces the reflection-based cleanup pattern.
+     */
+    public static void resetForTesting() {
+        buses.clear();
+        devicesByBus.clear();
+        devices.clear();
+        signalsAll.clear();
+        signalsAllArray = null;
+        prevRefreshTime = null;
+        lastRefreshTime = null;
+        lastErrorNotificationTime = 0;
+        initialized = false;
+    }
+
     /** Sets the hoot log file path. Must be called before {@link #init()}. */
     public static void setHootLogPath(final String argPath) {
         hootLogPath = argPath;

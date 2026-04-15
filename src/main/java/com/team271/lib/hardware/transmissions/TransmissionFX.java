@@ -309,15 +309,25 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     /**
+     * When true, hasInvalidInput() throws IllegalArgumentException instead of warning. Enable in
+     * simulation/testing to catch NaN bugs early. Defaults to false (warn-and-skip for competition
+     * safety).
+     */
+    public static boolean STRICT_VALIDATION = false;
+
+    /**
      * Returns {@code true} if any argument is NaN or infinite. Used as a safety guard on all
      * closed-loop output methods to prevent sending corrupt values to the motor controller.
      */
     private boolean hasInvalidInput(final String argMethod, final double... argValues) {
         for (double v : argValues) {
             if (!Double.isFinite(v)) {
-                DriverStation.reportWarning(
-                        getName() + "." + argMethod + ": rejected non-finite input (" + v + ")",
-                        false);
+                String msg =
+                        getName() + "." + argMethod + ": rejected non-finite input (" + v + ")";
+                if (STRICT_VALIDATION) {
+                    throw new IllegalArgumentException(msg);
+                }
+                DriverStation.reportWarning(msg, false);
                 return true;
             }
         }

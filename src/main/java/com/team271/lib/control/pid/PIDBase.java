@@ -15,6 +15,16 @@ public class PIDBase extends TObj {
         TALONFX
     }
 
+    /** Controls how much telemetry a PID controller publishes to NetworkTables. */
+    public enum TelemetryLevel {
+        /** No telemetry or tuning — outputTelemetry() is a no-op. */
+        OFF,
+        /** Only output, errors, and atSetpoint — no tuning inputs. */
+        MINIMAL,
+        /** Full telemetry and live tuning (default). */
+        FULL
+    }
+
     protected static class PIDSlot {
         /* Gain for "proportional" control */
         protected double kP = 0.0;
@@ -56,6 +66,7 @@ public class PIDBase extends TObj {
      * General
      */
     protected final PIDType type;
+    protected final TelemetryLevel telemetryLevel;
 
     /*
      * PID Configuration
@@ -187,10 +198,12 @@ public class PIDBase extends TObj {
             final double argP,
             final double argI,
             final double argD,
-            final double argTol) {
+            final double argTol,
+            final TelemetryLevel argTelemetryLevel) {
         super(argParent, "PID" + argName);
 
         type = argPIDType;
+        telemetryLevel = argTelemetryLevel;
 
         /*
          * Setup Controller
@@ -198,16 +211,29 @@ public class PIDBase extends TObj {
         setPID(argP, argI, argD);
         setTolerance(argTol);
 
-        tuneP = new LoggedNTInput(table, "Tune P", argP);
-        tuneI = new LoggedNTInput(table, "Tune I", argI);
-        tuneD = new LoggedNTInput(table, "Tune D", argD);
-        tunePosTol = new LoggedNTInput(table, "Tune Pos Tol", argTol);
-        tunePDeadband = new LoggedNTInput(table, "Tune P Deadband", 0.0);
-        tuneIZone = new LoggedNTInput(table, "Tune I Zone", Double.POSITIVE_INFINITY);
-        tuneOutputMin = new LoggedNTInput(table, "Tune Output Min", -1.0);
-        tuneOutputMax = new LoggedNTInput(table, "Tune Output Max", 1.0);
+        if (telemetryLevel == TelemetryLevel.FULL) {
+            tuneP = new LoggedNTInput(table, "Tune P", argP);
+            tuneI = new LoggedNTInput(table, "Tune I", argI);
+            tuneD = new LoggedNTInput(table, "Tune D", argD);
+            tunePosTol = new LoggedNTInput(table, "Tune Pos Tol", argTol);
+            tunePDeadband = new LoggedNTInput(table, "Tune P Deadband", 0.0);
+            tuneIZone = new LoggedNTInput(table, "Tune I Zone", Double.POSITIVE_INFINITY);
+            tuneOutputMin = new LoggedNTInput(table, "Tune Output Min", -1.0);
+            tuneOutputMax = new LoggedNTInput(table, "Tune Output Max", 1.0);
+        }
 
         reset();
+    }
+
+    public PIDBase(
+            final TObj argParent,
+            final String argName,
+            final PIDType argPIDType,
+            final double argP,
+            final double argI,
+            final double argD,
+            final double argTol) {
+        this(argParent, argName, argPIDType, argP, argI, argD, argTol, TelemetryLevel.FULL);
     }
 
     /*
@@ -522,6 +548,8 @@ public class PIDBase extends TObj {
      *
      */
     protected void checkTuning() {
+        if (telemetryLevel != TelemetryLevel.FULL) return;
+
         if (tuneP.hasChanged()) setP(tuneP.getDbl());
         if (tuneI.hasChanged()) setI(tuneI.getDbl());
         if (tuneD.hasChanged()) setD(tuneD.getDbl());
@@ -539,8 +567,20 @@ public class PIDBase extends TObj {
      *
      */
     public void outputTelemetry() {
+        if (telemetryLevel == TelemetryLevel.OFF) return;
+
         checkTuning();
 
+        if (telemetryLevel == TelemetryLevel.MINIMAL) {
+            /* Minimal: only output, errors, and atSetpoint */
+            pubOutputPID.publish(output);
+            pubPosError.publish(posError);
+            pubVelError.publish(velError);
+            ntAtSetpoint.publish(atSetpoint());
+            return;
+        }
+
+        /* Full telemetry */
         contEnabled.publish(continuousMode.enabled);
         contInputMin.publish(continuousMode.minInput);
         contInputMax.publish(continuousMode.maxInput);

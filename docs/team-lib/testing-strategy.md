@@ -115,35 +115,23 @@ This uses reflection because CTREManager's fields are private. Without
 this cleanup, tests that register devices or signals will see stale
 state from previous tests.
 
-### Preferred: Instance-Based CTREManager Testing
+### Preferred: resetForTesting()
 
-CTREManager provides a public constructor that creates a fresh instance
-with independent state. Tests can use `new CTREManager()` instead of
-reflection-based cleanup:
+CTREManager provides a `resetForTesting()` method that clears all
+internal state without reflection. Use this instead of the
+reflection-based pattern above:
 
 ```java
 @BeforeEach
 void setup() {
     HAL.initialize(500, 0);
-    canManager = new CTREManager();  // fresh instance, no shared state
+    CTREManager.resetForTesting();  // clears buses, devices, signals
 }
 ```
 
-This approach is simpler, less brittle, and does not require reflection.
-The reflection-based cleanup pattern above remains valid for tests that
-interact with code using the static `CTREManager.getDefault()` instance.
-
-### TestHarness Utilities
-
-The `TestHarness` class provides factory methods for common test setup:
-
-```java
-// Create a fresh CAN manager for test isolation
-CANManager manager = TestHarness.newCANManager();
-
-// Create a mock TObj parent for testing child objects
-TObj parent = TestHarness.mockParent("TestParent");
-```
+This is simpler, less brittle, and does not require reflection.
+The reflection-based pattern above remains valid but is no longer
+necessary.
 
 ---
 

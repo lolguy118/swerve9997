@@ -23,6 +23,25 @@ public class PIDSimple extends PIDBase {
         super(argParent, "(PIDSimple)" + argName, PIDType.PIDSIMP, argP, argI, argD, argTol);
     }
 
+    public PIDSimple(
+            final TObj argParent,
+            final String argName,
+            final double argP,
+            final double argI,
+            final double argD,
+            final double argTol,
+            final TelemetryLevel argTelemetryLevel) {
+        super(
+                argParent,
+                "(PIDSimple)" + argName,
+                PIDType.PIDSIMP,
+                argP,
+                argI,
+                argD,
+                argTol,
+                argTelemetryLevel);
+    }
+
     /*
      *
      * PID

@@ -52,7 +52,7 @@ public class AutoMoveConditional extends AutoMove {
         if (isRunning()) {
             if (condition.getAsBoolean()) {
                 end();
-            } else if (currentTime > timeoutSec) {
+            } else if (currentTime >= timeoutSec) {
                 Elastic.sendNotification(
                         new Elastic.Notification(
                                 Elastic.Notification.NotificationLevel.WARNING,

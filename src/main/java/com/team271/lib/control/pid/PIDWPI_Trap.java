@@ -181,8 +181,12 @@ public class PIDWPI_Trap extends PIDBase implements com.team271.lib.control.Prof
      */
 
     /**
-     * Calculates the profiled PID output by delegating to the WPILib ProfiledPIDController. Updates
-     * the goal on the controller before calculating.
+     * Calculates the profiled PID output by delegating to the WPILib ProfiledPIDController.
+     *
+     * <p>Uses the argSetpoint as a position-only goal (zero velocity). If a non-zero velocity goal
+     * was set via {@link #setGoal(double, double)}, use {@code calc(measurement)} or {@code
+     * calculate(measurement, setpoint, timestamp)} instead — calling this method directly will
+     * overwrite the velocity goal to zero.
      */
     @Override
     public double calc(
@@ -191,7 +195,28 @@ public class PIDWPI_Trap extends PIDBase implements com.team271.lib.control.Prof
         lastTimestamp = argTimestamp;
 
         controller.setGoal(argSetpoint);
+        goal = argSetpoint;
         output = controller.calculate(argInputMeasurement);
+
+        return output;
+    }
+
+    /**
+     * Calculates using the PIDController interface. If a goal was set via {@link #setGoal(double,
+     * double)}, this preserves the velocity target.
+     */
+    @Override
+    public double calculate(
+            final double measurement, final double setpoint, final double timestamp) {
+        lastInputMeasurement = measurement;
+        lastTimestamp = timestamp;
+
+        /* Use the existing goal if one was set via setGoal; otherwise use setpoint */
+        if (controller.getGoal().position != setpoint) {
+            controller.setGoal(setpoint);
+            goal = setpoint;
+        }
+        output = controller.calculate(measurement);
 
         return output;
     }

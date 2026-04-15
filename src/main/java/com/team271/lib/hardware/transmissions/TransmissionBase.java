@@ -297,6 +297,14 @@ public abstract class TransmissionBase extends TObj {
             final double argAutoZeroValueInches) {
 
         if (argSwitchType == SwitchType.FX) {
+            if (!(leader instanceof ControllerTalonFX)) {
+                DriverStation.reportError(
+                        getName()
+                                + ": configLimitFwd requires ControllerTalonFX leader, got "
+                                + leader.getClass().getSimpleName(),
+                        false);
+                return;
+            }
             fwdLimit =
                     new SwitchFX(
                             this,
@@ -320,6 +328,14 @@ public abstract class TransmissionBase extends TObj {
             final double argAutoZeroValueInches) {
 
         if (argSwitchType == SwitchType.FX) {
+            if (!(leader instanceof ControllerTalonFX)) {
+                DriverStation.reportError(
+                        getName()
+                                + ": configLimitRev requires ControllerTalonFX leader, got "
+                                + leader.getClass().getSimpleName(),
+                        false);
+                return;
+            }
             revLimit =
                     new SwitchFX(
                             this,
@@ -413,6 +429,14 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void addEncoderFX(final double argUpdateFreqHz) {
+        if (!(leader instanceof ControllerTalonFX)) {
+            DriverStation.reportError(
+                    getName()
+                            + ": addEncoderFX requires ControllerTalonFX leader, got "
+                            + leader.getClass().getSimpleName(),
+                    false);
+            return;
+        }
         encFX = new EncoderFX(this, name, (ControllerTalonFX) leader, argUpdateFreqHz);
         /* Only set as active adapter if no CANCoder is present (CANCoder takes priority) */
         if (encCANCoder == null) {

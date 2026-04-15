@@ -395,7 +395,8 @@ public class TransmissionFX extends TransmissionBase {
         }
 
         /* Also configure the leader controller's timesync */
-        getLeaderController().setControlUpdateFrequency(argEnabled ? 250.0 : 0.0, argEnabled);
+        getLeaderController()
+                .setControlUpdateFrequency(argEnabled ? 250.0 : argUpdateFreqHz, argEnabled);
     }
 
     /*
@@ -911,7 +912,8 @@ public class TransmissionFX extends TransmissionBase {
             final double argKA,
             final double argMaxVelocity,
             final double argFF) {
-        if (hasInvalidInput("setOutputDynMMExpoPositionDuty", argPosition, argKV, argKA, argFF))
+        if (hasInvalidInput(
+                "setOutputDynMMExpoPositionDuty", argPosition, argKV, argKA, argMaxVelocity, argFF))
             return;
         motorDynMMExpoOut.Slot = argSlot;
         if (encoder != null) {
@@ -945,8 +947,13 @@ public class TransmissionFX extends TransmissionBase {
             final double argKA,
             final double argMaxVelocity,
             final double argFF) {
-        if (hasInvalidInput("setOutputDynMMExpoPositionVoltage", argPosition, argKV, argKA, argFF))
-            return;
+        if (hasInvalidInput(
+                "setOutputDynMMExpoPositionVoltage",
+                argPosition,
+                argKV,
+                argKA,
+                argMaxVelocity,
+                argFF)) return;
         motorDynMMExpoFF.Slot = argSlot;
         if (encoder != null) {
             motorDynMMExpoFF.Position = encoder.mechanismToNative(argPosition);
@@ -980,8 +987,12 @@ public class TransmissionFX extends TransmissionBase {
             final double argMaxVelocity,
             final double argFF) {
         if (hasInvalidInput(
-                "setOutputDynMMExpoPositionTorqueCurrent", argPosition, argKV, argKA, argFF))
-            return;
+                "setOutputDynMMExpoPositionTorqueCurrent",
+                argPosition,
+                argKV,
+                argKA,
+                argMaxVelocity,
+                argFF)) return;
         motorDynMMExpoTC.Slot = argSlot;
         if (encoder != null) {
             motorDynMMExpoTC.Position = encoder.mechanismToNative(argPosition);

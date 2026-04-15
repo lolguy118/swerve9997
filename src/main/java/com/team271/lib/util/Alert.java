@@ -7,15 +7,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import org.littletonrobotics.junction.Logger;
 
 /* Class for managing persistent alerts to be sent over NetworkTables. */
 public class Alert {
-    private static Map<String, SendableAlerts> groups = new HashMap<String, SendableAlerts>();
+    private static final Map<String, SendableAlerts> groups =
+            new ConcurrentHashMap<String, SendableAlerts>();
 
     private final AlertType type;
     private boolean active = false;
@@ -82,9 +83,10 @@ public class Alert {
         this.active = active;
     }
 
-    /* Updates current alert text. */
+    /* Updates current alert text. Resets activation time if the alert is currently active. */
     public void setText(String text) {
         if (active && !text.equals(this.text)) {
+            activeStartTime = Timer.getFPGATimestamp();
             switch (type) {
                 case ERROR:
                     DriverStation.reportError(text, false);
@@ -98,6 +100,13 @@ public class Alert {
             }
         }
         this.text = text;
+    }
+
+    /* Removes this alert from its group. After removal, calling set() has no visible effect. */
+    public void remove() {
+        for (SendableAlerts group : groups.values()) {
+            group.alerts.remove(this);
+        }
     }
 
     /** Logs all alert string arrays per group via AK Logger. */

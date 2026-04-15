@@ -423,10 +423,46 @@ TObj
 └── EncoderBase                 (abstract — position/velocity in rotations)
     └── EncoderCTRE             (CTRE intermediate — refresh/latency compensation)
         ├── EncoderFX           (TalonFX integrated rotor encoder)
-        ├── EncoderFXComp       (FX with compensation)
         ├── EncoderCANCoder     (CTRE CANcoder absolute encoder)
-        └── EncoderCANCoderComp (CANCoder with compensation)
+        └── EncoderCANCoderComp (CANCoder with latency compensation)
+
+EncoderAdapter (interface)        ← strategy interface for unified access
+├── FXEncoderAdapter              (wraps EncoderFX + GearRatio)
+└── CANCoderAdapter               (wraps EncoderCANCoder + GearRatio)
 ```
+
+#### Encoder Adapter Pattern
+
+`TransmissionBase` holds a single `EncoderAdapter encoder` reference
+instead of separate `encFX` and `encCANCoder` fields. The adapter
+applies gear ratio conversions internally, so callers get mechanism
+output units directly:
+
+- `encoder.getPosition()` — position in mechanism output units
+- `encoder.getVelocity()` — velocity in mechanism output units/sec
+- `encoder.mechanismToNative(units)` — convert for closed-loop setpoints
+- `encoder.getAbsolutePosition()` — absolute position (CANCoder only; FX returns 0)
+- `encoder.updateGearRatio(newRatio)` — swap ratio on gear shift
+
+The adapter is created automatically by `addEncoderFX()` or
+`addCANCoder()`. Adding a new encoder type requires only implementing
+`EncoderAdapter` — no changes to TransmissionBase or TransmissionFX.
+
+#### GearRatio Value Object
+
+`GearRatio` is an immutable validated object replacing four raw doubles:
+
+- `rotorToMechanism` — rotor rotations to mechanism rotations (FX path)
+- `sensorRelToMechanism` — sensor rotations to mechanism (CANCoder path)
+- `sensorAbsToMechanism` — absolute sensor to mechanism (CANCoder abs)
+- `mechanismToUnits` — mechanism rotations to output units
+
+Provides named conversion methods (`rotorToOutput`, `outputToRotor`,
+`sensorRelToOutput`, `outputToSensorRel`, `sensorAbsToOutput`) and
+builder methods for gear shifts (`withRotorToMechanism`). Validates
+that no ratio is zero at construction time.
+
+#### Encoder Classes
 
 **EncoderBase** defines:
 - `EncoderType`: INTERNAL_FX, INTERNAL_MAX, CANCODER

@@ -12,6 +12,7 @@ import com.team271.lib.hardware.controllers.ControllerBase.NeutralState;
 import com.team271.lib.hardware.controllers.ControllerSmart;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
 import com.team271.lib.hardware.sensors.encoders.*;
+import com.team271.lib.hardware.sensors.encoders.EncoderAdapter;
 import com.team271.lib.hardware.sensors.encoders.EncoderBase.EncoderDirection;
 import com.team271.lib.hardware.sensors.switches.SwitchBase;
 import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchTrigger;
@@ -52,16 +53,16 @@ public abstract class TransmissionBase extends TObj {
      */
 
     /*
-     * Encoder
+     * Encoder — unified adapter (eliminates per-type conditional cascades)
+     */
+    protected EncoderAdapter encoder;
+    protected GearRatio gearRatio = GearRatio.IDENTITY;
+
+    /*
+     * Raw encoder references (kept for subclass access and backward compatibility)
      */
     protected EncoderFX encFX;
-    protected double rotorToMechanism = 1.0;
-
     protected EncoderCANCoder encCANCoder;
-    protected double sensorRelToMechanism = 1.0;
-    protected double sensorAbsToMechanism = 1.0;
-
-    protected double mechanismToUnits = 1.0;
 
     /*
      * Limit Switches
@@ -153,7 +154,6 @@ public abstract class TransmissionBase extends TObj {
         if (encFX != null) {
             encFX.robotInit(argTimestamp);
         }
-
         if (encCANCoder != null) {
             encCANCoder.robotInit(argTimestamp);
         }
@@ -409,6 +409,10 @@ public abstract class TransmissionBase extends TObj {
      */
     public void addEncoderFX(final double argUpdateFreqHz) {
         encFX = new EncoderFX(this, name, (ControllerTalonFX) leader, argUpdateFreqHz);
+        /* Only set as active adapter if no CANCoder is present (CANCoder takes priority) */
+        if (encCANCoder == null) {
+            encoder = new FXEncoderAdapter(encFX, gearRatio);
+        }
     }
 
     public EncoderFX getEncoderFX() {
@@ -421,10 +425,17 @@ public abstract class TransmissionBase extends TObj {
             final double argUpdateFreqHz) {
         encCANCoder =
                 new EncoderCANCoderComp(this, name, argCANIDEnc, argEncoderDir, argUpdateFreqHz);
+        /* CANCoder always becomes the active adapter when present */
+        encoder = new CANCoderAdapter(encCANCoder, gearRatio);
     }
 
     public EncoderCANCoder getEncoderCANCoder() {
         return encCANCoder;
+    }
+
+    /** Returns the active encoder adapter, or null if no encoder is configured. */
+    public EncoderAdapter getEncoder() {
+        return encoder;
     }
 
     public void resetEncoders() {
@@ -440,10 +451,8 @@ public abstract class TransmissionBase extends TObj {
      * Position - Rotations
      */
     public void setPosRotations(final double argPositionRotations) {
-        if (encCANCoder != null) {
-            encCANCoder.setPosRotations(argPositionRotations);
-        } else if (encFX != null) {
-            encFX.setPosRotations(argPositionRotations);
+        if (encoder != null) {
+            encoder.setPositionRotations(argPositionRotations);
         }
     }
 
@@ -451,61 +460,101 @@ public abstract class TransmissionBase extends TObj {
         if (encCANCoder != null) {
             return encCANCoder.getPosAbsRotations();
         }
-
         return 0.0;
     }
 
     public double getPosRotations() {
-        if (encCANCoder != null) {
-            return encCANCoder.getPosRotations();
-        } else if (encFX != null) {
-            return encFX.getPosRotations();
+        if (encoder != null) {
+            return encoder.getPositionRotations();
         }
-
         return 0.0;
     }
 
     /*
-     * Position - Units
+     * Position - Mechanism Output Units
      */
     public double getPosFX() {
         if (encFX != null) {
-            return encFX.getPosRotations() * rotorToMechanism * mechanismToUnits;
+            return gearRatio.rotorToOutput(encFX.getPosRotations());
         }
-
         return 0.0;
     }
 
     public double getPos() {
-        if (encCANCoder != null) {
-            return encCANCoder.getPosRotations() * sensorRelToMechanism * mechanismToUnits;
+        if (encoder != null) {
+            return encoder.getPosition();
         }
-
-        return getPosFX();
-    }
-
-    public double getPosAbs() {
-        if (encCANCoder != null) {
-            return encCANCoder.getPosAbsRotations() * sensorAbsToMechanism * mechanismToUnits;
-        }
-
         return 0.0;
     }
 
+    public double getPosAbs() {
+        if (encoder != null) {
+            return encoder.getAbsolutePosition();
+        }
+        return 0.0;
+    }
+
+    /*
+     * Gear Ratio Configuration
+     */
     public void setRotorToMechanism(final double argRotorToMechanism) {
-        rotorToMechanism = argRotorToMechanism;
+        gearRatio =
+                new GearRatio(
+                        argRotorToMechanism,
+                        gearRatio.getSensorRelToMechanism(),
+                        gearRatio.getSensorAbsToMechanism(),
+                        gearRatio.getMechanismToUnits());
+        if (encoder != null) {
+            encoder.updateGearRatio(gearRatio);
+        }
     }
 
     public void setSensorToMechanism(final double argSensorRelToMechanism) {
-        sensorRelToMechanism = argSensorRelToMechanism;
+        gearRatio =
+                new GearRatio(
+                        gearRatio.getRotorToMechanism(),
+                        argSensorRelToMechanism,
+                        gearRatio.getSensorAbsToMechanism(),
+                        gearRatio.getMechanismToUnits());
+        if (encoder != null) {
+            encoder.updateGearRatio(gearRatio);
+        }
     }
 
     public void setSensorAbsToMechanism(final double argSensorAbsToMechanism) {
-        sensorAbsToMechanism = argSensorAbsToMechanism;
+        gearRatio =
+                new GearRatio(
+                        gearRatio.getRotorToMechanism(),
+                        gearRatio.getSensorRelToMechanism(),
+                        argSensorAbsToMechanism,
+                        gearRatio.getMechanismToUnits());
+        if (encoder != null) {
+            encoder.updateGearRatio(gearRatio);
+        }
     }
 
     public void setMechanismToUnits(final double argMechanismToUnits) {
-        mechanismToUnits = argMechanismToUnits;
+        gearRatio =
+                new GearRatio(
+                        gearRatio.getRotorToMechanism(),
+                        gearRatio.getSensorRelToMechanism(),
+                        gearRatio.getSensorAbsToMechanism(),
+                        argMechanismToUnits);
+        if (encoder != null) {
+            encoder.updateGearRatio(gearRatio);
+        }
+    }
+
+    /** Sets the full gear ratio. Propagates to the encoder adapter. */
+    public void setGearRatio(final GearRatio argGearRatio) {
+        gearRatio = argGearRatio;
+        if (encoder != null) {
+            encoder.updateGearRatio(gearRatio);
+        }
+    }
+
+    public GearRatio getGearRatio() {
+        return gearRatio;
     }
 
     /*
@@ -515,38 +564,30 @@ public abstract class TransmissionBase extends TObj {
         if (encFX != null) {
             return encFX.getVelRPS();
         }
-
         return 0.0;
     }
 
     public double getVelRPS() {
-        if (encCANCoder != null) {
-            return encCANCoder.getVelRPS();
-        } else if (encFX != null) {
-            return getVelFXRPS();
+        if (encoder != null) {
+            return encoder.getVelocityRPS();
         }
-
         return 0.0;
     }
 
     /*
-     * Velocity - Units
+     * Velocity - Mechanism Output Units
      */
     public double getVelFX() {
         if (encFX != null) {
-            return encFX.getVelRPS() * rotorToMechanism * mechanismToUnits;
+            return gearRatio.rotorToOutput(encFX.getVelRPS());
         }
-
         return 0.0;
     }
 
     public double getVel() {
-        if (encCANCoder != null) {
-            return encCANCoder.getVelRPS() * sensorRelToMechanism * mechanismToUnits;
-        } else if (encFX != null) {
-            return getVelFX();
+        if (encoder != null) {
+            return encoder.getVelocity();
         }
-
         return 0.0;
     }
 
@@ -692,9 +733,13 @@ public abstract class TransmissionBase extends TObj {
             return 0;
         }
         if (encCANCoder != null) {
-            return leader.getCLError() * sensorRelToMechanism * mechanismToUnits;
+            return leader.getCLError()
+                    * gearRatio.getSensorRelToMechanism()
+                    * gearRatio.getMechanismToUnits();
         } else if (encFX != null) {
-            return leader.getCLError() * rotorToMechanism * mechanismToUnits;
+            return leader.getCLError()
+                    * gearRatio.getRotorToMechanism()
+                    * gearRatio.getMechanismToUnits();
         }
         return 0;
     }
@@ -815,7 +860,6 @@ public abstract class TransmissionBase extends TObj {
         if (encFX != null) {
             encFX.simulationInit(argTimestamp);
         }
-
         if (encCANCoder != null) {
             encCANCoder.simulationInit(argTimestamp);
         }
@@ -837,7 +881,6 @@ public abstract class TransmissionBase extends TObj {
         if (encFX != null) {
             encFX.simulationPeriodic(argTimestamp);
         }
-
         if (encCANCoder != null) {
             encCANCoder.simulationPeriodic(argTimestamp);
         }
@@ -865,7 +908,6 @@ public abstract class TransmissionBase extends TObj {
         if (encFX != null) {
             encFX.outputTelemetry();
         }
-
         if (encCANCoder != null) {
             encCANCoder.outputTelemetry();
         }
@@ -901,7 +943,7 @@ public abstract class TransmissionBase extends TObj {
         tMechVelFX.publish(getVelFX());
         tMechVelEnc.publish(getVel());
 
-        ntRotorToMechanism.publish(rotorToMechanism);
-        ntSensorRelToMechanism.publish(sensorRelToMechanism);
+        ntRotorToMechanism.publish(gearRatio.getRotorToMechanism());
+        ntSensorRelToMechanism.publish(gearRatio.getSensorRelToMechanism());
     }
 }

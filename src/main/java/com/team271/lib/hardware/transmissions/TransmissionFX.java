@@ -275,7 +275,6 @@ public class TransmissionFX extends TransmissionBase {
         if (encFX != null) {
             encFX.refresh();
         }
-
         if (encCANCoder != null) {
             encCANCoder.refresh();
         }
@@ -288,12 +287,14 @@ public class TransmissionFX extends TransmissionBase {
      */
     @Override
     public double getSetpoint() {
-        if (encCANCoder != null) {
-            return motorPositionFF.Position * sensorRelToMechanism * mechanismToUnits;
-        } else if (encFX != null) {
-            return motorPositionFF.Position * rotorToMechanism * mechanismToUnits;
+        if (encoder == null) {
+            return 0;
         }
-        return 0;
+        // Reverse the mechanismToNative conversion: native * ratio = mechanism units
+        if (encCANCoder != null) {
+            return gearRatio.sensorRelToOutput(motorPositionFF.Position);
+        }
+        return gearRatio.rotorToOutput(motorPositionFF.Position);
     }
 
     /*
@@ -308,10 +309,8 @@ public class TransmissionFX extends TransmissionBase {
     @Override
     public void setOutputPosition(final double argPosition, final double argFFVolt) {
         motorPositionFF.Slot = 0;
-        if (encCANCoder != null) {
-            motorPositionFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorPositionFF.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorPositionFF.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorPositionFF.FeedForward = argFFVolt;
@@ -331,10 +330,8 @@ public class TransmissionFX extends TransmissionBase {
     @Override
     public void setOutputVelocity(final double argRPS, final double argFFVolt) {
         motorVelocityFF.Slot = 0;
-        if (encCANCoder != null) {
-            motorVelocityFF.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorVelocityFF.Velocity = argRPS / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorVelocityFF.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
 
         motorVelocityFF.FeedForward = argFFVolt;
@@ -359,10 +356,8 @@ public class TransmissionFX extends TransmissionBase {
      */
     public void setOutputPositionDuty(final double argPosition, final double argFF) {
         motorPositionDuty.Slot = 0;
-        if (encCANCoder != null) {
-            motorPositionDuty.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorPositionDuty.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorPositionDuty.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorPositionDuty.FeedForward = argFF;
@@ -374,10 +369,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputPositionTorqueCurrent(final double argPosition, final double argFF) {
         motorPositionTC.Slot = 0;
-        if (encCANCoder != null) {
-            motorPositionTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorPositionTC.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorPositionTC.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorPositionTC.FeedForward = argFF;
@@ -399,10 +392,8 @@ public class TransmissionFX extends TransmissionBase {
      */
     public void setOutputVelocityDuty(final double argRPS, final double argFF) {
         motorVelocityDuty.Slot = 0;
-        if (encCANCoder != null) {
-            motorVelocityDuty.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorVelocityDuty.Velocity = argRPS / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorVelocityDuty.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
 
         motorVelocityDuty.FeedForward = argFF;
@@ -421,10 +412,8 @@ public class TransmissionFX extends TransmissionBase {
      */
     public void setOutputVelocityTorqueCurrent(final double argRPS, final double argFF) {
         motorVelocityTC.Slot = 0;
-        if (encCANCoder != null) {
-            motorVelocityTC.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorVelocityTC.Velocity = argRPS / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorVelocityTC.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
 
         motorVelocityTC.FeedForward = argFF;
@@ -458,10 +447,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputMMPositionDuty(double argPosition, double argFFVolt) {
         motorMMOut.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMOut.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMOut.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMOut.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorMMOut.FeedForward = argFFVolt;
@@ -473,10 +460,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputMMPositionVoltage(final double argPosition, final double argFFVolt) {
         motorMMFF.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMFF.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMFF.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorMMFF.FeedForward = argFFVolt;
@@ -488,10 +473,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputMMPositionTorqueCurrent(final double argPosition, final double argFF) {
         motorMMTC.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMTC.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMTC.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorMMTC.FeedForward = argFF;
@@ -506,10 +489,8 @@ public class TransmissionFX extends TransmissionBase {
      */
     public void setOutputMMVelocityDuty(final double argRPS, final double argFF) {
         motorMMVelOut.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMVelOut.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMVelOut.Velocity = argRPS / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMVelOut.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
 
         motorMMVelOut.FeedForward = argFF;
@@ -521,10 +502,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputMMVelocityVoltage(final double argRPS, final double argFF) {
         motorMMVelFF.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMVelFF.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMVelFF.Velocity = argRPS / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMVelFF.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
 
         motorMMVelFF.FeedForward = argFF;
@@ -536,10 +515,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputMMVelocityTorqueCurrent(final double argRPS, final double argFF) {
         motorMMVelTC.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMVelTC.Velocity = argRPS / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMVelTC.Velocity = argRPS / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMVelTC.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
 
         motorMMVelTC.FeedForward = argFF;
@@ -554,10 +531,8 @@ public class TransmissionFX extends TransmissionBase {
      */
     public void setOutputMMExpoPositionDuty(final double argPosition, final double argFF) {
         motorMMExpoOut.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMExpoOut.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMExpoOut.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMExpoOut.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorMMExpoOut.FeedForward = argFF;
@@ -569,10 +544,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputMMExpoPositionVoltage(final double argPosition, final double argFF) {
         motorMMExpoFF.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMExpoFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMExpoFF.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMExpoFF.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorMMExpoFF.FeedForward = argFF;
@@ -584,10 +557,8 @@ public class TransmissionFX extends TransmissionBase {
 
     public void setOutputMMExpoPositionTorqueCurrent(final double argPosition, final double argFF) {
         motorMMExpoTC.Slot = 0;
-        if (encCANCoder != null) {
-            motorMMExpoTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorMMExpoTC.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorMMExpoTC.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorMMExpoTC.FeedForward = argFF;
@@ -607,10 +578,8 @@ public class TransmissionFX extends TransmissionBase {
             final double argJerk,
             final double argFF) {
         motorDynMMOut.Slot = 0;
-        if (encCANCoder != null) {
-            motorDynMMOut.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorDynMMOut.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorDynMMOut.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorDynMMOut.Velocity = argVelocity;
@@ -630,10 +599,8 @@ public class TransmissionFX extends TransmissionBase {
             final double argJerk,
             final double argFF) {
         motorDynMMFF.Slot = 0;
-        if (encCANCoder != null) {
-            motorDynMMFF.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorDynMMFF.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorDynMMFF.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorDynMMFF.Velocity = argVelocity;
@@ -653,10 +620,8 @@ public class TransmissionFX extends TransmissionBase {
             final double argJerk,
             final double argFF) {
         motorDynMMTC.Slot = 0;
-        if (encCANCoder != null) {
-            motorDynMMTC.Position = argPosition / (sensorRelToMechanism * mechanismToUnits);
-        } else if (encFX != null) {
-            motorDynMMTC.Position = argPosition / (rotorToMechanism * mechanismToUnits);
+        if (encoder != null) {
+            motorDynMMTC.Position = encoder.mechanismToNative(argPosition);
         }
 
         motorDynMMTC.Velocity = argVelocity;

@@ -40,6 +40,10 @@ public class Util {
         return a + (b - a) * x;
     }
 
+    /**
+     * @deprecated Use {@link String#join} instead.
+     */
+    @Deprecated
     public static String joinStrings(final String delim, final List<?> strings) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < strings.size(); ++i) {
@@ -108,16 +112,16 @@ public class Util {
         double mag = Math.sqrt(x * x + y * y);
 
         if (mag > deadZoneLow) {
-            // scale such that output magnitude is in the range [0.0f, 1.0f]
-            double legalRange = 1.0f - deadZoneHigh - deadZoneLow;
-            double normalizedMag = Math.min(1.0f, (mag - deadZoneLow) / legalRange);
+            // scale such that output magnitude is in the range [0.0, 1.0]
+            double legalRange = 1.0 - deadZoneHigh - deadZoneLow;
+            double normalizedMag = Math.min(1.0, (mag - deadZoneLow) / legalRange);
             double scale = normalizedMag / mag;
             pOut[0] = x * scale;
             pOut[1] = y * scale;
         } else {
             // stick is in the inner dead zone
-            pOut[0] = 0.0f;
-            pOut[1] = 0.0f;
+            pOut[0] = 0.0;
+            pOut[1] = 0.0;
         }
     }
 
@@ -143,27 +147,30 @@ public class Util {
     }
 
     /**
-     * @return the MAC address of the robot
+     * Returns the MAC address of the first non-loopback network interface with a hardware address.
+     * On the roboRIO this is typically the ethernet port.
+     *
+     * @return the MAC address in "XX:XX:XX:XX:XX:XX" format, or empty string if unavailable
      */
     public static String getMACAddress() {
         try {
             Enumeration<NetworkInterface> nwInterface = NetworkInterface.getNetworkInterfaces();
-            StringBuilder ret = new StringBuilder();
-            while (nwInterface.hasMoreElements()) {
+            while (nwInterface != null && nwInterface.hasMoreElements()) {
                 NetworkInterface nis = nwInterface.nextElement();
-                if (nis != null && "eth0".equals(nis.getDisplayName())) {
-                    byte[] mac = nis.getHardwareAddress();
-                    if (mac != null) {
-                        for (int i = 0; i < mac.length; i++) {
-                            ret.append(
-                                    String.format(
-                                            "%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
-                        }
-                        return ret.toString();
+                if (nis == null || nis.isLoopback()) {
+                    continue;
+                }
+                byte[] mac = nis.getHardwareAddress();
+                if (mac != null) {
+                    StringBuilder ret = new StringBuilder();
+                    for (int i = 0; i < mac.length; i++) {
+                        ret.append(
+                                String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : ""));
                     }
+                    return ret.toString();
                 }
             }
-        } catch (SocketException | NullPointerException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
         }
 

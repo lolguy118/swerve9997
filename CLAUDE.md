@@ -20,6 +20,7 @@ Team 271's reusable FRC robot library. The codebase uses WPILib, CTRE Phoenix 6,
 
 ## Design Documents
 
+- [Start Here](docs/team-lib/start-here.md) — new contributor orientation, mental models, and guided reading order
 - [Java Coding Standard](docs/team-lib/team271-java-coding-standard.md) — formatting, safety rules, naming conventions, state machine patterns
 - [Contributing Guide](CONTRIBUTING.md) — pre-commit checks, build verification, commit conventions
 - [Library Architecture](docs/team-lib/library-architecture.md) — TObj hierarchy, subsystem lifecycle, hardware abstraction stack

@@ -1,37 +1,38 @@
 package com.team271.lib.util;
 
 /*
- * A drivetrain command consisting of the left, right motor settings and whether
- * the brake mode is enabled.
+ * An immutable drivetrain command consisting of the left, right motor settings and whether
+ * the brake mode is enabled. Values may exceed [-1.0, 1.0] from arcade math; call
+ * normalize() before sending to motors to scale proportionally.
  */
-public class DriveSignal {
-    public double mLeftMotor;
-    public double mRightMotor;
-    public boolean mBrakeMode;
+public final class DriveSignal {
+    private final double left;
+    private final double right;
+    private final boolean brakeMode;
 
     public DriveSignal(final double left, final double right) {
         this(left, right, false);
     }
 
     public DriveSignal(final double left, final double right, final boolean brakeMode) {
-        mLeftMotor = left;
-        mRightMotor = right;
-        mBrakeMode = brakeMode;
+        this.left = left;
+        this.right = right;
+        this.brakeMode = brakeMode;
     }
 
     public static final DriveSignal NEUTRAL = new DriveSignal(0, 0);
     public static final DriveSignal BRAKE = new DriveSignal(0, 0, true);
 
     public double getLeft() {
-        return mLeftMotor;
+        return left;
     }
 
     public double getRight() {
-        return mRightMotor;
+        return right;
     }
 
     public boolean getBrakeMode() {
-        return mBrakeMode;
+        return brakeMode;
     }
 
     /*
@@ -42,15 +43,14 @@ public class DriveSignal {
         // if either of the left or right signals is greater than 1, creating a scaling
         // factor so that we can proportionally scale down the motor outputs so the max
         // output is 1.0
-        double scaling_factor =
-                Math.max(1.0, Math.max(Math.abs(this.getLeft()), Math.abs(this.getRight())));
+        double scaling_factor = Math.max(1.0, Math.max(Math.abs(left), Math.abs(right)));
 
         // divide by scaling factor so that the max motor output is 1
-        return new DriveSignal(this.getLeft() / scaling_factor, this.getRight() / scaling_factor);
+        return new DriveSignal(left / scaling_factor, right / scaling_factor, brakeMode);
     }
 
     @Override
     public String toString() {
-        return "L: " + mLeftMotor + ", R: " + mRightMotor + (mBrakeMode ? ", BRAKE" : "");
+        return "L: " + left + ", R: " + right + (brakeMode ? ", BRAKE" : "");
     }
 }

@@ -52,16 +52,18 @@
 
 ## Reading Order for New Contributors
 
-1. **[Development Setup](development-setup.md)** — Prerequisites, IDE
+1. **[Start Here](start-here.md)** — 5-minute orientation, mental
+   models, and critical rules
+2. **[Development Setup](development-setup.md)** — Prerequisites, IDE
    setup, build commands, troubleshooting
-2. **[Library Architecture](library-architecture.md)** — TObj hierarchy,
+3. **[Library Architecture](library-architecture.md)** — TObj hierarchy,
    subsystem lifecycle, managers, NT infrastructure, simulation
-3. **[Hardware Abstraction](hardware-abstraction.md)** — Controllers,
+4. **[Hardware Abstraction](hardware-abstraction.md)** — Controllers,
    transmissions, sensors, input system
-4. **[Fault Tolerance](fault-tolerance.md)** — Exception isolation,
+5. **[Fault Tolerance](fault-tolerance.md)** — Exception isolation,
    CAN fault handling, safe defaults
-5. **Subsystem-specific doc** — whichever doc covers the area you're
+6. **Subsystem-specific doc** — whichever doc covers the area you're
    working on (auto, control, geometry, etc.)
-6. **[Java Coding Standard](team271-java-coding-standard.md)** —
+7. **[Java Coding Standard](team271-java-coding-standard.md)** —
    Full standard (read at least Sections 3, 4.9, and 5.4 before
    your first PR)

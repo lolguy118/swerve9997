@@ -3,8 +3,8 @@
 
 > **Scope:** This document covers the `util/` and `misc/` packages —
 > shared utilities used throughout the library. These include the Alert
-> system, Elastic Dashboard integration, drive signal helpers, math
-> utilities, and serialization interfaces.
+> system, Elastic Dashboard integration, drive signal helpers, and math
+> utilities.
 
 ---
 
@@ -41,8 +41,10 @@ canAlert.set(false);
 - **On activation:** Logs to DriverStation and sends an Elastic
   notification at the corresponding severity level
 - **On deactivation:** Clears internal state silently
+- **Removal:** `alert.remove()` deregisters the alert from its group
 - **Groups:** Alerts are organized by group name (default: `"Alerts"`).
-  Groups are auto-created on first use via a static map
+  Groups are auto-created on first use via a thread-safe
+  `ConcurrentHashMap`
 - **Telemetry:** `Alert.outputTelemetry()` publishes all active alerts
   to AdvantageKit as string arrays grouped by type (called by
   `SubsystemManager`)
@@ -113,6 +115,8 @@ Elastic.selectTab(2);              // by index
 ## DriveSignal — Differential Drive Command
 
 Immutable pair of (left, right) motor outputs for differential drive.
+Fields are `private final`; motor values are clamped to [-1.0, 1.0] on
+construction.
 
 ### Constants
 
@@ -173,31 +177,9 @@ Static utility class for common math operations.
 
 | Method | Description |
 |--------|-------------|
-| `joinStrings(delim, list)` | Joins list elements with delimiter |
-| `getMACAddress()` | Retrieves eth0 MAC address |
+| `joinStrings(delim, list)` | *Deprecated* — use `String.join()` |
+| `getMACAddress()` | Retrieves first non-loopback MAC address |
 
----
-
-## Interfaces
-
-### CSVWritable
-
-```java
-public interface CSVWritable {
-    String toCSV();
-}
-```
-
-Implemented by geometry classes for CSV export of trajectory data.
-
-### Interpolable
-
-```java
-public interface Interpolable<T> {
-    T interpolate(T other, double x);
-}
-```
-
-Linear interpolation between two states. `x = 0` returns `this`,
-`x = 1` returns `other`. Implemented by all geometry classes and
-`State`.
+> **Note:** The `CSVWritable` and `Interpolable` interfaces were removed
+> along with the custom geometry package. See
+> [Geometry Package](geometry-package.md) for rationale.

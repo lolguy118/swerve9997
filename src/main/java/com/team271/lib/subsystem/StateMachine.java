@@ -2,6 +2,7 @@ package com.team271.lib.subsystem;
 
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.nt.NTTable;
+import java.util.function.BiConsumer;
 
 /**
  * Generic desired-to-actual state machine helper.
@@ -26,6 +27,9 @@ public class StateMachine<S extends Enum<S>> {
     private S currentState;
     private S desiredState;
 
+    private BiConsumer<S, S> onEnter;
+    private BiConsumer<S, S> onExit;
+
     private final NTEntry ntCurrent;
     private final NTEntry ntDesired;
 
@@ -35,6 +39,28 @@ public class StateMachine<S extends Enum<S>> {
 
         ntCurrent = new NTEntry(argTable, "Current State", argInitialState.name());
         ntDesired = new NTEntry(argTable, "Desired State", argInitialState.name());
+    }
+
+    /**
+     * Sets a callback invoked when entering a new state (after currentState is updated).
+     *
+     * @param callback receives (fromState, toState)
+     * @return this, for chaining
+     */
+    public StateMachine<S> withOnEnter(final BiConsumer<S, S> callback) {
+        this.onEnter = callback;
+        return this;
+    }
+
+    /**
+     * Sets a callback invoked when exiting the current state (before currentState is updated).
+     *
+     * @param callback receives (fromState, toState)
+     * @return this, for chaining
+     */
+    public StateMachine<S> withOnExit(final BiConsumer<S, S> callback) {
+        this.onExit = callback;
+        return this;
     }
 
     /** Sets the desired state. Applied by the subsystem in robotPeriodicAfter(). */
@@ -57,9 +83,24 @@ public class StateMachine<S extends Enum<S>> {
         return currentState != desiredState;
     }
 
-    /** Transitions the current state. Call this after the subsystem has applied the state. */
+    /**
+     * Transitions the current state. Call this after the subsystem has applied the state.
+     *
+     * <p>If the state actually changes, {@code onExit} is called before the update and {@code
+     * onEnter} is called after. Both callbacks receive (fromState, toState). If the new state
+     * equals the current state, no callbacks fire.
+     */
     public void transition(final S argNewState) {
-        currentState = argNewState;
+        if (currentState != argNewState) {
+            S from = currentState;
+            if (onExit != null) {
+                onExit.accept(from, argNewState);
+            }
+            currentState = argNewState;
+            if (onEnter != null) {
+                onEnter.accept(from, argNewState);
+            }
+        }
     }
 
     /** Publishes current and desired state to NetworkTables. */

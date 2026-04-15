@@ -4,7 +4,7 @@ import com.team271.lib.TObj;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
-public class PIDWPI_Trap extends PIDBase {
+public class PIDWPI_Trap extends PIDBase implements com.team271.lib.control.ProfiledPIDController {
 
     /*
      * PID
@@ -131,6 +131,40 @@ public class PIDWPI_Trap extends PIDBase {
         if (controller != null) {
             controller.setPID(pidSlot.kP, pidSlot.kI, pidSlot.kD);
         }
+    }
+
+    /* --- ProfiledPIDController interface methods --- */
+
+    @Override
+    public void setGoal(final double goalPosition, final double goalVelocity) {
+        goal = goalPosition;
+        controller.setGoal(new TrapezoidProfile.State(goalPosition, goalVelocity));
+    }
+
+    @Override
+    public void setConstraints(final double maxVelocity, final double maxAcceleration) {
+        setConstraints(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+    }
+
+    @Override
+    public boolean atGoal() {
+        return controller.atGoal();
+    }
+
+    @Override
+    public double getSetpointPosition() {
+        return controller.getSetpoint().position;
+    }
+
+    @Override
+    public double getSetpointVelocity() {
+        return controller.getSetpoint().velocity;
+    }
+
+    @Override
+    public void reset(final double measuredPosition, final double measuredVelocity) {
+        super.reset();
+        controller.reset(measuredPosition, measuredVelocity);
     }
 
     /*

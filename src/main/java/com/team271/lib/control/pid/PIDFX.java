@@ -13,6 +13,7 @@ import com.team271.lib.nt.NTEntry;
  */
 public class PIDFX extends PIDBase {
     protected final ControllerTalonFX controller;
+    protected final int slot;
 
     protected double goal = 0.0;
     protected double feedForward = 0.0;
@@ -37,12 +38,14 @@ public class PIDFX extends PIDBase {
             final double argP,
             final double argI,
             final double argD,
-            final double argTol) {
+            final double argTol,
+            final int argSlot) {
         super(argParent, "(TALONFX)" + argName, PIDType.TALONFX, argP, argI, argD, argTol);
 
         controller = argTalonFX;
+        slot = argSlot;
 
-        controller.setPIDFSlot(0, argP, argI, argD, 0.0, 0.0);
+        controller.setPIDFSlot(slot, argP, argI, argD, 0.0, 0.0);
 
         reset();
     }
@@ -53,12 +56,23 @@ public class PIDFX extends PIDBase {
             final ControllerTalonFX argTalonFX,
             final double argP,
             final double argI,
+            final double argD,
+            final double argTol) {
+        this(argParent, argName, argTalonFX, argP, argI, argD, argTol, 0);
+    }
+
+    public PIDFX(
+            final TObj argParent,
+            final String argName,
+            final ControllerTalonFX argTalonFX,
+            final double argP,
+            final double argI,
             final double argD) {
-        this(argParent, argName, argTalonFX, argP, argI, argD, 0.0);
+        this(argParent, argName, argTalonFX, argP, argI, argD, 0.0, 0);
     }
 
     public PIDFX(final TObj argParent, final String argName, final ControllerTalonFX argTalonFX) {
-        this(argParent, argName, argTalonFX, 0.0, 0.0, 0.0, 0.0);
+        this(argParent, argName, argTalonFX, 0.0, 0.0, 0.0, 0.0, 0);
     }
 
     /*
@@ -69,19 +83,36 @@ public class PIDFX extends PIDBase {
     @Override
     public void setP(final double argP) {
         super.setP(argP);
-        controller.setPSlot(0, argP);
+        controller.setPSlot(slot, argP);
     }
 
     @Override
     public void setI(final double argI) {
         super.setI(argI);
-        controller.setISlot(0, argI);
+        controller.setISlot(slot, argI);
     }
 
     @Override
     public void setD(final double argD) {
         super.setD(argD);
-        controller.setDSlot(0, argD);
+        controller.setDSlot(slot, argD);
+    }
+
+    @Override
+    public void enableContinuousInput(final double argMinInput, final double argMaxInput) {
+        super.enableContinuousInput(argMinInput, argMaxInput);
+        controller.setContinuousWrap(true);
+    }
+
+    @Override
+    public void disableContinuousInput() {
+        super.disableContinuousInput();
+        controller.setContinuousWrap(false);
+    }
+
+    /** Returns the PID slot index used by this controller. */
+    public int getSlot() {
+        return slot;
     }
 
     /**
@@ -91,7 +122,7 @@ public class PIDFX extends PIDBase {
      */
     public void setGoal(final double argGoalPosition) {
         goal = argGoalPosition;
-        controller.setOutputPosition(goal, feedForward);
+        controller.setOutputPosition(goal, slot, feedForward);
     }
 
     /**
@@ -103,7 +134,7 @@ public class PIDFX extends PIDBase {
     public void setGoal(final double argGoalPosition, final double argFeedForward) {
         goal = argGoalPosition;
         feedForward = argFeedForward;
-        controller.setOutputPosition(goal, feedForward);
+        controller.setOutputPosition(goal, slot, feedForward);
     }
 
     /*

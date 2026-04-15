@@ -1,12 +1,13 @@
 package com.team271.lib.control.pid;
 
 import com.team271.lib.TObj;
+import com.team271.lib.control.PIDController;
 import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.util.Util;
 import edu.wpi.first.math.MathUtil;
 
-public class PIDBase extends TObj {
+public class PIDBase extends TObj implements PIDController {
     public enum PIDType {
         PIDSIMP,
         PIDTRAP,
@@ -268,7 +269,7 @@ public class PIDBase extends TObj {
     /*
      * Reset all internal terms
      */
-    protected void reset() {
+    public void reset() {
         outputP = 0.0;
         outputI = 0.0;
         outputD = 0.0;
@@ -539,6 +540,29 @@ public class PIDBase extends TObj {
         /* Limit the output */
         output = Util.limit(outputP + outputI + outputD, minOutput, maxOutput);
 
+        return output;
+    }
+
+    /* --- PIDController interface methods --- */
+
+    @Override
+    public double calculate(
+            final double measurement, final double setpoint, final double timestamp) {
+        return calc(measurement, setpoint, timestamp);
+    }
+
+    @Override
+    public double getPositionError() {
+        return posError;
+    }
+
+    @Override
+    public double getVelocityError() {
+        return velError;
+    }
+
+    @Override
+    public double getOutput() {
         return output;
     }
 

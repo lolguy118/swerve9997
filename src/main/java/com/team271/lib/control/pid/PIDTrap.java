@@ -5,7 +5,7 @@ import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
-public class PIDTrap extends PIDBase {
+public class PIDTrap extends PIDBase implements com.team271.lib.control.ProfiledPIDController {
 
     /*
      * PID
@@ -165,6 +165,30 @@ public class PIDTrap extends PIDBase {
     }
 
     public double getSetpointVel() {
+        return setpoint.velocity;
+    }
+
+    /* --- ProfiledPIDController interface methods --- */
+
+    @Override
+    public void setGoal(final double goalPosition, final double goalVelocity) {
+        goal.position = goalPosition;
+        goal.velocity = goalVelocity;
+        timestampProfileStart = Double.NaN;
+    }
+
+    @Override
+    public void setConstraints(final double maxVelocity, final double maxAcceleration) {
+        setConstraints(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+    }
+
+    @Override
+    public double getSetpointPosition() {
+        return setpoint.position;
+    }
+
+    @Override
+    public double getSetpointVelocity() {
         return setpoint.velocity;
     }
 

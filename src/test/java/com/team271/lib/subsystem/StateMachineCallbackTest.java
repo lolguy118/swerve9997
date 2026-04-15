@@ -110,4 +110,26 @@ class StateMachineCallbackTest {
         sm.transition(TestState.B); // same state — still B
         assertEquals(TestState.B, sm.getCurrentState());
     }
+
+    @Test
+    void transition_reentrantCallFromOnExit_isIgnored() {
+        StateMachine<TestState> sm = new StateMachine<>(new NTTable("Test"), TestState.A);
+        List<String> events = new ArrayList<>();
+
+        sm.withOnExit(
+                (from, to) -> {
+                    events.add("exit:" + from + "->" + to);
+                    // Re-entrant call — should be silently ignored
+                    sm.transition(TestState.C);
+                });
+        sm.withOnEnter((from, to) -> events.add("enter:" + from + "->" + to));
+
+        sm.transition(TestState.B);
+
+        // The re-entrant transition(C) should have been blocked
+        assertEquals(TestState.B, sm.getCurrentState());
+        assertEquals(2, events.size());
+        assertEquals("exit:A->B", events.get(0));
+        assertEquals("enter:A->B", events.get(1));
+    }
 }

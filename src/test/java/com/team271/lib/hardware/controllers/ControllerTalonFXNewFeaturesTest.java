@@ -181,6 +181,18 @@ class ControllerTalonFXNewFeaturesTest {
         assertEquals(1.5, read.supplyLowerTime());
     }
 
+    @Test
+    void setCurrentLimit_timeBased_enablesFlagCorrectly() {
+        // Bug fix: when supplyLowerTime > 0, the enable flag must still be set
+        CurrentLimitConfig cfg = new CurrentLimitConfig(false, 0, true, 40.0, 20.0, 1.5);
+        controller.setCurrentLimit(cfg);
+
+        assertTrue(controller.getCurrentLimitSupplyEnable());
+        assertEquals(40.0, controller.getCurrentLimitSupply());
+        assertEquals(20.0, controller.getCurrentLimitSupplyLowerLimit());
+        assertEquals(1.5, controller.getCurrentLimitSupplyTime());
+    }
+
     /* --- StrictFollower and CoastOut --- */
 
     @Test

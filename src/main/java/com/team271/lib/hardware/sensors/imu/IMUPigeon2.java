@@ -187,7 +187,9 @@ public class IMUPigeon2 extends IMUCTRE {
 
     @Override
     public void simulationPeriodic(final double argTimestamp) {
-        simState.setSupplyVoltage(RobotController.getBatteryVoltage());
+        if (simState != null) {
+            simState.setSupplyVoltage(RobotController.getBatteryVoltage());
+        }
     }
 
     /*

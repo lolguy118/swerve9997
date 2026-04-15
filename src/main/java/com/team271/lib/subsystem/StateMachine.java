@@ -29,6 +29,7 @@ public class StateMachine<S extends Enum<S>> {
 
     private BiConsumer<S, S> onEnter;
     private BiConsumer<S, S> onExit;
+    private boolean transitioning = false;
 
     private final NTEntry ntCurrent;
     private final NTEntry ntDesired;
@@ -91,7 +92,17 @@ public class StateMachine<S extends Enum<S>> {
      * equals the current state, no callbacks fire.
      */
     public void transition(final S argNewState) {
-        if (currentState != argNewState) {
+        if (currentState == argNewState) {
+            return;
+        }
+        if (transitioning) {
+            // Prevent re-entrant calls from onExit/onEnter callbacks
+            edu.wpi.first.wpilibj.DriverStation.reportWarning(
+                    "StateMachine: ignoring re-entrant transition() call during callback", false);
+            return;
+        }
+        transitioning = true;
+        try {
             S from = currentState;
             if (onExit != null) {
                 onExit.accept(from, argNewState);
@@ -100,6 +111,8 @@ public class StateMachine<S extends Enum<S>> {
             if (onEnter != null) {
                 onEnter.accept(from, argNewState);
             }
+        } finally {
+            transitioning = false;
         }
     }
 

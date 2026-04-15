@@ -132,6 +132,28 @@ public class ControllerTalonFXS extends ControllerSmart {
     }
 
     /*
+     * Following
+     */
+    @Override
+    public ControllerStatus follow(final ControllerBase argLeader, final boolean argOpposeLeader) {
+        status = super.follow(argLeader, argOpposeLeader);
+
+        if (status == ControllerStatus.OK) {
+            talonFXS.setControl(
+                    new Follower(
+                            followingID.getDeviceNumber(),
+                            argOpposeLeader
+                                    ? com.ctre.phoenix6.signals.MotorAlignmentValue.Opposed
+                                    : com.ctre.phoenix6.signals.MotorAlignmentValue.Aligned));
+
+            // TalonFXSSimState does not have an Orientation field —
+            // opposed follower sim behavior is handled by the leader's sim state
+        }
+
+        return status;
+    }
+
+    /*
      * Robot
      */
     @Override

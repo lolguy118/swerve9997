@@ -260,11 +260,11 @@ public abstract class ControllerSmart extends ControllerBase implements SmartMot
     @Override
     public void setCurrentLimit(final CurrentLimitConfig config) {
         setCurrentLimitStator(config.statorEnabled(), config.statorLimit());
+        /* Always set the enable flag first, then apply time-based parameters if present */
+        setCurrentLimitSupply(config.supplyEnabled(), config.supplyLimit());
         if (config.supplyLowerTime() > 0) {
             setCurrentLimitSupply(
                     config.supplyLimit(), config.supplyLowerTime(), config.supplyLowerLimit());
-        } else {
-            setCurrentLimitSupply(config.supplyEnabled(), config.supplyLimit());
         }
     }
 

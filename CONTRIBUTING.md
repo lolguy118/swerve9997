@@ -1,4 +1,4 @@
-# Contributing to Team271-Lib
+# Contributing to Team271
 
 ## Prerequisites
 

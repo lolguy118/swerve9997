@@ -43,8 +43,12 @@ Defines the type system and basic motor operations that all controllers share.
 
 Adds abstractions for features common to smart motor controllers:
 
-- **Current limits:** stator (output-side) and supply (input-side),
-  with optional time-based supply thresholds
+- **Current limits:** stator (output-side) and supply (input-side).
+  Supply limits have two overloads: simple (enable + limit) and
+  time-based (`setCurrentLimitSupply(limit, time, lowerLimit)`) which
+  reduces to `lowerLimit` if current exceeds `limit` for `time`
+  seconds — useful for allowing brief current spikes during
+  acceleration while protecting sustained draw
 - **Voltage limits:** peak forward/reverse voltage capping
 - **Ramping:** open-loop and closed-loop ramp rates for duty cycle,
   voltage, and torque
@@ -97,6 +101,12 @@ Available signal flags: `SUPPLY_VOLT`, `SUPPLY_CURRENT`, `OUTPUT_DUTY`,
 `OUTPUT_VOLT`, `OUTPUT_TORQUE_CURRENT`, `LIMIT_SW_FWD`, `LIMIT_SW_REV`,
 `CLOSED_LOOP_ERROR`, `CLOSED_LOOP_OUTPUT`, `ALL`, `NONE`.
 
+**Follower signal optimization:** Use `Signals.NONE` for follower
+motors that do not need individual telemetry. This prevents the
+follower from registering any StatusSignals with CTREManager, reducing
+CAN bus traffic. The follower still receives control frames from the
+leader — signal filtering only affects status reporting.
+
 **Control objects:** Pre-allocated control request objects with timesync
 enabled (`UpdateFreqHz = 0`):
 
@@ -109,12 +119,153 @@ enabled (`UpdateFreqHz = 0`):
 | `motorPosition` | `PositionVoltage` | Closed-loop position |
 | `motorVelocity` | `VelocityVoltage` | Closed-loop velocity |
 
+**Slot 0 hardcoding:** All control requests at the ControllerTalonFX
+level use `Slot = 0`. TransmissionFX also hardcodes Slot 0 for all
+its control requests. To use different PID gains, reconfigure Slot 0
+at runtime via `setPIDFSlot()` or `checkTuning()`. See the
+[Not Yet Implemented](#phoenix-6-features-not-yet-implemented)
+section for planned runtime slot selection.
+
+**Controller vs. TransmissionFX control scope:** ControllerTalonFX
+exposes `setOutputPosition()` and `setOutputVelocity()` using only
+the Voltage output type (`PositionVoltage`, `VelocityVoltage`).
+For DutyCycle, TorqueCurrent, and all Motion Magic variants, use
+TransmissionFX which provides the
+[full control mode matrix](#supported-control-modes).
+
+**Timesync configuration:** `setControlUpdateFrequency()` switches
+between timesync mode (for CANivore buses) and standard update mode
+(for RIO CAN). In timesync mode, all control request objects are set
+to `UseTimesync = true` and `UpdateFreqHz = 0`. In standard mode,
+they use the specified update frequency without timesync.
+
 **Config application:** `applyConfig()` retries up to `CAN_RETRY_COUNT`
 times with 50 ms timeout per attempt. Sets `isConfigured` flag on
 success/failure.
 
 **Connection tracking:** `robotPeriodicBefore()` checks
 `talonFX.isConnected()` every cycle to detect CAN disconnection.
+
+---
+
+## CTRE Phoenix 6 Feature Coverage
+
+This section is the **authoritative reference** for which Phoenix 6
+features the library supports. Other docs link here rather than
+duplicating feature lists.
+
+### Supported Devices
+
+| Device | Wrapper Class | Sim State | Registered Signals |
+|--------|--------------|-----------|-------------------|
+| TalonFX | `ControllerTalonFX` | `TalonFXSimState` | 9 signal types via `Signals` enum (see [Signal Filtering](#controllertalonfx--phoenix-6-implementation)) |
+| CANCoder | `EncoderCANCoder` | `CANcoderSimState` | Position, velocity, absolute position, position-since-boot |
+| Pigeon 2 | `IMUPigeon2` | `Pigeon2SimState` | Yaw, roll, pitch, yaw rate (yaw uses latency compensation) |
+| CANrange | `RangeCANrange` | `CANrangeSimState` | Distance (FOV configurable) |
+
+> **Status: Planned — Not Yet Implemented.**
+>
+> **CANdi** — `CTREManager.addSignalCANdi()` exists for signal
+> registration, but no device wrapper class has been created.
+>
+> **TalonFXS** — `ControllerType.TALONFXS` exists in the enum, but
+> no controller implementation has been created.
+
+### Supported Control Modes
+
+All control requests use timesync (`UseTimesync = true`,
+`UpdateFreqHz = 0`) for CANivore frame synchronization.
+
+| Category | Control Request | Available In | Output Type |
+|----------|----------------|-------------|-------------|
+| **Open Loop** | `DutyCycleOut` | ControllerTalonFX, TransmissionFX | Duty cycle [-1, 1] |
+| | `VoltageOut` | ControllerTalonFX, TransmissionFX | Voltage |
+| | `TorqueCurrentFOC` | ControllerTalonFX, TransmissionFX | Torque current (amps) |
+| **Position** | `PositionVoltage` | ControllerTalonFX, TransmissionFX | Voltage + feedforward |
+| | `PositionDutyCycle` | TransmissionFX | Duty cycle + feedforward |
+| | `PositionTorqueCurrentFOC` | TransmissionFX | Torque current + feedforward |
+| **Velocity** | `VelocityVoltage` | ControllerTalonFX, TransmissionFX | Voltage + feedforward |
+| | `VelocityDutyCycle` | TransmissionFX | Duty cycle + feedforward |
+| | `VelocityTorqueCurrentFOC` | TransmissionFX | Torque current + feedforward |
+| **Motion Magic Position** | `MotionMagicDutyCycle` | TransmissionFX | Trapezoidal profile, duty cycle |
+| | `MotionMagicVoltage` | TransmissionFX | Trapezoidal profile, voltage |
+| | `MotionMagicTorqueCurrentFOC` | TransmissionFX | Trapezoidal profile, torque current |
+| **Motion Magic Velocity** | `MotionMagicVelocityDutyCycle` | TransmissionFX | Velocity trapezoidal, duty cycle |
+| | `MotionMagicVelocityVoltage` | TransmissionFX | Velocity trapezoidal, voltage |
+| | `MotionMagicVelocityTorqueCurrentFOC` | TransmissionFX | Velocity trapezoidal, torque current |
+| **Motion Magic Expo** | `MotionMagicExpoDutyCycle` | TransmissionFX | Exponential (S-curve), duty cycle |
+| | `MotionMagicExpoVoltage` | TransmissionFX | Exponential (S-curve), voltage |
+| | `MotionMagicExpoTorqueCurrentFOC` | TransmissionFX | Exponential (S-curve), torque current |
+| **Dynamic Motion Magic** | `DynamicMotionMagicDutyCycle` | TransmissionFX | Real-time vel/accel/jerk, duty cycle |
+| | `DynamicMotionMagicVoltage` | TransmissionFX | Real-time vel/accel/jerk, voltage |
+| | `DynamicMotionMagicTorqueCurrentFOC` | TransmissionFX | Real-time vel/accel/jerk, torque current |
+| **Follower** | `Follower` | ControllerTalonFX | Aligned or opposed via `MotorAlignmentValue` |
+| **Neutral** | `NeutralOut` | ControllerTalonFX, TransmissionFX | Brake stop |
+
+**Note:** ControllerTalonFX exposes `PositionVoltage` and
+`VelocityVoltage` directly. For other position/velocity output types
+(DutyCycle, TorqueCurrent) and all Motion Magic variants, use
+TransmissionFX which provides the full control mode matrix.
+
+### Supported Configuration
+
+| Config Area | Phoenix 6 Config Class | Library Method(s) | Notes |
+|------------|----------------------|-------------------|-------|
+| Current limits (stator) | `CurrentLimitsConfigs` | `setCurrentLimitStator()` | Enable/disable + limit amps |
+| Current limits (supply) | `CurrentLimitsConfigs` | `setCurrentLimitSupply()` | Simple or time-based with lower limit |
+| Voltage limits | `VoltageConfigs` | `setVoltagePeak()` | Peak fwd/rev voltage + supply time constant |
+| Open-loop ramping | `OpenLoopRampsConfigs` | `setRampOpenLoopDuty/Voltage/Torque()` | Seconds from 0 to full output |
+| Closed-loop ramping | `ClosedLoopRampsConfigs` | `setRampClosedLoopDuty/Voltage/Torque()` | Seconds from 0 to full output |
+| PID gains (Slot 0/1/2) | `Slot0Configs` etc. | `setPSlot()`, `setISlot()`, `setDSlot()`, `setPIDFSlot()` | kP, kI, kD, kV, kS per slot |
+| Neutral mode | `MotorOutputConfigs` | `setNeutralMode()` | Brake or Coast |
+| Motor direction | `MotorOutputConfigs` | `setDirection()` | CW or CCW positive |
+| Control timesync | `MotorOutputConfigs` | `setControlUpdateFrequency()` | Timesync freq Hz or standard update freq |
+| Motion Magic params | `MotionMagicConfigs` | `setMMConfig()` | Cruise velocity, acceleration, jerk |
+| Hardware limit switches | `HardwareLimitSwitchConfigs` | Via `SwitchFX` creation | NO/NC, enable, auto-zero position |
+| Feedback sensor | `FeedbackConfigs` | `TransmissionFX.shift()` | RotorToSensorRatio for gear changes |
+
+### Supported TalonFX Signals
+
+| `Signals` Flag | StatusSignal | Update Freq | Purpose |
+|----------------|-------------|-------------|---------|
+| `SUPPLY_VOLT` | `getSupplyVoltage()` | 250 Hz | Battery voltage at controller |
+| `SUPPLY_CURRENT` | `getSupplyCurrent()` | 250 Hz | Current draw from battery |
+| `OUTPUT_DUTY` | `getDutyCycle()` | 250 Hz | Applied duty cycle |
+| `OUTPUT_VOLT` | `getMotorVoltage()` | 250 Hz | Applied voltage |
+| `OUTPUT_TORQUE_CURRENT` | `getTorqueCurrent()` | 250 Hz | Applied torque current |
+| `LIMIT_SW_FWD` | (via `SwitchFX`) | 250 Hz | Forward limit switch state |
+| `LIMIT_SW_REV` | (via `SwitchFX`) | 250 Hz | Reverse limit switch state |
+| `CLOSED_LOOP_ERROR` | `getClosedLoopError()` | 250 Hz | Hardware PID error |
+| `CLOSED_LOOP_OUTPUT` | `getClosedLoopOutput()` | 250 Hz | Hardware PID output |
+| (always) | `getMotorOutputStatus()` | 250 Hz | Motor state (Motoring, Braking, etc.) |
+| (always) | `getStickyFault_BootDuringEnable()` | 250 Hz | Boot-during-enable fault |
+
+Other device signal frequencies: CANCoder 250 Hz, Pigeon2 250 Hz,
+CANrange 100 Hz.
+
+### Phoenix 6 Features Not Yet Implemented
+
+> **Status: Planned — Not Yet Implemented.**
+>
+> The following Phoenix 6 v26 features are available in the CTRE API
+> but not yet wrapped by the library. Each represents a potential
+> future enhancement.
+
+| Feature | Phoenix 6 API | Impact | Notes |
+|---------|--------------|--------|-------|
+| **kG gravity feedforward** | `Slot0Configs.kG`, `GravityTypeValue` | High — arm/elevator feedforward at 1 kHz | `setPIDFSlot()` accepts P, I, D, V, S but not G |
+| **ContinuousWrap** | `ClosedLoopGeneralConfigs.ContinuousWrap` | High — swerve azimuth, turrets | Enables hardware error wrapping for continuous rotation |
+| **Software limit switches** | `SoftwareLimitSwitchConfigs` | Medium — position-based safety limits | Only hardware limit switches are currently supported |
+| **Runtime slot selection** | Control request `.Slot` field | Medium — multi-profile PID | All control requests hardcode `.Slot = 0` |
+| **Device temperature** | `getDeviceTemp()` | Medium — thermal protection | Signal exists but not registered or published |
+| **Acceleration signal** | `getAcceleration()` | Low — diagnostics | Signal exists but not registered |
+| **Expanded fault monitoring** | `getFault_*()`, `getStickyFault_*()` | High — driver visibility | Only `BootDuringEnable` monitored; see [Fault Tolerance — CTRE Fault Coverage](fault-tolerance.md#ctre-fault-coverage) |
+| **Fault telemetry** | Fault signals → NT | High — dashboard diagnostics | No faults published to NetworkTables |
+| **Differential control** | `DifferentialControl` modes | Low — coupled motors | Beyond simple Follower synchronization |
+| **Orchestra** | `Orchestra` class | Low — entertainment | Music playback through motors |
+| **Audio/beep configs** | `AudioConfigs` | Low — operator feedback | Startup/error beep configuration |
+| **CANdi device** | `CANdi` class | Medium — current distribution | `addSignalCANdi()` ready in CTREManager |
+| **TalonFXS controller** | `TalonFXS` class | Medium — brushed motor control | `ControllerType.TALONFXS` enum exists |
 
 ---
 

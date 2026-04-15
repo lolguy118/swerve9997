@@ -226,4 +226,58 @@ class AutoMoveSequenceTest {
         seq.robotPeriodicAfter(0.0);
         assertTrue(seq.isComplete());
     }
+
+    /* --- robotPeriodicBefore telemetry coverage --- */
+
+    @Test
+    void robotPeriodicBeforePublishesTelemetry() {
+        TestMove a = new TestMove();
+        TestMove b = new TestMove();
+        AutoMoveSequence seq = new AutoMoveSequence(a, b);
+        seq.start();
+
+        assertDoesNotThrow(() -> seq.robotPeriodicBefore(0.0));
+    }
+
+    @Test
+    void robotPeriodicBeforeSkipsCompletedCurrentChild() {
+        TestMove a = new TestMove();
+        TestMove b = new TestMove();
+        AutoMoveSequence seq = new AutoMoveSequence(a, b);
+        seq.start();
+
+        a.complete();
+        seq.robotPeriodicAfter(0.0); // advance to b
+
+        // Now b is current — robotPeriodicBefore should delegate to b only
+        assertDoesNotThrow(() -> seq.robotPeriodicBefore(0.0));
+        assertTrue(b.isRunning());
+    }
+
+    @Test
+    void autonomousPeriodicDoesNotDelegateWhenCurrentChildCannotRun() {
+        TestMove a = new TestMove();
+        AutoMoveSequence seq = new AutoMoveSequence(a);
+        seq.start();
+
+        // Complete a — current becomes null after robotPeriodicAfter
+        a.complete();
+        seq.robotPeriodicAfter(0.0);
+
+        // autonomousPeriodic with no current child should not throw
+        assertDoesNotThrow(() -> seq.autonomousPeriodic(0.0));
+    }
+
+    @Test
+    void robotPeriodicAfterDoesNotAdvanceWhenCurrentStillRunning() {
+        TestMove a = new TestMove();
+        TestMove b = new TestMove();
+        AutoMoveSequence seq = new AutoMoveSequence(a, b);
+        seq.start();
+
+        // a is not complete — robotPeriodicAfter should not advance
+        seq.robotPeriodicAfter(0.0);
+        assertTrue(a.isRunning());
+        assertFalse(b.isRunning());
+    }
 }

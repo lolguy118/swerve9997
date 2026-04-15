@@ -227,7 +227,78 @@ PIDBase uses a `PIDSlot` inner class to store:
 
 For TalonFX hardware PID, gains are configured via
 `ControllerSmart.setPIDFSlot(slot, P, I, D, V, S)` which maps to
-Phoenix 6's Slot0/Slot1/Slot2 configuration.
+Phoenix 6's Slot0/Slot1/Slot2 configuration. Note that the hardware
+slots support kV and kS (velocity and static feedforward) through
+`setPIDFSlot()`, but the software `PIDSlot` inner class stores only
+kP/kI/kD.
+
+---
+
+## Phoenix 6 Advanced PID Features
+
+> **Status: Planned — Not Yet Implemented.**
+>
+> The following Phoenix 6 v26 PID features are available in the CTRE
+> API but not yet exposed through the library's controller or
+> transmission layers. See the
+> [CTRE Feature Coverage](hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
+> matrix for the full list.
+
+### kG Gravity Feedforward
+
+Phoenix 6 v26 supports a `kG` gain in each PID slot configuration
+(`Slot0Configs.kG`) along with a `GravityTypeValue` that selects
+the compensation model:
+
+- **`Elevator_Static`** — applies a constant feedforward voltage to
+  counteract gravity on an elevator (output does not vary with
+  position)
+- **`Arm_Cosine`** — applies a cosine-scaled feedforward based on
+  mechanism position, matching the gravity torque curve of a
+  pivoting arm
+
+The library's `setPIDFSlot()` currently accepts P, I, D, V, S but
+not G. Without hardware kG support, arm and elevator subsystems must
+compute gravity compensation in software and pass it as the
+`feedforward` parameter to `setOutputPosition()`, which runs at
+50 Hz (robot loop) rather than the TalonFX's 1 kHz PID loop.
+
+**Impact:** Adding kG support would allow gravity compensation to
+run at 1 kHz on the motor controller, improving hold stability for
+arms and elevators.
+
+### ContinuousWrap
+
+Phoenix 6 provides `ClosedLoopGeneralConfigs.ContinuousWrap` which
+enables the TalonFX to wrap error calculation for mechanisms with
+continuous rotation (swerve azimuth modules, turrets). When enabled,
+the hardware PID automatically takes the shortest path across the
+wrap boundary.
+
+The library's software PID classes support continuous mode via
+`PIDBase.enableContinuousInput()`, but this does not propagate to
+the TalonFX hardware when using `PIDFX` or TransmissionFX closed-loop
+modes. The `ContinuousWrap` config field is not currently exposed
+through `ControllerTalonFX` or `ControllerSmart`.
+
+**Impact:** Swerve modules and turrets using hardware PID must
+currently handle wrap in software or accept suboptimal pathing across
+the wrap point.
+
+### Runtime Slot Selection
+
+All control requests in `ControllerTalonFX` and `TransmissionFX`
+hardcode `.Slot = 0`. Phoenix 6 supports up to 3 PID slots per
+device, allowing different gain profiles to be pre-loaded and
+selected at runtime without reconfiguring the device.
+
+Use cases:
+- Different position hold gains vs. fast slew gains
+- Separate gains for loaded vs. unloaded mechanism states
+- Auto vs. teleop gain profiles
+
+Currently, switching gains requires calling `setPIDFSlot()` to
+reconfigure Slot 0, which triggers a config write over CAN.
 
 ---
 

@@ -130,7 +130,7 @@ class AutoMoveTest {
         TestAutoMove smallDelay = new TestAutoMove(0.005);
         assertTrue(
                 smallDelay.isWithinTimeLimit(),
-                "Delay < 0.01 treated as no delay, always within time limit");
+                "Delay < DELAY_THRESHOLD_SEC treated as no delay, always within time limit");
     }
 
     @Test

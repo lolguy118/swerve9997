@@ -210,9 +210,59 @@ CTREManager.addSignalPigeon(pigeon.getYaw(), updateFreqHz);
 CTREManager.addSignalCANrange(canrange.getDistance(), updateFreqHz);
 ```
 
+### Signal Lifecycle Detail
+
+The complete lifecycle of a CTRE signal through CTREManager:
+
+1. **Registration** — During `robotInit()`, each hardware wrapper
+   calls the appropriate `addSignal*()` method (e.g.,
+   `addSignalTalonFX()`). Internally, `addSignalInternal()` validates
+   that the signal's `StatusCode` is OK, adds it to the global list,
+   and sets the signal's update frequency via `setUpdateFrequency()`.
+   Invalid signals are silently skipped.
+
+2. **Initialization** — After all subsystems register, calling
+   `CTREManager.init()`:
+   - Converts the `ArrayList<StatusSignal<?>>` to an array for
+     efficient bulk refresh
+   - Runs `ParentDevice.optimizeBusUtilizationForAll()` per CAN bus,
+     which adjusts frame scheduling to minimize bus collisions
+   - Starts `SignalLogger` with auto-logging if any CANivore bus
+     is registered (hoot files written to `/U/logs`)
+
+3. **Refresh** — Each robot cycle, `refreshAll()`:
+   - Calls `BaseStatusSignal.refreshAll()` on the entire signal array
+   - Tracks `AllTimestamps` from the first signal for `getDt()`
+   - On error, sends a throttled Elastic notification (max 1 per 2s)
+   - Returns `StatusCode` for caller inspection
+
+4. **Teardown** — `stopLogging()` stops SignalLogger on CANivore buses.
+
+### Device Registration Pattern
+
+`CTREManager.addDevice()` tracks each CTRE device in two data
+structures:
+
+- **Global list** — all devices across all buses
+- **Per-bus map** — `LinkedHashMap<String, ArrayList<ParentDevice>>`
+  keyed by bus name, used for per-bus optimization
+
+The device's bus is auto-registered via `addBus()` if not already
+tracked. This means explicit bus registration (`CTREManager.addBus()`)
+is optional but recommended for clarity in multi-CANivore setups.
+
+**Important:** All device and signal registration must complete before
+`CTREManager.init()` is called. Signals added after `init()` will
+not be included in the refresh array.
+
+`addSignalCANdi()` exists for future CANdi device support but no
+wrapper class has been created. See the
+[CTRE Feature Coverage](hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
+matrix for planned device support.
+
 ### Timing
 
-- Default signal refresh rate: 250 Hz
+- Default signal refresh rate: 250 Hz (CANrange: 100 Hz)
 - `refreshAll()` returns a `StatusCode` — errors are throttled to
   one Elastic notification per 2 seconds
 - `getDt()` calculates frame time delta from signal timestamps

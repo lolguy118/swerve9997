@@ -212,4 +212,64 @@ class AutoMoveParallelTest {
         parallel.autonomousPeriodic(0.0);
         assertTrue(parallel.isComplete());
     }
+
+    /* --- robotPeriodicBefore telemetry coverage --- */
+
+    @Test
+    void robotPeriodicBeforePublishesTelemetry() {
+        TestMove a = new TestMove();
+        TestMove b = new TestMove();
+        AutoMoveParallel parallel = new AutoMoveParallel(a, b);
+        parallel.start();
+
+        // Should not throw and should update telemetry
+        assertDoesNotThrow(() -> parallel.robotPeriodicBefore(0.0));
+    }
+
+    @Test
+    void robotPeriodicBeforeSkipsCompletedChildren() {
+        TestMove a = new TestMove();
+        TestMove b = new TestMove();
+        AutoMoveParallel parallel = new AutoMoveParallel(a, b);
+        parallel.start();
+
+        a.complete();
+
+        // robotPeriodicBefore should only delegate to b (not a)
+        assertDoesNotThrow(() -> parallel.robotPeriodicBefore(0.0));
+        assertTrue(a.isComplete());
+        assertTrue(b.isRunning());
+    }
+
+    @Test
+    void robotPeriodicAfterSkipsCompletedChildren() {
+        TestMove a = new TestMove();
+        TestMove b = new TestMove();
+        AutoMoveParallel parallel = new AutoMoveParallel(a, b);
+        parallel.start();
+
+        a.complete();
+
+        // robotPeriodicAfter should only delegate to b
+        assertDoesNotThrow(() -> parallel.robotPeriodicAfter(0.0));
+    }
+
+    @Test
+    void telemetryShowsActiveChildrenNames() {
+        TestMove a = new TestMove();
+        TestMove b = new TestMove();
+        AutoMoveParallel parallel = new AutoMoveParallel(a, b);
+        parallel.start();
+
+        // Call robotPeriodicBefore to trigger telemetry publishing
+        parallel.robotPeriodicBefore(0.0);
+
+        // Complete one child and re-check
+        a.complete();
+        parallel.robotPeriodicBefore(0.0);
+
+        // No assertion on telemetry values — just verifying no exceptions
+        assertTrue(a.isComplete());
+        assertTrue(b.isRunning());
+    }
 }

@@ -280,3 +280,23 @@ the robot loop period.
 
 **Fix:** Use `0.020` (20 ms) for the standard 50 Hz robot loop. If
 using a faster loop, adjust accordingly.
+
+---
+
+## Devices Without Simulation Support
+
+> **Status: Planned — Not Yet Implemented.**
+>
+> The following CTRE devices do not yet have library wrapper classes,
+> so they cannot be simulated. When wrapper classes are added, each
+> will need its corresponding SimState integration.
+
+- **CANdi** — No `CANdi` wrapper class exists. When implemented, will
+  require a `CANdiSimState` for simulating digital/analog inputs and
+  current distribution channels.
+- **TalonFXS** — No `TalonFXS` controller wrapper exists. When
+  implemented, will need SimState integration with motor type
+  selection similar to `ControllerTalonFX.simulationInit()`.
+
+See the [CTRE Feature Coverage](hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
+matrix for the full list of planned device support.

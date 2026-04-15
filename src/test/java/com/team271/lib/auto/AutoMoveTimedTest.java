@@ -2,6 +2,7 @@ package com.team271.lib.auto;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.team271.lib.ConstantsLib;
 import edu.wpi.first.hal.HAL;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -128,7 +129,7 @@ class AutoMoveTimedTest {
                 lastTime = currentTime;
                 currentTime = fakeElapsed;
 
-                if ((timeout > 0.01) && (currentTime > timeout)) {
+                if ((timeout > ConstantsLib.DELAY_THRESHOLD_SEC) && (currentTime > timeout)) {
                     end();
                 } else if (currentTime > length) {
                     end();
@@ -183,7 +184,8 @@ class AutoMoveTimedTest {
 
         assertTrue(
                 timedMove.isRunning(),
-                "Timeout < 0.01 should not trigger timeout check, so length check applies");
+                "Timeout < DELAY_THRESHOLD_SEC should not trigger timeout check, so length check"
+                        + " applies");
     }
 
     /* --- Inherits AutoMove behavior --- */
@@ -302,7 +304,8 @@ class AutoMoveTimedTest {
     @Test
     void isWithinTimeLimitTrueWhenDelayBelowThreshold() {
         AutoMoveTimed m = new AutoMoveTimed(5.0, 0.005, 0.0);
-        assertTrue(m.isWithinTimeLimit(), "delay < 0.01 should be treated as no delay");
+        assertTrue(
+                m.isWithinTimeLimit(), "delay < DELAY_THRESHOLD_SEC should be treated as no delay");
     }
 
     @Test

@@ -109,6 +109,51 @@ check this return value and report errors (see D4 in the code fix log).
 
 ---
 
+## CTRE Fault Coverage
+
+**Why this matters:** Phoenix 6 devices expose dozens of fault signals
+(supply over-voltage, under-voltage, hardware faults, thermal
+shutdowns, etc.). Monitoring these faults gives the driver and pit
+crew immediate visibility into hardware problems. Without monitoring,
+a motor in thermal shutdown looks identical to a CAN disconnect from
+the driver's perspective.
+
+### Currently Monitored
+
+| Device | Fault | How Checked | Cleared |
+|--------|-------|-------------|---------|
+| TalonFX | `getStickyFault_BootDuringEnable()` | Registered at 250 Hz via CTREManager | `clearStickyFaults()` at device creation |
+
+This single fault detects when a motor controller rebooted while the
+robot was enabled — a strong indicator of a brownout or wiring issue.
+
+### Not Yet Monitored
+
+The following Phoenix 6 fault categories are available in the API
+but not yet tracked by the library:
+
+| Category | Example Faults | Why It Matters |
+|----------|---------------|----------------|
+| **Supply voltage** | `Fault_SupplyOverV`, `Fault_SupplyUnstable` | Detects brownout or voltage regulator issues |
+| **Hardware faults** | `Fault_Hardware`, `StickyFault_Hardware` | Detects internal device failure |
+| **Thermal** | `Fault_DeviceTemp`, `Fault_ProcTemp` | Detects overheating before thermal shutdown |
+| **Limit switch** | `Fault_ForwardHardLimit`, `Fault_ReverseHardLimit` | Confirms limit switch engagement |
+| **Sensor** | `Fault_RemoteSensorInvalid` | Detects CANCoder communication loss |
+| **Bridge faults** | `Fault_BridgeBrownout`, `StickyFault_BridgeBrownout` | Detects motor driver brownout |
+
+### Fault Telemetry Gap
+
+No fault status is currently published to NetworkTables. When the
+library expands fault monitoring, each device should publish its
+active faults to an NT subtable for dashboard visibility. This would
+allow the driver to see "Left Drive Motor: SupplyUnstable" on Elastic
+rather than inferring faults from motor behavior.
+
+See the [Not Yet Implemented](hardware-abstraction.md#phoenix-6-features-not-yet-implemented)
+table in Hardware Abstraction for the full planned feature list.
+
+---
+
 ## Timeout Protection Pattern
 
 **Why this matters:** Any operation that blocks on a condition (current
@@ -218,6 +263,7 @@ The library establishes safe defaults throughout:
 | PID output | Clamped to `[minOutput, maxOutput]` range |
 | Integral wind-up | Bounded by `[iMin, iMax]` and `iZone` |
 | TransmissionBase leader | Null-checked in `robotInit()` — logs error and returns safely |
+| CTRE fault monitoring | Only `BootDuringEnable` sticky fault checked; other faults pass silently (see [CTRE Fault Coverage](#ctre-fault-coverage)) |
 
 ---
 

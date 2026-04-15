@@ -144,7 +144,7 @@ class AutoModeTest {
     @Test
     void isDelayDoneTrueWhenDelayVerySmall() {
         TestAutoMode smallDelay = new TestAutoMode(0.005);
-        assertTrue(smallDelay.isDelayDone(), "Delay < 0.01 treated as no delay");
+        assertTrue(smallDelay.isDelayDone(), "Delay < DELAY_THRESHOLD_SEC treated as no delay");
     }
 
     @Test

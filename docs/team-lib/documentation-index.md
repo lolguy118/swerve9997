@@ -42,6 +42,9 @@
 | Fault tolerance (exception isolation, CAN faults, timeouts) | [Fault Tolerance](fault-tolerance.md) |
 | Testing patterns (HAL init, CTREManager cleanup, isolation) | [Testing Strategy](testing-strategy.md) |
 | CAN management (bus tracking, signal refresh, timesync) | [Hardware Abstraction](hardware-abstraction.md) + [Library Architecture](library-architecture.md) |
+| CTRE Phoenix 6 feature coverage (supported, planned, not implemented) | [Hardware Abstraction — CTRE Feature Coverage](hardware-abstraction.md#ctre-phoenix-6-feature-coverage) |
+| CTRE fault coverage (monitored vs. unmonitored faults) | [Fault Tolerance — CTRE Fault Coverage](fault-tolerance.md#ctre-fault-coverage) |
+| Phoenix 6 v26-specific features used | [Vendor Dependencies — v26 Features](vendor-dependencies.md#phoenix-6-v26-features-used) |
 | Coding standard and safety rules | [Java Coding Standard](team271-java-coding-standard.md) |
 | Vendordep management | [Vendor Dependencies](vendor-dependencies.md) |
 

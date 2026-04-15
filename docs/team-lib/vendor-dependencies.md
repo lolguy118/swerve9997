@@ -19,6 +19,26 @@
 
 All vendordep JSON files live in `vendordeps/`.
 
+### Phoenix 6 v26 Features Used
+
+The library uses the following Phoenix 6 v26-specific features:
+
+| Feature | Where Used | Notes |
+|---------|-----------|-------|
+| FOC by default | All control requests | FOC enabled by default in v26 for all control modes |
+| Time synchronization | `ControllerTalonFX`, `TransmissionFX` | `UseTimesync = true`, `ControlTimesyncFreqHz` on CANivore |
+| `MotorOutputStatusValue` | `ControllerTalonFX.outputTelemetry()` | Motoring, RegenBraking, StaticBraking, etc. |
+| Bus utilization optimization | `CTREManager.init()` | `ParentDevice.optimizeBusUtilizationForAll()` per bus |
+| Motor type in SimState | `ControllerTalonFX.simulationInit()` | KrakenX60, KrakenX44 for hardware-accurate sim |
+| `SignalLogger` auto-logging | `CTREManager.init()` | Hoot files on CANivore buses to `/U/logs` |
+| `MotorAlignmentValue` | `ControllerTalonFX.follow()` | Aligned/Opposed for follower direction |
+
+Phoenix 6 v26 features available but not yet used by the library
+(kG gravity feedforward, ContinuousWrap, software limit switches,
+expanded fault monitoring, CANdi, TalonFXS, etc.) are documented
+in the [CTRE Feature Coverage](hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
+matrix.
+
 ---
 
 ## How Vendordeps Work

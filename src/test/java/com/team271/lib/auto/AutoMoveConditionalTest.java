@@ -186,4 +186,61 @@ class AutoMoveConditionalTest {
         m.start();
         assertTrue(m.canRun(), "Zero-delay conditional should be runnable immediately");
     }
+
+    /* --- Tests exercising REAL AutoMoveConditional.robotPeriodicBefore() --- */
+
+    @Test
+    void realRobotPeriodicBeforeCompletesOnCondition() {
+        AtomicBoolean flag = new AtomicBoolean(false);
+        AutoMoveConditional m = new AutoMoveConditional("RealTest", flag::get, 10.0);
+        m.start();
+
+        // Simulate time passing by calling real robotPeriodicBefore
+        m.robotPeriodicBefore(0.0);
+        assertFalse(m.isComplete(), "Should not complete when condition is false");
+
+        // Set condition true and call again
+        flag.set(true);
+        m.robotPeriodicBefore(0.0);
+        assertTrue(
+                m.isComplete(), "Real robotPeriodicBefore should complete when condition is true");
+    }
+
+    @Test
+    void realRobotPeriodicBeforeTimesOutWithZeroTimeout() {
+        // Use timeout=0 so the first timer tick (any positive value) triggers timeout
+        AutoMoveConditional m = new AutoMoveConditional("TimeoutTest", () -> false, 0.0);
+        m.start();
+
+        // Call robotPeriodicBefore — Timer has been running since start(),
+        // so currentTime > 0.0 triggers the timeout path
+        m.robotPeriodicBefore(0.0);
+
+        assertTrue(
+                m.isComplete(), "Real robotPeriodicBefore should timeout when currentTime > 0.0");
+    }
+
+    @Test
+    void realRobotPeriodicBeforeDoesNothingWhenNotRunning() {
+        AtomicBoolean flag = new AtomicBoolean(true);
+        AutoMoveConditional m = new AutoMoveConditional(flag::get, 5.0);
+
+        // Not started — should do nothing
+        m.robotPeriodicBefore(0.0);
+        assertFalse(m.isComplete());
+        assertFalse(m.isRunning());
+    }
+
+    @Test
+    void realRobotPeriodicBeforeDoesNotTimeoutBelowThreshold() {
+        AutoMoveConditional m = new AutoMoveConditional(() -> false, 5.0);
+        m.start();
+
+        // currentTime below timeout — should keep running
+        m.currentTime = 3.0;
+        m.robotPeriodicBefore(0.0);
+
+        assertTrue(m.isRunning(), "Should keep running when currentTime < timeoutSec");
+        assertFalse(m.isComplete());
+    }
 }

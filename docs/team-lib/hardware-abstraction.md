@@ -299,7 +299,10 @@ Manages up to 4 motors (1 leader + 3 followers) plus sensors:
 | `encCANCoder` | External CANcoder | Absolute position, mechanism-side |
 
 The library prefers CANCoder when available — position queries fall
-back to FX if no CANCoder is configured.
+back to FX if no CANCoder is configured. Subsystems use the unified
+`EncoderAdapter encoder` field and do not access `encFX`/`encCANCoder`
+directly. TransmissionBase retains the raw references internally for
+dual-encoder support and simulation propagation.
 
 **Gear ratio conversion chain:**
 

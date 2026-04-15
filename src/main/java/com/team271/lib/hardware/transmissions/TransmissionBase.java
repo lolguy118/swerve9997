@@ -644,8 +644,11 @@ public abstract class TransmissionBase extends TObj {
      * Convenience method: create a pneumatic shifter from solenoid channels. Equivalent to {@code
      * setShifter(new ShifterPneumatic(chGear1, chGear2))}.
      */
+    /** Sentinel value indicating no solenoid channel is configured. */
+    public static final int NO_SOLENOID_CHANNEL = -1;
+
     public void addShifter(final int pneumaticHubCanId, final int chGear1, final int chGear2) {
-        if (chGear1 != 99 && chGear2 != 99) {
+        if (chGear1 != NO_SOLENOID_CHANNEL && chGear2 != NO_SOLENOID_CHANNEL) {
             setShifter(new ShifterPneumatic(pneumaticHubCanId, chGear1, chGear2));
         }
     }
@@ -664,6 +667,15 @@ public abstract class TransmissionBase extends TObj {
     }
 
     public ShifterState shift(final ShifterState argShiftTo) {
+        /*
+         * GEAR_NONE is the uninitialized state, not a valid shift target.
+         */
+        if (argShiftTo == ShifterState.GEAR_NONE) {
+            DriverStation.reportWarning(
+                    getName() + ": shift(GEAR_NONE) ignored — not a valid shift target", false);
+            return shifterState;
+        }
+
         /*
          * - Actuate shifter mechanism
          * - Update gear state

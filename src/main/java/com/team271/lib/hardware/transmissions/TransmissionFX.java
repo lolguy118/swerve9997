@@ -10,6 +10,7 @@ import com.team271.lib.hardware.controllers.ControllerTalonFX;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.nt.NTEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class TransmissionFX extends TransmissionBase {
     /*
@@ -217,6 +218,22 @@ public class TransmissionFX extends TransmissionBase {
         allControllers.add(follower3);
     }
 
+    /**
+     * Returns {@code true} if any argument is NaN or infinite. Used as a safety guard on all
+     * closed-loop output methods to prevent sending corrupt values to the motor controller.
+     */
+    private boolean hasInvalidInput(final String argMethod, final double... argValues) {
+        for (double v : argValues) {
+            if (!Double.isFinite(v)) {
+                DriverStation.reportWarning(
+                        getName() + "." + argMethod + ": rejected non-finite input (" + v + ")",
+                        false);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
      *
      * Get Motors
@@ -239,6 +256,69 @@ public class TransmissionFX extends TransmissionBase {
      * Config
      *
      */
+
+    /**
+     * Configures timesync for all control request objects. When enabled, UpdateFreqHz is set to 0
+     * (required by CTRE for timesync). When disabled, UpdateFreqHz is set to the specified rate.
+     * Also configures the leader controller's timesync frequency.
+     *
+     * @param argEnabled true for CANivore timesync, false for standard CAN
+     * @param argUpdateFreqHz update frequency when timesync is disabled (ignored when enabled)
+     */
+    public void configTimesync(final boolean argEnabled, final double argUpdateFreqHz) {
+        double freqHz = argEnabled ? 0.0 : argUpdateFreqHz;
+
+        motorOut.UseTimesync = argEnabled;
+        motorOut.UpdateFreqHz = freqHz;
+        motorOutV.UseTimesync = argEnabled;
+        motorOutV.UpdateFreqHz = freqHz;
+
+        motorPositionFF.UseTimesync = argEnabled;
+        motorPositionFF.UpdateFreqHz = freqHz;
+        motorVelocityFF.UseTimesync = argEnabled;
+        motorVelocityFF.UpdateFreqHz = freqHz;
+
+        motorPositionDuty.UseTimesync = argEnabled;
+        motorPositionDuty.UpdateFreqHz = freqHz;
+        motorPositionTC.UseTimesync = argEnabled;
+        motorPositionTC.UpdateFreqHz = freqHz;
+
+        motorVelocityDuty.UseTimesync = argEnabled;
+        motorVelocityDuty.UpdateFreqHz = freqHz;
+        motorVelocityTC.UseTimesync = argEnabled;
+        motorVelocityTC.UpdateFreqHz = freqHz;
+
+        motorMMOut.UseTimesync = argEnabled;
+        motorMMOut.UpdateFreqHz = freqHz;
+        motorMMFF.UseTimesync = argEnabled;
+        motorMMFF.UpdateFreqHz = freqHz;
+        motorMMTC.UseTimesync = argEnabled;
+        motorMMTC.UpdateFreqHz = freqHz;
+
+        motorMMVelOut.UseTimesync = argEnabled;
+        motorMMVelOut.UpdateFreqHz = freqHz;
+        motorMMVelFF.UseTimesync = argEnabled;
+        motorMMVelFF.UpdateFreqHz = freqHz;
+        motorMMVelTC.UseTimesync = argEnabled;
+        motorMMVelTC.UpdateFreqHz = freqHz;
+
+        motorMMExpoOut.UseTimesync = argEnabled;
+        motorMMExpoOut.UpdateFreqHz = freqHz;
+        motorMMExpoFF.UseTimesync = argEnabled;
+        motorMMExpoFF.UpdateFreqHz = freqHz;
+        motorMMExpoTC.UseTimesync = argEnabled;
+        motorMMExpoTC.UpdateFreqHz = freqHz;
+
+        motorDynMMOut.UseTimesync = argEnabled;
+        motorDynMMOut.UpdateFreqHz = freqHz;
+        motorDynMMFF.UseTimesync = argEnabled;
+        motorDynMMFF.UpdateFreqHz = freqHz;
+        motorDynMMTC.UseTimesync = argEnabled;
+        motorDynMMTC.UpdateFreqHz = freqHz;
+
+        /* Also configure the leader controller's timesync */
+        getLeaderController().setControlUpdateFrequency(argEnabled ? 250.0 : 0.0, argEnabled);
+    }
 
     /*
      *
@@ -308,6 +388,7 @@ public class TransmissionFX extends TransmissionBase {
      */
     @Override
     public void setOutputPosition(final double argPosition, final double argFFVolt) {
+        if (hasInvalidInput("setOutputPosition", argPosition, argFFVolt)) return;
         motorPositionFF.Slot = 0;
         if (encoder != null) {
             motorPositionFF.Position = encoder.mechanismToNative(argPosition);
@@ -329,6 +410,7 @@ public class TransmissionFX extends TransmissionBase {
      */
     @Override
     public void setOutputVelocity(final double argRPS, final double argFFVolt) {
+        if (hasInvalidInput("setOutputVelocity", argRPS, argFFVolt)) return;
         motorVelocityFF.Slot = 0;
         if (encoder != null) {
             motorVelocityFF.Velocity = encoder.mechanismVelocityToNative(argRPS);
@@ -355,6 +437,7 @@ public class TransmissionFX extends TransmissionBase {
      * Closed Loop - Position
      */
     public void setOutputPositionDuty(final double argPosition, final double argFF) {
+        if (hasInvalidInput("setOutputPositionDuty", argPosition, argFF)) return;
         motorPositionDuty.Slot = 0;
         if (encoder != null) {
             motorPositionDuty.Position = encoder.mechanismToNative(argPosition);
@@ -368,6 +451,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputPositionTorqueCurrent(final double argPosition, final double argFF) {
+        if (hasInvalidInput("setOutputPositionTorqueCurrent", argPosition, argFF)) return;
         motorPositionTC.Slot = 0;
         if (encoder != null) {
             motorPositionTC.Position = encoder.mechanismToNative(argPosition);
@@ -391,6 +475,7 @@ public class TransmissionFX extends TransmissionBase {
      * @param argFF feedforward duty cycle [-1.0, 1.0]
      */
     public void setOutputVelocityDuty(final double argRPS, final double argFF) {
+        if (hasInvalidInput("setOutputVelocityDuty", argRPS, argFF)) return;
         motorVelocityDuty.Slot = 0;
         if (encoder != null) {
             motorVelocityDuty.Velocity = encoder.mechanismVelocityToNative(argRPS);
@@ -411,6 +496,7 @@ public class TransmissionFX extends TransmissionBase {
      * @param argFF feedforward torque current (amps)
      */
     public void setOutputVelocityTorqueCurrent(final double argRPS, final double argFF) {
+        if (hasInvalidInput("setOutputVelocityTorqueCurrent", argRPS, argFF)) return;
         motorVelocityTC.Slot = 0;
         if (encoder != null) {
             motorVelocityTC.Velocity = encoder.mechanismVelocityToNative(argRPS);
@@ -446,6 +532,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMPositionDuty(double argPosition, double argFFVolt) {
+        if (hasInvalidInput("setOutputMMPositionDuty", argPosition, argFFVolt)) return;
         motorMMOut.Slot = 0;
         if (encoder != null) {
             motorMMOut.Position = encoder.mechanismToNative(argPosition);
@@ -459,6 +546,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMPositionVoltage(final double argPosition, final double argFFVolt) {
+        if (hasInvalidInput("setOutputMMPositionVoltage", argPosition, argFFVolt)) return;
         motorMMFF.Slot = 0;
         if (encoder != null) {
             motorMMFF.Position = encoder.mechanismToNative(argPosition);
@@ -472,6 +560,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMPositionTorqueCurrent(final double argPosition, final double argFF) {
+        if (hasInvalidInput("setOutputMMPositionTorqueCurrent", argPosition, argFF)) return;
         motorMMTC.Slot = 0;
         if (encoder != null) {
             motorMMTC.Position = encoder.mechanismToNative(argPosition);
@@ -488,6 +577,7 @@ public class TransmissionFX extends TransmissionBase {
      * Motion Magic - Velocity
      */
     public void setOutputMMVelocityDuty(final double argRPS, final double argFF) {
+        if (hasInvalidInput("setOutputMMVelocityDuty", argRPS, argFF)) return;
         motorMMVelOut.Slot = 0;
         if (encoder != null) {
             motorMMVelOut.Velocity = encoder.mechanismVelocityToNative(argRPS);
@@ -501,6 +591,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMVelocityVoltage(final double argRPS, final double argFF) {
+        if (hasInvalidInput("setOutputMMVelocityVoltage", argRPS, argFF)) return;
         motorMMVelFF.Slot = 0;
         if (encoder != null) {
             motorMMVelFF.Velocity = encoder.mechanismVelocityToNative(argRPS);
@@ -514,6 +605,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMVelocityTorqueCurrent(final double argRPS, final double argFF) {
+        if (hasInvalidInput("setOutputMMVelocityTorqueCurrent", argRPS, argFF)) return;
         motorMMVelTC.Slot = 0;
         if (encoder != null) {
             motorMMVelTC.Velocity = encoder.mechanismVelocityToNative(argRPS);
@@ -530,6 +622,7 @@ public class TransmissionFX extends TransmissionBase {
      * Motion Magic - Expo (Exponential profile)
      */
     public void setOutputMMExpoPositionDuty(final double argPosition, final double argFF) {
+        if (hasInvalidInput("setOutputMMExpoPositionDuty", argPosition, argFF)) return;
         motorMMExpoOut.Slot = 0;
         if (encoder != null) {
             motorMMExpoOut.Position = encoder.mechanismToNative(argPosition);
@@ -543,6 +636,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMExpoPositionVoltage(final double argPosition, final double argFF) {
+        if (hasInvalidInput("setOutputMMExpoPositionVoltage", argPosition, argFF)) return;
         motorMMExpoFF.Slot = 0;
         if (encoder != null) {
             motorMMExpoFF.Position = encoder.mechanismToNative(argPosition);
@@ -556,6 +650,7 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     public void setOutputMMExpoPositionTorqueCurrent(final double argPosition, final double argFF) {
+        if (hasInvalidInput("setOutputMMExpoPositionTorqueCurrent", argPosition, argFF)) return;
         motorMMExpoTC.Slot = 0;
         if (encoder != null) {
             motorMMExpoTC.Position = encoder.mechanismToNative(argPosition);
@@ -577,6 +672,9 @@ public class TransmissionFX extends TransmissionBase {
             final double argAccel,
             final double argJerk,
             final double argFF) {
+        if (hasInvalidInput(
+                "setOutputDynMMPositionDuty", argPosition, argVelocity, argAccel, argJerk, argFF))
+            return;
         motorDynMMOut.Slot = 0;
         if (encoder != null) {
             motorDynMMOut.Position = encoder.mechanismToNative(argPosition);
@@ -598,6 +696,13 @@ public class TransmissionFX extends TransmissionBase {
             final double argAccel,
             final double argJerk,
             final double argFF) {
+        if (hasInvalidInput(
+                "setOutputDynMMPositionVoltage",
+                argPosition,
+                argVelocity,
+                argAccel,
+                argJerk,
+                argFF)) return;
         motorDynMMFF.Slot = 0;
         if (encoder != null) {
             motorDynMMFF.Position = encoder.mechanismToNative(argPosition);
@@ -619,6 +724,13 @@ public class TransmissionFX extends TransmissionBase {
             final double argAccel,
             final double argJerk,
             final double argFF) {
+        if (hasInvalidInput(
+                "setOutputDynMMPositionTorqueCurrent",
+                argPosition,
+                argVelocity,
+                argAccel,
+                argJerk,
+                argFF)) return;
         motorDynMMTC.Slot = 0;
         if (encoder != null) {
             motorDynMMTC.Position = encoder.mechanismToNative(argPosition);

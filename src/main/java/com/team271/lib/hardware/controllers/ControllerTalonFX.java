@@ -330,9 +330,11 @@ public class ControllerTalonFX extends ControllerSmart {
     public ControllerStatus applyConfig() {
         ControllerStatus status = ControllerStatus.UNKNOWN;
 
-        /* Retry config apply up to CAN_RETRY_COUNT times with 50ms timeout per attempt */
-        for (int i = 0; i < ConstantsLib.CAN_RETRY_COUNT; ++i) {
-            fxStatus = talonFX.getConfigurator().apply(config, 0.050);
+        /* Retry config apply — 3 retries x 20ms = 60ms worst case (within loop budget) */
+        for (int i = 0; i < ConstantsLib.CAN_CONFIG_APPLY_RETRIES; ++i) {
+            fxStatus =
+                    talonFX.getConfigurator()
+                            .apply(config, ConstantsLib.CAN_CONFIG_APPLY_TIMEOUT_SEC);
             if (fxStatus.isOK()) {
                 status = ControllerStatus.OK;
 

@@ -1551,8 +1551,9 @@ class TransmissionFXTest {
         CANDeviceID leaderId = new CANDeviceID(437);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
-        /* 99 is the sentinel value for "no channel" */
-        tx.addShifter(1, 99, 99);
+        /* NO_SOLENOID_CHANNEL sentinel prevents shifter creation */
+        tx.addShifter(
+                1, TransmissionBase.NO_SOLENOID_CHANNEL, TransmissionBase.NO_SOLENOID_CHANNEL);
         /* No shifter created, shift still changes state */
         ShifterState result = tx.shift(ShifterState.GEAR_1);
         assertEquals(ShifterState.GEAR_1, result);

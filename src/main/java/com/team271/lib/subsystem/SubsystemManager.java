@@ -51,7 +51,7 @@ public class SubsystemManager {
      *
      */
     public List<Subsystem> getSubsystems() {
-        return mAllSubsystems;
+        return java.util.Collections.unmodifiableList(mAllSubsystems);
     }
 
     /*

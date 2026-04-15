@@ -57,6 +57,7 @@ public class CTREManager {
      */
     private static final ArrayList<StatusSignal<?>> signalsAll = new ArrayList<>(20);
     private static StatusSignal<?>[] signalsAllArray;
+    private static boolean initialized = false;
 
     /*
      * Timestamps
@@ -76,7 +77,15 @@ public class CTREManager {
 
     private static double lastErrorNotificationTime = 0;
 
+    /** Hoot log path — default is RoboRIO USB drive. Set before calling {@link #init()}. */
+    private static String hootLogPath = "/U/logs";
+
     private CTREManager() {}
+
+    /** Sets the hoot log file path. Must be called before {@link #init()}. */
+    public static void setHootLogPath(final String argPath) {
+        hootLogPath = argPath;
+    }
 
     /*
      * Bus Registration
@@ -133,43 +142,73 @@ public class CTREManager {
         signalsAll.add(argSignal);
     }
 
-    private static void addSignalInternal(
-            final StatusSignal<?> argSignal, final double argUpdateRate) {
+    /**
+     * Register a status signal with a specified update frequency. Works for any CTRE device type.
+     * Warns if called after {@link #init()}.
+     */
+    public static void addSignal(final StatusSignal<?> argSignal, final double argUpdateRate) {
+        if (initialized) {
+            edu.wpi.first.wpilibj.DriverStation.reportWarning(
+                    "CTREManager: signal registered after init() — it will not be included"
+                            + " in the bulk refresh array. Call addSignal() before init().",
+                    false);
+        }
         if ((argSignal != null) && argSignal.getStatus().isOK()) {
             addSignal(argSignal);
             argSignal.setUpdateFrequency(argUpdateRate, ConstantsLib.CAN_LONG_TIMEOUT_MS);
         }
     }
 
+    /**
+     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
+     */
+    @Deprecated
     public static void addSignalTalonFX(
             final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignalInternal(argSignal, argUpdateRate);
+        addSignal(argSignal, argUpdateRate);
     }
 
+    /**
+     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
+     */
+    @Deprecated
     public static StatusSignal<?> addSignalCANCoder(
             final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignalInternal(argSignal, argUpdateRate);
+        addSignal(argSignal, argUpdateRate);
         return argSignal;
     }
 
+    /**
+     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
+     */
+    @Deprecated
     public static void addSignalPigeon(
             final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignalInternal(argSignal, argUpdateRate);
+        addSignal(argSignal, argUpdateRate);
     }
 
+    /**
+     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
+     */
+    @Deprecated
     public static void addSignalCANrange(
             final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignalInternal(argSignal, argUpdateRate);
+        addSignal(argSignal, argUpdateRate);
     }
 
+    /**
+     * @deprecated Use {@link #addSignal(StatusSignal, double)} instead.
+     */
+    @Deprecated
     public static void addSignalCANdi(final StatusSignal<?> argSignal, final double argUpdateRate) {
-        addSignalInternal(argSignal, argUpdateRate);
+        addSignal(argSignal, argUpdateRate);
     }
 
     /*
      * Init — call after all subsystems have registered their devices and signals
      */
     public static void init() {
+        initialized = true;
         signalsAllArray = signalsAll.toArray(new StatusSignal<?>[0]);
 
         /* Optimize bus utilization per-bus for correct frame scheduling */
@@ -183,7 +222,7 @@ public class CTREManager {
         /* Start CTRE hoot logging if a CANivore bus exists (not supported on RIO) */
         boolean hasCANivore = buses.values().stream().anyMatch(CANBus::isCANivore);
         if (hasCANivore) {
-            SignalLogger.setPath("/U/logs");
+            SignalLogger.setPath(hootLogPath);
             SignalLogger.enableAutoLogging(true);
             SignalLogger.start();
         }

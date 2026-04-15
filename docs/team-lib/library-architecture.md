@@ -471,11 +471,14 @@ When a robot-specific physics model computes new state, it propagates
 through the entire hardware stack:
 
 ```text
-transmission.setSimPosRotations(position)
+transmission.setSimPosRotations(position)      ← subsystem calls this
   → encCANCoder.setSimPosRotations()     → CANcoderSimState.setRawPosition()
   → allControllers.setSimPosRotations()  → TalonFXSimState.setRawRotorPosition()
   → EncoderFX reads from TalonFXSimState automatically
 ```
+
+> Subsystems only call `transmission.setSimPosRotations()` — the internal
+> dispatch to encoder/controller types is handled by TransmissionBase.
 
 ### Robot Project Simulation Pattern
 

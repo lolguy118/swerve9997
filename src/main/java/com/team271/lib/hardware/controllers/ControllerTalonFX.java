@@ -4,6 +4,7 @@ import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.MotorOutputStatusValue;
@@ -38,6 +39,9 @@ public class ControllerTalonFX extends ControllerSmart {
 
         CLOSED_LOOP_ERROR,
         CLOSED_LOOP_OUTPUT,
+
+        DEVICE_TEMP,
+        ACCELERATION,
 
         ALL
     }
@@ -98,6 +102,17 @@ public class ControllerTalonFX extends ControllerSmart {
     protected static final double UPDATE_FREQ_HZ_CLOSED_LOOP = 250.0;
     protected StatusSignal<Double> clError;
     protected StatusSignal<Double> clOutput;
+
+    /* Device Temperature */
+    protected static final double UPDATE_FREQ_HZ_DEVICE_TEMP = 250.0;
+    protected StatusSignal<edu.wpi.first.units.measure.Temperature> deviceTemp;
+
+    /* Acceleration */
+    protected static final double UPDATE_FREQ_HZ_ACCELERATION = 250.0;
+    protected StatusSignal<edu.wpi.first.units.measure.AngularAcceleration> acceleration;
+
+    /* StrictFollower and CoastOut control requests */
+    protected final CoastOut motorCoastOut = new CoastOut();
 
     /* TalonFX Limit Switches */
     protected static final double UPDATE_FREQ_HZ_LIMIT_SW = 250.0;
@@ -274,6 +289,22 @@ public class ControllerTalonFX extends ControllerSmart {
         if (signals.contains(Signals.CLOSED_LOOP_OUTPUT) || signals.contains(Signals.ALL)) {
             clOutput = talonFX.getClosedLoopOutput();
             CTREManager.addSignal(clOutput, UPDATE_FREQ_HZ_CLOSED_LOOP);
+        }
+
+        /*
+         * Get Signal: Device Temperature
+         */
+        if (signals.contains(Signals.DEVICE_TEMP) || signals.contains(Signals.ALL)) {
+            deviceTemp = talonFX.getDeviceTemp();
+            CTREManager.addSignal(deviceTemp, UPDATE_FREQ_HZ_DEVICE_TEMP);
+        }
+
+        /*
+         * Get Signal: Acceleration
+         */
+        if (signals.contains(Signals.ACCELERATION) || signals.contains(Signals.ALL)) {
+            acceleration = talonFX.getAcceleration();
+            CTREManager.addSignal(acceleration, UPDATE_FREQ_HZ_ACCELERATION);
         }
 
         if (faultMonitor != null) {
@@ -594,7 +625,11 @@ public class ControllerTalonFX extends ControllerSmart {
             java.util.function.DoubleSupplier getV,
             java.util.function.DoubleSupplier getS,
             java.util.function.DoubleConsumer setV,
-            java.util.function.DoubleConsumer setS) {}
+            java.util.function.DoubleConsumer setS,
+            java.util.function.DoubleSupplier getG,
+            java.util.function.DoubleConsumer setG,
+            java.util.function.DoubleSupplier getA,
+            java.util.function.DoubleConsumer setA) {}
 
     private SlotAccess slotAccess(final int argSlot) {
         return switch (argSlot) {
@@ -604,21 +639,27 @@ public class ControllerTalonFX extends ControllerSmart {
                             () -> config.Slot0.kI, v -> config.Slot0.kI = v,
                             () -> config.Slot0.kD, v -> config.Slot0.kD = v,
                             () -> config.Slot0.kV, () -> config.Slot0.kS,
-                            v -> config.Slot0.kV = v, v -> config.Slot0.kS = v);
+                            v -> config.Slot0.kV = v, v -> config.Slot0.kS = v,
+                            () -> config.Slot0.kG, v -> config.Slot0.kG = v,
+                            () -> config.Slot0.kA, v -> config.Slot0.kA = v);
             case 1 ->
                     new SlotAccess(
                             () -> config.Slot1.kP, v -> config.Slot1.kP = v,
                             () -> config.Slot1.kI, v -> config.Slot1.kI = v,
                             () -> config.Slot1.kD, v -> config.Slot1.kD = v,
                             () -> config.Slot1.kV, () -> config.Slot1.kS,
-                            v -> config.Slot1.kV = v, v -> config.Slot1.kS = v);
+                            v -> config.Slot1.kV = v, v -> config.Slot1.kS = v,
+                            () -> config.Slot1.kG, v -> config.Slot1.kG = v,
+                            () -> config.Slot1.kA, v -> config.Slot1.kA = v);
             case 2 ->
                     new SlotAccess(
                             () -> config.Slot2.kP, v -> config.Slot2.kP = v,
                             () -> config.Slot2.kI, v -> config.Slot2.kI = v,
                             () -> config.Slot2.kD, v -> config.Slot2.kD = v,
                             () -> config.Slot2.kV, () -> config.Slot2.kS,
-                            v -> config.Slot2.kV = v, v -> config.Slot2.kS = v);
+                            v -> config.Slot2.kV = v, v -> config.Slot2.kS = v,
+                            () -> config.Slot2.kG, v -> config.Slot2.kG = v,
+                            () -> config.Slot2.kA, v -> config.Slot2.kA = v);
             default -> null;
         };
     }
@@ -774,8 +815,9 @@ public class ControllerTalonFX extends ControllerSmart {
         return 0;
     }
 
-    public void setOutputPosition(final double argPosition, final double argFFVolt) {
-        motorPosition.Slot = 0;
+    public void setOutputPosition(
+            final double argPosition, final int argSlot, final double argFFVolt) {
+        motorPosition.Slot = argSlot;
         motorPosition.Position = argPosition;
         motorPosition.FeedForward = argFFVolt;
 
@@ -784,14 +826,154 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
-    public void setOutputVelocity(final double argRPS, final double argFFVolt) {
-        motorVelocity.Slot = 0;
+    public void setOutputVelocity(final double argRPS, final int argSlot, final double argFFVolt) {
+        motorVelocity.Slot = argSlot;
         motorVelocity.Velocity = argRPS;
         motorVelocity.FeedForward = argFFVolt;
 
         if (isConnected()) {
             talonFX.setControl(motorVelocity);
         }
+    }
+
+    /*
+     * StrictFollower — mirrors leader output exactly (no alignment control)
+     */
+    public void setStrictFollow(final ControllerBase argLeader) {
+        if (isConnected()) {
+            talonFX.setControl(new StrictFollower(argLeader.getIDNum()));
+        }
+    }
+
+    /*
+     * CoastOut — commands motor to coast (releases all control)
+     */
+    public void coast() {
+        if (isConnected()) {
+            talonFX.setControl(motorCoastOut);
+        }
+    }
+
+    /*
+     *
+     * Gravity / Acceleration Feedforward
+     *
+     */
+    @Override
+    public void setGravityGain(final int argSlot, final double argKG) {
+        SlotAccess s = slotAccess(argSlot);
+        if (s != null) s.setG.accept(argKG);
+    }
+
+    @Override
+    public double getGravityGain(final int argSlot) {
+        SlotAccess s = slotAccess(argSlot);
+        return (s != null) ? s.getG.getAsDouble() : 0;
+    }
+
+    @Override
+    public void setAccelGain(final int argSlot, final double argKA) {
+        SlotAccess s = slotAccess(argSlot);
+        if (s != null) s.setA.accept(argKA);
+    }
+
+    @Override
+    public double getAccelGain(final int argSlot) {
+        SlotAccess s = slotAccess(argSlot);
+        return (s != null) ? s.getA.getAsDouble() : 0;
+    }
+
+    /*
+     *
+     * Gravity Type
+     *
+     */
+    @Override
+    public void setGravityType(final int argSlot, final GravityType argType) {
+        GravityTypeValue ctreType =
+                (argType == GravityType.ARM_COSINE)
+                        ? GravityTypeValue.Arm_Cosine
+                        : GravityTypeValue.Elevator_Static;
+        switch (argSlot) {
+            case 0:
+                config.Slot0.GravityType = ctreType;
+                break;
+            case 1:
+                config.Slot1.GravityType = ctreType;
+                break;
+            case 2:
+                config.Slot2.GravityType = ctreType;
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public GravityType getGravityType(final int argSlot) {
+        GravityTypeValue ctreType =
+                switch (argSlot) {
+                    case 0 -> config.Slot0.GravityType;
+                    case 1 -> config.Slot1.GravityType;
+                    case 2 -> config.Slot2.GravityType;
+                    default -> GravityTypeValue.Elevator_Static;
+                };
+        return (ctreType == GravityTypeValue.Arm_Cosine)
+                ? GravityType.ARM_COSINE
+                : GravityType.ELEVATOR_STATIC;
+    }
+
+    /*
+     *
+     * Continuous Wrap
+     *
+     */
+    @Override
+    public void setContinuousWrap(final boolean argEnabled) {
+        config.ClosedLoopGeneral.ContinuousWrap = argEnabled;
+    }
+
+    @Override
+    public boolean getContinuousWrap() {
+        return config.ClosedLoopGeneral.ContinuousWrap;
+    }
+
+    /*
+     *
+     * Software Limits
+     *
+     */
+    @Override
+    public void configSoftLimitForward(final boolean argEnable, final double argLimit) {
+        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = argEnable;
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = argLimit;
+    }
+
+    @Override
+    public void configSoftLimitReverse(final boolean argEnable, final double argLimit) {
+        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = argEnable;
+        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = argLimit;
+    }
+
+    /*
+     *
+     * New Signal Getters
+     *
+     */
+    /** Returns the device temperature in degrees Celsius. */
+    public double getDeviceTemp() {
+        if ((deviceTemp != null) && deviceTemp.getStatus().isOK()) {
+            return deviceTemp.getValueAsDouble();
+        }
+        return 0;
+    }
+
+    /** Returns the rotor acceleration in rotations per second squared. */
+    public double getAcceleration() {
+        if ((acceleration != null) && acceleration.getStatus().isOK()) {
+            return acceleration.getValueAsDouble();
+        }
+        return 0;
     }
 
     /*

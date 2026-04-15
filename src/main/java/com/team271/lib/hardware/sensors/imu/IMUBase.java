@@ -5,7 +5,7 @@ import com.team271.lib.TObj;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public abstract class IMUBase extends TObj {
+public abstract class IMUBase extends TObj implements IMU {
     public enum IMUType {
         PIGEON,
         PIGEON2
@@ -81,11 +81,17 @@ public abstract class IMUBase extends TObj {
         return Rotation2d.fromDegrees(yaw);
     }
 
+    /** Sets the yaw to the specified value in degrees. */
+    public abstract void setYaw(double argDegrees);
+
     /*
      *
      * Simulation
      *
      */
+    /** Sets the simulated yaw in degrees. */
+    public abstract void setSimYaw(double argDegrees);
+
     @Override
     public void simulationInit(final double argTimestamp) {}
 

@@ -3,11 +3,12 @@ package com.team271.lib.hardware.sensors.encoders;
 import com.team271.lib.hardware.transmissions.GearRatio;
 
 /**
- * Strategy interface that abstracts over encoder types (FX internal, CANCoder). Each adapter wraps
- * a concrete encoder and a {@link GearRatio}, exposing position/velocity in mechanism output units.
+ * Strategy interface that abstracts over encoder types. Each adapter wraps a concrete encoder and a
+ * {@link GearRatio}, exposing position/velocity in mechanism output units.
  *
- * <p>This eliminates the {@code if (encCANCoder != null) else if (encFX != null)} cascade in
- * TransmissionBase/TransmissionFX by providing a single polymorphic API.
+ * <p>This eliminates vendor-specific branching in transmission code by providing a single
+ * polymorphic API. Implementations exist for CTRE encoders ({@code FXEncoderAdapter}, {@code
+ * CANCoderAdapter}) and can be created for WPILib or REV encoders.
  */
 public interface EncoderAdapter {
 
@@ -65,7 +66,7 @@ public interface EncoderAdapter {
 
     /* --- Lifecycle --- */
 
-    /** Called during robotInit to register signals with CTREManager. */
+    /** Called during robotInit to perform hardware initialization (e.g., signal registration). */
     void robotInit(double timestamp);
 
     /** Publish telemetry to NetworkTables. */

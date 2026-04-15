@@ -167,11 +167,24 @@ public class IMUPigeon2 extends IMUCTRE {
         }
     }
 
+    @Override
+    public void setYaw(final double argDegrees) {
+        imu.setYaw(argDegrees, ConstantsLib.CAN_LONG_TIMEOUT_MS);
+        yaw = argDegrees;
+    }
+
     /*
      *
      * Simulation
      *
      */
+    @Override
+    public void setSimYaw(final double argDegrees) {
+        if (simState != null) {
+            simState.setRawYaw(argDegrees);
+        }
+    }
+
     @Override
     public void simulationPeriodic(final double argTimestamp) {
         simState.setSupplyVoltage(RobotController.getBatteryVoltage());

@@ -1,12 +1,13 @@
 package com.team271.lib.hardware.controllers;
 
 import com.team271.lib.TObj;
+import com.team271.lib.control.PIDGains;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.nt.NTEntry;
 
-public abstract class ControllerSmart extends ControllerBase {
+public abstract class ControllerSmart extends ControllerBase implements SmartMotorController {
     /*
      *
      * Telemetry (NT)
@@ -169,15 +170,114 @@ public abstract class ControllerSmart extends ControllerBase {
 
     public abstract double getCLOutput();
 
-    public abstract void setOutputPosition(final double argPositionRot, final double argFFVolt);
+    public abstract void setOutputPosition(
+            final double argPositionRot, final int argSlot, final double argFFVolt);
 
-    public abstract void setOutputVelocity(final double argRPS, final double argFFVolt);
+    public void setOutputPosition(final double argPositionRot, final double argFFVolt) {
+        setOutputPosition(argPositionRot, 0, argFFVolt);
+    }
+
+    public abstract void setOutputVelocity(
+            final double argRPS, final int argSlot, final double argFFVolt);
+
+    public void setOutputVelocity(final double argRPS, final double argFFVolt) {
+        setOutputVelocity(argRPS, 0, argFFVolt);
+    }
 
     /*
      *
-     * Outputs
+     * PID Gains (unified)
      *
      */
+    @Override
+    public void setPIDGains(final int argSlot, final PIDGains gains) {
+        setPIDFSlot(argSlot, gains.kP(), gains.kI(), gains.kD(), gains.kV(), gains.kS());
+        setGravityGain(argSlot, gains.kG());
+        setAccelGain(argSlot, gains.kA());
+    }
+
+    @Override
+    public PIDGains getPIDGains(final int argSlot) {
+        return new PIDGains(
+                getPSlot(argSlot),
+                getISlot(argSlot),
+                getDSlot(argSlot),
+                getVSlot(argSlot),
+                getSSlot(argSlot),
+                getGravityGain(argSlot),
+                getAccelGain(argSlot));
+    }
+
+    /*
+     *
+     * Gravity / Acceleration Feedforward
+     *
+     */
+    /** Sets the kG gain for the specified slot. Subclasses apply to vendor-specific config. */
+    public abstract void setGravityGain(final int argSlot, final double argKG);
+
+    /** Returns the kG gain for the specified slot. */
+    public abstract double getGravityGain(final int argSlot);
+
+    /** Sets the kA gain for the specified slot. Subclasses apply to vendor-specific config. */
+    public abstract void setAccelGain(final int argSlot, final double argKA);
+
+    /** Returns the kA gain for the specified slot. */
+    public abstract double getAccelGain(final int argSlot);
+
+    /*
+     *
+     * Gravity Type
+     *
+     */
+    public abstract void setGravityType(final int argSlot, final GravityType argType);
+
+    public abstract GravityType getGravityType(final int argSlot);
+
+    /*
+     *
+     * Continuous Wrap
+     *
+     */
+    public abstract void setContinuousWrap(final boolean argEnabled);
+
+    public abstract boolean getContinuousWrap();
+
+    /*
+     *
+     * Software Limits
+     *
+     */
+    public abstract void configSoftLimitForward(final boolean argEnable, final double argLimit);
+
+    public abstract void configSoftLimitReverse(final boolean argEnable, final double argLimit);
+
+    /*
+     *
+     * Current Limit (unified)
+     *
+     */
+    @Override
+    public void setCurrentLimit(final CurrentLimitConfig config) {
+        setCurrentLimitStator(config.statorEnabled(), config.statorLimit());
+        if (config.supplyLowerTime() > 0) {
+            setCurrentLimitSupply(
+                    config.supplyLimit(), config.supplyLowerTime(), config.supplyLowerLimit());
+        } else {
+            setCurrentLimitSupply(config.supplyEnabled(), config.supplyLimit());
+        }
+    }
+
+    @Override
+    public CurrentLimitConfig getCurrentLimitConfig() {
+        return new CurrentLimitConfig(
+                getCurrentLimitStatorEnable(),
+                getCurrentLimitStator(),
+                getCurrentLimitSupplyEnable(),
+                getCurrentLimitSupply(),
+                getCurrentLimitSupplyLowerLimit(),
+                getCurrentLimitSupplyTime());
+    }
 
     /*
      *

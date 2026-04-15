@@ -56,6 +56,27 @@ public class IMUPigeon2 extends IMUCTRE {
 
     /*
      *
+     * Passthrough Getters
+     *
+     */
+
+    /** Passthrough — returns the raw CTRE Pigeon2 device. */
+    public Pigeon2 getPigeon2() {
+        return imu;
+    }
+
+    /** Passthrough — returns the CTRE Pigeon2 configuration. */
+    public Pigeon2Configuration getConfig() {
+        return imuConfig;
+    }
+
+    /** Passthrough — returns the CTRE Pigeon2 simulation state. */
+    public Pigeon2SimState getSimState() {
+        return simState;
+    }
+
+    /*
+     *
      * IMU
      *
      */

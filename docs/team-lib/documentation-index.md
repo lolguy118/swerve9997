@@ -23,12 +23,12 @@
 | `hardware/Input/` | Input, InputXBox, InputPS4, Input8BitDuo, InputEnvisionPro | [Hardware Abstraction](hardware-abstraction.md) + [Input Shaping Guide](input-shaping-guide.md) | Full |
 | `hardware/` | CANBus, CANDeviceID, CTREManager | [Library Architecture](library-architecture.md) | Full |
 | `nt/` | NTTable, NTEntry, LoggedNTInput | [Library Architecture — Tuning Infrastructure](library-architecture.md#tuning-infrastructure) | Full |
-| `subsystem/` | Subsystem, SubsystemManager | [Library Architecture](library-architecture.md) | Full |
+| `subsystem/` | Subsystem, SubsystemManager, StateMachine | [Library Architecture](library-architecture.md) | Full |
 | `sysid/` | Logger, LoggerGeneral | [SysID Workflow](sysid-workflow.md) | Full |
 | `util/` | Alert, Util, DriveSignal, CSVWritable, Interpolable | [Utility Package](utility-package.md) | Full |
 | `misc/` | Elastic | [Utility Package](utility-package.md) | Full |
 | `wpilib/` | IterativeRobotBase, TimedRobot | [Library Architecture](library-architecture.md) | Partial |
-| Root | TObj, TRobot, ConstantsLib | [Library Architecture](library-architecture.md) | Full |
+| Root | Lifecycle, Named, TObj, TRobot, ConstantsLib | [Library Architecture](library-architecture.md) | Full |
 
 ---
 
@@ -47,6 +47,7 @@
 | Phoenix 6 v26-specific features used | [Vendor Dependencies — v26 Features](vendor-dependencies.md#phoenix-6-v26-features-used) |
 | Coding standard and safety rules | [Java Coding Standard](team271-java-coding-standard.md) |
 | Vendordep management | [Vendor Dependencies](vendor-dependencies.md) |
+| Passthrough design (wrapper, not wall philosophy) | [Passthrough Design](passthrough-design.md) |
 
 ---
 

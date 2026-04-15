@@ -84,6 +84,38 @@ every cycle after `checkTuning()`):
 - Error tracking: `prevError`, `totalError`, `posError`, `velError`
 - State: `lastInputMeasurement`, `lastTimestamp`, `atSetpoint`
 
+### Telemetry Levels
+
+PIDBase supports configurable telemetry levels to reduce NT overhead
+when multiple PIDs are active:
+
+| Level | NTEntry Fields | Tuning Inputs | Use Case |
+|-------|---------------|---------------|----------|
+| `FULL` | All 20+ entries | All 8 tunables | Development and tuning (default) |
+| `MINIMAL` | `output`, `posError`, `velError`, `atSetpoint` | None | Competition — reduced NT traffic |
+| `OFF` | None | None | Embedded PIDs where telemetry is managed by parent |
+
+Set via constructor: `new PIDSimple(parent, "Arm", P, I, D, tol, TelemetryLevel.MINIMAL)`
+
+Default is `FULL` for backward compatibility. Competition code should
+use `MINIMAL` for subsystem PIDs that don't need live tuning.
+
+### Accessing WPILib Controllers
+
+PIDWPI and PIDWPI_Trap expose their underlying WPILib controllers via
+`getController()` for features the library doesn't wrap:
+
+```java
+// Access WPILib PIDController directly
+pidwpi.getController().enableContinuousInput(-Math.PI, Math.PI);
+pidwpi.getController().setIZone(5.0);
+
+// Access WPILib ProfiledPIDController directly
+pidwpiTrap.getController().setTolerance(0.1, 0.5);
+```
+
+See [Passthrough Design](passthrough-design.md) for the full reference.
+
 ---
 
 ## PID Type Selection Guide

@@ -76,6 +76,11 @@ public class RangeCANrange extends RangeCTRE {
         return rangeConfig;
     }
 
+    /** Passthrough — returns the raw CTRE CANrange device. */
+    public CANrange getCANrange() {
+        return range;
+    }
+
     /*
      *
      * Robot

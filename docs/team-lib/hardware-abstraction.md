@@ -147,6 +147,46 @@ Sets `isConfigured` flag on success/failure.
 **Connection tracking:** `robotPeriodicBefore()` checks
 `talonFX.isConnected()` every cycle to detect CAN disconnection.
 
+### Accessing Underlying Hardware
+
+Every wrapper class exposes its underlying CTRE object via public
+getters. This is the **Passthrough Principle** — the library adds
+value without blocking access. See
+[Passthrough Design](passthrough-design.md) for the full reference.
+
+**Controller passthrough:**
+
+```java
+// Library convenience API
+controller.setNeutralMode(NeutralState.BRAKE);
+controller.setCurrentLimitStator(true, 80);
+controller.applyConfig();
+
+// Direct CTRE access — for features the library doesn't wrap
+TalonFX talon = controller.getTalonFX();
+TalonFXConfiguration config = controller.getConfig();
+config.Audio.BeepOnBoot = false;
+config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+controller.applyConfig();  // library's multi-retry apply
+```
+
+**Transmission passthrough:**
+
+```java
+// Library convenience — applies to all motors
+transmission.configCurrentLimitStator(true, 80);
+
+// Direct CTRE access — for leader-specific config
+TalonFX leader = transmission.getLeader();
+TalonFXConfiguration leaderConfig = transmission.getLeaderConfig();
+leaderConfig.Slot0.kG = 0.3;
+leaderConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+transmission.applyConfigs();
+
+// Use a control mode the library doesn't wrap
+leader.setControl(new Follower(otherID, false));
+```
+
 ---
 
 ## CTRE Phoenix 6 Feature Coverage
@@ -292,18 +332,29 @@ Manages up to 4 motors (1 leader + 3 followers) plus sensors:
 - Configuration methods (current limits, voltage, ramping) apply to
   **all** motors; PID and direction apply to **leader only**
 
-**Encoder system (dual encoder support):**
+**Encoder system (EncoderAdapter — single source of truth):**
 
-| Encoder | Source | Purpose |
-|---------|--------|---------|
-| `encFX` | TalonFX integrated rotor | Always available, high-speed |
-| `encCANCoder` | External CANcoder | Absolute position, mechanism-side |
+| Encoder Type | Source | Purpose |
+|-------------|--------|---------|
+| `EncoderFX` | TalonFX integrated rotor | Always available, high-speed |
+| `EncoderCANCoder` | External CANcoder | Absolute position, mechanism-side |
 
-The library prefers CANCoder when available — position queries fall
-back to FX if no CANCoder is configured. Subsystems use the unified
-`EncoderAdapter encoder` field and do not access `encFX`/`encCANCoder`
-directly. TransmissionBase retains the raw references internally for
-dual-encoder support and simulation propagation.
+The `EncoderAdapter` interface is the **single source of truth** for
+all encoder access. TransmissionBase holds one `EncoderAdapter encoder`
+field. When both FX and CANCoder are configured, CANCoder takes priority.
+
+To access the underlying encoder when needed, use typed downcasts:
+
+```java
+Optional<EncoderFX> fx = transmission.getEncoderFX();
+Optional<EncoderCANCoder> cancoder = transmission.getEncoderCANCoder();
+
+// Access raw CANcoder for advanced features
+cancoder.ifPresent(enc -> {
+    CANcoder raw = enc.getCANcoder();
+    // use raw CTRE CANcoder directly
+});
+```
 
 **Gear ratio conversion chain:**
 
@@ -354,6 +405,22 @@ Extends TransmissionBase with Phoenix 6-specific control modes:
 All control requests default to timesync (`UpdateFreqHz = 0`) and
 `Slot = 0`. Use `configTimesync(false, 250.0)` to disable timesync
 for robots using the RIO CAN bus instead of a CANivore.
+
+**Control request management:** TransmissionFX pre-allocates all 23
+control request objects at construction to avoid GC pressure during
+match play. These are stored in both named fields (for direct use)
+and an `allRequests` array (for bulk operations). The
+`configTimesync()` method loops over `allRequests` to apply
+timesync settings uniformly, rather than updating each field
+individually.
+
+For control modes not wrapped by TransmissionFX, use the passthrough:
+
+```java
+// Use a CTRE control mode the library doesn't wrap
+var req = new StrictFollower(otherMotorID);
+transmission.getLeader().setControl(req);
+```
 
 **Gear shifting integration:**
 `TransmissionFX.shift()` updates the TalonFX config's

@@ -10,7 +10,10 @@ public class Balance {
     private static final int STATE_HOLD = 2;
     private static final int STATE_DONE = 3;
 
-    private boolean isFwd = false;
+    /** Small correction output applied during the HOLD state to fine-tune balance. */
+    private static final double HOLD_CORRECTION_OUTPUT = 0.1;
+
+    private final boolean isFwd;
     private int state;
     private int debounceCount;
     private double robotSpeedSlow;
@@ -120,9 +123,9 @@ public class Balance {
                     return 0;
                 }
                 if (argTilt >= levelDegree) {
-                    return isFwd ? -0.1 : 0.1;
+                    return isFwd ? -HOLD_CORRECTION_OUTPUT : HOLD_CORRECTION_OUTPUT;
                 } else if (argTilt <= -levelDegree) {
-                    return isFwd ? 0.1 : -0.1;
+                    return isFwd ? HOLD_CORRECTION_OUTPUT : -HOLD_CORRECTION_OUTPUT;
                 }
                 return 0;
 

@@ -105,6 +105,16 @@ public class EncoderCANCoder extends EncoderCTRE {
         return encConfig;
     }
 
+    /** Passthrough — returns the raw CTRE CANcoder device. */
+    public CANcoder getCANcoder() {
+        return enc;
+    }
+
+    /** Passthrough — returns the CTRE CANcoder simulation state. */
+    public CANcoderSimState getSimState() {
+        return simState;
+    }
+
     public void setMagnetSensor(final double argSensorRange) {
         encConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = argSensorRange;
     }

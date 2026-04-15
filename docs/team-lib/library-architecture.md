@@ -41,13 +41,16 @@ values specific to that robot.
 
 ```text
 com.team271.lib
-├── TObj.java                  Base class — lifecycle hooks + NT hierarchy
+├── Lifecycle.java             Interface — lifecycle hooks (default no-ops)
+├── Named.java                 Interface — identity + NT hierarchy
+├── TObj.java                  Abstract base — implements Lifecycle + Named
 ├── TRobot.java                Robot singleton
 ├── ConstantsLib.java          Library-wide constants
 │
 ├── subsystem/
 │   ├── Subsystem.java         Subsystem base — SensorMode, homing
-│   └── SubsystemManager.java  Singleton lifecycle orchestrator
+│   ├── SubsystemManager.java  Singleton lifecycle orchestrator
+│   └── StateMachine.java      Generic desired-to-actual state helper
 │
 ├── auto/                      Autonomous move composition (see auto-design.md)
 │
@@ -81,9 +84,44 @@ com.team271.lib
 
 ---
 
-## TObj — Base Class
+## Passthrough Principle
 
-Every library object extends `TObj`. It provides two things:
+Every hardware wrapper in Team271-Lib exposes its underlying vendor
+object (CTRE, WPILib) via a public getter. The library is
+**additive** — it adds lifecycle, multi-motor coordination, telemetry,
+and gear-ratio conversion, but never blocks access to the raw hardware.
+
+When CTRE releases a new feature or WPILib adds a new API, you can use
+it immediately through the passthrough getter — no library update required.
+
+See [Passthrough Design](passthrough-design.md) for the complete getter
+reference and usage examples.
+
+---
+
+## TObj — Base Class and Lifecycle Interface
+
+The library provides two complementary approaches to lifecycle management:
+
+### Lifecycle and Named Interfaces
+
+`Lifecycle` and `Named` are interfaces that define the library's
+lifecycle hooks and identity/telemetry concerns:
+
+- **`Lifecycle`** — all lifecycle methods as default no-ops
+  (`robotInit`, `robotPeriodicBefore`, `robotPeriodicAfter`,
+  `outputTelemetry`, all mode init/periodic/exit methods)
+- **`Named`** — identity (`getName()`) and NT hierarchy
+  (`getTable()`, `logKey()`)
+
+These interfaces enable lifecycle participation without inheriting from
+TObj — useful for classes that need a different base class or prefer
+composition.
+
+### TObj (Abstract Class)
+
+`TObj implements Lifecycle, Named` and remains the standard base class.
+It provides two things:
 
 1. **Lifecycle hooks** — empty methods that subclasses override as needed
 2. **NetworkTables hierarchy** — each TObj creates an NT subtable under
@@ -284,6 +322,116 @@ This separation ensures:
 - All sensor reads complete before state decisions
 - All state decisions complete before hardware commands
 - No cross-subsystem race conditions within a single cycle
+
+### StateMachine Helper (Optional)
+
+`StateMachine<S extends Enum<S>>` is a composition-based helper for the
+desired-to-actual pattern. Subsystems use it as a field, not a base class:
+
+```java
+public class Arm extends Subsystem {
+    enum ArmState { STOWED, SCORING, CLIMBING }
+    private final StateMachine<ArmState> sm;
+
+    public Arm(TObj parent) {
+        super(parent, "Arm");
+        sm = new StateMachine<>(table, ArmState.STOWED);
+    }
+
+    // Teleop sets desired state
+    public void setDesiredState(ArmState state) {
+        sm.setDesiredState(state);
+    }
+
+    // robotPeriodicAfter applies it
+    @Override
+    public void robotPeriodicAfter(double timestamp) {
+        switch (sm.getDesiredState()) {
+            case STOWED -> { /* command motors to stowed position */ }
+            case SCORING -> { /* command motors to scoring position */ }
+            case CLIMBING -> { /* command motors to climb position */ }
+        }
+        sm.transition(sm.getDesiredState());
+    }
+
+    @Override
+    public void outputTelemetry() {
+        sm.outputTelemetry();  // publishes current/desired state to NT
+    }
+}
+```
+
+StateMachine publishes both `Current State` and `Desired State` to NT,
+making state transitions visible in the dashboard. It also provides
+`isTransitioning()` for gating logic.
+
+This helper is **optional** — simple subsystems can continue using
+manual enum fields and switch statements.
+
+### Subsystem Implementation Example
+
+A complete subsystem shows how TObj, TransmissionFX, SensorMode,
+homing, and telemetry fit together:
+
+```java
+public class ExampleArm extends Subsystem {
+    private final TransmissionFX transmission;
+
+    public ExampleArm(TObj parent) {
+        super(parent, "ExampleArm");
+
+        // 1. Create transmission (motor + gear ratio)
+        transmission = new TransmissionFX(this, "Arm",
+            new MotorBase(MotorType.KRAKENX60),
+            new CANDeviceID(10, "canivore"));
+        transmission.setRotorToMechanism(1.0 / 50.0);  // 50:1 reduction
+        transmission.setMechanismToUnits(360.0);        // output in degrees
+
+        // 2. Configure via library convenience API
+        transmission.configCurrentLimitStator(true, 40);
+        transmission.configDirection(MotorDirection.CCW);
+        transmission.setNeutralMode(NeutralState.BRAKE);
+
+        // 3. Configure via direct CTRE access (passthrough)
+        var config = transmission.getLeaderConfig();
+        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 10.5;
+
+        // 4. Add encoder
+        transmission.addEncoderFX(250.0);
+
+        // 5. Configure PID (on-device)
+        transmission.configPIDFSlot(0, 0.1, 0, 0.01, 0, 0);
+    }
+
+    @Override
+    public void robotInit(double timestamp) {
+        transmission.robotInit(timestamp);
+        transmission.applyConfigs();
+    }
+
+    @Override
+    protected boolean onSensorsZero() {
+        transmission.resetEncoders();
+        return true;  // zeroing succeeded
+    }
+
+    @Override
+    public void robotPeriodicBefore(double timestamp) {
+        transmission.robotPeriodicBefore(timestamp);
+    }
+
+    // Called by robot project teleop/auto to set target
+    public void setPosition(double degrees, double ffVolts) {
+        transmission.setOutputPosition(degrees, ffVolts);
+    }
+
+    @Override
+    public void outputTelemetry() {
+        transmission.outputTelemetry();
+    }
+}
+```
 
 ---
 

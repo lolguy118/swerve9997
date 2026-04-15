@@ -78,6 +78,96 @@ public class TransmissionFX extends TransmissionBase {
                     .withUseTimesync(true)
                     .withUpdateFreqHz(0);
 
+    /**
+     * Timesync applicators for all control requests. Each entry captures setting UseTimesync and
+     * UpdateFreqHz on one control request object. Used by configTimesync() to loop instead of
+     * field-by-field updates.
+     */
+    @SuppressWarnings("unchecked")
+    private final java.util.function.BiConsumer<Boolean, Double>[] timesyncApplicators =
+            new java.util.function.BiConsumer[] {
+                (en, hz) -> {
+                    motorOut.UseTimesync = (Boolean) en;
+                    motorOut.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorOutV.UseTimesync = (Boolean) en;
+                    motorOutV.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorPositionFF.UseTimesync = (Boolean) en;
+                    motorPositionFF.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorVelocityFF.UseTimesync = (Boolean) en;
+                    motorVelocityFF.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorPositionDuty.UseTimesync = (Boolean) en;
+                    motorPositionDuty.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorPositionTC.UseTimesync = (Boolean) en;
+                    motorPositionTC.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorVelocityDuty.UseTimesync = (Boolean) en;
+                    motorVelocityDuty.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorVelocityTC.UseTimesync = (Boolean) en;
+                    motorVelocityTC.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMOut.UseTimesync = (Boolean) en;
+                    motorMMOut.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMFF.UseTimesync = (Boolean) en;
+                    motorMMFF.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMTC.UseTimesync = (Boolean) en;
+                    motorMMTC.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMVelOut.UseTimesync = (Boolean) en;
+                    motorMMVelOut.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMVelFF.UseTimesync = (Boolean) en;
+                    motorMMVelFF.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMVelTC.UseTimesync = (Boolean) en;
+                    motorMMVelTC.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMExpoOut.UseTimesync = (Boolean) en;
+                    motorMMExpoOut.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMExpoFF.UseTimesync = (Boolean) en;
+                    motorMMExpoFF.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorMMExpoTC.UseTimesync = (Boolean) en;
+                    motorMMExpoTC.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorDynMMOut.UseTimesync = (Boolean) en;
+                    motorDynMMOut.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorDynMMFF.UseTimesync = (Boolean) en;
+                    motorDynMMFF.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorDynMMTC.UseTimesync = (Boolean) en;
+                    motorDynMMTC.UpdateFreqHz = (Double) hz;
+                },
+            };
+
     /*
      *
      * Telemetry (NT)
@@ -268,53 +358,9 @@ public class TransmissionFX extends TransmissionBase {
     public void configTimesync(final boolean argEnabled, final double argUpdateFreqHz) {
         double freqHz = argEnabled ? 0.0 : argUpdateFreqHz;
 
-        motorOut.UseTimesync = argEnabled;
-        motorOut.UpdateFreqHz = freqHz;
-        motorOutV.UseTimesync = argEnabled;
-        motorOutV.UpdateFreqHz = freqHz;
-
-        motorPositionFF.UseTimesync = argEnabled;
-        motorPositionFF.UpdateFreqHz = freqHz;
-        motorVelocityFF.UseTimesync = argEnabled;
-        motorVelocityFF.UpdateFreqHz = freqHz;
-
-        motorPositionDuty.UseTimesync = argEnabled;
-        motorPositionDuty.UpdateFreqHz = freqHz;
-        motorPositionTC.UseTimesync = argEnabled;
-        motorPositionTC.UpdateFreqHz = freqHz;
-
-        motorVelocityDuty.UseTimesync = argEnabled;
-        motorVelocityDuty.UpdateFreqHz = freqHz;
-        motorVelocityTC.UseTimesync = argEnabled;
-        motorVelocityTC.UpdateFreqHz = freqHz;
-
-        motorMMOut.UseTimesync = argEnabled;
-        motorMMOut.UpdateFreqHz = freqHz;
-        motorMMFF.UseTimesync = argEnabled;
-        motorMMFF.UpdateFreqHz = freqHz;
-        motorMMTC.UseTimesync = argEnabled;
-        motorMMTC.UpdateFreqHz = freqHz;
-
-        motorMMVelOut.UseTimesync = argEnabled;
-        motorMMVelOut.UpdateFreqHz = freqHz;
-        motorMMVelFF.UseTimesync = argEnabled;
-        motorMMVelFF.UpdateFreqHz = freqHz;
-        motorMMVelTC.UseTimesync = argEnabled;
-        motorMMVelTC.UpdateFreqHz = freqHz;
-
-        motorMMExpoOut.UseTimesync = argEnabled;
-        motorMMExpoOut.UpdateFreqHz = freqHz;
-        motorMMExpoFF.UseTimesync = argEnabled;
-        motorMMExpoFF.UpdateFreqHz = freqHz;
-        motorMMExpoTC.UseTimesync = argEnabled;
-        motorMMExpoTC.UpdateFreqHz = freqHz;
-
-        motorDynMMOut.UseTimesync = argEnabled;
-        motorDynMMOut.UpdateFreqHz = freqHz;
-        motorDynMMFF.UseTimesync = argEnabled;
-        motorDynMMFF.UpdateFreqHz = freqHz;
-        motorDynMMTC.UseTimesync = argEnabled;
-        motorDynMMTC.UpdateFreqHz = freqHz;
+        for (var applicator : timesyncApplicators) {
+            applicator.accept(argEnabled, freqHz);
+        }
 
         /* Also configure the leader controller's timesync */
         getLeaderController().setControlUpdateFrequency(argEnabled ? 250.0 : 0.0, argEnabled);

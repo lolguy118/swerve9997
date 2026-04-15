@@ -91,6 +91,7 @@ These rules exist because robots run in 20 ms real-time loops at competition. Vi
 | 4 | Register all CTRE signals before `CTREManager.init()` | Signals added after init are never included in the bulk refresh | [CTREManager](library-architecture.md#ctremanager--centralized-can-refresh) |
 | 5 | No tunable values in docs or CLAUDE.md | Constants in code are the single source of truth; docs reference constant names, not numbers | [Documentation Rules](../../CLAUDE.md) |
 | 6 | All configurable values must be dashboard-tunable via `LoggedNTInput` | Enables field-side tuning without redeploying code | [CODE-BUG-004](team271-java-coding-standard.md), [Tuning Infrastructure](library-architecture.md#tuning-infrastructure) |
+| 7 | Every hardware wrapper must expose its underlying vendor object via a getter | The library is additive — it wraps but never blocks access to CTRE/WPILib features | [Passthrough Design](passthrough-design.md) |
 
 See [Java Coding Standard — Section 4.9](team271-java-coding-standard.md) for the complete safety rules.
 

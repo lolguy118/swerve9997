@@ -2,7 +2,7 @@ package com.team271.lib;
 
 import com.team271.lib.nt.NTTable;
 
-public abstract class TObj {
+public abstract class TObj implements Lifecycle, Named {
     protected final String name;
 
     protected final NTTable table;
@@ -39,7 +39,8 @@ public abstract class TObj {
     }
 
     /** Build an AdvantageKit log key from this object's NT path. */
-    protected String logKey(final String suffix) {
+    @Override
+    public String logKey(final String suffix) {
         return table.getPath() + "/" + suffix;
     }
 

@@ -1,10 +1,13 @@
 package com.team271.lib.subsystem;
 
+import com.team271.lib.Lifecycle;
+import com.team271.lib.Named;
 import com.team271.lib.misc.Elastic;
 import com.team271.lib.util.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,15 +38,23 @@ public class SubsystemManager {
      * Variables
      *
      */
-    private ArrayList<Subsystem> mAllSubsystems = new ArrayList<>();
+    private final ArrayList<Lifecycle> mAllLifecycles = new ArrayList<>();
+    private final ArrayList<Subsystem> mAllSubsystems = new ArrayList<>();
     private final Map<String, Double> lastErrorNotificationTime = new HashMap<>();
+    private final double errorThrottleSec;
 
     /*
      *
      * Constructors
      *
      */
-    private SubsystemManager() {}
+    private SubsystemManager() {
+        this(2.0);
+    }
+
+    public SubsystemManager(final double argErrorThrottleSec) {
+        errorThrottleSec = argErrorThrottleSec;
+    }
 
     /*
      *
@@ -51,42 +62,54 @@ public class SubsystemManager {
      *
      */
     public List<Subsystem> getSubsystems() {
-        return java.util.Collections.unmodifiableList(mAllSubsystems);
+        return Collections.unmodifiableList(mAllSubsystems);
+    }
+
+    public List<Lifecycle> getLifecycles() {
+        return Collections.unmodifiableList(mAllLifecycles);
     }
 
     /*
      *
-     * Subsystems
+     * Registration
      *
      */
-    public void addSubsystem(final Subsystem argSubsystems) {
-        if (argSubsystems != null) {
-            mAllSubsystems.add(argSubsystems);
+    public void addSubsystem(final Subsystem argSubsystem) {
+        if (argSubsystem != null) {
+            mAllSubsystems.add(argSubsystem);
+            mAllLifecycles.add(argSubsystem);
+        }
+    }
+
+    /** Register a Lifecycle participant that is not a Subsystem. */
+    public void addLifecycle(final Lifecycle argLifecycle) {
+        if (argLifecycle != null) {
+            mAllLifecycles.add(argLifecycle);
         }
     }
 
     /**
-     * Runs an action on each subsystem, catching and logging any exception so that a single failing
-     * subsystem does not prevent others from running.
+     * Runs an action on each lifecycle participant, catching and logging any exception so that a
+     * single failing participant does not prevent others from running.
      */
-    private void forEachSafe(final String phase, final Consumer<Subsystem> action) {
-        for (Subsystem s : mAllSubsystems) {
+    private void forEachSafe(final String phase, final Consumer<Lifecycle> action) {
+        for (Lifecycle l : mAllLifecycles) {
             try {
-                action.accept(s);
+                action.accept(l);
             } catch (Throwable t) {
+                String name = (l instanceof Named n) ? n.getName() : l.getClass().getSimpleName();
                 DriverStation.reportError(
-                        s.getName() + " threw in " + phase + ": " + t.getMessage(), true);
+                        name + " threw in " + phase + ": " + t.getMessage(), true);
                 double now = Timer.getFPGATimestamp();
                 double lastTime =
-                        lastErrorNotificationTime.getOrDefault(
-                                s.getName(), Double.NEGATIVE_INFINITY);
-                lastErrorNotificationTime.put(s.getName(), now);
-                if (now - lastTime > 2.0) {
+                        lastErrorNotificationTime.getOrDefault(name, Double.NEGATIVE_INFINITY);
+                lastErrorNotificationTime.put(name, now);
+                if (now - lastTime > errorThrottleSec) {
                     Elastic.sendNotification(
                             new Elastic.Notification(
                                     Elastic.Notification.NotificationLevel.ERROR,
                                     "Subsystem Error",
-                                    s.getName() + " threw in " + phase + ": " + t.getMessage()));
+                                    name + " threw in " + phase + ": " + t.getMessage()));
                 }
             }
         }
@@ -196,9 +219,9 @@ public class SubsystemManager {
      *
      */
     public void outputTelemetry() {
-        Logger.recordOutput("SubsystemManager/Count", mAllSubsystems.size());
+        Logger.recordOutput("SubsystemManager/Count", mAllLifecycles.size());
 
-        forEachSafe("outputTelemetry", l -> l.outputTelemetry());
+        forEachSafe("outputTelemetry", Lifecycle::outputTelemetry);
 
         Alert.outputTelemetry();
     }

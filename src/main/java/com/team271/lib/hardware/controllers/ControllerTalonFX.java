@@ -579,117 +579,88 @@ public class ControllerTalonFX extends ControllerSmart {
 
     /* PID Values */
 
+    /**
+     * Slot accessor record — provides uniform read/write access to any PID slot's gains. CTRE's
+     * Slot0Configs, Slot1Configs, Slot2Configs share the same fields but not a common type, so this
+     * record bridges the gap.
+     */
+    private record SlotAccess(
+            java.util.function.DoubleSupplier getP,
+            java.util.function.DoubleConsumer setP,
+            java.util.function.DoubleSupplier getI,
+            java.util.function.DoubleConsumer setI,
+            java.util.function.DoubleSupplier getD,
+            java.util.function.DoubleConsumer setD,
+            java.util.function.DoubleSupplier getV,
+            java.util.function.DoubleSupplier getS,
+            java.util.function.DoubleConsumer setV,
+            java.util.function.DoubleConsumer setS) {}
+
+    private SlotAccess slotAccess(final int argSlot) {
+        return switch (argSlot) {
+            case 0 ->
+                    new SlotAccess(
+                            () -> config.Slot0.kP, v -> config.Slot0.kP = v,
+                            () -> config.Slot0.kI, v -> config.Slot0.kI = v,
+                            () -> config.Slot0.kD, v -> config.Slot0.kD = v,
+                            () -> config.Slot0.kV, () -> config.Slot0.kS,
+                            v -> config.Slot0.kV = v, v -> config.Slot0.kS = v);
+            case 1 ->
+                    new SlotAccess(
+                            () -> config.Slot1.kP, v -> config.Slot1.kP = v,
+                            () -> config.Slot1.kI, v -> config.Slot1.kI = v,
+                            () -> config.Slot1.kD, v -> config.Slot1.kD = v,
+                            () -> config.Slot1.kV, () -> config.Slot1.kS,
+                            v -> config.Slot1.kV = v, v -> config.Slot1.kS = v);
+            case 2 ->
+                    new SlotAccess(
+                            () -> config.Slot2.kP, v -> config.Slot2.kP = v,
+                            () -> config.Slot2.kI, v -> config.Slot2.kI = v,
+                            () -> config.Slot2.kD, v -> config.Slot2.kD = v,
+                            () -> config.Slot2.kV, () -> config.Slot2.kS,
+                            v -> config.Slot2.kV = v, v -> config.Slot2.kS = v);
+            default -> null;
+        };
+    }
+
     public void setPSlot(final int argSlot, final double argSetP) {
-        switch (argSlot) {
-            case 0:
-                config.Slot0.kP = argSetP;
-                break;
-            case 1:
-                config.Slot1.kP = argSetP;
-                break;
-            case 2:
-                config.Slot2.kP = argSetP;
-                break;
-            default:
-                break;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        if (s != null) s.setP.accept(argSetP);
     }
 
     public double getPSlot(final int argSlot) {
-        switch (argSlot) {
-            case 0:
-                return config.Slot0.kP;
-            case 1:
-                return config.Slot1.kP;
-            case 2:
-                return config.Slot2.kP;
-            default:
-                return 0;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        return (s != null) ? s.getP.getAsDouble() : 0;
     }
 
     public void setISlot(final int argSlot, final double argSetI) {
-        switch (argSlot) {
-            case 0:
-                config.Slot0.kI = argSetI;
-                break;
-            case 1:
-                config.Slot1.kI = argSetI;
-                break;
-            case 2:
-                config.Slot2.kI = argSetI;
-                break;
-            default:
-                break;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        if (s != null) s.setI.accept(argSetI);
     }
 
     public double getISlot(final int argSlot) {
-        switch (argSlot) {
-            case 0:
-                return config.Slot0.kI;
-            case 1:
-                return config.Slot1.kI;
-            case 2:
-                return config.Slot2.kI;
-            default:
-                return 0;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        return (s != null) ? s.getI.getAsDouble() : 0;
     }
 
     public void setDSlot(final int argSlot, final double argSetD) {
-        switch (argSlot) {
-            case 0:
-                config.Slot0.kD = argSetD;
-                break;
-            case 1:
-                config.Slot1.kD = argSetD;
-                break;
-            case 2:
-                config.Slot2.kD = argSetD;
-                break;
-            default:
-                break;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        if (s != null) s.setD.accept(argSetD);
     }
 
     public double getDSlot(final int argSlot) {
-        switch (argSlot) {
-            case 0:
-                return config.Slot0.kD;
-            case 1:
-                return config.Slot1.kD;
-            case 2:
-                return config.Slot2.kD;
-            default:
-                return 0;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        return (s != null) ? s.getD.getAsDouble() : 0;
     }
 
     public double getVSlot(final int argSlot) {
-        switch (argSlot) {
-            case 0:
-                return config.Slot0.kV;
-            case 1:
-                return config.Slot1.kV;
-            case 2:
-                return config.Slot2.kV;
-            default:
-                return 0;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        return (s != null) ? s.getV.getAsDouble() : 0;
     }
 
     public double getSSlot(final int argSlot) {
-        switch (argSlot) {
-            case 0:
-                return config.Slot0.kS;
-            case 1:
-                return config.Slot1.kS;
-            case 2:
-                return config.Slot2.kS;
-            default:
-                return 0;
-        }
+        SlotAccess s = slotAccess(argSlot);
+        return (s != null) ? s.getS.getAsDouble() : 0;
     }
 
     public void setPIDFSlot(
@@ -699,30 +670,13 @@ public class ControllerTalonFX extends ControllerSmart {
             final double argD,
             final double argV,
             final double argS) {
-        switch (argSlot) {
-            case 0:
-                config.Slot0.kP = argP;
-                config.Slot0.kI = argI;
-                config.Slot0.kD = argD;
-                config.Slot0.kV = argV;
-                config.Slot0.kS = argS;
-                break;
-            case 1:
-                config.Slot1.kP = argP;
-                config.Slot1.kI = argI;
-                config.Slot1.kD = argD;
-                config.Slot1.kV = argV;
-                config.Slot1.kS = argS;
-                break;
-            case 2:
-                config.Slot2.kP = argP;
-                config.Slot2.kI = argI;
-                config.Slot2.kD = argD;
-                config.Slot2.kV = argV;
-                config.Slot2.kS = argS;
-                break;
-            default:
-                break;
+        SlotAccess s = slotAccess(argSlot);
+        if (s != null) {
+            s.setP.accept(argP);
+            s.setI.accept(argI);
+            s.setD.accept(argD);
+            s.setV.accept(argV);
+            s.setS.accept(argS);
         }
     }
 

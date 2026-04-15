@@ -26,6 +26,7 @@ Team 271's reusable FRC robot library. The codebase uses WPILib, CTRE Phoenix 6,
 - [Library Architecture](docs/team-lib/library-architecture.md) — TObj hierarchy, subsystem lifecycle, hardware abstraction stack
 - [Auto Design](docs/team-lib/auto-design.md) — move composition, AutoMode lifecycle, sequencing patterns
 - [Hardware Abstraction](docs/team-lib/hardware-abstraction.md) — controllers, transmissions, sensors, input system
+- [Passthrough Design](docs/team-lib/passthrough-design.md) — wrapper-not-wall philosophy, underlying object access
 - [Control System](docs/team-lib/control-system.md) — PID variants, selection criteria, Balance algorithm
 - [Testing Strategy](docs/team-lib/testing-strategy.md) — HAL initialization, test isolation, coverage patterns
 - [Fault Tolerance](docs/team-lib/fault-tolerance.md) — library-level fault patterns, timeout protection, recovery

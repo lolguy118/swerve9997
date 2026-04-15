@@ -244,6 +244,67 @@ both encoders failing would require robot-specific handling.
 
 ---
 
+## Input Validation (NaN/Infinity Guards)
+
+TransmissionFX guards all closed-loop output methods against non-finite
+values (NaN, Infinity, -Infinity). The `hasInvalidInput()` method checks
+every parameter before sending a control request to hardware:
+
+```java
+// In TransmissionFX — every closed-loop method starts with:
+if (hasInvalidInput("setOutputPosition", argPosition, argFFVolt)) return;
+```
+
+**Behavior:** When a non-finite value is detected:
+1. Logs a warning to DriverStation (throttled)
+2. Returns without sending the control request (motor holds last command)
+3. Does **not** throw an exception — this is deliberate for competition
+
+**Why warn-and-skip instead of throw:** During competition, an exception
+in a control path could cascade through the subsystem and trigger
+exception isolation for the entire subsystem. A bad sensor reading
+producing NaN should not disable the arm — it should skip one control
+cycle and continue on the next valid reading.
+
+**In simulation/testing:** Consider enabling strict validation in robot
+project code for development builds:
+
+```java
+// In Robot.robotInit() for testing builds:
+if (!RobotBase.isReal()) {
+    TransmissionFX.STRICT_VALIDATION = true;  // throws instead of warns
+}
+```
+
+---
+
+## Brownout Recovery
+
+**Why this matters:** During brownouts, the roboRIO voltage drops below
+operational thresholds. CTRE devices may lose their applied configuration
+and return to factory defaults. When power recovers, the device is
+connected but misconfigured — motors may run without current limits or
+with wrong PID gains.
+
+**Library infrastructure:**
+
+- `ControllerTalonFX.isConfigured` flag tracks whether config was
+  successfully applied
+- `robotPeriodicBefore()` checks `isConnected()` every cycle
+- FaultMonitor tracks `BridgeBrownout` sticky fault
+
+**Robot project responsibility:**
+
+- Detect brownout recovery (monitor `isConnected` transitions from
+  false → true, or check brownout sticky fault)
+- Re-apply configs via `transmission.applyConfigs()` after recovery
+- Re-zero sensors if position was lost
+- Alert the driver via Elastic notification
+
+See coding standard CODE-SAF-008 for the full brownout recovery pattern.
+
+---
+
 ## Safe Defaults
 
 The library establishes safe defaults throughout:

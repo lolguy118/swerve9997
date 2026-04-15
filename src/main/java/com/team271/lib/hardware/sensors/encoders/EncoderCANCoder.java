@@ -12,6 +12,7 @@ import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.CTREManager;
+import com.team271.lib.hardware.FaultMonitor;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotController;
@@ -24,6 +25,7 @@ public class EncoderCANCoder extends EncoderCTRE {
     protected final CANcoderConfiguration encConfig = new CANcoderConfiguration();
     protected CANcoder enc;
     protected CANcoderSimState simState;
+    protected FaultMonitor faultMonitor;
 
     protected StatusSignal<Angle> sigPosBoot;
     protected double posBoot = 0.0;
@@ -92,6 +94,11 @@ public class EncoderCANCoder extends EncoderCTRE {
         encConfig.MagnetSensor.MagnetOffset = 0;
 
         ctreStatus = applyConfig();
+
+        faultMonitor = new FaultMonitor(this, getName());
+        faultMonitor.addFault("BootDuringEnable", enc.getStickyFault_BootDuringEnable(), 250.0);
+        faultMonitor.addFault("Undervoltage", enc.getStickyFault_Undervoltage(), 250.0);
+        faultMonitor.addFault("BadMagnet", enc.getStickyFault_BadMagnet(), 250.0);
     }
 
     public CANcoderConfiguration getConfig() {
@@ -127,6 +134,10 @@ public class EncoderCANCoder extends EncoderCTRE {
 
         sigVel = enc.getVelocity();
         CTREManager.addSignalCANCoder(sigVel, updateFreqHz);
+
+        if (faultMonitor != null) {
+            faultMonitor.registerSignals();
+        }
     }
 
     @Override
@@ -197,6 +208,10 @@ public class EncoderCANCoder extends EncoderCTRE {
         if ((sigPosAbs != null) && sigPosAbs.getStatus().isOK()) {
             posAbs = sigPosAbs.getValue().in(Rotations);
         }
+
+        if (faultMonitor != null) {
+            faultMonitor.refresh();
+        }
     }
 
     /*
@@ -237,5 +252,9 @@ public class EncoderCANCoder extends EncoderCTRE {
         ntPosBoot.publish(getPosBootRotations());
         ntPosAbs.publish(getPosAbsRotations());
         ntMagnetOffset.publish(encConfig.MagnetSensor.MagnetOffset);
+
+        if (faultMonitor != null) {
+            faultMonitor.outputTelemetry();
+        }
     }
 }

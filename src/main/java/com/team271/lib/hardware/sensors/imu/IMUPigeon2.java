@@ -12,6 +12,7 @@ import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.CTREManager;
+import com.team271.lib.hardware.FaultMonitor;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -29,6 +30,8 @@ public class IMUPigeon2 extends IMUCTRE {
     protected StatusSignal<AngularVelocity> sigYawRate;
     protected StatusSignal<Angle> sigRoll;
     protected StatusSignal<Angle> sigPitch;
+
+    protected FaultMonitor faultMonitor;
 
     /*
      *
@@ -75,6 +78,15 @@ public class IMUPigeon2 extends IMUCTRE {
         ctreStatus = applyConfig();
 
         imu.setYaw(0, ConstantsLib.CAN_LONG_TIMEOUT_MS);
+
+        faultMonitor = new FaultMonitor(this, getName());
+        faultMonitor.addFault("BootDuringEnable", imu.getStickyFault_BootDuringEnable(), 250.0);
+        faultMonitor.addFault("Hardware", imu.getStickyFault_Hardware(), 250.0);
+        faultMonitor.addFault("Undervoltage", imu.getStickyFault_Undervoltage(), 250.0);
+        faultMonitor.addFault("SatMagnetometer", imu.getStickyFault_SaturatedMagnetometer(), 250.0);
+        faultMonitor.addFault(
+                "SatAccelerometer", imu.getStickyFault_SaturatedAccelerometer(), 250.0);
+        faultMonitor.addFault("SatGyroscope", imu.getStickyFault_SaturatedGyroscope(), 250.0);
     }
 
     @Override
@@ -109,6 +121,10 @@ public class IMUPigeon2 extends IMUCTRE {
 
         sigPitch = imu.getPitch();
         CTREManager.addSignalPigeon(sigPitch, updateFreqHz);
+
+        if (faultMonitor != null) {
+            faultMonitor.registerSignals();
+        }
     }
 
     /**
@@ -124,6 +140,10 @@ public class IMUPigeon2 extends IMUCTRE {
     @Override
     public void robotPeriodicBefore(final double argTimestamp) {
         refresh();
+
+        if (faultMonitor != null) {
+            faultMonitor.refresh();
+        }
     }
 
     /*
@@ -173,5 +193,9 @@ public class IMUPigeon2 extends IMUCTRE {
     @Override
     public void outputTelemetry() {
         super.outputTelemetry();
+
+        if (faultMonitor != null) {
+            faultMonitor.outputTelemetry();
+        }
     }
 }

@@ -13,6 +13,7 @@ import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.CTREManager;
+import com.team271.lib.hardware.FaultMonitor;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Current;
@@ -53,7 +54,7 @@ public class ControllerTalonFX extends ControllerSmart {
      * TalonFX
      */
     protected static final double UPDATE_FREQ_HZ_FAULTS = 250.0;
-    protected StatusSignal<Boolean> faultBootDuringEnable;
+    protected FaultMonitor faultMonitor;
 
     protected final NeutralOut motorBrake = new NeutralOut();
 
@@ -180,13 +181,27 @@ public class ControllerTalonFX extends ControllerSmart {
 
             /*
              * Clear Sticky Faults
-             * Get Fault Signals
+             * Setup Fault Monitor
              */
             talonFX.clearStickyFaults();
 
-            faultBootDuringEnable = talonFX.getStickyFault_BootDuringEnable();
-
-            CTREManager.addSignalTalonFX(faultBootDuringEnable, UPDATE_FREQ_HZ_FAULTS);
+            faultMonitor = new FaultMonitor(this, getName());
+            faultMonitor.addFault(
+                    "BootDuringEnable",
+                    talonFX.getStickyFault_BootDuringEnable(),
+                    UPDATE_FREQ_HZ_FAULTS);
+            faultMonitor.addFault(
+                    "DeviceTemp", talonFX.getStickyFault_DeviceTemp(), UPDATE_FREQ_HZ_FAULTS);
+            faultMonitor.addFault(
+                    "ProcTemp", talonFX.getStickyFault_ProcTemp(), UPDATE_FREQ_HZ_FAULTS);
+            faultMonitor.addFault(
+                    "Hardware", talonFX.getStickyFault_Hardware(), UPDATE_FREQ_HZ_FAULTS);
+            faultMonitor.addFault(
+                    "Undervoltage", talonFX.getStickyFault_Undervoltage(), UPDATE_FREQ_HZ_FAULTS);
+            faultMonitor.addFault(
+                    "BridgeBrownout",
+                    talonFX.getStickyFault_BridgeBrownout(),
+                    UPDATE_FREQ_HZ_FAULTS);
 
             /*
              * Create Default Config
@@ -259,6 +274,10 @@ public class ControllerTalonFX extends ControllerSmart {
         if (signals.contains(Signals.CLOSED_LOOP_OUTPUT) || signals.contains(Signals.ALL)) {
             clOutput = talonFX.getClosedLoopOutput();
             CTREManager.addSignalTalonFX(clOutput, UPDATE_FREQ_HZ_CLOSED_LOOP);
+        }
+
+        if (faultMonitor != null) {
+            faultMonitor.registerSignals();
         }
     }
 
@@ -830,6 +849,10 @@ public class ControllerTalonFX extends ControllerSmart {
          * Check if the controller is still alive
          */
         isConnected = talonFX.isConnected();
+
+        if (faultMonitor != null) {
+            faultMonitor.refresh();
+        }
     }
 
     /*
@@ -927,5 +950,9 @@ public class ControllerTalonFX extends ControllerSmart {
 
         ntSupplyVoltage.publish(getSupplyVoltage());
         ntSupplyCurrent.publish(getSupplyCurrent());
+
+        if (faultMonitor != null) {
+            faultMonitor.outputTelemetry();
+        }
     }
 }

@@ -84,8 +84,22 @@ public abstract class Subsystem extends TObj {
         }
     }
 
+    /**
+     * Zeros all sensors. Subclasses override {@link #onSensorsZero()} to perform the actual zeroing
+     * (reset encoders, set positions, etc.) and return true on success. The base class sets
+     * isZeroed based on the return value.
+     */
     public void sensorsZero() {
-        isZeroed = false;
+        isZeroed = onSensorsZero();
+    }
+
+    /**
+     * Performs subsystem-specific sensor zeroing. Override in subclasses.
+     *
+     * @return true if zeroing succeeded, false if it failed
+     */
+    protected boolean onSensorsZero() {
+        return false;
     }
 
     /*

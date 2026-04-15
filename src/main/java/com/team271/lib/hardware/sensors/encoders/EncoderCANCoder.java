@@ -200,13 +200,19 @@ public class EncoderCANCoder extends EncoderCTRE {
     public void refresh() {
         super.refresh();
 
-        /* Since these are already refreshed we don't need to inline the refresh call */
-        if ((sigPosBoot != null) && sigPosBoot.getStatus().isOK()) {
-            posBoot = sigPosBoot.getValue().in(Rotations);
-        }
+        /* Latency-compensate boot and absolute positions using velocity signal */
+        if ((sigVel != null) && sigVel.getStatus().isOK()) {
+            if ((sigPosBoot != null) && sigPosBoot.getStatus().isOK()) {
+                posBoot =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPosBoot, sigVel)
+                                .in(Rotations);
+            }
 
-        if ((sigPosAbs != null) && sigPosAbs.getStatus().isOK()) {
-            posAbs = sigPosAbs.getValue().in(Rotations);
+            if ((sigPosAbs != null) && sigPosAbs.getStatus().isOK()) {
+                posAbs =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPosAbs, sigVel)
+                                .in(Rotations);
+            }
         }
 
         if (faultMonitor != null) {

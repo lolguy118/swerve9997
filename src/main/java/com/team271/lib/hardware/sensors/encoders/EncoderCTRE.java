@@ -74,10 +74,11 @@ public abstract class EncoderCTRE extends EncoderBase {
         /* Since these are already refreshed we don't need to inline the refresh call */
         if ((sigVel != null) && sigVel.getStatus().isOK()) {
             velRotations = sigVel.getValue().in(RotationsPerSecond);
-        }
 
-        if ((sigPos != null) && sigPos.getStatus().isOK()) {
-            posRotations = sigPos.getValue().in(Rotations);
+            if ((sigPos != null) && sigPos.getStatus().isOK()) {
+                posRotations =
+                        BaseStatusSignal.getLatencyCompensatedValue(sigPos, sigVel).in(Rotations);
+            }
         }
     }
 

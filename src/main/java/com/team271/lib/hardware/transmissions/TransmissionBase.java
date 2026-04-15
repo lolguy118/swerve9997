@@ -429,8 +429,7 @@ public abstract class TransmissionBase extends TObj {
             final CANDeviceID argCANIDEnc,
             final EncoderDirection argEncoderDir,
             final double argUpdateFreqHz) {
-        encCANCoder =
-                new EncoderCANCoderComp(this, name, argCANIDEnc, argEncoderDir, argUpdateFreqHz);
+        encCANCoder = new EncoderCANCoder(this, name, argCANIDEnc, argEncoderDir, argUpdateFreqHz);
         /* CANCoder always becomes the active adapter when present */
         encoder = new CANCoderAdapter(encCANCoder, gearRatio);
     }

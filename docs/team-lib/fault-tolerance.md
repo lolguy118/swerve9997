@@ -109,48 +109,42 @@ check this return value and report errors (see D4 in the code fix log).
 
 ---
 
-## CTRE Fault Coverage
+## CTRE Fault Coverage (FaultMonitor)
 
 **Why this matters:** Phoenix 6 devices expose dozens of fault signals
-(supply over-voltage, under-voltage, hardware faults, thermal
-shutdowns, etc.). Monitoring these faults gives the driver and pit
-crew immediate visibility into hardware problems. Without monitoring,
-a motor in thermal shutdown looks identical to a CAN disconnect from
-the driver's perspective.
+(under-voltage, hardware faults, thermal shutdowns, etc.). Monitoring
+these faults gives the driver and pit crew immediate visibility into
+hardware problems. Without monitoring, a motor in thermal shutdown
+looks identical to a CAN disconnect from the driver's perspective.
 
-### Currently Monitored
+### FaultMonitor Architecture
 
-| Device | Fault | How Checked | Cleared |
-|--------|-------|-------------|---------|
-| TalonFX | `getStickyFault_BootDuringEnable()` | Registered at 250 Hz via CTREManager | `clearStickyFaults()` at device creation |
+`FaultMonitor` is a reusable class that monitors CTRE sticky fault
+signals. Each device creates a FaultMonitor in its constructor and
+registers fault signals by name:
 
-This single fault detects when a motor controller rebooted while the
-robot was enabled — a strong indicator of a brownout or wiring issue.
+- **Registration:** `addFault(name, stickyFaultSignal, updateFreqHz)`
+- **Signal registration:** `registerSignals()` called in `robotInit()`
+- **Checking:** `refresh()` called in `robotPeriodicBefore()`
+- **Telemetry:** `outputTelemetry()` publishes per-fault booleans and
+  a summary `Has Fault` boolean to NetworkTables
+- **Alerts:** Each fault creates a persistent `Alert` in the "Faults"
+  group. Active faults appear on the dashboard automatically.
 
-### Not Yet Monitored
+Sticky faults are used (not live faults) because they latch transient
+events that might clear before the next read cycle.
 
-The following Phoenix 6 fault categories are available in the API
-but not yet tracked by the library:
+### Monitored Faults by Device
 
-| Category | Example Faults | Why It Matters |
-|----------|---------------|----------------|
-| **Supply voltage** | `Fault_SupplyOverV`, `Fault_SupplyUnstable` | Detects brownout or voltage regulator issues |
-| **Hardware faults** | `Fault_Hardware`, `StickyFault_Hardware` | Detects internal device failure |
-| **Thermal** | `Fault_DeviceTemp`, `Fault_ProcTemp` | Detects overheating before thermal shutdown |
-| **Limit switch** | `Fault_ForwardHardLimit`, `Fault_ReverseHardLimit` | Confirms limit switch engagement |
-| **Sensor** | `Fault_RemoteSensorInvalid` | Detects CANCoder communication loss |
-| **Bridge faults** | `Fault_BridgeBrownout`, `StickyFault_BridgeBrownout` | Detects motor driver brownout |
+| Device | Faults Monitored |
+|--------|-----------------|
+| **TalonFX** | BootDuringEnable, DeviceTemp, ProcTemp, Hardware, Undervoltage, BridgeBrownout |
+| **CANCoder** | BootDuringEnable, Undervoltage, BadMagnet |
+| **Pigeon 2** | BootDuringEnable, Hardware, Undervoltage, SaturatedMagnetometer, SaturatedAccelerometer, SaturatedGyroscope |
 
-### Fault Telemetry Gap
-
-No fault status is currently published to NetworkTables. When the
-library expands fault monitoring, each device should publish its
-active faults to an NT subtable for dashboard visibility. This would
-allow the driver to see "Left Drive Motor: SupplyUnstable" on Elastic
-rather than inferring faults from motor behavior.
-
-See the [Not Yet Implemented](hardware-abstraction.md#phoenix-6-features-not-yet-implemented)
-table in Hardware Abstraction for the full planned feature list.
+All sticky faults are cleared at device creation via
+`clearStickyFaults()`. New faults that appear after initialization
+indicate a real issue that occurred during operation.
 
 ---
 
@@ -263,7 +257,7 @@ The library establishes safe defaults throughout:
 | PID output | Clamped to `[minOutput, maxOutput]` range |
 | Integral wind-up | Bounded by `[iMin, iMax]` and `iZone` |
 | TransmissionBase leader | Null-checked in `robotInit()` — logs error and returns safely |
-| CTRE fault monitoring | Only `BootDuringEnable` sticky fault checked; other faults pass silently (see [CTRE Fault Coverage](#ctre-fault-coverage)) |
+| CTRE fault monitoring | FaultMonitor tracks sticky faults per device with Alerts and NT telemetry (see [CTRE Fault Coverage](#ctre-fault-coverage-faultmonitor)) |
 
 ---
 

@@ -328,9 +328,12 @@ rotor/sensor rotations before sending to hardware.
 
 **Shifter support:**
 - `Shifter` interface with `ShifterPneumatic` implementation
-- `ShifterState`: GEAR_NONE, GEAR_1, GEAR_2
+- `ShifterState`: GEAR_NONE (uninitialized), GEAR_1, GEAR_2
+- `shift(GEAR_NONE)` is rejected with a warning — GEAR_NONE is not
+  a valid shift target
 - Per-gear sensor ratios (`sensorRatioGear1`, `sensorRatioGear2`)
-- `shift()` actuates the pneumatic and updates the gear state
+- `NO_SOLENOID_CHANNEL` sentinel for `addShifter()` when no solenoid
+  is configured
 
 ### TransmissionFX — TalonFX Specialization
 
@@ -347,7 +350,9 @@ Extends TransmissionBase with Phoenix 6-specific control modes:
 | Motion Magic Expo | `setOutputMMExpoPositionDuty` | `setOutputMMExpoPositionVoltage` | `setOutputMMExpoPositionTorqueCurrent` |
 | Dynamic Motion Magic | `setOutputDynMMPositionDuty` | `setOutputDynMMPositionVoltage` | `setOutputDynMMPositionTorqueCurrent` |
 
-All control requests use timesync (`UpdateFreqHz = 0`) and set `Slot = 0`.
+All control requests default to timesync (`UpdateFreqHz = 0`) and
+`Slot = 0`. Use `configTimesync(false, 250.0)` to disable timesync
+for robots using the RIO CAN bus instead of a CANivore.
 
 **Gear shifting integration:**
 `TransmissionFX.shift()` updates the TalonFX config's
@@ -495,12 +500,15 @@ TObj
 ```
 
 **IMUBase** tracks yaw, yaw rate, roll, and pitch. Provides
-`getHeading()` returning a `Rotation2d`.
+`getHeading()` returning a `Rotation2d` from the cached yaw value.
 
 **IMUPigeon2** registers 4 signals with CTREManager (yaw, roll, pitch,
-yaw rate). Yaw uses latency compensation for field-relative tracking.
-Has a `Pigeon2SimState` for simulation — robot projects can set
-simulated yaw via the sim state.
+yaw rate). `robotPeriodicBefore()` calls `refresh()` each cycle to
+update cached values. Yaw uses latency compensation via
+`BaseStatusSignal.getLatencyCompensatedValue()`. `getHeading()` uses
+the latency-compensated yaw — it does not bypass the refresh path.
+Has a `Pigeon2SimState` for simulation and a `FaultMonitor` tracking
+6 sticky faults.
 
 ### Range Sensors
 
@@ -529,6 +537,7 @@ TObj
 **SwitchBase** defines:
 - `SwitchType`: FX, CANCODER, MAX, RIO_DIO
 - `SwitchTrigger`: NO (normally open), NC (normally closed)
+- `getTriggered()` — abstract, all subclasses must implement
 - `autoSet` / `autoSetPos` — when triggered, automatically set encoder
   position (for homing)
 
@@ -551,9 +560,12 @@ in the SubsystemManager lifecycle.
 
 **Key features:**
 - Tracks raw axis, button, and POV values plus their previous values
-- Connection detection with state change tracking
+- Edge detection: `getButtonPressed()` / `getButtonReleased()` for
+  single-cycle transitions, `getButton()` for held state
+- Connection detection with Elastic notification on disconnect
 - Returns 0 for all axes when disconnected (safe default)
-- Axes clamped to [-1.0, 1.0]
+- Axes clamped to [-1.0, 1.0]; raw values passed without inversion
+  (robot-specific subclasses apply axis inversion per controller mapping)
 
 **Input shaping modes** (`InputShaping` enum):
 

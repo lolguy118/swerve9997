@@ -247,17 +247,17 @@ public abstract class TransmissionBase extends TObj {
         for (SmartMotorController c : allControllers) {
             ControllerStatus status = c.applyConfig();
             if (status != ControllerStatus.OK) {
-                String msg =
-                        getName()
-                                + ": config apply failed for "
-                                + c.getName()
-                                + " (status="
-                                + status
-                                + ")";
-                DriverStation.reportWarning(msg, false);
                 double now = Timer.getFPGATimestamp();
                 if (now - lastConfigErrorNotificationTime > 2.0) {
                     lastConfigErrorNotificationTime = now;
+                    String msg =
+                            getName()
+                                    + ": config apply failed for "
+                                    + c.getName()
+                                    + " (status="
+                                    + status
+                                    + ")";
+                    DriverStation.reportWarning(msg, false);
                     Elastic.sendNotification(
                             new Elastic.Notification(
                                     Elastic.Notification.NotificationLevel.ERROR,

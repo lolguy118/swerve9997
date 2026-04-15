@@ -28,6 +28,13 @@ public class AutoMoveParallel extends AutoMove {
 
     private final List<AutoMove> moves;
 
+    // Cached telemetry keys — computed in start() to avoid string concat every cycle
+    private String telemetryKeyCompleted;
+    private String telemetryKeyTotal;
+    private String telemetryKeyActive;
+    // Reusable StringBuilder to avoid allocation every cycle
+    private final StringBuilder activeNamesBuilder = new StringBuilder();
+
     public AutoMoveParallel(final AutoMove... argMoves) {
         super(0.0);
         moves = Arrays.asList(argMoves);
@@ -36,6 +43,10 @@ public class AutoMoveParallel extends AutoMove {
     @Override
     public void start() {
         super.start();
+        String prefix = "Auto/Moves/" + getName() + "/";
+        telemetryKeyCompleted = prefix + "CompletedChildren";
+        telemetryKeyTotal = prefix + "TotalChildren";
+        telemetryKeyActive = prefix + "ActiveChildren";
         for (AutoMove move : moves) {
             move.start();
         }
@@ -65,21 +76,20 @@ public class AutoMoveParallel extends AutoMove {
         }
 
         int completedCount = 0;
-        StringBuilder activeNames = new StringBuilder();
+        activeNamesBuilder.setLength(0);
         for (AutoMove move : moves) {
             if (move.isComplete()) {
                 completedCount++;
             } else {
-                if (activeNames.length() > 0) {
-                    activeNames.append(", ");
+                if (activeNamesBuilder.length() > 0) {
+                    activeNamesBuilder.append(", ");
                 }
-                activeNames.append(move.getName());
+                activeNamesBuilder.append(move.getName());
             }
         }
-        String prefix = "Auto/Moves/" + getName() + "/";
-        Logger.recordOutput(prefix + "CompletedChildren", completedCount);
-        Logger.recordOutput(prefix + "TotalChildren", moves.size());
-        Logger.recordOutput(prefix + "ActiveChildren", activeNames.toString());
+        Logger.recordOutput(telemetryKeyCompleted, completedCount);
+        Logger.recordOutput(telemetryKeyTotal, moves.size());
+        Logger.recordOutput(telemetryKeyActive, activeNamesBuilder.toString());
     }
 
     @Override

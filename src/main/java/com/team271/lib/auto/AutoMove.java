@@ -12,6 +12,11 @@ public abstract class AutoMove {
     protected final double delay;
     protected final String name;
 
+    // Cached telemetry keys — computed once in start() to avoid string concat at 50Hz
+    protected String telemetryKeyRunning;
+    protected String telemetryKeyElapsedTime;
+    protected String telemetryKeyComplete;
+
     protected double currentTime = 0.0;
     protected double lastTime = 0.0;
 
@@ -48,6 +53,12 @@ public abstract class AutoMove {
     public void start() {
         isRunning = true;
 
+        // Cache telemetry key strings once to avoid string concat every cycle
+        String prefix = "Auto/Moves/" + getName() + "/";
+        telemetryKeyRunning = prefix + "Running";
+        telemetryKeyElapsedTime = prefix + "ElapsedTime";
+        telemetryKeyComplete = prefix + "Complete";
+
         elapsedTimer.start();
 
         onStart();
@@ -62,9 +73,8 @@ public abstract class AutoMove {
 
         setCompleted();
 
-        String prefix = "Auto/Moves/" + getName() + "/";
-        Logger.recordOutput(prefix + "Running", false);
-        Logger.recordOutput(prefix + "Complete", true);
+        Logger.recordOutput(telemetryKeyRunning, false);
+        Logger.recordOutput(telemetryKeyComplete, true);
     }
 
     /**
@@ -101,9 +111,8 @@ public abstract class AutoMove {
             lastTime = currentTime;
             currentTime = elapsedTimer.get();
 
-            String prefix = "Auto/Moves/" + getName() + "/";
-            Logger.recordOutput(prefix + "Running", true);
-            Logger.recordOutput(prefix + "ElapsedTime", currentTime);
+            Logger.recordOutput(telemetryKeyRunning, true);
+            Logger.recordOutput(telemetryKeyElapsedTime, currentTime);
         }
     }
 

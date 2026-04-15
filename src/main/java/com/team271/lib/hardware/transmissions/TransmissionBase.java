@@ -17,8 +17,8 @@ import com.team271.lib.hardware.sensors.switches.SwitchBase;
 import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchTrigger;
 import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchType;
 import com.team271.lib.hardware.sensors.switches.SwitchFX;
-import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
+import com.team271.lib.util.Elastic;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -260,9 +260,7 @@ public abstract class TransmissionBase extends TObj {
                     DriverStation.reportWarning(msg, false);
                     Elastic.sendNotification(
                             new Elastic.Notification(
-                                    Elastic.Notification.NotificationLevel.ERROR,
-                                    "Config Apply Failed",
-                                    msg));
+                                    Elastic.NotificationLevel.ERROR, "Config Apply Failed", msg));
                 }
             }
         }

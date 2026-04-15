@@ -75,9 +75,7 @@ com.team271.lib
 │
 ├── sysid/                     System identification logging
 ├── geometry/                  2D pose and transformation utilities
-├── util/                      Utilities (math, alerts, signals)
-├── misc/
-│   └── Elastic.java           Elastic Dashboard notification API
+├── util/                      Utilities (math, alerts, signals, Elastic notifications)
 │
 └── wpilib/                    WPILib framework extensions
 ```

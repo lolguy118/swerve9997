@@ -25,8 +25,7 @@
 | `nt/` | NTTable, NTEntry, LoggedNTInput | [Library Architecture — Tuning Infrastructure](library-architecture.md#tuning-infrastructure) | Full |
 | `subsystem/` | Subsystem, SubsystemManager, StateMachine | [Library Architecture](library-architecture.md) | Full |
 | `sysid/` | Logger, LoggerGeneral | [SysID Workflow](sysid-workflow.md) | Full |
-| `util/` | Alert, Util, DriveSignal, CSVWritable, Interpolable | [Utility Package](utility-package.md) | Full |
-| `misc/` | Elastic | [Utility Package](utility-package.md) | Full |
+| `util/` | Alert, Elastic, LimelightHelpers, Util, DriveSignal, CSVWritable, Interpolable | [Utility Package](utility-package.md) | Full |
 | `wpilib/` | IterativeRobotBase, TimedRobot | [Library Architecture](library-architecture.md) | Partial |
 | Root | Lifecycle, Named, TObj, TRobot, ConstantsLib | [Library Architecture](library-architecture.md) | Full |
 

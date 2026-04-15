@@ -143,7 +143,7 @@ All dependencies must always use the **latest available version**. Versions are 
 - **AdvantageKit** — integrated for all logging and telemetry (vendordep: `AdvantageKit.json`; all output goes through `Logger.recordOutput()`)
 - **PathPlanner** — dependency available, integration pending (vendordep: `PathplannerLib.json`; new autonomous code should adopt PathPlanner paths)
 - **WPILib New Commands** — dependency available for command-based patterns (vendordep: `WPILibNewCommands.json`)
-- **Elastic Dashboard** — integrated for live driver notifications (no vendordep; uses `com.team271.lib.misc.Elastic` with Jackson JSON serialization)
+- **Elastic Dashboard** — integrated for live driver notifications (vendored source file; uses `com.team271.lib.util.Elastic` with Jackson JSON serialization)
 
 ---
 
@@ -187,9 +187,8 @@ TObj (base class — name, NTTable, lifecycle hooks)
 ├── nt/ (NTTable, NTEntry, LoggedNTInput — logging + tuning via AK Logger)
 ├── wpilib/ (IterativeRobotBase, TimedRobot — custom WPILib base classes + AK lifecycle)
 ├── sysid/ (Logger, LoggerGeneral — SmartDashboard-based SysId characterization)
-├── misc/ (Elastic — dashboard notifications via Elastic.Notification)
 ├── auto/ (AutoMode, AutoMove, AutoMoveConditional, AutoMoveParallel, AutoMoveSequence, AutoMoveTimed)
-└── util/ (Util, Alert, DriveSignal, CSVWritable, Interpolable)
+└── util/ (Util, Alert, Elastic, DriveSignal, CSVWritable, Interpolable)
 ```
 
 ### Key Design Patterns
@@ -650,8 +649,7 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 - **`auto/`**: `AutoModeTest`, `AutoMoveTest`, `AutoMoveConditionalTest`, `AutoMoveParallelTest`, `AutoMoveSequenceTest`, `AutoMoveTimedTest`, `AutoIntegrationTest`
 - **`subsystem/`**: `SubsystemTest`, `SubsystemManagerTest`
 - **`sysid/`**: `LoggerTest`, `LoggerGeneralTest`
-- **`misc/`**: `ElasticTest`
-- **`util/`**: `UtilTest`, `DriveSignalTest`, `AlertTest`
+- **`util/`**: `UtilTest`, `DriveSignalTest`, `AlertTest`, `ElasticTest`
 - **Root**: `ConstantsLibTest`, `TObjTest`, `TRobotTest`
 
 ---

@@ -27,6 +27,10 @@ public class AutoMoveSequence extends AutoMove {
     private int currentIdx = 0;
     private AutoMove current;
 
+    // Cached telemetry keys — computed in start() to avoid string concat every cycle
+    private String telemetryKeyChildIndex;
+    private String telemetryKeyChildName;
+
     public AutoMoveSequence(final AutoMove... argMoves) {
         super(0.0);
         moves = Arrays.asList(argMoves);
@@ -35,6 +39,9 @@ public class AutoMoveSequence extends AutoMove {
     @Override
     public void start() {
         super.start();
+        String prefix = "Auto/Moves/" + getName() + "/";
+        telemetryKeyChildIndex = prefix + "ChildIndex";
+        telemetryKeyChildName = prefix + "ChildName";
         currentIdx = 0;
         if (!moves.isEmpty()) {
             current = moves.get(0);
@@ -66,10 +73,9 @@ public class AutoMoveSequence extends AutoMove {
     public void robotPeriodicBefore(final double argTimestamp) {
         super.robotPeriodicBefore(argTimestamp);
 
-        String prefix = "Auto/Moves/" + getName() + "/";
-        Logger.recordOutput(prefix + "ChildIndex", currentIdx);
+        Logger.recordOutput(telemetryKeyChildIndex, currentIdx);
         if (current != null) {
-            Logger.recordOutput(prefix + "ChildName", current.getName());
+            Logger.recordOutput(telemetryKeyChildName, current.getName());
         }
 
         if (current != null && !current.isComplete()) {

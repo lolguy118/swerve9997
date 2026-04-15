@@ -2,8 +2,8 @@ package com.team271.lib.subsystem;
 
 import com.team271.lib.Lifecycle;
 import com.team271.lib.Named;
-import com.team271.lib.misc.Elastic;
 import com.team271.lib.util.Alert;
+import com.team271.lib.util.Elastic;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class SubsystemManager {
                 if (now - lastTime > errorThrottleSec) {
                     Elastic.sendNotification(
                             new Elastic.Notification(
-                                    Elastic.Notification.NotificationLevel.ERROR,
+                                    Elastic.NotificationLevel.ERROR,
                                     "Subsystem Error",
                                     name + " threw in " + phase + ": " + t.getMessage()));
                 }

@@ -1,7 +1,7 @@
 package com.team271.lib.auto;
 
 import com.team271.lib.ConstantsLib;
-import com.team271.lib.misc.Elastic;
+import com.team271.lib.util.Elastic;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public abstract class AutoMode {
 
             Elastic.sendNotification(
                     new Elastic.Notification(
-                            Elastic.Notification.NotificationLevel.INFO, "Auto", "Auto Started"));
+                            Elastic.NotificationLevel.INFO, "Auto", "Auto Started"));
         }
     }
 
@@ -70,8 +70,7 @@ public abstract class AutoMode {
         Logger.recordOutput("Auto/Running", false);
         Logger.recordOutput("Auto/Complete", true);
         Elastic.sendNotification(
-                new Elastic.Notification(
-                        Elastic.Notification.NotificationLevel.INFO, "Auto", "Auto Complete"));
+                new Elastic.Notification(Elastic.NotificationLevel.INFO, "Auto", "Auto Complete"));
     }
 
     public boolean isDelayDone() {

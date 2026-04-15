@@ -1,6 +1,5 @@
 package com.team271.lib.util;
 
-import com.team271.lib.misc.Elastic;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -64,19 +63,19 @@ public class Alert {
                     DriverStation.reportError(text, false);
                     Elastic.sendNotification(
                             new Elastic.Notification(
-                                    Elastic.Notification.NotificationLevel.ERROR, "Alert", text));
+                                    Elastic.NotificationLevel.ERROR, "Alert", text));
                     break;
                 case WARNING:
                     DriverStation.reportWarning(text, false);
                     Elastic.sendNotification(
                             new Elastic.Notification(
-                                    Elastic.Notification.NotificationLevel.WARNING, "Alert", text));
+                                    Elastic.NotificationLevel.WARNING, "Alert", text));
                     break;
                 case INFO:
                     DriverStation.reportWarning(text, false);
                     Elastic.sendNotification(
                             new Elastic.Notification(
-                                    Elastic.Notification.NotificationLevel.INFO, "Alert", text));
+                                    Elastic.NotificationLevel.INFO, "Alert", text));
                     break;
             }
         }

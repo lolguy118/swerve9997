@@ -4,9 +4,9 @@ import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.team271.lib.ConstantsLib;
-import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.nt.NTTable;
+import com.team271.lib.util.Elastic;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -76,6 +76,10 @@ public class CTREManager {
     private static final NTEntry ntRefreshStatus = new NTEntry(table, "Refresh Status", "");
 
     private static double lastErrorNotificationTime = 0;
+
+    // Pre-allocated notification to avoid GC pressure in refreshAll()
+    private static final Elastic.Notification refreshErrorNotification =
+            new Elastic.Notification(Elastic.NotificationLevel.ERROR, "CAN Refresh Error", "");
 
     /** Hoot log path — default is RoboRIO USB drive. Set before calling {@link #init()}. */
     private static String hootLogPath = "/U/logs";
@@ -245,11 +249,9 @@ public class CTREManager {
                 double now = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
                 if (now - lastErrorNotificationTime > 2.0) {
                     lastErrorNotificationTime = now;
-                    Elastic.sendNotification(
-                            new Elastic.Notification(
-                                    Elastic.Notification.NotificationLevel.ERROR,
-                                    "CAN Refresh Error",
-                                    "CTREManager.refreshAll() returned " + tmpReturn.getName()));
+                    refreshErrorNotification.setDescription(
+                            "CTREManager.refreshAll() returned " + tmpReturn.getName());
+                    Elastic.sendNotification(refreshErrorNotification);
                 }
             }
 

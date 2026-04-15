@@ -1,9 +1,9 @@
 package com.team271.lib.hardware.Input;
 
 import com.team271.lib.TObj;
-import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.subsystem.Subsystem;
+import com.team271.lib.util.Elastic;
 import com.team271.lib.util.Util;
 import edu.wpi.first.hal.DriverStationJNI;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -284,7 +284,7 @@ public class Input extends Subsystem {
              */
             Elastic.sendNotification(
                     new Elastic.Notification(
-                            Elastic.Notification.NotificationLevel.WARNING,
+                            Elastic.NotificationLevel.WARNING,
                             "Controller Disconnected",
                             getName() + " has been disconnected"));
             axisCount = DriverStationJNI.kMaxJoystickAxes;

@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Utility & Misc Package
 
-> **Scope:** This document covers the `util/` and `misc/` packages —
+> **Scope:** This document covers the `util/` package —
 > shared utilities used throughout the library. These include the Alert
 > system, Elastic Dashboard integration, drive signal helpers, and math
 > utilities.
@@ -71,7 +71,7 @@ as JSON.
 ```java
 Elastic.sendNotification(
     new Elastic.Notification(
-        Elastic.Notification.NotificationLevel.WARNING,
+        Elastic.NotificationLevel.WARNING,
         "Homing Timeout",
         "Elevator homing timed out after 2.0s"));
 ```

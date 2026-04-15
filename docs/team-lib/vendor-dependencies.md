@@ -155,3 +155,38 @@ If you see a conflict error during build:
 2. Remove the conflicting JSON from `vendordeps/`
 3. If you need both libraries, check the vendor's docs for a
    combined vendordep
+
+---
+
+## Vendored Source Files
+
+Some dependencies are included as source files copied directly into
+the codebase rather than as vendordep JARs. These require manual
+updates when the upstream changes.
+
+| File | Upstream | Purpose |
+|------|----------|---------|
+| `src/main/java/com/team271/lib/util/Elastic.java` | [Gold872/elastic_dashboard](https://github.com/Gold872/elastic_dashboard) | Elastic Dashboard notification API |
+| `src/main/java/com/team271/lib/util/LimelightHelpers.java` | [LimelightVision/limelightlib-wpijava](https://github.com/LimelightVision/limelightlib-wpijava) | Limelight vision camera helper API (v1.14, requires LLOS 2026.0+) |
+
+### Local Modifications
+
+**Elastic.java:**
+
+- **Error handling:** `sendNotification()` catch block uses
+  `DriverStation.reportError()` instead of the upstream
+  `e.printStackTrace()`, which ensures serialization failures are
+  visible in the Driver Station console during matches
+
+**LimelightHelpers.java:**
+
+- **Package declaration:** changed from `frc.robot` to
+  `com.team271.lib.util` to match the team library package structure
+
+### Updating a Vendored Source File
+
+1. Download the latest version from the upstream repository
+2. Place it at the same path, updating the package declaration
+3. Re-apply any local modifications listed above
+4. Run `./gradlew compileJava` to verify compilation
+5. Update the version in the table above

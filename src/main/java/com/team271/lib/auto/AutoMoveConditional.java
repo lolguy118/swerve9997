@@ -1,6 +1,6 @@
 package com.team271.lib.auto;
 
-import com.team271.lib.misc.Elastic;
+import com.team271.lib.util.Elastic;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -55,7 +55,7 @@ public class AutoMoveConditional extends AutoMove {
             } else if (currentTime >= timeoutSec) {
                 Elastic.sendNotification(
                         new Elastic.Notification(
-                                Elastic.Notification.NotificationLevel.WARNING,
+                                Elastic.NotificationLevel.WARNING,
                                 "Auto",
                                 "AutoMoveConditional timed out: " + getName()));
                 end();

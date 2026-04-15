@@ -172,7 +172,7 @@ TObj (base class — name, NTTable, lifecycle hooks)
 │   │   └── DCMotor physics models for simulation
 │   ├── sensors/
 │   │   ├── encoders/ (EncoderBase → EncoderCTRE → EncoderFX, EncoderCANCoder)
-│   │   │   └── Comp variants (EncoderFXComp, EncoderCANCoderComp) add latency compensation
+│   │   │   └── EncoderAdapter interface (FXEncoderAdapter, CANCoderAdapter)
 │   │   ├── imu/ (IMUBase → IMUCTRE → IMUPigeon2)
 │   │   ├── range/ (RangeBase → RangeCTRE → RangeCANrange)
 │   │   └── switches/ (SwitchBase → SwitchFX, SwitchCANCoder)
@@ -274,9 +274,8 @@ Steps 4-8 run through `forEachSafe()` — a single subsystem throwing an excepti
 
 CAN frames arrive with transport delay. Latency compensation uses velocity to extrapolate position to the current time:
 
-- **EncoderFXComp / EncoderCANCoderComp**: `BaseStatusSignal.getLatencyCompensatedValue(posSignal, velSignal)` for accurate mechanism position
+- **All CTRE encoders**: `EncoderCTRE.refresh()` uses `BaseStatusSignal.getLatencyCompensatedValue(posSignal, velSignal)` by default
 - **IMUPigeon2**: Yaw latency-compensated using yaw rate as the reference signal
-- Use `Comp` encoder variants when position accuracy matters (e.g., odometry, closed-loop position)
 
 ### Thread Priorities
 
@@ -395,7 +394,7 @@ When `UseTimesync = true`, `UpdateFreqHz` MUST be `0` (CTRE requirement). The Co
 
 ### Latency Compensation
 
-- Encoders (EncoderFXComp, EncoderCANCoderComp) use `BaseStatusSignal.getLatencyCompensatedValue(posSignal, velSignal)` for accurate position
+- All CTRE encoders use `BaseStatusSignal.getLatencyCompensatedValue(posSignal, velSignal)` in `EncoderCTRE.refresh()` by default
 - IMUPigeon2 uses latency compensation for yaw with yaw rate as reference
 
 ### Bus Optimization
@@ -643,7 +642,7 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 
 - **`control/`**: `BalanceTest`, `PIDSimpleTest`, `PIDTrapTest`, `PIDWPITest`, `PIDWPITrapTest`, `PIDFXTest`
 - **`hardware/`**: `CANBusTest` (68 tests), `CANDeviceIDTest` (50+ tests), `CTREManagerTest`, `MotorBaseTest`, `ControllerTalonFXTest`
-- **`hardware/sensors/`**: `EncoderFXTest`, `EncoderFXCompTest`, `EncoderCANCoderTest`, `EncoderCANCoderCompTest`, `IMUPigeon2Test`, `RangeCANrangeTest`, `SwitchFXTest`, `SwitchCANCoderTest`
+- **`hardware/sensors/`**: `EncoderFXTest`, `EncoderCANCoderTest`, `IMUPigeon2Test`, `RangeCANrangeTest`, `SwitchFXTest`, `SwitchCANCoderTest`
 - **`hardware/transmissions/`**: `TransmissionFXTest`, `ShifterPneumaticTest`
 - **`hardware/Input/`**: `InputXBoxTest`, `InputPS4Test`, `Input8BitDuoTest`, `InputEnvisionProTest`
 - **`geometry/`**: `Translation2dTest`, `Rotation2dTest`, `Pose2dTest`, `Twist2dTest`

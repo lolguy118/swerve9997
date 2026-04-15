@@ -68,13 +68,23 @@ public class TransmissionFX extends TransmissionBase {
     protected final MotionMagicExpoTorqueCurrentFOC motorMMExpoTC =
             new MotionMagicExpoTorqueCurrentFOC(0).withUseTimesync(true).withUpdateFreqHz(0);
 
-    /* Dynamic Motion Magic */
+    /* Dynamic Motion Magic (Position) */
     protected final DynamicMotionMagicDutyCycle motorDynMMOut =
             new DynamicMotionMagicDutyCycle(0, 0, 0).withUseTimesync(true).withUpdateFreqHz(0);
     protected final DynamicMotionMagicVoltage motorDynMMFF =
             new DynamicMotionMagicVoltage(0, 0, 0).withUseTimesync(true).withUpdateFreqHz(0);
     protected final DynamicMotionMagicTorqueCurrentFOC motorDynMMTC =
             new DynamicMotionMagicTorqueCurrentFOC(0, 0, 0)
+                    .withUseTimesync(true)
+                    .withUpdateFreqHz(0);
+
+    /* Dynamic Motion Magic Expo (Exponential profile with runtime parameters) */
+    protected final DynamicMotionMagicExpoDutyCycle motorDynMMExpoOut =
+            new DynamicMotionMagicExpoDutyCycle(0, 0, 0).withUseTimesync(true).withUpdateFreqHz(0);
+    protected final DynamicMotionMagicExpoVoltage motorDynMMExpoFF =
+            new DynamicMotionMagicExpoVoltage(0, 0, 0).withUseTimesync(true).withUpdateFreqHz(0);
+    protected final DynamicMotionMagicExpoTorqueCurrentFOC motorDynMMExpoTC =
+            new DynamicMotionMagicExpoTorqueCurrentFOC(0, 0, 0)
                     .withUseTimesync(true)
                     .withUpdateFreqHz(0);
 
@@ -165,6 +175,18 @@ public class TransmissionFX extends TransmissionBase {
                 (en, hz) -> {
                     motorDynMMTC.UseTimesync = (Boolean) en;
                     motorDynMMTC.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorDynMMExpoOut.UseTimesync = (Boolean) en;
+                    motorDynMMExpoOut.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorDynMMExpoFF.UseTimesync = (Boolean) en;
+                    motorDynMMExpoFF.UpdateFreqHz = (Double) hz;
+                },
+                (en, hz) -> {
+                    motorDynMMExpoTC.UseTimesync = (Boolean) en;
+                    motorDynMMExpoTC.UpdateFreqHz = (Double) hz;
                 },
             };
 
@@ -440,43 +462,44 @@ public class TransmissionFX extends TransmissionBase {
      */
 
     /*
-     * Closed Loop
+     * Closed Loop - Position (Voltage FF)
      */
-    @Override
-    public void setOutputPosition(final double argPosition, final double argFFVolt) {
+    public void setOutputPosition(
+            final double argPosition, final int argSlot, final double argFFVolt) {
         if (hasInvalidInput("setOutputPosition", argPosition, argFFVolt)) return;
-        motorPositionFF.Slot = 0;
+        motorPositionFF.Slot = argSlot;
         if (encoder != null) {
             motorPositionFF.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorPositionFF.FeedForward = argFFVolt;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorPositionFF);
         }
     }
 
-    /**
-     * Sets closed-loop velocity output with voltage feedforward.
-     *
-     * @param argRPS velocity in mechanism output units per second. The library converts to
-     *     rotor/sensor units internally via the gear ratio chain.
-     * @param argFFVolt feedforward voltage (volts)
-     */
     @Override
-    public void setOutputVelocity(final double argRPS, final double argFFVolt) {
+    public void setOutputPosition(final double argPosition, final double argFFVolt) {
+        setOutputPosition(argPosition, 0, argFFVolt);
+    }
+
+    /*
+     * Closed Loop - Velocity (Voltage FF)
+     */
+    public void setOutputVelocity(final double argRPS, final int argSlot, final double argFFVolt) {
         if (hasInvalidInput("setOutputVelocity", argRPS, argFFVolt)) return;
-        motorVelocityFF.Slot = 0;
+        motorVelocityFF.Slot = argSlot;
         if (encoder != null) {
             motorVelocityFF.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
-
         motorVelocityFF.FeedForward = argFFVolt;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorVelocityFF);
         }
+    }
+
+    @Override
+    public void setOutputVelocity(final double argRPS, final double argFFVolt) {
+        setOutputVelocity(argRPS, 0, argFFVolt);
     }
 
     /*
@@ -490,240 +513,284 @@ public class TransmissionFX extends TransmissionBase {
     }
 
     /*
-     * Closed Loop - Position
+     * Closed Loop - Position (Duty Cycle FF)
      */
-    public void setOutputPositionDuty(final double argPosition, final double argFF) {
+    public void setOutputPositionDuty(
+            final double argPosition, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputPositionDuty", argPosition, argFF)) return;
-        motorPositionDuty.Slot = 0;
+        motorPositionDuty.Slot = argSlot;
         if (encoder != null) {
             motorPositionDuty.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorPositionDuty.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorPositionDuty);
         }
     }
 
-    public void setOutputPositionTorqueCurrent(final double argPosition, final double argFF) {
+    public void setOutputPositionDuty(final double argPosition, final double argFF) {
+        setOutputPositionDuty(argPosition, 0, argFF);
+    }
+
+    /*
+     * Closed Loop - Position (Torque Current FOC)
+     */
+    public void setOutputPositionTorqueCurrent(
+            final double argPosition, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputPositionTorqueCurrent", argPosition, argFF)) return;
-        motorPositionTC.Slot = 0;
+        motorPositionTC.Slot = argSlot;
         if (encoder != null) {
             motorPositionTC.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorPositionTC.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorPositionTC);
         }
     }
 
+    public void setOutputPositionTorqueCurrent(final double argPosition, final double argFF) {
+        setOutputPositionTorqueCurrent(argPosition, 0, argFF);
+    }
+
     /*
-     * Closed Loop - Velocity
+     * Closed Loop - Velocity (Duty Cycle FF)
      */
-    /**
-     * Sets closed-loop velocity output with duty cycle feedforward.
-     *
-     * @param argRPS velocity in mechanism output units per second. The library converts to
-     *     rotor/sensor units internally via the gear ratio chain.
-     * @param argFF feedforward duty cycle [-1.0, 1.0]
-     */
-    public void setOutputVelocityDuty(final double argRPS, final double argFF) {
+    public void setOutputVelocityDuty(final double argRPS, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputVelocityDuty", argRPS, argFF)) return;
-        motorVelocityDuty.Slot = 0;
+        motorVelocityDuty.Slot = argSlot;
         if (encoder != null) {
             motorVelocityDuty.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
-
         motorVelocityDuty.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorVelocityDuty);
         }
     }
 
-    /**
-     * Sets closed-loop velocity output with torque current feedforward.
-     *
-     * @param argRPS velocity in mechanism output units per second. The library converts to
-     *     rotor/sensor units internally via the gear ratio chain.
-     * @param argFF feedforward torque current (amps)
+    public void setOutputVelocityDuty(final double argRPS, final double argFF) {
+        setOutputVelocityDuty(argRPS, 0, argFF);
+    }
+
+    /*
+     * Closed Loop - Velocity (Torque Current FOC)
      */
-    public void setOutputVelocityTorqueCurrent(final double argRPS, final double argFF) {
+    public void setOutputVelocityTorqueCurrent(
+            final double argRPS, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputVelocityTorqueCurrent", argRPS, argFF)) return;
-        motorVelocityTC.Slot = 0;
+        motorVelocityTC.Slot = argSlot;
         if (encoder != null) {
             motorVelocityTC.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
-
         motorVelocityTC.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorVelocityTC);
         }
     }
 
+    public void setOutputVelocityTorqueCurrent(final double argRPS, final double argFF) {
+        setOutputVelocityTorqueCurrent(argRPS, 0, argFF);
+    }
+
     /*
-     * Motion Magic - Position
-     */
-    /**
-     * Configures Motion Magic profile parameters.
-     *
-     * @param argCruiseVelRPS cruise velocity in rotor rotations per second (raw, not
-     *     mechanism-scaled)
-     * @param argCruiseAccelRPSS cruise acceleration in rotor rotations per second squared (raw)
-     * @param argJerkRPSSS jerk in rotor rotations per second cubed (raw)
+     * Motion Magic Configuration
      */
     public void setMMConfig(
             final double argCruiseVelRPS,
             final double argCruiseAccelRPSS,
             final double argJerkRPSSS) {
         if (configMM != null) {
-            configMM.MotionMagicCruiseVelocity = argCruiseVelRPS; // rps
-            configMM.MotionMagicAcceleration = argCruiseAccelRPSS; // rps/s
-            configMM.MotionMagicJerk = argJerkRPSSS; // rps/s/s
+            configMM.MotionMagicCruiseVelocity = argCruiseVelRPS;
+            configMM.MotionMagicAcceleration = argCruiseAccelRPSS;
+            configMM.MotionMagicJerk = argJerkRPSSS;
         }
     }
 
-    public void setOutputMMPositionDuty(double argPosition, double argFFVolt) {
-        if (hasInvalidInput("setOutputMMPositionDuty", argPosition, argFFVolt)) return;
-        motorMMOut.Slot = 0;
+    /*
+     * Motion Magic - Position (Duty Cycle)
+     */
+    public void setOutputMMPositionDuty(
+            final double argPosition, final int argSlot, final double argFF) {
+        if (hasInvalidInput("setOutputMMPositionDuty", argPosition, argFF)) return;
+        motorMMOut.Slot = argSlot;
         if (encoder != null) {
             motorMMOut.Position = encoder.mechanismToNative(argPosition);
         }
-
-        motorMMOut.FeedForward = argFFVolt;
-
+        motorMMOut.FeedForward = argFF;
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMOut);
         }
     }
 
-    public void setOutputMMPositionVoltage(final double argPosition, final double argFFVolt) {
-        if (hasInvalidInput("setOutputMMPositionVoltage", argPosition, argFFVolt)) return;
-        motorMMFF.Slot = 0;
+    public void setOutputMMPositionDuty(final double argPosition, final double argFF) {
+        setOutputMMPositionDuty(argPosition, 0, argFF);
+    }
+
+    /*
+     * Motion Magic - Position (Voltage)
+     */
+    public void setOutputMMPositionVoltage(
+            final double argPosition, final int argSlot, final double argFF) {
+        if (hasInvalidInput("setOutputMMPositionVoltage", argPosition, argFF)) return;
+        motorMMFF.Slot = argSlot;
         if (encoder != null) {
             motorMMFF.Position = encoder.mechanismToNative(argPosition);
         }
-
-        motorMMFF.FeedForward = argFFVolt;
-
+        motorMMFF.FeedForward = argFF;
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMFF);
         }
     }
 
-    public void setOutputMMPositionTorqueCurrent(final double argPosition, final double argFF) {
+    public void setOutputMMPositionVoltage(final double argPosition, final double argFF) {
+        setOutputMMPositionVoltage(argPosition, 0, argFF);
+    }
+
+    /*
+     * Motion Magic - Position (Torque Current FOC)
+     */
+    public void setOutputMMPositionTorqueCurrent(
+            final double argPosition, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputMMPositionTorqueCurrent", argPosition, argFF)) return;
-        motorMMTC.Slot = 0;
+        motorMMTC.Slot = argSlot;
         if (encoder != null) {
             motorMMTC.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorMMTC.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMTC);
         }
     }
 
+    public void setOutputMMPositionTorqueCurrent(final double argPosition, final double argFF) {
+        setOutputMMPositionTorqueCurrent(argPosition, 0, argFF);
+    }
+
     /*
-     * Motion Magic - Velocity
+     * Motion Magic - Velocity (Duty Cycle)
      */
-    public void setOutputMMVelocityDuty(final double argRPS, final double argFF) {
+    public void setOutputMMVelocityDuty(
+            final double argRPS, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputMMVelocityDuty", argRPS, argFF)) return;
-        motorMMVelOut.Slot = 0;
+        motorMMVelOut.Slot = argSlot;
         if (encoder != null) {
             motorMMVelOut.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
-
         motorMMVelOut.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMVelOut);
         }
     }
 
-    public void setOutputMMVelocityVoltage(final double argRPS, final double argFF) {
+    public void setOutputMMVelocityDuty(final double argRPS, final double argFF) {
+        setOutputMMVelocityDuty(argRPS, 0, argFF);
+    }
+
+    /*
+     * Motion Magic - Velocity (Voltage)
+     */
+    public void setOutputMMVelocityVoltage(
+            final double argRPS, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputMMVelocityVoltage", argRPS, argFF)) return;
-        motorMMVelFF.Slot = 0;
+        motorMMVelFF.Slot = argSlot;
         if (encoder != null) {
             motorMMVelFF.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
-
         motorMMVelFF.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMVelFF);
         }
     }
 
-    public void setOutputMMVelocityTorqueCurrent(final double argRPS, final double argFF) {
+    public void setOutputMMVelocityVoltage(final double argRPS, final double argFF) {
+        setOutputMMVelocityVoltage(argRPS, 0, argFF);
+    }
+
+    /*
+     * Motion Magic - Velocity (Torque Current FOC)
+     */
+    public void setOutputMMVelocityTorqueCurrent(
+            final double argRPS, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputMMVelocityTorqueCurrent", argRPS, argFF)) return;
-        motorMMVelTC.Slot = 0;
+        motorMMVelTC.Slot = argSlot;
         if (encoder != null) {
             motorMMVelTC.Velocity = encoder.mechanismVelocityToNative(argRPS);
         }
-
         motorMMVelTC.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMVelTC);
         }
     }
 
+    public void setOutputMMVelocityTorqueCurrent(final double argRPS, final double argFF) {
+        setOutputMMVelocityTorqueCurrent(argRPS, 0, argFF);
+    }
+
     /*
-     * Motion Magic - Expo (Exponential profile)
+     * Motion Magic Expo - Position (Duty Cycle)
      */
-    public void setOutputMMExpoPositionDuty(final double argPosition, final double argFF) {
+    public void setOutputMMExpoPositionDuty(
+            final double argPosition, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputMMExpoPositionDuty", argPosition, argFF)) return;
-        motorMMExpoOut.Slot = 0;
+        motorMMExpoOut.Slot = argSlot;
         if (encoder != null) {
             motorMMExpoOut.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorMMExpoOut.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMExpoOut);
         }
     }
 
-    public void setOutputMMExpoPositionVoltage(final double argPosition, final double argFF) {
+    public void setOutputMMExpoPositionDuty(final double argPosition, final double argFF) {
+        setOutputMMExpoPositionDuty(argPosition, 0, argFF);
+    }
+
+    /*
+     * Motion Magic Expo - Position (Voltage)
+     */
+    public void setOutputMMExpoPositionVoltage(
+            final double argPosition, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputMMExpoPositionVoltage", argPosition, argFF)) return;
-        motorMMExpoFF.Slot = 0;
+        motorMMExpoFF.Slot = argSlot;
         if (encoder != null) {
             motorMMExpoFF.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorMMExpoFF.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMExpoFF);
         }
     }
 
-    public void setOutputMMExpoPositionTorqueCurrent(final double argPosition, final double argFF) {
+    public void setOutputMMExpoPositionVoltage(final double argPosition, final double argFF) {
+        setOutputMMExpoPositionVoltage(argPosition, 0, argFF);
+    }
+
+    /*
+     * Motion Magic Expo - Position (Torque Current FOC)
+     */
+    public void setOutputMMExpoPositionTorqueCurrent(
+            final double argPosition, final int argSlot, final double argFF) {
         if (hasInvalidInput("setOutputMMExpoPositionTorqueCurrent", argPosition, argFF)) return;
-        motorMMExpoTC.Slot = 0;
+        motorMMExpoTC.Slot = argSlot;
         if (encoder != null) {
             motorMMExpoTC.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorMMExpoTC.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorMMExpoTC);
         }
     }
 
+    public void setOutputMMExpoPositionTorqueCurrent(final double argPosition, final double argFF) {
+        setOutputMMExpoPositionTorqueCurrent(argPosition, 0, argFF);
+    }
+
     /*
-     * Dynamic Motion Magic
+     * Dynamic Motion Magic - Position (Duty Cycle)
      */
     public void setOutputDynMMPositionDuty(
             final double argPosition,
+            final int argSlot,
             final double argVelocity,
             final double argAccel,
             final double argJerk,
@@ -731,23 +798,34 @@ public class TransmissionFX extends TransmissionBase {
         if (hasInvalidInput(
                 "setOutputDynMMPositionDuty", argPosition, argVelocity, argAccel, argJerk, argFF))
             return;
-        motorDynMMOut.Slot = 0;
+        motorDynMMOut.Slot = argSlot;
         if (encoder != null) {
             motorDynMMOut.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorDynMMOut.Velocity = argVelocity;
         motorDynMMOut.Acceleration = argAccel;
         motorDynMMOut.Jerk = argJerk;
         motorDynMMOut.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorDynMMOut);
         }
     }
 
+    public void setOutputDynMMPositionDuty(
+            final double argPosition,
+            final double argVelocity,
+            final double argAccel,
+            final double argJerk,
+            final double argFF) {
+        setOutputDynMMPositionDuty(argPosition, 0, argVelocity, argAccel, argJerk, argFF);
+    }
+
+    /*
+     * Dynamic Motion Magic - Position (Voltage)
+     */
     public void setOutputDynMMPositionVoltage(
             final double argPosition,
+            final int argSlot,
             final double argVelocity,
             final double argAccel,
             final double argJerk,
@@ -759,23 +837,34 @@ public class TransmissionFX extends TransmissionBase {
                 argAccel,
                 argJerk,
                 argFF)) return;
-        motorDynMMFF.Slot = 0;
+        motorDynMMFF.Slot = argSlot;
         if (encoder != null) {
             motorDynMMFF.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorDynMMFF.Velocity = argVelocity;
         motorDynMMFF.Acceleration = argAccel;
         motorDynMMFF.Jerk = argJerk;
         motorDynMMFF.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorDynMMFF);
         }
     }
 
+    public void setOutputDynMMPositionVoltage(
+            final double argPosition,
+            final double argVelocity,
+            final double argAccel,
+            final double argJerk,
+            final double argFF) {
+        setOutputDynMMPositionVoltage(argPosition, 0, argVelocity, argAccel, argJerk, argFF);
+    }
+
+    /*
+     * Dynamic Motion Magic - Position (Torque Current FOC)
+     */
     public void setOutputDynMMPositionTorqueCurrent(
             final double argPosition,
+            final int argSlot,
             final double argVelocity,
             final double argAccel,
             final double argJerk,
@@ -787,19 +876,133 @@ public class TransmissionFX extends TransmissionBase {
                 argAccel,
                 argJerk,
                 argFF)) return;
-        motorDynMMTC.Slot = 0;
+        motorDynMMTC.Slot = argSlot;
         if (encoder != null) {
             motorDynMMTC.Position = encoder.mechanismToNative(argPosition);
         }
-
         motorDynMMTC.Velocity = argVelocity;
         motorDynMMTC.Acceleration = argAccel;
         motorDynMMTC.Jerk = argJerk;
         motorDynMMTC.FeedForward = argFF;
-
         if ((leader != null) && leader.isConnected()) {
             getLeader().setControl(motorDynMMTC);
         }
+    }
+
+    public void setOutputDynMMPositionTorqueCurrent(
+            final double argPosition,
+            final double argVelocity,
+            final double argAccel,
+            final double argJerk,
+            final double argFF) {
+        setOutputDynMMPositionTorqueCurrent(argPosition, 0, argVelocity, argAccel, argJerk, argFF);
+    }
+
+    /*
+     * Dynamic Motion Magic Expo - Position (Duty Cycle) — NEW
+     *
+     * Unlike regular Dynamic MM, the Expo variant uses kV/kA parameters for the
+     * exponential motion profile shape, plus a max velocity constraint.
+     */
+    public void setOutputDynMMExpoPositionDuty(
+            final double argPosition,
+            final int argSlot,
+            final double argKV,
+            final double argKA,
+            final double argMaxVelocity,
+            final double argFF) {
+        if (hasInvalidInput("setOutputDynMMExpoPositionDuty", argPosition, argKV, argKA, argFF))
+            return;
+        motorDynMMExpoOut.Slot = argSlot;
+        if (encoder != null) {
+            motorDynMMExpoOut.Position = encoder.mechanismToNative(argPosition);
+        }
+        motorDynMMExpoOut.kV = argKV;
+        motorDynMMExpoOut.kA = argKA;
+        motorDynMMExpoOut.Velocity = argMaxVelocity;
+        motorDynMMExpoOut.FeedForward = argFF;
+        if ((leader != null) && leader.isConnected()) {
+            getLeader().setControl(motorDynMMExpoOut);
+        }
+    }
+
+    public void setOutputDynMMExpoPositionDuty(
+            final double argPosition,
+            final double argKV,
+            final double argKA,
+            final double argMaxVelocity,
+            final double argFF) {
+        setOutputDynMMExpoPositionDuty(argPosition, 0, argKV, argKA, argMaxVelocity, argFF);
+    }
+
+    /*
+     * Dynamic Motion Magic Expo - Position (Voltage) — NEW
+     */
+    public void setOutputDynMMExpoPositionVoltage(
+            final double argPosition,
+            final int argSlot,
+            final double argKV,
+            final double argKA,
+            final double argMaxVelocity,
+            final double argFF) {
+        if (hasInvalidInput("setOutputDynMMExpoPositionVoltage", argPosition, argKV, argKA, argFF))
+            return;
+        motorDynMMExpoFF.Slot = argSlot;
+        if (encoder != null) {
+            motorDynMMExpoFF.Position = encoder.mechanismToNative(argPosition);
+        }
+        motorDynMMExpoFF.kV = argKV;
+        motorDynMMExpoFF.kA = argKA;
+        motorDynMMExpoFF.Velocity = argMaxVelocity;
+        motorDynMMExpoFF.FeedForward = argFF;
+        if ((leader != null) && leader.isConnected()) {
+            getLeader().setControl(motorDynMMExpoFF);
+        }
+    }
+
+    public void setOutputDynMMExpoPositionVoltage(
+            final double argPosition,
+            final double argKV,
+            final double argKA,
+            final double argMaxVelocity,
+            final double argFF) {
+        setOutputDynMMExpoPositionVoltage(argPosition, 0, argKV, argKA, argMaxVelocity, argFF);
+    }
+
+    /*
+     * Dynamic Motion Magic Expo - Position (Torque Current FOC) — NEW
+     */
+    public void setOutputDynMMExpoPositionTorqueCurrent(
+            final double argPosition,
+            final int argSlot,
+            final double argKV,
+            final double argKA,
+            final double argMaxVelocity,
+            final double argFF) {
+        if (hasInvalidInput(
+                "setOutputDynMMExpoPositionTorqueCurrent", argPosition, argKV, argKA, argFF))
+            return;
+        motorDynMMExpoTC.Slot = argSlot;
+        if (encoder != null) {
+            motorDynMMExpoTC.Position = encoder.mechanismToNative(argPosition);
+        }
+        motorDynMMExpoTC.kV = argKV;
+        motorDynMMExpoTC.kA = argKA;
+        motorDynMMExpoTC.Velocity = argMaxVelocity;
+        motorDynMMExpoTC.FeedForward = argFF;
+        if ((leader != null) && leader.isConnected()) {
+            getLeader().setControl(motorDynMMExpoTC);
+        }
+    }
+
+    public void setOutputDynMMExpoPositionTorqueCurrent(
+            final double argPosition,
+            final double argKV,
+            final double argKA,
+            final double argMaxVelocity,
+            final double argFF) {
+        setOutputDynMMExpoPositionTorqueCurrent(
+                argPosition, 0, argKV, argKA, argMaxVelocity, argFF);
     }
 
     /*

@@ -18,7 +18,7 @@ Team 271's reusable FRC robot library. The codebase uses WPILib, CTRE Phoenix 6,
 - Elastic Dashboard Docs: <https://frc-elastic.gitbook.io/docs>
 - Elastic Dashboard Source: <https://github.com/Gold872/elastic_dashboard>
 
-## Design Documents
+## Library Design Documents
 
 - [Start Here](docs/team-lib/start-here.md) — new contributor orientation, mental models, and guided reading order
 - [Java Coding Standard](docs/team-lib/team271-java-coding-standard.md) — formatting, safety rules, naming conventions, state machine patterns

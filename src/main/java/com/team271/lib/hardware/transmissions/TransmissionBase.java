@@ -5,12 +5,11 @@ import static edu.wpi.first.units.Units.*;
 import com.team271.lib.TObj;
 import com.team271.lib.control.pid.PIDBase;
 import com.team271.lib.hardware.CANDeviceID;
-import com.team271.lib.hardware.controllers.ControllerBase;
 import com.team271.lib.hardware.controllers.ControllerBase.ControllerStatus;
 import com.team271.lib.hardware.controllers.ControllerBase.MotorDirection;
 import com.team271.lib.hardware.controllers.ControllerBase.NeutralState;
-import com.team271.lib.hardware.controllers.ControllerSmart;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
+import com.team271.lib.hardware.controllers.SmartMotorController;
 import com.team271.lib.hardware.sensors.encoders.*;
 import com.team271.lib.hardware.sensors.encoders.EncoderAdapter;
 import com.team271.lib.hardware.sensors.encoders.EncoderBase.EncoderDirection;
@@ -40,11 +39,11 @@ public abstract class TransmissionBase extends TObj {
     /*
      * Motors
      */
-    protected ControllerSmart leader;
-    protected ControllerSmart follower1;
-    protected ControllerSmart follower2;
-    protected ControllerSmart follower3;
-    protected Set<ControllerSmart> allControllers = new LinkedHashSet<>();
+    protected SmartMotorController leader;
+    protected SmartMotorController follower1;
+    protected SmartMotorController follower2;
+    protected SmartMotorController follower3;
+    protected Set<SmartMotorController> allControllers = new LinkedHashSet<>();
 
     /*
      *
@@ -146,7 +145,7 @@ public abstract class TransmissionBase extends TObj {
     public void robotInit(final double argTimestamp) {
         int tmpNumMotors = 0;
 
-        for (ControllerSmart tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpMotor.robotInit(argTimestamp);
             ++tmpNumMotors;
         }
@@ -221,13 +220,13 @@ public abstract class TransmissionBase extends TObj {
      * Get Motors
      *
      */
-    public Set<ControllerSmart> getAllControllers() {
+    public Set<SmartMotorController> getAllControllers() {
         return allControllers;
     }
 
-    public ControllerSmart getMotor(final CANDeviceID argMotor) {
-        for (ControllerSmart tmpMotor : allControllers) {
-            if (tmpMotor.isDevice(argMotor)) {
+    public SmartMotorController getMotor(final CANDeviceID argMotor) {
+        for (SmartMotorController tmpMotor : allControllers) {
+            if (argMotor.equals(tmpMotor.getID())) {
                 return tmpMotor;
             }
         }
@@ -245,7 +244,7 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void applyConfigs() {
-        for (ControllerBase c : allControllers) {
+        for (SmartMotorController c : allControllers) {
             ControllerStatus status = c.applyConfig();
             if (status != ControllerStatus.OK) {
                 String msg =
@@ -792,7 +791,7 @@ public abstract class TransmissionBase extends TObj {
     public double getOutputVoltage() {
         double tmpVoltage = 0.0;
 
-        for (ControllerBase tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpVoltage += tmpMotor.getOutputVoltage();
         }
 
@@ -835,7 +834,7 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void robotPeriodicBefore(final double argTimestamp) {
-        for (ControllerBase tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpMotor.robotPeriodicBefore(argTimestamp);
         }
     }
@@ -854,7 +853,7 @@ public abstract class TransmissionBase extends TObj {
             encCANCoder.setSimVelRotations(argVelRotations);
         }
 
-        for (ControllerBase tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpMotor.setSimVelRotations(argVelRotations);
         }
     }
@@ -864,13 +863,13 @@ public abstract class TransmissionBase extends TObj {
             encCANCoder.setSimPosRotations(argPositionRotations);
         }
 
-        for (ControllerBase tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpMotor.setSimPosRotations(argPositionRotations);
         }
     }
 
     public void simulationInit(final double argTimestamp) {
-        for (ControllerBase tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpMotor.simulationInit(argTimestamp);
         }
 
@@ -891,7 +890,7 @@ public abstract class TransmissionBase extends TObj {
     }
 
     public void simulationPeriodic(final double argTimestamp) {
-        for (ControllerBase tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpMotor.simulationPeriodic(argTimestamp);
         }
 
@@ -918,7 +917,7 @@ public abstract class TransmissionBase extends TObj {
      */
     @Override
     public void outputTelemetry() {
-        for (ControllerBase tmpMotor : allControllers) {
+        for (SmartMotorController tmpMotor : allControllers) {
             tmpMotor.outputTelemetry();
         }
 

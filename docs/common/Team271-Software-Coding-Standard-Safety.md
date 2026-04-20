@@ -4,29 +4,11 @@
 
 ## Safety Practices
 
-> **Library applications:** Rules in this section reference "the project's
-> driver-notification facility", "the bulk CAN refresh API", etc. For
-> Team271-Lib's concrete APIs (`Elastic`, `CTREManager.refreshAll()`,
-> `TransmissionFX.stop()`, `SubsystemManager.forEachSafe()`), see
-> [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-> Anchor decisions and fault-tolerance patterns live in
-> [ADR-011](../team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md),
-> [SDD-subsystem.md](../team-lib/planning/sdd/SDD-subsystem.md), and
-> [SDD-hardware.md](../team-lib/planning/sdd/SDD-hardware.md).
->
-> *Industry note: The safety rules in this section reflect the philosophy
-> of DO-178C, which requires that safety-critical software be
-> deterministic, defensive, and traceable. DO-178C is the standard used
-> to certify the software in every commercial airplane you have ever
-> flown on. We are not building flight software, but the same mindset
-> applies: the robot must not do something unexpected during a match.*
-
 ### CODE-SAF-001 -- Input Validation
 
 a. Controller inputs **shall** be validated through deadbands and input
    shaping before use. Robot projects **should** centralize this
-   validation in a single driver-input class (Team271-Lib's base class
-   is `Input`; see [SDD-hardware.md](../team-lib/planning/sdd/SDD-hardware.md)).
+   validation in a single driver-input class (
 
 b. Auto chooser values **shall** be validated. The `default` case
    in auto selection **shall** select a safe "do nothing" mode:
@@ -63,9 +45,9 @@ b. Mechanisms with physical travel limits **shall** use soft limits
 
 c. Homing sequences **shall** have timeout protection to prevent
    indefinite stalling. On timeout, the subsystem **shall** fail safe
-   per [ADR-011](../team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md):
+   per the relevant architecture decision:
    stop motors, restore default current limits, transition to IDLE,
-   notify the driver via Elastic, and leave `mIsHomed = false` so
+   notify the driver via the driver-notification facility, and leave `mIsHomed = false` so
    closed-loop control stays disabled.
 
    ```java
@@ -75,8 +57,8 @@ c. Homing sequences **shall** have timeout protection to prevent
        mTransmission.setCurrentLimitStator(
            true, ExampleSubsystemConstants.kDefaultStatorLimit);
        mDesiredControlState = ExampleControlState.IDLE;
-       Elastic.sendNotification(new Elastic.Notification(
-           Elastic.NotificationLevel.WARNING,
+       notify.send(new Notification(
+           NotifyLevel.WARNING,
            "Homing Timeout", getName() + " homing timed out"));
        // leave mIsHomed = false so closed-loop stays disabled
    }
@@ -84,7 +66,7 @@ c. Homing sequences **shall** have timeout protection to prevent
 
 d. All voltage and duty-cycle commands **shall** be bounded to safe
    ranges. Library motor-controller wrappers enforce voltage limits
-   internally (see library notes); subsystem code **shall** not bypass
+   internally; subsystem code **shall** not bypass
    these limits.
 
 e. Motor neutral modes (brake vs coast) **shall** be explicitly
@@ -116,7 +98,7 @@ a. Cross-subsystem dependencies **shall** be documented. When one
    ```
 
 b. Auto timing **shall** be expressed through move-based composition
-   (`AutoMoveSequence`, `AutoMoveParallel`, `WaitMove`) in auto mode
+   (`AutoSequence`, `AutoParallel`, `WaitMove`) in auto mode
    constructors. Parallel moves **shall** not command the same subsystem.
 
 ### CODE-SAF-005 -- Autonomous Safety
@@ -137,7 +119,7 @@ d. Alliance flipping **shall** be tested for both red and blue
 
 a. CAN signal refresh **shall** use the project's bulk refresh API
    rather than individual signal refreshes, to minimize CAN bus
-   traffic. In Team271-Lib this is `CTREManager.refreshAll()` (see
+   traffic.  (see
    library notes).
 
 b. CTRE control requests **shall** use timesync:
@@ -174,7 +156,7 @@ detailed behavioral expectations under each failure scenario.
 a. Subsystems **shall** check `hasResetOccurred()` (or equivalent
    sticky fault) on each motor in `robotPeriodicBefore()` and, on
    detection, re-apply all motor configuration and set `isZeroed`
-   to `false`. The driver **shall** be notified via Elastic.
+   to `false`. The driver **shall** be notified via the driver-notification facility.
 
 b. State machines **shall** not advance based on stale sensor readings
    during or immediately after a brownout. Velocity gates, position
@@ -209,7 +191,7 @@ c. Vision-dependent state transitions (e.g., ALIGNING_WITH_HUB)
 a. If a motor's torque current exceeds its configured supply current
    limit for a sustained period (defined by a named constant), the
    subsystem **should** transition to IDLE and notify the driver via
-   Elastic. This protects against motor jam scenarios where the hardware
+   the driver-notification facility. This protects against motor jam scenarios where the hardware
    current limit alone may not prevent mechanism damage.
 
 b. The sustained-current threshold and duration **shall** be named

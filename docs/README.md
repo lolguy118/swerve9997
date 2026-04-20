@@ -19,21 +19,27 @@ Framework-agnostic policy. Anything here applies verbatim to every 271
 project — the library, a season robot, a dev-tool, anything else we write
 in Java.
 
-Today this is the coding standard (13 files). Future candidates: a common
-safety practices guide, shared templates, shared review checklist.
+Currently:
 
-See [`common/README.md`](common/README.md) for the index.
+- [`common/`](common/) — coding standard (12 files: core + companions)
+- [`common/planning/`](common/planning/) — shared planning framework
+  (configuration-management policy, development-plan framework,
+  verification-plan framework)
+
+See [`common/README.md`](common/README.md) and
+[`common/planning/README.md`](common/planning/README.md) for the indexes.
 
 ## team-lib/
 
-Specific to the **library**. Planning docs (SDP, SRS, SVP, SCMP) describe
-the library as a product. ADRs record library-wide decisions. SDDs describe
-library package internals. Guides walk through library architecture and
+Specific to the **library**. Planning docs (SDP, SRS, SVP, SCMP)
+concretize the common planning framework with the library's specific
+choices. ADRs record library-wide decisions. SDDs describe library
+package internals. Guides walk through library architecture and
 contributor setup. Prompts and internal diagrams support the library's
 review and maintenance workflow.
 
-See [`team-lib/planning/README.md`](team-lib/planning/README.md) for the
-planning-doc map.
+See [`team-lib/planning/README.md`](team-lib/planning/README.md) for
+the planning-doc map.
 
 ## `<project>/` (robot projects)
 

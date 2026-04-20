@@ -4,11 +4,6 @@
 
 ## General
 
-> **Library applications:** Rules in this chapter sometimes name Team271-Lib
-> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
-> The rule itself is framework-agnostic; the concrete library binding lives
-> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-
 ### CODE-GEN-001 -- Common Abbreviations
 
 a. Abbreviations and acronyms should be avoided unless their meanings
@@ -32,7 +27,7 @@ a. The following methods and patterns **shall** not be used in robot code:
 | `Thread.stop()` | Deprecated; unsafe thread termination |
 | `System.gc()` | Unpredictable GC pauses in real-time code |
 | `Object.finalize()` | Deprecated; unreliable cleanup |
-| `System.out.println()` | Use `Logger.recordOutput()`, `DriverStation.reportError()`, `DriverStation.reportWarning()`, or `Elastic.sendNotification()` |
+| `System.out.println()` | Use `Logger.recordOutput()`, `DriverStation.reportError()`, `DriverStation.reportWarning()`, or `notify.send()` |
 | `System.err.println()` | Same as `System.out.println()` above |
 | `System.currentTimeMillis()` | Not monotonic, not FPGA-synchronized. Use `Timer.getFPGATimestamp()` |
 | Raw `new Thread()` | Use WPILib `Notifier` for background tasks |
@@ -58,7 +53,7 @@ b. The `final` keyword **shall** be used:
      ```
    - On all fields that are set once (at declaration or in constructor):
      ```java
-     private final TransmissionFX mTransmission;
+     private final ExampleTransmission mTransmission;
      private final Timer mReverseTimer = new Timer();
      ```
    - On local variables that are not reassigned (encouraged but not
@@ -109,7 +104,7 @@ b. Objects that are used repeatedly **shall** be pre-allocated in
    ```
 
 c. CTRE control request objects **shall** be reused, not
-   re-created on each call. The `TransmissionFX` class already
+   re-created on each call. The `ExampleTransmission` class already
    handles this pattern internally.
 
 d. String concatenation in periodic methods **should** be avoided.
@@ -117,7 +112,7 @@ d. String concatenation in periodic methods **should** be avoided.
 
 e. Autoboxing (e.g., `int` to `Integer`) in loops **shall** be avoided.
 
-f. Elastic `Notification` objects **should** be pre-allocated when
+f. the driver-notification facility `Notification` objects **should** be pre-allocated when
    used repeatedly (e.g., a recurring fault notification).
 
 g. Collections that grow dynamically (e.g., `ArrayList`, `HashMap`)
@@ -271,7 +266,7 @@ c. When null indicates an error, prefer throwing
 
 > **Scope:** This rule applies to **robot-project code** only. Library
 > subsystems do not use singletons — see
-> [ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md).
+> the relevant architecture decision.
 
 a. Robot-project subsystems **shall** use the established singleton pattern
    with two `getInstance()` methods:
@@ -279,7 +274,7 @@ a. Robot-project subsystems **shall** use the established singleton pattern
    ```java
    private static MySubsystem mInstance;
 
-   public static MySubsystem getInstance(final TObj argParent) {
+   public static MySubsystem getInstance(final LifecycleBase argParent) {
        if (mInstance == null) {
            mInstance = new MySubsystem(argParent);
        }
@@ -294,12 +289,12 @@ a. Robot-project subsystems **shall** use the established singleton pattern
    }
    ```
 
-b. The `getInstance(TObj)` overload creates the instance on first
+b. The `getInstance(LifecycleBase)` overload creates the instance on first
    call. The no-argument `getInstance()` **shall** throw
    `IllegalStateException` if not yet initialized.
 
 c. Subsystem singletons **shall** only be created in `Robot.robotInit()`
-   and registered with `SubsystemManager.addSubsystem()`.
+   and registered with `SubsystemMgr.addSubsystem()`.
 
 d. After creation, subsystem references **shall** be stored in
    `Globals.java` as `public static` fields so that other classes
@@ -363,9 +358,9 @@ a. Code that opens resources (files, streams, connections) **shall**
 
 ### CODE-GEN-016 -- Mutable Static Fields
 
-> **Scope:** Item `a` applies to both library and robot-project code.
-> The `Globals.java` exception in item `b` is a **robot-project**
-> convention; the library does not have a `Globals.java`.
+> **Scope:** Item `a` applies universally. The `Globals.java` exception
+> in item `b` is a **robot-project** convention — reusable library code
+> should not depend on it.
 
 a. Mutable `static` fields **shall** only be used for the singleton
    pattern (`mInstance`). Other shared mutable state **should** be

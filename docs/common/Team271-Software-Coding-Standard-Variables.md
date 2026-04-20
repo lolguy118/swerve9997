@@ -4,11 +4,6 @@
 
 ## Variables
 
-> **Library applications:** Rules in this chapter sometimes name Team271-Lib
-> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
-> The rule itself is framework-agnostic; the concrete library binding lives
-> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-
 ### CODE-VAR-001 -- Variable Naming Convention
 
 a. Instance fields (non-static, non-final) **shall** use the `m`
@@ -25,14 +20,14 @@ b. Method parameters **shall** use the `arg` prefix followed by
 
    ```java
    public void robotInit(final double argTimestamp) { ... }
-   public static ExampleSubsystem getInstance(final TObj argParent) { ... }
+   public static ExampleSubsystem getInstance(final LifecycleBase argParent) { ... }
    ```
 
-   **Note:** The team's `TObj` base class defines lifecycle methods
+   **Note:** The team's `LifecycleBase` base class defines lifecycle methods
    with `argTimestamp` parameters. WPILib's own lifecycle methods
    (e.g., `robotPeriodic()`, `teleopPeriodic()`) take no parameters;
    the `argTimestamp` is a Team 271 convention passed through
-   `SubsystemManager`.
+   `SubsystemMgr`.
 
 c. Local variables **shall** use camelCase without prefix. Short-lived
    temporary variables **may** use the `tmp` prefix:
@@ -41,12 +36,12 @@ c. Local variables **shall** use camelCase without prefix. Short-lived
    double tmpVoltage = mSpeed * MAX_VOLTAGE;
    ```
 
-d. Fields that wrap NetworkTables entries (`NTEntry`, `NTTable`)
+d. Fields that wrap NetworkTables entries (`NtPublisher`, `NtTable`)
    **should** use the `nt` prefix:
 
    ```java
-   private TRobot ntRobot;
-   final NTEntry ntMMCruiseVel;
+   private RobotObj ntRobot;
+   final NtPublisher ntMMCruiseVel;
    ```
 
 e. Static final constants **shall** use one of two naming

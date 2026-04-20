@@ -1,11 +1,20 @@
 # Planning Documentation Index
 
-This directory contains the formal planning and design documents for
-Team271-Lib. They describe **what** the library does (SRS), **how**
-it's built (SDP), **how** it's verified (SVP), and **how** it's
-versioned (SCMP). The Software Design Descriptions (SDDs) document
-the architecture of each layer; the Architecture Decision Records
-(ADRs) capture the rationale behind key decisions.
+Formal planning and design documents for Team271-Lib. They describe
+**what** the library does (SRS), **how** it's built (SDP), **how**
+it's verified (SVP), and **how** it's versioned (SCMP). The Software
+Design Descriptions (SDDs) document the architecture of each layer;
+the Architecture Decision Records (ADRs) capture the rationale behind
+key decisions.
+
+## Shared framework (common)
+
+The shared planning framework (SemVer policy, FRC-calendar phase
+model, test-level structure, CI gate pattern) lives under
+[`../../common/planning/`](../../common/planning/). The documents in
+this directory concretize those frameworks with library-specific
+choices — they **reference** the common policy rather than duplicate
+it.
 
 ## Document Map
 

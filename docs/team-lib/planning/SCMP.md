@@ -7,90 +7,68 @@
 | Date | 2026-04-20 |
 | Status | Draft |
 
-> This document is deliberately brief. It identifies the authoritative
-> CM sources and summarises the policies they define. Do not duplicate
-> content from those sources here.
+This plan records Team271-Lib's specific configuration management state
+and cites the shared policy in
+[`../../common/planning/configuration-management.md`](../../common/planning/configuration-management.md)
+for the framework (SemVer, branch model, vendordep upgrade process,
+baseline control, change control, deviation tracking).
 
 ## 1. Purpose
 
-This plan summarizes Team271-Lib's configuration management:
-versioning, vendordep upgrades, branch policy, and deviation
-tracking. The authoritative CM sources are listed in §2.
+Library-specific state for the shared CM policy: current version,
+authoritative sources, vendordep list, and deviations.
 
 ## 2. Authoritative CM Documents
 
 | Document | CM Concern |
 | -------- | ---------- |
-| `../../CONTRIBUTING.md` (repository root) | Branch naming, PR process, commit rules, linting workflow |
-| `../../build.gradle` | Library version, Gradle toolchain version |
-| `../../vendordeps/*.json` | Vendordep versions (Phoenix 6, WPILib, AdvantageKit, PathPlanner) |
+| `../../../CONTRIBUTING.md` (repository root) | Branch naming, PR process, commit rules, linting workflow |
+| `../../../build.gradle` | Library version, Gradle toolchain version |
+| `../../../vendordeps/*.json` | Vendordep versions (Phoenix 6, WPILib, AdvantageKit, PathPlanner) |
 
 ## 3. Library Versioning
 
-Team271-Lib uses Semantic Versioning (SemVer):
+Team271-Lib follows the SemVer policy in the shared framework
+(see [`configuration-management.md §1`](../../common/planning/configuration-management.md#1-versioning-semantic-versioning)).
+Version format is `YYYY.MINOR.PATCH` with `YYYY` set to the current
+FRC season year. Version is authoritative in `build.gradle`.
 
-- **MAJOR** — breaking API change (rare; only during offseason)
-- **MINOR** — new API surface (typically once per season)
-- **PATCH** — bug fix (any phase)
+Tag events (per [SDP §8](SDP.md)):
 
-Version format: `YYYY.MINOR.PATCH` (season year prefix). Version is set
-in `build.gradle`. Git tags are applied at season boundaries per
-[SDP §8.1](SDP.md): the prior season's final tag (e.g., `v2026.3.2`) is
-applied at offseason start; the next-season MINOR=0 tag (e.g.,
-`v2027.0.0`) is applied at preseason API freeze.
+- Offseason start → tag prior season final (e.g., `v2026.3.2`).
+- Preseason API freeze → tag next-season MINOR=0 (e.g., `v2027.0.0`).
+- Each competition hotfix → tag patch (e.g., `v2027.0.1`).
 
-## 4. Vendordep Management
-
-### Automated freshness tracking
+## 4. Vendordep Management (Team271-Lib specifics)
 
 The [`.github/workflows/vendordep-freshness.yml`](../../../.github/workflows/vendordep-freshness.yml)
-workflow runs weekly (Mondays 13:00 UTC) and on manual dispatch. It
-fetches each vendordep `jsonUrl`, compares the upstream `version` to
-the local value, and opens (or updates) a single "Vendordep freshness
-check" issue when any vendordep is behind. Use that issue to trigger
-the upgrade procedure below.
+workflow implements the automated freshness tracking described in the
+shared policy. It runs weekly (Mondays 13:00 UTC) and on manual
+dispatch, fetches each vendordep `jsonUrl`, and opens/updates a
+"Vendordep freshness check" issue when upstream moves ahead.
 
-### Upgrade procedure
+Currently tracked vendordeps:
 
-Upgrading a vendordep requires:
-
-1. Update `vendordeps/*.json` to the new version (from the upstream
-   `jsonUrl`).
-2. Run `./gradlew compileJava` — fix any API breaks.
-3. Run `./gradlew test` — fix any test failures.
-4. If the vendor changes fundamentally (new CTRE release, new WPILib
-   major), write a new ADR (see
-   [ADR-006](adr/ADR-006-ctre-phoenix6-primary-vendor.md)).
-5. Merge via normal PR process; close the freshness-check issue when
-   the upgrade lands on `main`.
-
-### Supply-chain visibility
+- `Phoenix6-frc<year>-latest.json` (CTRE Phoenix 6)
+- `AdvantageKit.json` (AdvantageKit)
+- `PathplannerLib.json` (PathPlanner)
+- `WPILibNewCommands.json` (WPILib commands)
 
 The [`.github/workflows/dependency-submission.yml`](../../../.github/workflows/dependency-submission.yml)
-workflow runs on every push to `main` and submits the Gradle dependency
-graph to GitHub. This populates the repo's Dependency graph view and
-enables Dependabot alerts on vendordep transitive dependencies.
+workflow submits the Gradle dependency graph on every push to `main`.
 
-## 5. Baseline Control
+For the upgrade procedure itself, follow
+[`configuration-management.md §4`](../../common/planning/configuration-management.md#4-vendor-dependency-management).
 
-- `main` branch **should** be protected on GitHub (no direct push,
-  no force-push). Verify this is actually configured on the remote.
-- Season-boundary baselines are Git tags on `main` (signed).
-- Feature branches: `feat/short-description` or `fix/short-description`.
+## 5. Baseline Control and Change Control
 
-## 6. Change Control
+Team271-Lib follows the shared baseline and change-control rules in
+[`configuration-management.md §2–§3`](../../common/planning/configuration-management.md#2-baseline-control).
+The library additionally requires `/lib-review` output on any
+non-trivial PR.
 
-- All changes enter via PR on a feature branch.
-- `/lib-review` command is expected on any non-trivial change.
-- All `.claude/hooks/` must pass before merge approval is granted.
-- At least one maintainer must approve the PR.
+## 6. Deviation Tracking
 
-## 7. Deviation Tracking
-
-Deviations from the coding standard are logged in [SDP.md §9](SDP.md).
-
-Format:
-
-| Rule ID | Rationale | Approval Date |
-| ------- | --------- | ------------- |
-| CODE-XXX-NNN | Why deviation is acceptable | YYYY-MM-DD |
+Library-specific deviations from the shared coding standard are logged
+in [SDP.md §9](SDP.md#9-deviations-from-scs). Format per
+[`configuration-management.md §5`](../../common/planning/configuration-management.md#5-deviation-tracking).

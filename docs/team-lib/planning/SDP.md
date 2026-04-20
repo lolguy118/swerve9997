@@ -7,24 +7,29 @@
 | Date | 2026-04-20 |
 | Status | Draft |
 
+This document is Team271-Lib's specific development plan. The shared
+framework — toolchain baseline, platform matrix pattern, FRC-calendar
+phase model, milestone-event structure — lives in
+[`../../common/planning/development-plan.md`](../../common/planning/development-plan.md).
+This file records the library's specifics.
+
 ## 1. Purpose and Scope
 
-This document defines **when** Team271-Lib code is written, **in what
-order**, and **on what toolchain**. It captures the development
-lifecycle phases, platform matrix, layer build priority, and
-milestones. It deliberately does not cover:
+Defines when Team271-Lib code is written, in what order, and against
+what toolchain pin. Captures the library-specific layer build priority
+and milestones. Does not cover:
 
-- Coding rules, naming, or formatting → see
-  [Team271-Software-Coding-Standard.md](../../common/Team271-Software-Coding-Standard.md)
-- Test strategy and coverage → see [SVP.md](SVP.md)
-- API contracts or non-functional guarantees → see [SRS.md](SRS.md)
-- Vendordep versioning or branch policy → see [SCMP.md](SCMP.md)
+- Coding rules → [coding-standard core](../../common/Team271-Software-Coding-Standard.md)
+- Test strategy → [SVP.md](SVP.md)
+- API contracts → [SRS.md](SRS.md)
+- Vendordep / versioning policy → [SCMP.md](SCMP.md)
 
 ## 2. Applicable Documents
 
 | Document | Purpose |
 | -------- | ------- |
-| [Team271-Software-Coding-Standard.md](../../common/Team271-Software-Coding-Standard.md) + companions | Normative coding rules |
+| [`../../common/planning/development-plan.md`](../../common/planning/development-plan.md) | Shared toolchain, platform matrix, phase model |
+| [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) + companions | Normative coding rules |
 | [SRS.md](SRS.md) | Library requirements |
 | [SVP.md](SVP.md) | Verification plan |
 | [SCMP.md](SCMP.md) | Configuration management |
@@ -44,7 +49,11 @@ The code is organized into six layers with strict dependency rules
 graph is drawn in
 [team271-lib-dependency-diagram.mmd](../internal/team271-lib-dependency-diagram.mmd).
 
-## 4. Development Environment
+## 4. Development Environment (library pins)
+
+Team271-Lib follows the shared toolchain baseline
+(see [`development-plan.md §1`](../../common/planning/development-plan.md#1-development-environment-baseline)).
+Concrete pins for this library:
 
 | Component | Version | Source |
 | --------- | ------- | ------ |
@@ -58,11 +67,16 @@ graph is drawn in
 | PathPlanner | Per `vendordeps/PathplannerLib.json` | Vendordep |
 | markdownlint-cli2 | Latest | npm / developer install |
 
-The authoritative version list is `vendordeps/*.json` and `build.gradle`.
-This document references but does not duplicate them. See
-[SCMP.md §4](SCMP.md) for upgrade process.
+The authoritative version list is `vendordeps/*.json` and
+`build.gradle`. This document references but does not duplicate them.
+See [SCMP.md §4](SCMP.md#4-vendordep-management-team271-lib-specifics)
+for upgrade process.
 
-## 5. Platform Matrix
+## 5. Platform Matrix (library-specific rows)
+
+Team271-Lib follows the shared platform-matrix pattern
+(see [`development-plan.md §2`](../../common/planning/development-plan.md#2-platform-matrix-pattern)).
+The library's concrete matrix:
 
 | Platform | Purpose | CI? |
 | -------- | ------- | --- |
@@ -72,10 +86,10 @@ This document references but does not duplicate them. See
 | Linux (desktop sim) | Tertiary developer platform + CI runner (`ubuntu-24.04`) | Yes |
 
 Desktop simulation requires WPILib HAL sim and Phoenix 6 sim. Tests
-are runnable on all three desktop platforms. A GitHub Actions CI
-pipeline runs on `ubuntu-24.04` for every push to `main` and every
-pull request (see [SVP §7](SVP.md#7-ci-pipeline-gates)); local
-pre-edit gates run via `.claude/hooks/`.
+are runnable on all three desktop platforms. GitHub Actions runs on
+`ubuntu-24.04` for every push to `main` and every pull request
+(see [SVP §7](SVP.md#7-ci-pipeline-gates)); local pre-edit gates run
+via `.claude/hooks/`.
 
 ## 6. Layer Build Priority
 
@@ -93,48 +107,11 @@ layers below them ([ADR-004](adr/ADR-004-layered-architecture.md)).
 | 6 | `auto/` | `subsystem/` | Autonomous composes subsystem commands |
 | C | `sysid/`, `nt/`, `util/` | (cross-cutting) | Used by any layer; depend on none above |
 
-## 7. Development Phases (FRC-Calendar Keyed)
+## 7. Development Phases
 
-FRC seasons impose a clear rhythm on library development. Each phase
-has entry gates, deliverables, and exit criteria. This document does
-not set calendar dates — phases begin when entry conditions are met.
-
-### 7.1 Offseason (May–September)
-
-- **Entry:** competition season concluded.
-- **Deliverables:** architectural ADRs, breaking API changes,
-  library refactors, new layer features.
-- **Exit:** API freeze declared (typically end of September).
-
-### 7.2 Preseason (October–December)
-
-- **Entry:** API freeze declared.
-- **Deliverables:** new features that extend (never break) the API;
-  documentation updates; integration tests against the upcoming
-  robot project.
-- **Exit:** build season starts; library MINOR version tagged.
-
-### 7.3 Build Season (January–February)
-
-- **Entry:** FRC kickoff.
-- **Deliverables:** **stability only** — bug fixes, tuning, small
-  additive features that do not break the API.
-- **Exit:** first competition. No breaking changes permitted.
-
-### 7.4 Competition Season (March–April)
-
-- **Entry:** first competition.
-- **Deliverables:** **hotfix only** — fixes to bugs discovered at
-  competition. Each change requires `/lib-review` + ≥1 maintainer.
-- **Exit:** championship concluded. Library PATCH tags applied
-  per fix.
-
-### 7.5 Postseason (May)
-
-- **Entry:** championship concluded.
-- **Deliverables:** retrospective, next-season major tag (e.g.,
-  `v2027.0.0`), docs updates, ADR drafts for the next offseason.
-- **Exit:** offseason begins.
+Team271-Lib adopts the shared FRC-calendar phase model
+(see [`development-plan.md §3`](../../common/planning/development-plan.md#3-frc-calendar-phase-model))
+unchanged.
 
 ## 8. Milestones
 
@@ -154,12 +131,13 @@ not set calendar dates — phases begin when entry conditions are met.
 | Postseason | Retrospective; ADR drafts for next offseason |
 
 Version format: `YYYY.MINOR.PATCH`. See
-[SCMP.md §3](SCMP.md) for semantics.
+[SCMP.md §3](SCMP.md#3-library-versioning) for semantics.
 
 ## 9. Deviations from SCS
 
-Deviations from the Coding Standard are filed here. Each deviation
-requires a rationale and a maintainer approval.
+Library-specific deviations from the shared coding standard. Format
+per
+[`configuration-management.md §5`](../../common/planning/configuration-management.md#5-deviation-tracking).
 
 | Rule ID | File / Scope | Rationale | Approved By | Date |
 | ------- | ------------ | --------- | ----------- | ---- |

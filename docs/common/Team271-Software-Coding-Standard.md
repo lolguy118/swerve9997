@@ -1,11 +1,6 @@
 <!-- markdownlint-disable MD007 MD013 MD031 MD032 -->
 # Team 271 Java Coding Standard
 
-> **Library applications:** Rules in this chapter sometimes name Team271-Lib
-> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
-> The rule itself is framework-agnostic; the concrete library binding lives
-> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-
 Document No: 271-JCS\
 Revision: Draft\
 Date of Release: (see revision history)
@@ -40,15 +35,15 @@ requirement. Rules specified with "should" are recommended practices.
 This standard applies to all Java source code in the `com.team271`
 packages, covering both:
 
-- **Library code** (`com.team271.lib.*`) in this repository.
-- **Robot-project code** (`com.team271.frc<year>.*`) in each season's
+- **Library code** (`com.example.lib.*`) in this repository.
+- **Robot-project code** (`com.example.app*`) in each season's
   downstream repository that depends on this library.
 
 The two share most rules. Where they differ, sections explicitly note
 "library only" or "robot projects may." Notable example: subsystem
 instantiation — library code uses explicit instantiation and no
 singletons (see
-[ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md));
+the relevant architecture decision);
 robot-project subsystems commonly use the singleton pattern shown in
 §3.1.
 
@@ -86,7 +81,7 @@ robot-project subsystems commonly use the singleton pattern shown in
 | SemVer | Semantic Versioning |
 | SRS | Software Requirements Specification |
 | SVP | Software Verification Plan |
-| TObj | Team 271 base object (library lifecycle root class) |
+| the lifecycle base class | Team 271 base object (library lifecycle root class) |
 | WPILib | WPI Robotics Library |
 
 ### 1.4 Applicable Documents
@@ -98,7 +93,7 @@ robot-project subsystems commonly use the singleton pattern shown in
 - [AdvantageKit Documentation][akit-docs] -- Logging and replay framework
 - [PathPlanner Documentation][pathplanner-docs] -- Autonomous path following
 - [Google Java Style Guide][google-java] -- Basis for Spotless formatter configuration
-- [Elastic Dashboard Documentation][elastic-docs] -- FRC dashboard
+- [the driver-notification facility Dashboard Documentation][elastic-docs] -- FRC dashboard
 - [MISRA C:2023][misra] -- Safety-critical C coding guidelines (concepts adapted to Java)
 - [SEI CERT Java Coding Standard][cert-java] -- Secure Java coding rules
 - [JPL "Power of 10" Rules][jpl-power10] -- NASA/JPL rules for safety-critical code
@@ -222,19 +217,19 @@ Spotless runs automatically before compilation
 ### 3.1 Java Source File Template
 
 > **Scope note:** This template is for **robot-project subsystems**
-> (the `com.team271.frc<year>.*` package). It uses the singleton
+> (the `com.example.app*` package). It uses the singleton
 > pattern commonly used in FRC robot code. Library code
-> (`com.team271.lib.*`) does **not** use singletons for subsystems —
-> see [ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md).
+> (`com.example.lib.*`) does **not** use singletons for subsystems —
+> see the relevant architecture decision.
 > Library authors should omit the `/* Singleton */` block and
 > `getInstance()` methods.
 
 Every robot-project `.java` subsystem file shall follow this structure:
 
 ```java
-package com.team271.frc<year>;
+package com.example.app;
 
-import com.team271.lib.TObj;
+import com.example.lib;
 import edu.wpi.first.wpilibj.Timer;
 import org.littletonrobotics.junction.Logger;
 
@@ -250,7 +245,7 @@ public class ExampleSubsystem extends Subsystem {
      */
     private static ExampleSubsystem mInstance;
 
-    public static ExampleSubsystem getInstance(final TObj argParent) {
+    public static ExampleSubsystem getInstance(final LifecycleBase argParent) {
         if (mInstance == null) {
             mInstance = new ExampleSubsystem(argParent);
         }
@@ -291,12 +286,12 @@ public class ExampleSubsystem extends Subsystem {
     /*
      * Motors
      */
-    private final TransmissionFX mTransmission;
+    private final ExampleTransmission mTransmission;
 
     /*
      * Constructor
      */
-    public ExampleSubsystem(final TObj argParent) {
+    public ExampleSubsystem(final LifecycleBase argParent) {
         super(argParent, "ExampleSubsystem");
         mInputDriver = InputDriver.getInstance();
         // ...
@@ -349,7 +344,7 @@ a block comment:
 3. `/* Constants */` -- Class-level constants (if not in `Constants.java`)
 4. `/* Other Singletons */` -- References to other subsystems
 5. `/* Variables */` -- State variables, timers, counters
-6. `/* Motors */` -- `TransmissionFX` declarations
+6. `/* Motors */` -- `ExampleTransmission` declarations
 7. `/* Constructor */`
 8. `/* Stop Robot */` -- `stop()` method
 9. `/* Robot Lifecycle */` -- Lifecycle methods in execution order:
@@ -437,9 +432,5 @@ The following companion documents are part of this standard:
 | [`-Compliance.md`](Team271-Software-Coding-Standard-Compliance.md) | §5 Static Analysis and enforcement matrix |
 | [`-Appendices.md`](Team271-Software-Coding-Standard-Appendices.md) | Appendices A–E, H, I |
 
-### Library-specific companions (in `docs/team-lib/`)
-
-| File | Content |
-| ---- | ------- |
-| [`coding-standard-templates.md`](../team-lib/coding-standard-templates.md) | Appendix F (Subsystem) + Appendix G (Constants) — templates for robot-project code consuming the library |
-| [`coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md) | Concrete library-API applications of common rules (e.g., `LoggedNTInput` for `CODE-BUG-004`, `Elastic` for `CODE-SAF-004`) |
+Concrete project-specific applications of these rules (file templates,
+API bindings) live alongside the consuming project's source, not here.

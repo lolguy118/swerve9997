@@ -4,13 +4,6 @@
 
 ## Debugging and Telemetry
 
-> **Library applications:** This chapter's rules reference concepts like
-> "the project's telemetry publishing method" or "the project's tuning
-> mechanism." For Team271-Lib's concrete APIs (`TObj.outputTelemetry()`,
-> `Logger.recordOutput()`, `LoggedNTInput`, `checkTuning()`, `Elastic`),
-> see
-> [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-
 ### CODE-BUG-001 -- Telemetry Discipline
 
 a. Every subsystem **shall** implement the project's telemetry
@@ -76,8 +69,8 @@ a. All configurable control values **shall** be tunable at runtime via
 
 b. Values already tunable through a project-supplied library class
    **shall** inherit tunability automatically from that class. Subsystem
-   code **shall not** re-implement tuning for values already exposed by
-   the library.
+   code **shall not** re-implement tuning for values already exposed
+   there.
 
 c. Values defined as `static final` constants in the project's
    `Constants` class that are read once at initialization and not

@@ -4,11 +4,6 @@
 
 ## Methods
 
-> **Library applications:** Rules in this chapter sometimes name Team271-Lib
-> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
-> The rule itself is framework-agnostic; the concrete library binding lives
-> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-
 ### CODE-FUN-001 -- Method Naming Convention
 
 a. Method names **shall** use camelCase: `robotInit()`,
@@ -85,7 +80,7 @@ f. All private methods **shall** be declared `private`. All methods
 ### CODE-FUN-003 -- Utility Methods
 
 a. Shared logic **shall** be extracted into utility methods rather
-   than duplicated. Common utilities belong in `com.team271.lib`.
+   than duplicated. Common utilities belong in `com.example.lib`.
 
 b. Utility classes **shall** be declared `final` with a `private`
    constructor to prevent instantiation.
@@ -94,10 +89,10 @@ b. Utility classes **shall** be declared `final` with a `private`
 
 > **Anchor:** This rule codifies the lifecycle ordering underpinning
 > the desired-to-actual state pattern in
-> [ADR-014](../team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md).
+> the relevant architecture decision.
 
 a. Subsystem lifecycle methods **shall** be called in this order by
-   the `SubsystemManager`:
+   the `SubsystemMgr`:
 
    ```text
    robotInit(argTimestamp)
@@ -116,11 +111,10 @@ c. Sensor reading **shall** be done in `robotPeriodicBefore()`, not
 
 ### CODE-FUN-005 -- State Machine Pattern
 
-> **Anchor:** See
-> [ADR-014](../team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md)
-> for the architectural decision, and
-> [SDD-subsystem.md](../team-lib/planning/sdd/SDD-subsystem.md) for the library's
-> `Subsystem` base-class implementation.
+> **Anchor:** The desired-to-actual state pattern is the canonical way
+> to make every transition explicit and auditable. Projects typically
+> record this choice in their own ADR and implement it in their
+> subsystem base class.
 >
 > *Industry note: DO-178C (the avionics software certification standard)
 > emphasizes deterministic, traceable state management. The
@@ -134,8 +128,7 @@ a. **(Robot-project code.)** Subsystems that use state machines
    and `mDesiredControlState` (desired). The desired state is set in
    `teleopPeriodic()` or `autonomousPeriodic()`; the actual state is
    applied in `robotPeriodicAfter()`. Library subsystems follow the
-   same pattern with non-`m`-prefixed field names — see
-   [SDD-subsystem.md](../team-lib/planning/sdd/SDD-subsystem.md).
+   same pattern with non-`m`-prefixed field names —.
 
    ```java
    /* Set in teleopPeriodic */

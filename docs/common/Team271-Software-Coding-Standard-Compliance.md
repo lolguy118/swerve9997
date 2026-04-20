@@ -4,11 +4,6 @@
 
 ## 5. Static Analysis and Tooling
 
-> **Library applications:** Rules in this chapter sometimes name Team271-Lib
-> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
-> The rule itself is framework-agnostic; the concrete library binding lives
-> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-
 ### 5.1 Spotless
 
 Spotless is the primary code formatting tool. Configuration in
@@ -86,8 +81,8 @@ cannot be caught by automated tools):
 - [ ] Motor direction: `configDirection()` matches physical mechanism intent
 - [ ] Telemetry keys: pre-defined string constants, not computed or concatenated per-cycle
 - [ ] Resource cleanup: timers and sensor subscriptions cleaned up in mode exit methods
-- [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (see ADR-011; implemented in CODE-SAF-002c, CODE-SAF-008, CODE-SAF-010)
-- [ ] Runtime tunability: configurable values use `LoggedNTInput` + `checkTuning()` pattern (CODE-BUG-004)
+- [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (see the relevant architecture decision; implemented in CODE-SAF-002c, CODE-SAF-008, CODE-SAF-010)
+- [ ] Runtime tunability: configurable values use `TunableInput` + `applyTuning()` pattern (CODE-BUG-004)
 
 ---
 
@@ -106,7 +101,7 @@ companion files.
 | Variables (naming, init, types, magic numbers) | CODE-VAR | 10 | Error Prone (`UnusedVariable`) + SpotBugs (null-deref) + manual review | Compile + CI + PR review |
 | Control Structures (if/switch/loops) | CODE-CTL | 6 | Checkstyle (`MissingSwitchDefault` → CODE-CTL-002) + compiler + manual review | `./gradlew checkstyleMain` + PR review |
 | Comments (JavaDoc, block, inline) | CODE-COM | 2 | Javadoc task + manual review | `./gradlew javadoc` + PR review |
-| Debugging and Telemetry (LoggedNTInput, Elastic, reports) | CODE-BUG | 4 | Manual review + `check-doc-tunables.sh`, `check-design-drift.sh` | PR review + hooks |
+| Debugging and Telemetry (the replay-faithful tunable-input type, the driver-notification facility, reports) | CODE-BUG | 4 | Manual review + `check-doc-tunables.sh`, `check-design-drift.sh` | PR review + hooks |
 | Safety Practices (timeouts, fail-safe, CAN, vision, brownout) | CODE-SAF | 11 | SpotBugs (thread-safety, resource leaks) + manual review + `/lib-review` agent | CI + PR review |
 
 Counts reflect the current rule set (see individual `-*.md`
@@ -125,4 +120,4 @@ The table above references three Java static analysers, configured in
 | Checkstyle | Mechanizable SCS rules (currently `NeedBraces`, `MissingSwitchDefault`) | Built-in `checkstyle` plugin; config at [`config/checkstyle/checkstyle.xml`](../../config/checkstyle/checkstyle.xml) | Strict (`maxWarnings = 0`); config grows incrementally |
 
 Tighten rollout (remove `allErrorsAsWarnings`, `ignoreFailures`) as
-historical findings are triaged. See [SVP §7](../team-lib/planning/SVP.md#7-ci-pipeline-gates).
+historical findings are triaged. See SVP §7.

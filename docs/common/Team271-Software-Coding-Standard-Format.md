@@ -113,6 +113,6 @@ c. Import order is managed by Spotless. Do not manually reorder.
 
 d. Static imports **should** be used for frequently referenced
    constants when it improves readability (e.g.,
-   `import static com.team271.frc<year>.Constants.CAN_BUS_CANIVORE_SUBSYSTEMS`).
+   `import static com.example.app`).
 
 ---

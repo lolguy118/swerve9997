@@ -10,6 +10,8 @@
 > - `docs/common/Team271-Software-Coding-Standard*.md` — coding rules
 > - `docs/team-lib/planning/` — SDP, SRS, SVP, SCMP, SDDs, ADRs
 > - `docs/team-lib/guides/` — contributor tutorials
+> - `docs/team-lib/coding-standard-templates.md` — robot-project templates
+> - `docs/team-lib/coding-standard-library-notes.md` — library bindings for common rules
 > - `.claude/rules/` — path-scoped AI guardrails
 >
 > If new information needs a home, add it to the appropriate

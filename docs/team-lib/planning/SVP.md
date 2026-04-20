@@ -7,97 +7,59 @@
 | Date | 2026-04-20 |
 | Status | Draft |
 
+This document is Team271-Lib's specific verification plan. The shared
+framework — test levels, coverage-target structure, hook pattern, CI
+gate list — lives in
+[`../../common/planning/verification-plan.md`](../../common/planning/verification-plan.md).
+This file records the library's concrete coverage targets, per-layer
+test conventions, hook roster, and CI workflow details.
+
 > **Coverage note:** Coverage thresholds below are development-quality
 > targets inspired by DO-178C structural coverage disciplines. They are
 > **not** a DO-178C certification claim.
 
 ## 1. Purpose and Scope
 
-This document defines how Team271-Lib requirements (captured in
-[SRS.md](SRS.md)) are verified. It specifies the test framework, the
-levels of testing performed, coverage thresholds by layer, CI pipeline
-gates, and the role of the `.claude/hooks/` scripts as pre-merge
-verification.
+How Team271-Lib requirements (captured in [SRS.md](SRS.md)) are
+verified. Defines library-specific coverage targets, per-layer
+test-ID conventions, the hook roster, and the concrete CI gate
+workflow. Does not duplicate the shared framework.
 
-It does not cover robot-project testing — robot projects follow the
-same patterns but add physics-model tests specific to each season's
-mechanisms.
+Robot projects follow the same patterns but add physics-model tests
+specific to each season's mechanisms.
 
 ## 2. Applicable Documents
 
 | Document | Purpose |
 | -------- | ------- |
+| [`../../common/planning/verification-plan.md`](../../common/planning/verification-plan.md) | Shared test framework, coverage structure, CI gate pattern |
 | [SRS.md](SRS.md) | Requirements being verified |
 | [SDP.md](SDP.md) | Development phases and toolchain |
-| [Team271-Software-Coding-Standard.md](../../common/Team271-Software-Coding-Standard.md) | Coding rules |
+| [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) | Coding rules |
 | [ADR-009](adr/ADR-009-junit5-hal-simulation-tests.md) | Test framework decision |
 
-## 3. Test Levels
+## 3. Test Levels (library-specific notes)
 
-### 3.1 Unit Tests
+Team271-Lib follows the shared four-level test structure
+(see [`verification-plan.md §1`](../../common/planning/verification-plan.md#1-test-levels)).
+Library-specific notes:
 
-JUnit 5 Jupiter + JaCoCo coverage, with WPILib HAL simulation
-(`HAL.initialize()` in `@BeforeAll`). Every test class that creates
-CTRE devices calls `CTREManager.resetForTesting()` in `@BeforeEach` to
-clear static state between tests.
+- **Unit tests:** Every test class that creates CTRE devices calls
+  `CTREManager.resetForTesting()` in `@BeforeEach` to clear static
+  state between tests. Unit tests cover `PIDSimple`, `PIDTrap`,
+  gear-ratio math, and telemetry key registration.
+- **Integration tests:** The `libtest/` package contains
+  `Infrastructure` and `Superstructure` harnesses that exercise the
+  full robot lifecycle across multiple subsystems (verifying
+  `SubsystemManager.forEachSafe()` isolation, for example).
+  `libtest/` is excluded from coverage metrics because it is the test
+  harness.
+- **Simulation tests:** With HAL initialized, CTRE devices expose
+  functional `SimState` objects. Tests verify `simulationInit()` /
+  `setSimPosRotations()` / `setSimVelRotations()` paths and `DCMotor`
+  model construction.
 
-Unit tests verify:
-
-- Object construction and initialization
-- Configuration APIs (getters return what setters stored)
-- Validation logic (null checks, bounded inputs, bus validation)
-- State-machine transitions
-- PID math (`PIDSimple`, `PIDTrap`)
-- Gear-ratio math
-- Telemetry key registration
-
-Unit tests cannot verify:
-
-- Real CAN signal values (StatusSignals return defaults in sim)
-- Firmware closed-loop response
-- Real sensor readings or latency compensation
-- Actual motor output voltage to hardware
-
-### 3.2 Integration Tests
-
-The `libtest/` package contains `Infrastructure` and `Superstructure`
-harnesses that exercise a full robot lifecycle — `robotInit` →
-`robotPeriodicBefore` → `robotPeriodicAfter` → `outputTelemetry` —
-across multiple subsystems. These verify cross-layer behavior
-(e.g., `SubsystemManager.forEachSafe()` actually isolates exceptions
-in a multi-subsystem scenario).
-
-`libtest/` is excluded from coverage metrics because it is the test
-harness, not library code.
-
-### 3.3 Simulation Tests
-
-With HAL initialized, CTRE devices expose functional `SimState`
-objects. Simulation tests verify:
-
-- `simulationInit()` creates SimState instances
-- `setSimPosRotations()` / `setSimVelRotations()` propagate without
-  errors
-- Supply voltage updates work under `simulationPeriodic()`
-- Motor type and orientation are configured correctly
-- `DCMotor` model is created with the correct motor count
-
-Simulation tests do **not** verify physics accuracy (that depends on
-robot-specific WPILib sim classes).
-
-### 3.4 Static Analysis
-
-| Tool | What It Checks | When |
-| ---- | -------------- | ---- |
-| Spotless + Google Java Format (AOSP) | Formatting, import order | `./gradlew spotlessCheck` |
-| `javac -Xlint:all` | Unchecked, deprecation, serial, fallthrough warnings | `./gradlew compileJava` |
-| markdownlint-cli2 | Markdown rules (140-char lines, heading hierarchy) | Hook + CI |
-
-For the full list of `.claude/hooks/` pre-merge hooks (which are
-tooling around the above plus doc-drift checks), see
-[§6 Hooks as Pre-Merge Gates](#6-hooks-as-pre-merge-gates).
-
-## 4. Coverage Requirements
+## 4. Coverage Targets (library-specific numbers)
 
 > **Status:** The thresholds below are **targets**, not enforced
 > gates. `./gradlew jacocoTestReport` generates the coverage report
@@ -120,10 +82,10 @@ excluded.
 | `nt/` | ≥ 70% | ≥ 60% | 100% |
 | `util/` | ≥ 80% | ≥ 70% | 100% |
 
-Note: "Function" coverage means every public API method has at least
-one direct test that calls it. Hardware-dependent behavior (real
-motor output, real CAN signals) is not counted — the test verifies
-the call path does not throw.
+"Function" coverage means every public API method has at least one
+direct test that calls it. Hardware-dependent behavior (real motor
+output, real CAN signals) is not counted — the test verifies the call
+path does not throw.
 
 ## 5. Per-Layer Test Requirements
 
@@ -139,11 +101,11 @@ the call path does not throw.
 | `nt/` | `TEST-NT-NNN` | HAL required (NT4 init) |
 | `util/` | `TEST-UTL-NNN` | No HAL except `LimelightHelpers` |
 
-## 6. Hooks as Pre-Merge Gates
+## 6. Hooks as Pre-Merge Gates (library roster)
 
-The `.claude/hooks/` scripts fire on Edit/Write tool operations (most
-advisory, some blocking) and function as pre-merge gates. They can
-also be run locally.
+Team271-Lib installs the following hooks under `.claude/hooks/`. Each
+follows the shared hook pattern
+(see [`verification-plan.md §3`](../../common/planning/verification-plan.md#3-pre-merge-hook-pattern)).
 
 | Hook | What It Enforces | Local Run |
 | ---- | ---------------- | --------- |
@@ -155,12 +117,13 @@ also be run locally.
 | `check-spotless.sh` | Spotless format check after Java edit (advisory) | `./gradlew spotlessCheck` |
 | `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint | `bash .claude/hooks/verify-docs.sh` |
 
-## 7. CI Pipeline Gates
+## 7. CI Pipeline Gates (library workflow)
 
 GitHub Actions CI runs on every push to `main` and every pull request
 (ubuntu-24.04, JDK 17 Temurin). The authoritative workflow is
 [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml);
-the gates below mirror it.
+the gates below mirror it and concretize the shared framework
+(see [`verification-plan.md §4`](../../common/planning/verification-plan.md#4-ci-pipeline-gate-structure)).
 
 | Gate | Command / Action | Workflow job |
 | ---- | ---------------- | ------------ |
@@ -191,7 +154,8 @@ Supporting workflows:
 - [`.github/workflows/vendordep-freshness.yml`](../../../.github/workflows/vendordep-freshness.yml)
   — weekly cron (Mondays 13:00 UTC) that fetches each vendordep
   `jsonUrl`, compares `version`, and opens/updates a tracking issue
-  when any vendordep is behind upstream. See [SCMP §4](SCMP.md).
+  when any vendordep is behind upstream. See
+  [SCMP §4](SCMP.md#4-vendordep-management-team271-lib-specifics).
 
 Hooks under `.claude/hooks/` run locally per edit; they catch a subset
 of the same issues before CI sees them. See §6.

@@ -4,11 +4,6 @@
 
 ## Appendix A: Standard Abbreviations
 
-> **Library applications:** Rules in this chapter sometimes name Team271-Lib
-> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
-> The rule itself is framework-agnostic; the concrete library binding lives
-> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
-
 | Abbreviation | Meaning |
 | ------------ | ------- |
 | addr | address |
@@ -113,11 +108,11 @@ Also avoid: `var` (reserved type name), `record`, `sealed`,
 
 ```text
 Robot.robotPeriodic()
-  → CTREManager.refreshAll()             // bulk CAN signal refresh
-  → SubsystemManager.robotPeriodicBefore() // read sensors (all subsystems)
+  → hardwareMgr.refreshAll()             // bulk CAN signal refresh
+  → SubsystemMgr.robotPeriodicBefore() // read sensors (all subsystems)
   → <mode>Periodic()                     // state machine logic
-  → SubsystemManager.robotPeriodicAfter() // apply motor outputs (all subsystems)
-  → SubsystemManager.outputTelemetry()   // publish NT/logs (all subsystems)
+  → SubsystemMgr.robotPeriodicAfter() // apply motor outputs (all subsystems)
+  → SubsystemMgr.outputTelemetry()   // publish NT/logs (all subsystems)
 ```
 
 ### Mode Transitions
@@ -132,11 +127,11 @@ Power On → robotInit()
 
 ### Subsystem Registration Order
 
-Subsystems are registered with `SubsystemManager.addSubsystem()` in
+Subsystems are registered with `SubsystemMgr.addSubsystem()` in
 `Robot.robotInit()`. Robot-project subsystems typically use a
-singleton `getInstance(TObj)` accessor (see CODE-GEN-013); library
+singleton `getInstance(LifecycleBase)` accessor (see CODE-GEN-013); library
 subsystems are instantiated directly and passed by reference (see
-[ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
+the relevant architecture decision).
 Registration order determines lifecycle call order.
 **This order is load-bearing** -- the following rules apply:
 
@@ -186,7 +181,7 @@ Timer t = new Timer(); // in periodic method
 **Reuse CTRE control requests:**
 
 ```java
-/* TransmissionFX already handles this internally.
+/* ExampleTransmission already handles this internally.
  * If you use raw CTRE API, store requests as fields: */
 private final VoltageOut mVoltageRequest = new VoltageOut(0);
 
@@ -236,7 +231,7 @@ The subsystem code is responsible for sending requests each cycle.
 
 ### Bulk Signal Refresh
 
-Use `CTREManager.refreshAll()` at the start of each cycle to refresh
+Use `hardwareMgr.refreshAll()` at the start of each cycle to refresh
 all registered CAN signals in a single bulk operation. This is more
 efficient than refreshing signals individually.
 
@@ -285,6 +280,6 @@ if (!status.isOK()) {
 | Local variables | camelCase | (none) | `speed`, `voltage` |
 | Temporary locals | camelCase | `tmp` | `tmpStatusReturn` |
 | NetworkTables fields | camelCase | `nt` | `ntRobot`, `ntMMCruiseVel` |
-| Packages | lowercase | (none) | `com.team271.frc<year>.subsystems` |
+| Packages | lowercase | (none) | `com.example.app` |
 | Boolean fields | camelCase | `mIs`/`mHas` | `mIsHomed`, `mHasTarget` |
 | Boolean methods | camelCase | `is`/`has`/`can` | `isZeroed()`, `hasTarget()` |

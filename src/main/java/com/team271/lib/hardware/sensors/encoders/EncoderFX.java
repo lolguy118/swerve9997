@@ -1,7 +1,5 @@
 package com.team271.lib.hardware.sensors.encoders;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.CTREManager;

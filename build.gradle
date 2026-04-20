@@ -263,8 +263,14 @@ checkstyle {
 // rollout so the task only fails on real errors (malformed HTML, broken refs,
 // etc.). Tighten by removing individual `-missing` flags as Javadoc coverage
 // grows. See CODE-COM enforcement in -Compliance.md.
+//
+// Exclude vendored and generated sources we do not own — same list as
+// Checkstyle (config/checkstyle/checkstyle.xml) and SpotBugs
+// (config/spotbugs/exclude.xml).
 tasks.named('javadoc').configure {
     options.addStringOption('Xdoclint:all,-missing', '-quiet')
+    exclude '**/LimelightHelpers.java'
+    exclude '**/BuildConstants.java'
 }
 
 // Spotless formatting

@@ -1,6 +1,5 @@
 package com.team271.libtest;
 
-import com.team271.libtest.Config.RobotType;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public final class Config {

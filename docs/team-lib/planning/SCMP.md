@@ -7,11 +7,13 @@
 | Date | 2026-04-20 |
 | Status | Draft |
 
-This plan records Team271-Lib's specific configuration management state
-and cites the shared policy in
-[`../../common/planning/configuration-management.md`](../../common/planning/configuration-management.md)
-for the framework (SemVer, branch model, vendordep upgrade process,
-baseline control, change control, deviation tracking).
+This plan records Team271-Lib's specific configuration management
+state. It builds on the shared CM policy (see §2 Authoritative CM
+Documents) and carries only library-specific deltas.
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../common/planning/README.md`](../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -22,22 +24,23 @@ authoritative sources, vendordep list, and deviations.
 
 | Document | CM Concern |
 | -------- | ---------- |
+| [`../../common/planning/configuration-management.md`](../../common/planning/configuration-management.md) | Shared policy: SemVer, branch model, vendordep upgrade process, baseline control, change control, deviation-tracking row format |
 | `../../../CONTRIBUTING.md` (repository root) | Branch naming, PR process, commit rules, linting workflow |
 | `../../../build.gradle` | Library version, Gradle toolchain version |
 | `../../../vendordeps/*.json` | Vendordep versions (Phoenix 6, WPILib, AdvantageKit, PathPlanner) |
 
 ## 3. Library Versioning
 
-Team271-Lib follows the SemVer policy in the shared framework
-(see [`configuration-management.md §1`](../../common/planning/configuration-management.md#1-versioning-semantic-versioning)).
-Version format is `YYYY.MINOR.PATCH` with `YYYY` set to the current
-FRC season year. Version is authoritative in `build.gradle`.
+`YYYY` in the version format is the current FRC season year; the
+version number is authoritative in `build.gradle`.
 
-Tag events (per [SDP §8](SDP.md)):
+Concrete tag events for the library's 2026 → 2027 cycle:
 
-- Offseason start → tag prior season final (e.g., `v2026.3.2`).
-- Preseason API freeze → tag next-season MINOR=0 (e.g., `v2027.0.0`).
-- Each competition hotfix → tag patch (e.g., `v2027.0.1`).
+| Event | Tag |
+| ----- | --- |
+| Offseason start | `v2026.N.P` (prior-season final) |
+| Offseason API freeze | `v2027.0.0` |
+| Competition hotfix | `v2027.0.P` |
 
 ## 4. Vendordep Management (Team271-Lib specifics)
 
@@ -57,18 +60,16 @@ Currently tracked vendordeps:
 The [`.github/workflows/dependency-submission.yml`](../../../.github/workflows/dependency-submission.yml)
 workflow submits the Gradle dependency graph on every push to `main`.
 
-For the upgrade procedure itself, follow
-[`configuration-management.md §4`](../../common/planning/configuration-management.md#4-vendor-dependency-management).
+The upgrade procedure itself is inherited from the shared policy
+(see §2 Authoritative CM Documents).
 
 ## 5. Baseline Control and Change Control
 
-Team271-Lib follows the shared baseline and change-control rules in
-[`configuration-management.md §2–§3`](../../common/planning/configuration-management.md#2-baseline-control).
-The library additionally requires `/lib-review` output on any
-non-trivial PR.
+Library-specific delta on top of the shared baseline / change-control
+rules: every non-trivial PR **shall** carry `/lib-review` output
+alongside the maintainer approval required by the framework.
 
 ## 6. Deviation Tracking
 
-Library-specific deviations from the shared coding standard are logged
-in [SDP.md §9](SDP.md#9-deviations-from-scs). Format per
-[`configuration-management.md §5`](../../common/planning/configuration-management.md#5-deviation-tracking).
+Library-specific deviations from the shared coding standard are
+logged in [SDP.md §7](SDP.md#7-deviations-from-scs).

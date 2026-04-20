@@ -2,7 +2,7 @@
      See Team271-Software-Coding-Standard.md for the index. -->
 <!-- markdownlint-disable-file MD041 -->
 
-### 4.9 Safety Practices
+## Safety Practices
 
 > *Industry note: The safety rules in this section reflect the philosophy
 > of DO-178C, which requires that safety-critical software be
@@ -11,7 +11,7 @@
 > flown on. We are not building flight software, but the same mindset
 > applies: the robot must not do something unexpected during a match.*
 
-#### CODE-SAF-001 -- Input Validation
+### CODE-SAF-001 -- Input Validation
 
 a. Controller inputs **shall** be validated through deadbands and
    input shaping before use. The `InputDriver` class centralizes
@@ -33,7 +33,7 @@ b. Auto chooser values **shall** be validated. The `default` case
 c. CAN bus signal values **shall** be validated by checking the
    `StatusCode` from CTRE refresh operations.
 
-#### CODE-SAF-002 -- Motor Safety
+### CODE-SAF-002 -- Motor Safety
 
 a. All motors **shall** have stator and supply current limits
    configured in `robotInit()`:
@@ -68,7 +68,7 @@ d. All voltage and duty-cycle commands **shall** be bounded to safe
 e. Motor neutral modes (brake vs coast) **shall** be explicitly
    configured in `robotInit()` based on the mechanism requirements.
 
-#### CODE-SAF-003 -- State Machine Completeness
+### CODE-SAF-003 -- State Machine Completeness
 
 a. Every enum `switch` **shall** handle all values including a
    `default` case (CODE-FUN-006a).
@@ -79,7 +79,7 @@ b. No state **shall** be unreachable. If a state exists in the enum,
 c. State transitions **shall** be documented (at minimum in the
    class-level JavaDoc or CLAUDE.md).
 
-#### CODE-SAF-004 -- Subsystem Coordination
+### CODE-SAF-004 -- Subsystem Coordination
 
 a. Cross-subsystem dependencies **shall** be documented. When one
    subsystem reads state from another (e.g., SubsystemB reads
@@ -97,7 +97,7 @@ b. Auto timing **shall** be expressed through move-based composition
    (`AutoMoveSequence`, `AutoMoveParallel`, `WaitMove`) in auto mode
    constructors. Parallel moves **shall** not command the same subsystem.
 
-#### CODE-SAF-005 -- Autonomous Safety
+### CODE-SAF-005 -- Autonomous Safety
 
 a. All auto path loading **shall** handle missing path files
    gracefully (catch exceptions, log errors, fall back to "do nothing").
@@ -111,7 +111,7 @@ c. Auto timing windows **should** account for paths taking longer
 d. Alliance flipping **shall** be tested for both red and blue
    alliance positions.
 
-#### CODE-SAF-006 -- CAN Bus Safety
+### CODE-SAF-006 -- CAN Bus Safety
 
 a. CAN signal refresh **shall** use `CTREManager.refreshAll()` for
    bulk refresh rather than individual signal refreshes, to minimize
@@ -130,7 +130,7 @@ c. CAN refresh status codes **shall** be checked and error conditions
 d. CANivore bus names **shall** be defined as constants in
    `Constants.java`, not hard-coded in subsystem files.
 
-#### CODE-SAF-007 -- Disabled Mode Safety
+### CODE-SAF-007 -- Disabled Mode Safety
 
 a. `disabledInit()` **shall** stop all motors and reset subsystem
    states to safe defaults.
@@ -143,7 +143,7 @@ b. No motor commands **shall** be sent during disabled mode. The
 c. Timers used for autonomous coordination **shall** be stopped
    and reset in `disabledInit()`.
 
-#### CODE-SAF-008 -- Fault Tolerance
+### CODE-SAF-008 -- Fault Tolerance
 
 See [Fault Tolerance](robot-<year>-reference.md#fault-tolerance) for
 detailed behavioral expectations under each failure scenario.
@@ -166,7 +166,7 @@ d. `teleopInit()` **shall** preserve homing state (`isZeroed`) from a
    (detected per rule a), to avoid unnecessary re-homing after a
    transient comms loss.
 
-#### CODE-SAF-009 -- Vision Data Validation
+### CODE-SAF-009 -- Vision Data Validation
 
 a. Pose estimates from vision systems (Limelight, PhotonVision) **shall**
    be checked for staleness before use. If the timestamp of the latest
@@ -181,7 +181,7 @@ c. Vision-dependent state transitions (e.g., ALIGNING_WITH_HUB)
    **shall** have a timeout that falls back to the previous state if
    no valid vision data is received within the timeout window.
 
-#### CODE-SAF-010 -- Sustained Over-Current Protection
+### CODE-SAF-010 -- Sustained Over-Current Protection
 
 a. If a motor's torque current exceeds its configured supply current
    limit for a sustained period (defined by a named constant), the
@@ -192,7 +192,7 @@ a. If a motor's torque current exceeds its configured supply current
 b. The sustained-current threshold and duration **shall** be named
    constants in the subsystem's Constants class, not magic numbers.
 
-#### CODE-SAF-011 -- CAN Bus Partition Resilience
+### CODE-SAF-011 -- CAN Bus Partition Resilience
 
 a. Subsystems on one CANivore bus **shall not** block or stall
    subsystems on the other bus. If the primary bus fails, subsystem

@@ -23,7 +23,7 @@ it.
 | [SDP.md](SDP.md) | Software Development Plan | Development phases, layer build order, platform matrix, milestones |
 | [SRS.md](SRS.md) | Software Requirements Specification | API contracts and non-functional guarantees, per-layer |
 | [SVP.md](SVP.md) | Software Verification Plan | Test strategy, coverage thresholds, CI gates, hook enforcement |
-| [SCMP.md](SCMP.md) | CM Plan | Vendordep management, SemVer, branch workflow, deviation tracking |
+| [SCMP.md](SCMP.md) | Software Configuration Management Plan | Vendordep management, SemVer, branch workflow, deviation tracking |
 | [sdd/](sdd/) | Software Design Descriptions | Module decomposition and API surface per architectural layer |
 | [adr/](adr/) | Architecture Decision Records | Rationale behind key architectural choices |
 
@@ -45,6 +45,13 @@ it.
 
 ## Architecture Decision Records
 
+Each ADR records one architectural decision. Statuses:
+
+- **Proposed** — under discussion; not yet binding.
+- **Accepted** — binding. Contributors **shall** follow the decision.
+- **Superseded** — replaced by a later ADR, which the Superseded ADR
+  points at. Accepted ADRs are never deleted; they are Superseded.
+
 | ADR | Title | Status |
 | --- | ----- | ------ |
 | [ADR-001](adr/ADR-001-team271-lib-standalone-library.md) | Team271-Lib as a Standalone Library | Accepted |
@@ -63,6 +70,19 @@ it.
 | [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | Desired-to-Actual State Pattern in Subsystems | Accepted |
 | [ADR-015](adr/ADR-015-explicit-instantiation-no-singletons.md) | Explicit Object Instantiation, No Singletons in Library Code | Accepted |
 
+## Planned ADRs
+
+> **Status: Planned — Not Yet Implemented.**
+
+Reserved slots for decisions already foreseen but not yet authored.
+Each **shall** be written before (or alongside) the first change
+that depends on it — not speculatively.
+
+| Planned ADR | Scope |
+| ----------- | ----- |
+| Null-safety annotation policy | Choice of annotation set (JSpecify, JetBrains, JSR-305) and rollout plan before NullAway becomes a CI gate |
+| Supply-chain / CVE response | How the library triages OWASP / GitHub dependency-review findings and which severities trigger an out-of-phase hotfix |
+
 ## What These Documents Do NOT Cover
 
 Deliberately excluded to prevent duplication with authoritative sources:
@@ -71,6 +91,7 @@ Deliberately excluded to prevent duplication with authoritative sources:
 | ----- | -------------------- |
 | Coding rules, naming, formatting | [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) |
 | Shared planning policy (SemVer, phase model, CI framework) | [`../../common/planning/`](../../common/planning/) |
+| AI-behavior guardrails (planning, safety, docs, coding-standard, team271-lib scopes) | [`../../../.claude/rules/`](../../../.claude/rules/) |
 | Git workflow, PR process, commit rules | `../../../CONTRIBUTING.md` (repository root) |
 | Vendordep versions | `../../../vendordeps/*.json`, `../../../build.gradle` |
 | Robot-project requirements | Each robot project's own planning docs |

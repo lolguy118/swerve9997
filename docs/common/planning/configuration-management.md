@@ -6,6 +6,9 @@ A concrete project (library or robot) cites this policy and records
 only its specific deviations and state (current version, vendordep
 list, release history) in its own SCMP.
 
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in [`README.md`](README.md#normative-keywords).
+
 ## 1. Versioning (Semantic Versioning)
 
 Every Team 271 deliverable **shall** use Semantic Versioning:
@@ -69,9 +72,15 @@ Every project **shall** maintain a deviation table in its
 development plan. Each row records a single deviation from the shared
 coding standard or policy, with rationale and an approving maintainer.
 
+The **Rule ID** column **shall** use the coding-standard identifier
+form `CODE-<CATEGORY>-NNN` (for example `CODE-SAF-001`,
+`CODE-GEN-004`). Deviations from non-coding rules (planning-doc
+conventions, documentation rules) **may** cite the authoritative
+rule document and section instead.
+
 | Rule ID | File / Scope | Rationale | Approved By | Date |
 | ------- | ------------ | --------- | ----------- | ---- |
-| (example) | `path/to/file.java` | Why the deviation is acceptable | @maintainer | YYYY-MM-DD |
+| `CODE-GEN-004` | `path/to/file.java` | Why the deviation is acceptable | @maintainer | YYYY-MM-DD |
 
 Deviations **shall** be reviewed at season boundaries and retired when
 the underlying reason no longer applies.

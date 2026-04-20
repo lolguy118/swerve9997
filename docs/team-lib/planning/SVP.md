@@ -110,12 +110,19 @@ follows the shared hook pattern
 | Hook | What It Enforces | Local Run |
 | ---- | ---------------- | --------- |
 | `lint-markdown.sh` | markdownlint-cli2 rules on `.md` files | `markdownlint-cli2 docs/` |
+| `lint-yaml.sh` | yamllint on `*.yml` / `*.yaml` files | `yamllint <file>` |
+| `lint-shell.sh` | ShellCheck (severity=warning) on `*.sh` / `*.bash` files | `shellcheck --severity=warning <file>` |
 | `check-doc-tunables.sh` | No numeric tunables in `docs/**` | (runs on Edit/Write) |
 | `check-deleted-class-refs.sh` | No references to deprecated symbols | (runs on Edit/Write) |
 | `check-design-drift.sh` | Code changes paired with doc updates | (runs on Edit/Write) |
 | `check-java-compiles.sh` | Java compiles after each edit | `./gradlew compileJava` |
 | `check-spotless.sh` | Spotless format check after Java edit (advisory) | `./gradlew spotlessCheck` |
-| `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint | `bash .claude/hooks/verify-docs.sh` |
+| `check-checkstyle.sh` | Checkstyle violations after Java edit (advisory) | `./gradlew checkstyleMain` |
+| `check-spotbugs.sh` | SpotBugs findings after Java edit (advisory; fail-soft during rollout) | `./gradlew spotbugsMain` |
+| `check-javadoc.sh` | Javadoc doclint issues after Java edit (advisory) | `./gradlew javadoc` |
+| `check-jacoco.sh` | Coverage report after Java edit — opt-in via `TEAM271_RUN_JACOCO_HOOK=1` because a full test run per edit is expensive | `./gradlew jacocoTestReport` |
+| `verify-docs-hook.sh` | Wrapper that invokes `verify-docs.sh` when a doc is edited (advisory; CI is the gate) | `bash .claude/hooks/verify-docs.sh` |
+| `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint (CI-authoritative, not wired to PostToolUse directly) | `bash .claude/hooks/verify-docs.sh` |
 
 ## 7. CI Pipeline Gates (library workflow)
 
@@ -141,6 +148,9 @@ the gates below mirror it and concretize the shared framework
 | YAML lint | `yamllint .` | `lint-docs` |
 | Docs sweep | `bash .claude/hooks/verify-docs.sh` (broken links, stale paths, empty SDD sections) | `lint-docs` |
 | ShellCheck | `ludeeus/action-shellcheck` on `.claude/hooks/*.sh` | `shellcheck` |
+| Design-drift (tunables) | `check-doc-tunables.sh` invoked per changed file (gating) | `design-drift` |
+| Design-drift (deleted refs) | `check-deleted-class-refs.sh` invoked per changed file (gating) | `design-drift` |
+| Design-drift (doc-code pairing) | `check-design-drift.sh` invoked per changed file (advisory nudge) | `design-drift` |
 
 Supporting workflows:
 

@@ -131,3 +131,60 @@ jobs:
         with:
           scandir: .claude/hooks
           severity: warning
+
+  design-drift:
+    # Runs the three advisory hook scripts on the PR's changed files so
+    # contributors who bypass local hooks still get checked.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Collect changed files
+        id: diff
+        run: |
+          git diff --name-only \
+            "origin/${{ github.base_ref }}...HEAD" > changed.txt
+          echo "Changed files:"
+          cat changed.txt || true
+
+      - name: check-doc-tunables (gating)
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            [ -f "$f" ] || continue
+            export TOOL_INPUT="{\"file_path\":\"$PWD/$f\"}"
+            out=$(bash .claude/hooks/check-doc-tunables.sh || true)
+            if [ -n "$out" ]; then
+              echo "$out"
+              fail=1
+            fi
+          done < changed.txt
+          exit $fail
+
+      - name: check-deleted-class-refs (gating)
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            [ -f "$f" ] || continue
+            export TOOL_INPUT="{\"file_path\":\"$PWD/$f\"}"
+            out=$(bash .claude/hooks/check-deleted-class-refs.sh || true)
+            if [ -n "$out" ]; then
+              echo "$out"
+              fail=1
+            fi
+          done < changed.txt
+          exit $fail
+
+      - name: check-design-drift (advisory)
+        run: |
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            [ -f "$f" ] || continue
+            export TOOL_INPUT="{\"file_path\":\"$PWD/$f\"}"
+            bash .claude/hooks/check-design-drift.sh || true
+          done < changed.txt

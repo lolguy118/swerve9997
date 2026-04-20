@@ -53,8 +53,12 @@ for the six-layer graph. The layering decision is
 - **Library conventions:** [CONTRIBUTING.md](CONTRIBUTING.md).
 - **AI guardrails:** `.claude/rules/` — path-scoped rules auto-loaded
   when working in each subdirectory.
-- **Pre-merge enforcement:** `.claude/hooks/` — markdownlint, doc-tunable
-  check, deleted-class refs, design-drift, Java compile, Spotless.
+- **Pre-merge enforcement:** `.claude/hooks/` — markdownlint, yamllint,
+  ShellCheck, doc-tunable check, deleted-class refs, design-drift, Java
+  compile, Spotless, Checkstyle, SpotBugs, Javadoc, JaCoCo (opt-in via
+  `TEAM271_RUN_JACOCO_HOOK=1`), and `verify-docs-hook.sh` (wraps the
+  full docs sweep on doc edits). Full table in
+  [SVP §6](docs/team-lib/planning/SVP.md).
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
   [SCS §2](docs/common/Team271-Software-Coding-Standard.md) and
   [SDP §4](docs/team-lib/planning/SDP.md). Decision:

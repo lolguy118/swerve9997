@@ -13,6 +13,10 @@ phase model, milestone-event structure — lives in
 [`../../common/planning/development-plan.md`](../../common/planning/development-plan.md).
 This file records the library's specifics.
 
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../common/planning/README.md`](../../common/planning/README.md#normative-keywords).
+
 ## 1. Purpose and Scope
 
 Defines when Team271-Lib code is written, in what order, and against
@@ -33,8 +37,11 @@ and milestones. Does not cover:
 | [SRS.md](SRS.md) | Library requirements |
 | [SVP.md](SVP.md) | Verification plan |
 | [SCMP.md](SCMP.md) | Configuration management |
+| [ADR-001](adr/ADR-001-team271-lib-standalone-library.md) | Library packaging and consumption model |
 | [ADR-002](adr/ADR-002-java17-wpilib-gradlerio-toolchain.md) | Toolchain decision |
 | [ADR-004](adr/ADR-004-layered-architecture.md) | Layer order |
+| [ADR-006](adr/ADR-006-ctre-phoenix6-primary-vendor.md) | CTRE Phoenix 6 as primary vendor |
+| [ADR-009](adr/ADR-009-junit5-hal-simulation-tests.md) | JUnit 5 + HAL simulation test framework |
 
 ## 3. Project Overview
 
@@ -109,9 +116,10 @@ layers below them ([ADR-004](adr/ADR-004-layered-architecture.md)).
 
 ## 7. Development Phases
 
-Team271-Lib adopts the shared FRC-calendar phase model
-(see [`development-plan.md §3`](../../common/planning/development-plan.md#3-frc-calendar-phase-model))
-unchanged.
+Team271-Lib adopts the shared four-phase FRC-calendar model as-is
+(see [`development-plan.md §3`](../../common/planning/development-plan.md#3-frc-calendar-phase-model)).
+Offseason contains the internal API-freeze milestone at which the
+next-season MINOR is tagged.
 
 ## 8. Milestones
 
@@ -120,7 +128,7 @@ unchanged.
 | Event | Action | Example |
 | ----- | ------ | ------- |
 | Offseason start | Tag prior season final | `v2026.N.P` |
-| Preseason API freeze | Tag next-season MINOR=0 | `v2027.0.0` |
+| Offseason API freeze | Tag next-season MINOR=0 | `v2027.0.0` |
 | Each competition hotfix | Tag patch | `v2027.0.P` |
 
 ### 8.2 Phase Transitions (no tag)

@@ -82,6 +82,41 @@
             "type": "command",
             "command": ".claude/hooks/check-spotless.sh",
             "description": "spotlessCheck after Java edit"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-checkstyle.sh",
+            "description": "checkstyleMain/Test after Java edit"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-spotbugs.sh",
+            "description": "spotbugsMain after Java edit (fail-soft)"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-javadoc.sh",
+            "description": "javadoc after Java edit"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-jacoco.sh",
+            "description": "jacocoTestReport after Java edit (opt-in via TEAM271_RUN_JACOCO_HOOK=1)"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/lint-yaml.sh",
+            "description": "yamllint on YAML edits"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/lint-shell.sh",
+            "description": "shellcheck on shell-script edits"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/verify-docs-hook.sh",
+            "description": "verify-docs sweep after doc edit"
           }
         ]
       }

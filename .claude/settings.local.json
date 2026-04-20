@@ -1,12 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:v6.docs.ctr-electronics.com)",
-      "WebFetch(domain:api.ctr-electronics.com)",
-      "WebFetch(domain:docs.pathplanner.dev)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:github.wpilib.org)",
-      "WebFetch(domain:pathplanner.dev)",
       "Bash(./gradlew build:*)",
       "Bash(./gradlew test:*)",
       "Bash(./gradlew spotlessCheck)",

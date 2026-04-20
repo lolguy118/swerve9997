@@ -80,8 +80,10 @@ public abstract class RangeBase extends TObj {
      * Simulation
      *
      */
+    @Override
     public void simulationInit(final double argTimestamp) {}
 
+    @Override
     public void simulationPeriodic(final double argTimestamp) {}
 
     /*
@@ -89,6 +91,7 @@ public abstract class RangeBase extends TObj {
      * Telemetry
      *
      */
+    @Override
     public void outputTelemetry() {
         ntScale.publish(getScale());
 

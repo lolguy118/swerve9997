@@ -181,16 +181,15 @@ public class PIDBase extends TObj implements PIDController {
     private LoggedNTInput tuneOutputMin;
     private LoggedNTInput tuneOutputMax;
 
-    /*
-     * Allocate a PID Base object with the given constants for P, I, D, and
-     * Tolerance
+    /**
+     * Allocate a PID Base object with the given constants for P, I, D, and Tolerance
      *
-     * @param argName    The Name of the object, this is used for diagnostics
+     * @param argName The Name of the object, this is used for diagnostics
      * @param argPIDType The Type of the object, this is used for diagnostics
-     * @param argP       The Proportional coefficient
-     * @param argI       The Integral coefficient
-     * @param argD       The Derivative coefficient
-     * @param argTol     The Tolerance for the controller
+     * @param argP The Proportional coefficient
+     * @param argI The Integral coefficient
+     * @param argD The Derivative coefficient
+     * @param argTol The Tolerance for the controller
      */
     public PIDBase(
             final TObj argParent,
@@ -237,14 +236,14 @@ public class PIDBase extends TObj implements PIDController {
         this(argParent, argName, argPIDType, argP, argI, argD, argTol, TelemetryLevel.FULL);
     }
 
-    /*
+    /**
      * Allocate a PID Base object with the given constants for P, I, D
      *
-     * @param argName    The Name of the object, this is used for diagnostics
+     * @param argName The Name of the object, this is used for diagnostics
      * @param argPIDType The Type of the object, this is used for diagnostics
-     * @param argP       The Proportional coefficient
-     * @param argI       The Integral coefficient
-     * @param argD       The Derivative coefficient
+     * @param argP The Proportional coefficient
+     * @param argI The Integral coefficient
+     * @param argD The Derivative coefficient
      */
     public PIDBase(
             final TObj argParent,
@@ -256,10 +255,10 @@ public class PIDBase extends TObj implements PIDController {
         this(argParent, argName, argPIDType, argP, argI, argD, 0);
     }
 
-    /*
+    /**
      * Allocate a PID Base object
      *
-     * @param argName    The Name of the object, this is used for diagnostics
+     * @param argName The Name of the object, this is used for diagnostics
      * @param argPIDType The Type of the object, this is used for diagnostics
      */
     public PIDBase(final TObj argParent, final String argName, final PIDType argPIDType) {
@@ -269,6 +268,7 @@ public class PIDBase extends TObj implements PIDController {
     /*
      * Reset all internal terms
      */
+    @Override
     public void reset() {
         outputP = 0.0;
         outputI = 0.0;
@@ -285,121 +285,132 @@ public class PIDBase extends TObj implements PIDController {
         lastTimestamp = Double.NaN;
     }
 
-    /*
+    /**
      * Get the Proportional coefficient
      *
      * @return Proportional coefficient
      */
+    @Override
     public double getP() {
         return pidSlot.kP;
     }
 
-    /*
+    /**
      * Sets the Proportional coefficient
      *
      * @param argP Proportional coefficient
      */
+    @Override
     public void setP(final double argP) {
         pidSlot.kP = argP;
     }
 
-    /*
+    /**
      * Get the Integral coefficient
      *
      * @return Integral coefficient
      */
+    @Override
     public double getI() {
         return pidSlot.kI;
     }
 
-    /*
+    /**
      * Sets the Integral coefficient
      *
      * @param argI Integral coefficient
      */
+    @Override
     public void setI(final double argI) {
         pidSlot.kI = argI;
     }
 
-    /*
+    /**
      * Get the Differential coefficient
      *
      * @return Differential coefficient
      */
+    @Override
     public double getD() {
         return pidSlot.kD;
     }
 
-    /*
+    /**
      * Sets the Differential coefficient
      *
      * @param argD Differential coefficient
      */
+    @Override
     public void setD(final double argD) {
         pidSlot.kD = argD;
     }
 
-    /*
-     * Set the PID controller gain parameters. Set the proportional, integral, and
-     * differential coefficients.
+    /**
+     * Set the PID controller gain parameters. Set the proportional, integral, and differential
+     * coefficients.
      *
      * @param argP Proportional coefficient
      * @param argI Integral coefficient
      * @param argD Differential coefficient
      */
+    @Override
     public void setPID(final double argP, final double argI, final double argD) {
         pidSlot.kP = argP;
         pidSlot.kI = argI;
         pidSlot.kD = argD;
     }
 
-    /*
+    /**
      * Sets the error which is considered tolerable for use with atSetpoint().
      *
      * @param argPosTolerance Position error which is tolerable.
      */
+    @Override
     public void setTolerance(final double argPosTolerance) {
         setTolerance(argPosTolerance, Double.POSITIVE_INFINITY);
     }
 
-    /*
+    /**
      * Sets the error which is considered tolerable for use with atSetpoint().
      *
      * @param argPosTolerance Position error which is tolerable.
      * @param argVelTolerance Velocity error which is tolerable.
      */
+    @Override
     public void setTolerance(final double argPosTolerance, final double argVelTolerance) {
         pidSlot.posTolerance = argPosTolerance;
         pidSlot.velTolerance = argVelTolerance;
     }
 
-    /*
+    /**
      * Sets the minimum and maximum output of the controller.
      *
      * @param argMinOutput Minimum output.
      * @param argMaxOutput Maximum output.
      */
+    @Override
     public void setOutputRange(final double argMinOutput, final double argMaxOutput) {
         minOutput = argMinOutput;
         maxOutput = argMaxOutput;
     }
 
-    /*
+    /**
      * Returns true if the error is within the tolerance
      *
      * @return true if the error is less than the tolerance
      */
+    @Override
     public boolean atSetpoint() {
         return !Double.isNaN(lastInputMeasurement)
                 && Math.abs(posError) < pidSlot.posTolerance
                 && Math.abs(velError) < pidSlot.velTolerance;
     }
 
-    /*
+    /**
      * Sets the minimum and maximum values for the integrator.
-     * <p>
-     * When the cap is reached, the integrator value is added to the controller
-     * output rather than the integrator value times the integral gain.
+     *
+     * <p>When the cap is reached, the integrator value is added to the controller output rather
+     * than the integrator value times the integral gain.
      *
      * @param argMinIntegral The minimum value of the integrator.
      * @param argMaxIntegral The maximum value of the integrator.
@@ -409,14 +420,12 @@ public class PIDBase extends TObj implements PIDController {
         pidSlot.iMax = argMaxIntegral;
     }
 
-    /*
-     * Sets the IZone range. When the absolute value of the position error is
-     * greater than IZone, the total accumulated error will reset to zero, disabling
-     * integral gain until the absolute value of the position error is less than
-     * IZone. This is used to prevent integral windup. Must be non-negative. Passing
-     * a value of zero will effectively disable integral gain.
-     * Passing a value of {@link Double#POSITIVE_INFINITY} disables IZone
-     * functionality.
+    /**
+     * Sets the IZone range. When the absolute value of the position error is greater than IZone,
+     * the total accumulated error will reset to zero, disabling integral gain until the absolute
+     * value of the position error is less than IZone. This is used to prevent integral windup. Must
+     * be non-negative. Passing a value of zero will effectively disable integral gain. Passing a
+     * value of {@link Double#POSITIVE_INFINITY} disables IZone functionality.
      *
      * @param argIZone Maximum magnitude of error to allow integral control.
      */
@@ -427,10 +436,10 @@ public class PIDBase extends TObj implements PIDController {
         pidSlot.iZone = argIZone;
     }
 
-    /*
-     * Sets the proportional deadband. When the absolute value of the position
-     * error is less than the deadband, the proportional term output is zero.
-     * This prevents motor jitter near the setpoint.
+    /**
+     * Sets the proportional deadband. When the absolute value of the position error is less than
+     * the deadband, the proportional term output is zero. This prevents motor jitter near the
+     * setpoint.
      *
      * @param argPDeadband The deadband magnitude (must be non-negative).
      */
@@ -441,16 +450,16 @@ public class PIDBase extends TObj implements PIDController {
         pidSlot.pDeadband = argPDeadband;
     }
 
-    /*
+    /**
      * Enables continuous input.
-     * <p>
-     * Rather than using the max and min input range as constraints, it considers
-     * them to be the same point and automatically calculates the shortest route to
-     * the setpoint.
+     *
+     * <p>Rather than using the max and min input range as constraints, it considers them to be the
+     * same point and automatically calculates the shortest route to the setpoint.
      *
      * @param argMinInput The minimum value expected from the input.
      * @param argMaxInput The maximum value expected from the input.
      */
+    @Override
     public void enableContinuousInput(final double argMinInput, final double argMaxInput) {
         continuousMode.enabled = true;
         continuousMode.minInput = argMinInput;
@@ -460,15 +469,17 @@ public class PIDBase extends TObj implements PIDController {
     /*
      * Disables continuous input.
      */
+    @Override
     public void disableContinuousInput() {
         continuousMode.enabled = false;
     }
 
-    /*
+    /**
      * Returns true if continuous input is enabled.
      *
      * @return True if continuous input is enabled.
      */
+    @Override
     public boolean isContinuousInputEnabled() {
         return continuousMode.enabled;
     }
@@ -479,7 +490,7 @@ public class PIDBase extends TObj implements PIDController {
      *
      */
 
-    /*
+    /**
      * Returns the next output of the PID controller.
      *
      * @param argInputMeasurement The current measurement of the process variable.
@@ -604,6 +615,7 @@ public class PIDBase extends TObj implements PIDController {
      * Telemetry
      *
      */
+    @Override
     public void outputTelemetry() {
         if (telemetryLevel == TelemetryLevel.OFF) {
             return;

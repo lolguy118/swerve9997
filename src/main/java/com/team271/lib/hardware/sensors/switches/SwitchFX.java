@@ -70,6 +70,7 @@ public class SwitchFX extends SwitchBase {
      * Switch
      *
      */
+    @Override
     protected void create() {
         setTriggerType(swTrigger);
 
@@ -105,6 +106,7 @@ public class SwitchFX extends SwitchBase {
         }
     }
 
+    @Override
     public void setEnabled(final boolean argEnabled) {
         if (isFwdLimit) {
             controller.getConfig().HardwareLimitSwitch.ForwardLimitEnable = argEnabled;
@@ -113,6 +115,7 @@ public class SwitchFX extends SwitchBase {
         }
     }
 
+    @Override
     public void setTriggerType(final SwitchTrigger argTriggerType) {
         if (isFwdLimit) {
             if (argTriggerType == SwitchTrigger.NC) {

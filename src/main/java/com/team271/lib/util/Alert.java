@@ -21,7 +21,7 @@ public class Alert {
     private double activeStartTime = 0.0;
     private String text;
 
-    /*
+    /**
      * Creates a new Alert in the default group - "Alerts". If this is the first to be instantiated,
      * the appropriate entries will be added to NetworkTables.
      *
@@ -32,7 +32,7 @@ public class Alert {
         this("Alerts", text, type);
     }
 
-    /*
+    /**
      * Creates a new Alert. If this is the first to be instantiated in its group, the appropriate
      * entries will be added to NetworkTables.
      *

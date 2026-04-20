@@ -33,13 +33,11 @@ public class InputEnvisionPro extends Input {
             this.value = value;
         }
 
-        /*
-         * Get the human-friendly name of the button, matching the relevant methods.
-         * This is done by
+        /**
+         * Get the human-friendly name of the button, matching the relevant methods. This is done by
          * stripping the leading `k`, and appending `Button`.
          *
-         * <p>
-         * Primarily used for automated unit tests.
+         * <p>Primarily used for automated unit tests.
          *
          * @return the human-friendly name of the button.
          */
@@ -67,14 +65,11 @@ public class InputEnvisionPro extends Input {
             this.value = value;
         }
 
-        /*
-         * Get the human-friendly name of the axis, matching the relevant methods. This
-         * is done by
-         * stripping the leading `k`, and appending `Axis` if the name ends with
-         * `Trigger`.
+        /**
+         * Get the human-friendly name of the axis, matching the relevant methods. This is done by
+         * stripping the leading `k`, and appending `Axis` if the name ends with `Trigger`.
          *
-         * <p>
-         * Primarily used for automated unit tests.
+         * <p>Primarily used for automated unit tests.
          *
          * @return the human-friendly name of the axis.
          */

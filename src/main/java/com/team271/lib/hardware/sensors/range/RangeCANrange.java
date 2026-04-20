@@ -53,6 +53,7 @@ public class RangeCANrange extends RangeCTRE {
      * Encoder
      *
      */
+    @Override
     protected void create() {
         /*
          * Create CANrange

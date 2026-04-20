@@ -1,5 +1,6 @@
 package com.team271.lib.util;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
@@ -123,12 +124,8 @@ public class Util {
             final double input_end,
             final double output_start,
             final double output_end) {
-        double tmpOutput = 0.0;
-
         double slope = 1.0 * (output_end - output_start) / (input_end - input_start);
-        tmpOutput = output_start + slope * (input - input_start);
-
-        return tmpOutput;
+        return output_start + slope * (input - input_start);
     }
 
     /**
@@ -156,7 +153,7 @@ public class Util {
                 }
             }
         } catch (SocketException e) {
-            e.printStackTrace();
+            DriverStation.reportWarning("Util.getMACAddress: " + e.getMessage(), false);
         }
 
         return "";

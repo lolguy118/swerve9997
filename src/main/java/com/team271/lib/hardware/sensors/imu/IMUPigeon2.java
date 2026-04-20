@@ -80,6 +80,7 @@ public class IMUPigeon2 extends IMUCTRE {
      * IMU
      *
      */
+    @Override
     protected void create() {
         /*
          * Create CANCoder

@@ -213,10 +213,12 @@ public abstract class ControllerBase extends TObj {
      * Robot Loops
      *
      */
+    @Override
     public void robotPeriodicBefore(final double argTimestamp) {
         // Unused
     }
 
+    @Override
     public void robotPeriodicAfter(final double argTimestamp) {
         // Unused
     }

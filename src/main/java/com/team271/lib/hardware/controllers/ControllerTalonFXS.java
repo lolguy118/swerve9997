@@ -86,6 +86,7 @@ public class ControllerTalonFXS extends ControllerSmart {
     /*
      * Core
      */
+    @Override
     protected void create() {
         if (talonFXS == null) {
             talonFXS = new TalonFXS(deviceID.getDeviceNumber(), deviceID.getCANBus());

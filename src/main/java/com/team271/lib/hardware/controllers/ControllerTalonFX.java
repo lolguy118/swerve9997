@@ -175,6 +175,7 @@ public class ControllerTalonFX extends ControllerSmart {
      * Core
      *
      */
+    @Override
     protected void create() {
         if (talonFX == null) {
             /*
@@ -358,6 +359,7 @@ public class ControllerTalonFX extends ControllerSmart {
      * Config
      *
      */
+    @Override
     public ControllerStatus applyConfig() {
         ControllerStatus status = ControllerStatus.UNKNOWN;
 
@@ -435,6 +437,7 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     /* Neutral Mode */
+    @Override
     public void setNeutralMode(final NeutralState argNeutralState) {
         if (argNeutralState == NeutralState.BRAKE) {
             config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -443,6 +446,7 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    @Override
     public NeutralState getNeutralMode() {
         if (config.MotorOutput.NeutralMode == NeutralModeValue.Brake) {
             return NeutralState.BRAKE;
@@ -451,6 +455,7 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     /* Direction */
+    @Override
     public void setDirection(final MotorDirection argDirection) {
         if (argDirection == MotorDirection.CW) {
             config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -465,6 +470,7 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    @Override
     public MotorDirection getDirection() {
         if (config.MotorOutput.Inverted == InvertedValue.Clockwise_Positive) {
             return MotorDirection.CW;
@@ -473,25 +479,30 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     /* Current Limit - Stator */
+    @Override
     public void setCurrentLimitStator(final boolean argEnable, final double argStatorCurrent) {
         config.CurrentLimits.StatorCurrentLimitEnable = argEnable;
         config.CurrentLimits.StatorCurrentLimit = argStatorCurrent;
     }
 
+    @Override
     public boolean getCurrentLimitStatorEnable() {
         return config.CurrentLimits.StatorCurrentLimitEnable;
     }
 
+    @Override
     public double getCurrentLimitStator() {
         return config.CurrentLimits.StatorCurrentLimit;
     }
 
     /* Current Limit - Supply */
+    @Override
     public void setCurrentLimitSupply(final boolean argEnable, final double argSupplyCurrent) {
         config.CurrentLimits.SupplyCurrentLimitEnable = argEnable;
         config.CurrentLimits.SupplyCurrentLimit = argSupplyCurrent;
     }
 
+    @Override
     public void setCurrentLimitSupply(
             final double argSupplyCurrentLimit,
             final double argTime,
@@ -506,23 +517,28 @@ public class ControllerTalonFX extends ControllerSmart {
         config.CurrentLimits.SupplyCurrentLowerLimit = argSupplyCurrentLowerLimit;
     }
 
+    @Override
     public boolean getCurrentLimitSupplyEnable() {
         return config.CurrentLimits.SupplyCurrentLimitEnable;
     }
 
+    @Override
     public double getCurrentLimitSupply() {
         return config.CurrentLimits.SupplyCurrentLimit;
     }
 
+    @Override
     public double getCurrentLimitSupplyTime() {
         return config.CurrentLimits.SupplyCurrentLowerTime;
     }
 
+    @Override
     public double getCurrentLimitSupplyLowerLimit() {
         return config.CurrentLimits.SupplyCurrentLowerLimit;
     }
 
     /* Voltage Limit */
+    @Override
     public void setVoltagePeak(
             final double argFwdVoltage, final double argRevVoltage, final double argTimeFilter) {
         config.Voltage.PeakForwardVoltage = argFwdVoltage;
@@ -530,14 +546,17 @@ public class ControllerTalonFX extends ControllerSmart {
         config.Voltage.SupplyVoltageTimeConstant = argTimeFilter;
     }
 
+    @Override
     public double getVoltagePeakFwd() {
         return config.Voltage.PeakForwardVoltage;
     }
 
+    @Override
     public double getVoltagePeakRev() {
         return config.Voltage.PeakReverseVoltage;
     }
 
+    @Override
     public double getVoltagePeakTime() {
         return config.Voltage.SupplyVoltageTimeConstant;
     }
@@ -547,18 +566,22 @@ public class ControllerTalonFX extends ControllerSmart {
      * Config - Open Loop
      *
      */
+    @Override
     public void setRampOpenLoopDuty(final double argRampRateSec) {
         config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = argRampRateSec;
     }
 
+    @Override
     public double getRampOpenLoopDuty() {
         return config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod;
     }
 
+    @Override
     public void setRampOpenLoopVoltage(final double argRampRateSec) {
         config.OpenLoopRamps.VoltageOpenLoopRampPeriod = argRampRateSec;
     }
 
+    @Override
     public double getRampOpenLoopVoltage() {
         return config.OpenLoopRamps.VoltageOpenLoopRampPeriod;
     }
@@ -576,18 +599,22 @@ public class ControllerTalonFX extends ControllerSmart {
      * Config - Closed Loop
      *
      */
+    @Override
     public void setRampClosedLoopDuty(final double argRampRateSec) {
         config.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = argRampRateSec;
     }
 
+    @Override
     public double getRampClosedLoopDuty() {
         return config.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod;
     }
 
+    @Override
     public void setRampClosedLoopVoltage(final double argRampRateSec) {
         config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = argRampRateSec;
     }
 
+    @Override
     public double getRampClosedLoopVoltage() {
         return config.ClosedLoopRamps.VoltageClosedLoopRampPeriod;
     }
@@ -600,10 +627,12 @@ public class ControllerTalonFX extends ControllerSmart {
         return config.ClosedLoopRamps.TorqueClosedLoopRampPeriod;
     }
 
+    @Override
     public void setTolerance(final double argTolerance) {
         // Unused
     }
 
+    @Override
     public double getTolerance() {
         return 0;
     }
@@ -664,6 +693,7 @@ public class ControllerTalonFX extends ControllerSmart {
         };
     }
 
+    @Override
     public void setPSlot(final int argSlot, final double argSetP) {
         SlotAccess s = slotAccess(argSlot);
         if (s != null) {
@@ -671,11 +701,13 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    @Override
     public double getPSlot(final int argSlot) {
         SlotAccess s = slotAccess(argSlot);
         return (s != null) ? s.getP.getAsDouble() : 0;
     }
 
+    @Override
     public void setISlot(final int argSlot, final double argSetI) {
         SlotAccess s = slotAccess(argSlot);
         if (s != null) {
@@ -683,11 +715,13 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    @Override
     public double getISlot(final int argSlot) {
         SlotAccess s = slotAccess(argSlot);
         return (s != null) ? s.getI.getAsDouble() : 0;
     }
 
+    @Override
     public void setDSlot(final int argSlot, final double argSetD) {
         SlotAccess s = slotAccess(argSlot);
         if (s != null) {
@@ -695,21 +729,25 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    @Override
     public double getDSlot(final int argSlot) {
         SlotAccess s = slotAccess(argSlot);
         return (s != null) ? s.getD.getAsDouble() : 0;
     }
 
+    @Override
     public double getVSlot(final int argSlot) {
         SlotAccess s = slotAccess(argSlot);
         return (s != null) ? s.getV.getAsDouble() : 0;
     }
 
+    @Override
     public double getSSlot(final int argSlot) {
         SlotAccess s = slotAccess(argSlot);
         return (s != null) ? s.getS.getAsDouble() : 0;
     }
 
+    @Override
     public void setPIDFSlot(
             final int argSlot,
             final double argP,
@@ -732,6 +770,7 @@ public class ControllerTalonFX extends ControllerSmart {
      * Outputs
      *
      */
+    @Override
     public void stop() {
         talonFX.stopMotor();
     }
@@ -740,6 +779,7 @@ public class ControllerTalonFX extends ControllerSmart {
      * Open Loop
      */
     /* Duty Cycle */
+    @Override
     public double getOutputDuty() {
         if ((outputDuty != null) && outputDuty.getStatus().isOK()) {
             return outputDuty.getValueAsDouble();
@@ -747,6 +787,7 @@ public class ControllerTalonFX extends ControllerSmart {
         return 0;
     }
 
+    @Override
     public void setOutputDuty(final double argOutDuty) {
         valueOutputDuty = argOutDuty;
         motorOut.Output = valueOutputDuty;
@@ -757,6 +798,7 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     /* Voltage */
+    @Override
     public double getOutputVoltage() {
         if ((outputVoltage != null) && outputVoltage.getStatus().isOK()) {
             return outputVoltage.getValueAsDouble();
@@ -764,6 +806,7 @@ public class ControllerTalonFX extends ControllerSmart {
         return 0;
     }
 
+    @Override
     public void setOutputVoltage(final double outputVolts) {
         valueOutputVoltage = outputVolts;
         motorOutV.Output = valueOutputVoltage;
@@ -807,6 +850,7 @@ public class ControllerTalonFX extends ControllerSmart {
     /*
      * Closed Loop
      */
+    @Override
     public double getCLError() {
         if ((clError != null) && clError.getStatus().isOK()) {
             return clError.getValueAsDouble();
@@ -814,6 +858,7 @@ public class ControllerTalonFX extends ControllerSmart {
         return 0;
     }
 
+    @Override
     public double getCLOutput() {
         if ((clOutput != null) && clOutput.getStatus().isOK()) {
             return clOutput.getValueAsDouble();
@@ -821,6 +866,7 @@ public class ControllerTalonFX extends ControllerSmart {
         return 0;
     }
 
+    @Override
     public void setOutputPosition(
             final double argPosition, final int argSlot, final double argFFVolt) {
         motorPosition.Slot = argSlot;
@@ -832,6 +878,7 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    @Override
     public void setOutputVelocity(final double argRPS, final int argSlot, final double argFFVolt) {
         motorVelocity.Slot = argSlot;
         motorVelocity.Velocity = argRPS;
@@ -1008,18 +1055,21 @@ public class ControllerTalonFX extends ControllerSmart {
      * Simulation
      *
      */
+    @Override
     public void setSimVelRotations(final double argVelRotations) {
         if (simState != null) {
             simState.setRotorVelocity(argVelRotations);
         }
     }
 
+    @Override
     public void setSimPosRotations(final double argPositionRotations) {
         if (simState != null) {
             simState.setRawRotorPosition(argPositionRotations);
         }
     }
 
+    @Override
     public void simulationInit(final double argTimestamp) {
         if (simState == null) {
             /*
@@ -1049,6 +1099,7 @@ public class ControllerTalonFX extends ControllerSmart {
         }
     }
 
+    @Override
     public void simulationPeriodic(final double argTimestamp) {
         if (simState != null) {
             simState.setSupplyVoltage(RobotController.getBatteryVoltage());

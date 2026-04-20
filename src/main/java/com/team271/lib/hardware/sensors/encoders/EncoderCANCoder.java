@@ -73,6 +73,7 @@ public class EncoderCANCoder extends EncoderCTRE {
      * Encoder
      *
      */
+    @Override
     protected void create() {
         /*
          * Create CANCoder

@@ -59,6 +59,7 @@ public class PIDWPI_Trap extends PIDBase implements com.team271.lib.control.Prof
         controller.setConstraints(argConstraints);
     }
 
+    @Override
     public void setGoal(final double argGoal) {
         goal = argGoal;
 

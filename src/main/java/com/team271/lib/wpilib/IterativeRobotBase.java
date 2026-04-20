@@ -80,7 +80,7 @@ public abstract class IterativeRobotBase extends RobotBase {
     private boolean m_lwEnabledInTest = false;
     private boolean m_calledDsConnected;
 
-    /*
+    /**
      * Constructor for IterativeRobotBase.
      *
      * @param period Period in seconds.
@@ -269,7 +269,7 @@ public abstract class IterativeRobotBase extends RobotBase {
      */
     public void testExit() {}
 
-    /*
+    /**
      * Enables or disables flushing NetworkTables every loop iteration. By default, this is enabled.
      *
      * @param enabled True to enable, false to disable
@@ -282,7 +282,7 @@ public abstract class IterativeRobotBase extends RobotBase {
 
     private boolean m_reportedLw;
 
-    /*
+    /**
      * Sets whether LiveWindow operation is enabled during test mode. Calling
      *
      * @param testLW True to enable, false to disable. Defaults to false.
@@ -302,7 +302,7 @@ public abstract class IterativeRobotBase extends RobotBase {
         m_lwEnabledInTest = testLW;
     }
 
-    /*
+    /**
      * Whether LiveWindow operation is enabled during test mode.
      *
      * @return whether LiveWindow should be enabled in test mode.
@@ -311,7 +311,7 @@ public abstract class IterativeRobotBase extends RobotBase {
         return m_lwEnabledInTest;
     }
 
-    /*
+    /**
      * Gets time period between calls to Periodic() functions.
      *
      * @return The time period between calls to Periodic() functions.

@@ -30,10 +30,12 @@ public abstract class TObj implements Lifecycle, Named {
      *
      * Getters
      */
+    @Override
     public NTTable getTable() {
         return table;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -49,10 +51,13 @@ public abstract class TObj implements Lifecycle, Named {
      * Robot
      *
      */
+    @Override
     public void robotInit(final double argTimestamp) {}
 
+    @Override
     public void robotPeriodicBefore(final double argTimestamp) {}
 
+    @Override
     public void robotPeriodicAfter(final double argTimestamp) {}
 
     /*
@@ -60,10 +65,13 @@ public abstract class TObj implements Lifecycle, Named {
      * Disabled
      *
      */
+    @Override
     public void disabledInit(final double argTimestamp) {}
 
+    @Override
     public void disabledPeriodic(final double argTimestamp) {}
 
+    @Override
     public void disabledExit(final double argTimestamp) {}
 
     /*
@@ -71,10 +79,13 @@ public abstract class TObj implements Lifecycle, Named {
      * Auto
      *
      */
+    @Override
     public void autonomousInit(final double argTimestamp) {}
 
+    @Override
     public void autonomousPeriodic(final double argTimestamp) {}
 
+    @Override
     public void autonomousExit(final double argTimestamp) {}
 
     /*
@@ -82,10 +93,13 @@ public abstract class TObj implements Lifecycle, Named {
      * Teleop
      *
      */
+    @Override
     public void teleopInit(final double argTimestamp) {}
 
+    @Override
     public void teleopPeriodic(final double argTimestamp) {}
 
+    @Override
     public void teleopExit(final double argTimestamp) {}
 
     /*
@@ -93,8 +107,10 @@ public abstract class TObj implements Lifecycle, Named {
      * Sim
      *
      */
+    @Override
     public void simulationInit(final double argTimestamp) {}
 
+    @Override
     public void simulationPeriodic(final double argTimestamp) {}
 
     /*
@@ -102,10 +118,13 @@ public abstract class TObj implements Lifecycle, Named {
      * Test
      *
      */
+    @Override
     public void testInit(final double argTimestamp) {}
 
+    @Override
     public void testPeriodic(final double argTimestamp) {}
 
+    @Override
     public void testExit(final double argTimestamp) {}
 
     /*
@@ -113,5 +132,6 @@ public abstract class TObj implements Lifecycle, Named {
      * Telemetry
      *
      */
+    @Override
     public void outputTelemetry() {}
 }

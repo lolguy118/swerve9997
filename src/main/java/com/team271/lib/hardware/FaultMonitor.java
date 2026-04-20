@@ -91,7 +91,6 @@ public class FaultMonitor {
     }
 
     private class FaultEntry {
-        final String name;
         final StatusSignal<Boolean> signal;
         final double updateFreqHz;
         final Alert alert;
@@ -99,7 +98,6 @@ public class FaultMonitor {
         boolean isActive = false;
 
         FaultEntry(String name, StatusSignal<Boolean> signal, double updateFreqHz) {
-            this.name = name;
             this.signal = signal;
             this.updateFreqHz = updateFreqHz;
             this.alert = new Alert("Faults", deviceName + ": " + name, AlertType.WARNING);

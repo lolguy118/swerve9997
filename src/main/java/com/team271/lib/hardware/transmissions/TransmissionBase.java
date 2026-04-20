@@ -871,12 +871,14 @@ public abstract class TransmissionBase extends TObj {
      * Robot Loops
      *
      */
+    @Override
     public void robotPeriodicBefore(final double argTimestamp) {
         for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.robotPeriodicBefore(argTimestamp);
         }
     }
 
+    @Override
     public void robotPeriodicAfter(final double argTimestamp) {
         // Unused
     }
@@ -906,6 +908,7 @@ public abstract class TransmissionBase extends TObj {
         }
     }
 
+    @Override
     public void simulationInit(final double argTimestamp) {
         for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.simulationInit(argTimestamp);
@@ -927,6 +930,7 @@ public abstract class TransmissionBase extends TObj {
         }
     }
 
+    @Override
     public void simulationPeriodic(final double argTimestamp) {
         for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.simulationPeriodic(argTimestamp);

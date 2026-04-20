@@ -62,12 +62,13 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
      *
      */
 
-    /*
+    /**
      * Reset the previous error and the integral term.
      *
      * @param argMeasuredPosition The current measured position of the system.
      * @param argMeasuredVelocity The current measured velocity of the system.
      */
+    @Override
     public void reset(final double argMeasuredPosition, final double argMeasuredVelocity) {
         super.reset();
 
@@ -77,11 +78,11 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
         timestampProfileStart = Double.NaN;
     }
 
-    /*
+    /**
      * Reset the previous error and the integral term.
      *
-     * @param argMeasuredPosition The current measured position of the system. The
-     *                            velocity is assumed to be zero.
+     * @param argMeasuredPosition The current measured position of the system. The velocity is
+     *     assumed to be zero.
      */
     public void reset(final double argMeasuredPosition) {
         reset(argMeasuredPosition, 0.0);
@@ -91,11 +92,12 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
         reset(argMeasuredPosition.position, argMeasuredPosition.velocity);
     }
 
-    /*
+    /**
      * Sets the goal for the ProfiledPIDController.
      *
      * @param argGoalPosition The desired goal position.
      */
+    @Override
     public void setGoal(final double argGoalPosition) {
         goal.position = argGoalPosition;
         goal.velocity = 0.0;
@@ -103,7 +105,7 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
         timestampProfileStart = Double.NaN;
     }
 
-    /*
+    /**
      * Sets the goal for the ProfiledPIDController.
      *
      * @param argGoal The desired goal state.
@@ -112,7 +114,7 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
         setGoal(argGoal.position);
     }
 
-    /*
+    /**
      * Gets the goal for the ProfiledPIDController.
      *
      * @return The goal.
@@ -121,19 +123,19 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
         return goal;
     }
 
-    /*
+    /**
      * Returns true if the error is within the tolerance of the error.
      *
-     * <p>
-     * This will return false until at least one input value has been computed.
+     * <p>This will return false until at least one input value has been computed.
      *
      * @return True if the error is within the tolerance of the error.
      */
+    @Override
     public boolean atGoal() {
         return atSetpoint() && goal.equals(setpoint);
     }
 
-    /*
+    /**
      * Set velocity and acceleration constraints for goal.
      *
      * @param argConstraints Velocity and acceleration constraints for goal.
@@ -146,7 +148,7 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
         setGoal(goal);
     }
 
-    /*
+    /**
      * Get the velocity and acceleration constraints for this controller.
      *
      * @return Velocity and acceleration constraints.
@@ -155,7 +157,7 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
         return constraints;
     }
 
-    /*
+    /**
      * Returns the current setpoint of the ProfiledPIDController.
      *
      * @return The current setpoint.
@@ -204,11 +206,10 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
      *
      */
 
-    /*
+    /**
      * Returns the next output of the PID controller.
      *
-     * @param argInputMeasurement The current argMeasurement of the process
-     *                            variable.
+     * @param argInputMeasurement The current argMeasurement of the process variable.
      * @return The controller's next output.
      */
     public double calc(final double argInputMeasurement, final double argTimestamp) {

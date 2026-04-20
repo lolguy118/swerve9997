@@ -109,6 +109,7 @@ public abstract class Subsystem extends TObj {
      * Telemetry
      *
      */
+    @Override
     public void outputTelemetry() {
         ntMode.publish(mode.name());
 

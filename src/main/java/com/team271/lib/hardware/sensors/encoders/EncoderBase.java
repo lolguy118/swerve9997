@@ -94,8 +94,10 @@ public abstract class EncoderBase extends TObj {
 
     public abstract void setSimPosRotations(final double argPositionRotations);
 
+    @Override
     public abstract void simulationInit(final double argTimestamp);
 
+    @Override
     public abstract void simulationPeriodic(final double argTimestamp);
 
     /*
@@ -103,6 +105,7 @@ public abstract class EncoderBase extends TObj {
      * Telemetry
      *
      */
+    @Override
     public void outputTelemetry() {
         ntPos.publish(getPosRotations());
         ntVel.publish(getVelRPS());

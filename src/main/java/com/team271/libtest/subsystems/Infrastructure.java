@@ -26,7 +26,7 @@ public class Infrastructure extends Subsystem {
     /*
      * Telemetry
      */
-    private final NTEntry ntRobotMode = new NTEntry(table, "Robot Mode", 0);
+    private final NTEntry ntRobotMode = new NTEntry(table, "Robot Mode", "");
     private final NTEntry ntBatteryVoltage = new NTEntry(table, "Battery Voltage", 0.0);
     private final NTEntry ntHeadingDeg = new NTEntry(table, "Heading Deg", 0.0);
 
@@ -117,7 +117,7 @@ public class Infrastructure extends Subsystem {
     public void outputTelemetry() {
         super.outputTelemetry();
 
-        ntRobotMode.publish(robotMode.ordinal());
+        ntRobotMode.publish(robotMode.name());
         ntBatteryVoltage.publish(RobotController.getBatteryVoltage());
 
         if (imu != null) {

@@ -54,6 +54,7 @@ public abstract class IMUBase extends TObj implements IMU {
      */
     protected abstract void create();
 
+    @Override
     public void reset() {
         yaw = 0.0;
         yawRate = 0.0;
@@ -61,27 +62,33 @@ public abstract class IMUBase extends TObj implements IMU {
         pitch = 0.0;
     }
 
+    @Override
     public double getYaw() {
         return yaw;
     }
 
+    @Override
     public double getYawRate() {
         return yawRate;
     }
 
+    @Override
     public double getRoll() {
         return roll;
     }
 
+    @Override
     public double getPitch() {
         return pitch;
     }
 
+    @Override
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(yaw);
     }
 
     /** Sets the yaw to the specified value in degrees. */
+    @Override
     public abstract void setYaw(double argDegrees);
 
     /*
@@ -90,6 +97,7 @@ public abstract class IMUBase extends TObj implements IMU {
      *
      */
     /** Sets the simulated yaw in degrees. */
+    @Override
     public abstract void setSimYaw(double argDegrees);
 
     @Override

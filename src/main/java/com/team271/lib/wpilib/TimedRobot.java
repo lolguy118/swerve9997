@@ -31,7 +31,7 @@ public class TimedRobot extends IterativeRobotBase {
         public long period;
         public long expirationTime;
 
-        /*
+        /**
          * Construct a callback container.
          *
          * @param func The callback to run.
@@ -86,7 +86,7 @@ public class TimedRobot extends IterativeRobotBase {
         this(kDefaultPeriod);
     }
 
-    /*
+    /**
      * Constructor for TimedRobot.
      *
      * @param period Period in seconds.
@@ -188,10 +188,10 @@ public class TimedRobot extends IterativeRobotBase {
         NotifierJNI.stopNotifier(m_notifier);
     }
 
-    /*
-     * Return the system clock time in micrseconds for the start of the current periodic loop. This is
-     * in the same time base as Timer.getFPGATimestamp(), but is stable through a loop. It is updated
-     * at the beginning of every periodic callback (including the normal periodic loop).
+    /**
+     * Return the system clock time in micrseconds for the start of the current periodic loop. This
+     * is in the same time base as Timer.getFPGATimestamp(), but is stable through a loop. It is
+     * updated at the beginning of every periodic callback (including the normal periodic loop).
      *
      * @return Robot running time in microseconds, as of the start of the current periodic function.
      */
@@ -199,7 +199,7 @@ public class TimedRobot extends IterativeRobotBase {
         return m_loopStartTimeUs;
     }
 
-    /*
+    /**
      * Add a callback to run at a specific period.
      *
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
@@ -212,7 +212,7 @@ public class TimedRobot extends IterativeRobotBase {
         m_callbacks.add(new Callback(callback, m_startTimeUs, (long) (periodSeconds * 1e6), 0));
     }
 
-    /*
+    /**
      * Add a callback to run at a specific period with a starting time offset.
      *
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
@@ -232,7 +232,7 @@ public class TimedRobot extends IterativeRobotBase {
                         (long) (offsetSeconds * 1e6)));
     }
 
-    /*
+    /**
      * Add a callback to run at a specific period.
      *
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
@@ -245,7 +245,7 @@ public class TimedRobot extends IterativeRobotBase {
         addPeriodic(callback, period.in(Seconds));
     }
 
-    /*
+    /**
      * Add a callback to run at a specific period with a starting time offset.
      *
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run

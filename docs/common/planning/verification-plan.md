@@ -6,7 +6,10 @@ project (library or season robot) fills in the specifics — per-layer
 coverage targets, specific test-ID ranges, project-specific hooks — in
 its own SVP and cites this framework.
 
-> **Coverage note:** The targets discussed below follow a
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in [`README.md`](README.md#normative-keywords).
+
+> **Coverage note:** The tiers discussed below follow a
 > development-quality discipline inspired by DO-178C structural
 > coverage. They are **not** a DO-178C certification claim.
 
@@ -65,11 +68,15 @@ product-specific WPILib sim classes such as `ElevatorSim`,
 | ---- | -------------- |
 | Spotless + Google Java Format (AOSP) | Formatting, import order |
 | `javac -Xlint:all` | Unchecked, deprecation, serial, fallthrough warnings |
+| `javac -Xdoclint:all,-missing` | Javadoc validity on public APIs — broken `@link`, invalid HTML, malformed tags |
 | Error Prone | Compile-time bug patterns |
+| NullAway (Error Prone plugin) | Null-safety enforcement on annotated packages |
 | SpotBugs | Bytecode analysis (null deref, concurrency) |
 | Checkstyle | Mechanizable subset of the coding standard |
 | markdownlint-cli2 | Markdown rules (line length, heading hierarchy) |
 | yamllint | YAML formatting |
+| ShellCheck | Shell-script static analysis (e.g., `.claude/hooks/*.sh`) |
+| OWASP Dependency-Check / GitHub dependency review | Known CVEs in declared and transitive dependencies |
 
 A project that does not use one of these **shall** state so in its SVP.
 
@@ -77,20 +84,23 @@ A project that does not use one of these **shall** state so in its SVP.
 
 Coverage targets **shall** be declared per layer (or per module) so
 that different reliability needs are reflected by different thresholds.
-Starting targets (adjust per project):
+Each project's SVP **shall** define concrete percentages for each tier
+below; the framework names the tiers, not the numbers.
 
-| Concern | Statement | Branch | Function |
-| ------- | --------- | ------ | -------- |
-| Safety-critical (PID, motion) | ≥ 85% | ≥ 75% | 100% |
-| API surface (public contract) | ≥ 80% | ≥ 70% | 100% |
-| Hardware-dependent (wrappers) | ≥ 65% | ≥ 55% | 100% |
-| Vendor adapters | ≥ 70% | ≥ 60% | 100% |
-| Utilities and math | ≥ 80% | ≥ 70% | 100% |
+| Tier | Typical scope |
+| ---- | ------------- |
+| Safety-critical | PID, motion profiles, fail-safe timers — anything whose regression risks hardware or driver safety |
+| API surface | Public contract of a library or service layer |
+| Hardware-dependent | Wrappers around vendor devices and HAL — tested against sim, not real hardware |
+| Vendor adapters | Thin translation layer between an `api/` interface and a specific vendor SDK |
+| Utilities and math | Pure computation — unit conversions, filters, geometry |
 
-"Function" coverage means every public API method has at least one
-direct test that calls it. Hardware-dependent behavior (real motor
-output, real sensor signals) is not counted — the test verifies the
-call path does not throw.
+Each tier's SVP entry **shall** declare a statement-coverage
+percentage, a branch-coverage percentage, and a function-coverage
+requirement. "Function" coverage means every public API method has at
+least one direct test that calls it. Hardware-dependent behavior
+(real motor output, real sensor signals) is not counted — the test
+verifies the call path does not throw.
 
 Projects **shall** state explicitly whether the coverage thresholds
 are **enforced gates** (CI fails if missed) or **aspirational
@@ -142,10 +152,17 @@ merge.
 
 ## 5. Traceability
 
-Every project's SVP **should** define a traceability convention between
-requirements (`REQ-*`) and tests (`TEST-*`). The convention may be as
-simple as a Javadoc comment on each test method that cites the
-requirement it verifies. Projects **shall** be honest about the gap
-between this convention and the current test code: until adopted
-retroactively, a new convention applies prospectively to new or
-refactored tests.
+Every project's SVP **should** define a traceability convention
+between requirements and tests. Requirement and test identifiers
+**shall** use the bracketed form `[PREFIX-NNN]` — for example
+`[REQ-042]`, `[TEST-137]`. Each test method **should** cite the
+requirement it verifies in its Javadoc.
+
+Projects **shall** define where requirement IDs are permitted to
+appear (typically: SRS requirement tables, SVP traceability matrix,
+and scoped SDD sections) and **shall not** let IDs leak into prose or
+code comments outside those scoped locations.
+
+Projects **shall** be honest about the gap between this convention
+and existing test code: until adopted retroactively, a new convention
+applies prospectively to new or refactored tests.

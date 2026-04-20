@@ -82,6 +82,20 @@ that depends on it — not speculatively.
 | ----------- | ----- |
 | Null-safety annotation policy | Choice of annotation set (JSpecify, JetBrains, JSR-305) and rollout plan before NullAway becomes a CI gate |
 | Supply-chain / CVE response | How the library triages OWASP / GitHub dependency-review findings and which severities trigger an out-of-phase hotfix |
+| CAN-bus abstraction in `api/` | Whether to introduce a vendor-neutral `CANBus` interface (and update `DeviceID` to hold a reference) once a concrete consumer emerges — e.g., bus utilization alerts, follower-bus validation refactor, or multi-bus routing |
+| Vision abstraction in `api/` | Vendor-neutral vision interfaces (`Camera`, `PoseEstimate`, `TargetDetection`) once a concrete consumer emerges; decision drives the shape of `SDD-vision.md` (below) |
+
+## Planned SDDs
+
+> **Status: Planned — Not Yet Implemented.**
+
+Reserved slots for design documents that don't yet exist. Each
+**shall** be authored alongside (or after) its enabling ADR, when
+the corresponding code ships.
+
+| Planned SDD | Scope |
+| ----------- | ----- |
+| `SDD-vision.md` | Vision layer (Limelight / PhotonVision / Luma) — camera identity, pose estimation, target detection. Currently only vendor-provided `util/LimelightHelpers` exists; this SDD will document the library's own vision abstraction once the Vision-abstraction ADR is written |
 
 ## What These Documents Do NOT Cover
 

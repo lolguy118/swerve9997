@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | API-001 through API-NNN (SRS §4.1) |
+| Requirements Traced | `[API-001]`..`[API-009]` (SRS §4.1) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -17,7 +21,7 @@ on this layer.
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `Motor` — basic motor control (duty cycle, voltage, stop)
 - `ClosedLoopMotor` — extends Motor with position/velocity closed-loop
@@ -28,11 +32,6 @@ on this layer.
 - `RangeSensor` — distance measurement
 - `MotorCapabilities` — feature query interface
 - `SignalRefreshable` — signal refresh contract
-
-**This SDD does not cover:**
-
-- CTRE implementations of these interfaces → [SDD-vendor-ctre.md](SDD-vendor-ctre.md)
-- Hardware wrappers that use these interfaces → [SDD-hardware.md](SDD-hardware.md)
 
 ## 3. Module Decomposition
 
@@ -115,7 +114,7 @@ simulation.
 A future WPILib-native implementation (or a REV SparkMax
 implementation) could satisfy these interfaces without changing any
 consumer above this layer — that is the point of the abstraction.
-Per [hardware-abstraction rule](../../../../.claude/rules/team271-lib.md),
+Per [team271-lib rule](../../../../.claude/rules/team271-lib.md),
 new vendor implementations are built only when a concrete need
 arises, not on speculation.
 
@@ -137,6 +136,6 @@ achieved via implementation tests in
 [SDD-vendor-ctre.md](SDD-vendor-ctre.md) and
 [SDD-hardware.md](SDD-hardware.md).
 
-Test IDs: TEST-API-NNN. Any new interface added to `api/` requires a
-paired implementation test that verifies the behavior contract
-through the `CTREMotor` (or equivalent) wrapper.
+Test IDs: `[TEST-API-NNN]`. Any new interface added to `api/`
+requires a paired implementation test that verifies the behavior
+contract through the `CTREMotor` (or equivalent) wrapper.

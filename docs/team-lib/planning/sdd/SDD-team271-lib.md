@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | LIB-001 through LIB-NNN (SRS §3) |
+| Requirements Traced | `[LIB-001]`..`[LIB-005]` (SRS §3) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -17,7 +21,7 @@ here.
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `TObj`, `Named`, `Lifecycle` base classes
 - `TRobot` and WPILib `IterativeRobotBase`/`TimedRobot` integration
@@ -26,28 +30,21 @@ here.
 - `CTREManager` orchestration (bulk CAN refresh lifecycle)
 - `HardwareManager` as the forward-compatible entry point for `refreshAll()`
 
-**This SDD does not cover:**
-
-- Motor/sensor implementations → [SDD-hardware.md](SDD-hardware.md)
-- Subsystem state machines → [SDD-subsystem.md](SDD-subsystem.md)
-- Specific PID implementations → [SDD-control.md](SDD-control.md)
-
 ## 3. Module Decomposition
 
 ### 3.1 `Lifecycle` and `Named`
 
 Interfaces at the root of the library.
 
-- **`Lifecycle`** — declares every lifecycle hook as a default no-op:
-  `robotInit`, `robotPeriodicBefore`, `robotPeriodicAfter`,
-  `outputTelemetry`, plus mode-specific init/periodic/exit pairs for
-  disabled, autonomous, teleop, simulation, and test. All periodic
-  hooks receive a `timestamp` (seconds); `outputTelemetry` takes no
-  argument because it publishes cached values.
-- **`Named`** — declares identity (`getName()`) and NetworkTables
-  namespace (`getTable()`, `logKey()`). Used together with
-  `Lifecycle` for objects that participate in the lifecycle without
-  inheriting from `TObj`.
+- **`Lifecycle`** — declares default no-op hooks for robot init,
+  pre-periodic, post-periodic, telemetry output, plus mode-specific
+  init / periodic / exit pairs for disabled, autonomous, teleop,
+  simulation, and test. Periodic hooks receive a timestamp
+  (seconds); the telemetry-output hook is parameterless because it
+  publishes cached values.
+- **`Named`** — declares identity and NetworkTables-namespace
+  accessors. Used together with `Lifecycle` for objects that
+  participate in the lifecycle without inheriting from `TObj`.
 
 ### 3.2 `TObj`
 
@@ -63,22 +60,21 @@ foundation for how tunables and telemetry are organized.
 
 `TRobot` is the library-provided robot singleton that robot projects
 extend. It hooks into WPILib `TimedRobot` (`IterativeRobotBase`) and
-is the call site for `HardwareManager.refreshAll()`,
+is the entry point for the per-cycle bulk CAN refresh, the
 `SubsystemManager` lifecycle broadcasts, and crash-reporting
-integration. Robot projects add their own subsystems inside
-`TRobot.robotInit()` overrides.
+integration. Robot projects register their own subsystems through a
+`TRobot` subclass.
 
 ### 3.4 `HardwareManager` and `CTREManager` (Refresh Entry Points)
 
 - **`HardwareManager`** — the forward-compatible entry point for
-  `refreshAll()`. Today it delegates to `CTREManager.refreshAll()`;
+  per-cycle bulk CAN refresh. Today it delegates to `CTREManager`;
   in the future it will also refresh any `SignalRefreshable`
-  non-CTRE devices. Robot startup code should call
-  `HardwareManager.refreshAll()` per
-  [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md).
+  non-CTRE devices. Robot startup code invokes it per
+  [team271-lib rule](../../../../.claude/rules/team271-lib.md).
 - **`CTREManager`** — owns the complete StatusSignal registry,
   optimizes bus utilization, and performs the bulk refresh. Full
-  details live in [SDD-hardware.md §CTREManager](SDD-hardware.md).
+  details live in [SDD-hardware.md](SDD-hardware.md).
 
 ### 3.5 Tuning Infrastructure
 
@@ -92,21 +88,9 @@ The tuning pipeline uses three NT classes with distinct roles:
 
 `LoggedNTInput` is the primary tunable API; every read is also
 logged to AdvantageKit so replays reproduce the exact value used on
-each cycle. See [SDD-nt.md](SDD-nt.md) for the full pipeline.
-
-The `checkTuning()` pattern is the canonical usage:
-
-```java
-@Override
-public void outputTelemetry() {
-    checkTuning();           // detect + apply dashboard changes
-    super.outputTelemetry(); // parent telemetry
-    // publish current values via NTEntry
-}
-```
-
-Run once per cycle as part of
-`SubsystemManager.outputTelemetry()`.
+each cycle. See [SDD-nt.md](SDD-nt.md) for the full pipeline. The
+tuning-check pattern runs once per cycle as part of each subsystem's
+telemetry output; see §4 Data Flow.
 
 ### 3.6 Simulation Architecture
 
@@ -114,18 +98,18 @@ The library provides two complementary simulation layers:
 
 - **CTRE SimState (device level)** — every CTRE device has a
   SimState object (`TalonFXSimState`, `CANcoderSimState`,
-  `Pigeon2SimState`, `CANrangeSimState`). These are initialized in
-  the device wrapper's `simulationInit()` and updated each
-  `simulationPeriodic()` with the current battery voltage.
+  `Pigeon2SimState`, `CANrangeSimState`). These are initialized by
+  the device wrapper during simulation init and updated each
+  simulation cycle with the current battery voltage.
 - **WPILib DCMotor (physics level)** — `TransmissionBase` creates a
   `DCMotor` model matching the motor type and count (including
   followers). Robot projects use this model with
   `SingleJointedArmSim`, `ElevatorSim`, `FlywheelSim`, etc.
 
 The library publishes infrastructure; robot projects implement the
-physics. `transmission.setSimPosRotations()` propagates through the
-entire stack (encoder sim, controller sim state, internal encoder
-reads).
+physics. The transmission-level sim-position setter propagates
+through the entire stack (encoder sim, controller sim state,
+internal encoder reads).
 
 ## 4. Data Flow
 
@@ -168,7 +152,7 @@ hardware is commanded — eliminating single-cycle race conditions.
 | AdvantageKit for telemetry | See ADR-012 | [ADR-012](../adr/ADR-012-advantagekit-logging.md) |
 | LoggedNTInput-backed tuning | See ADR-008 | [ADR-008](../adr/ADR-008-logged-nt-input-backed-tuning.md) |
 | `TObj` instead of WPILib `SubsystemBase` | Finer-grained lifecycle hooks, exception isolation, sim hooks | See §3.2 above |
-| Singletons for managers (`SubsystemManager`, `CTREManager`) | Exactly one robot, one CAN system, one registry | [ADR-015](../adr/ADR-015-explicit-instantiation-no-singletons.md) |
+| Singletons for managers (`SubsystemManager`, `CTREManager`) | Approved exception to ADR-015 — exactly one robot, one CAN system, one registry | [ADR-015](../adr/ADR-015-explicit-instantiation-no-singletons.md) |
 | Centralized bulk CAN refresh | Consistent timestamps, lower bus utilization | [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
 
 ## 6. Error Handling
@@ -259,5 +243,5 @@ The `libtest` harness assembles a minimal full-robot stack for
 cross-layer smoke tests; it is excluded from JaCoCo coverage
 metrics.
 
-Test IDs: TEST-LIB-NNN plus cross-cutting TEST-* IDs from the
-dependent SDDs.
+Test IDs: `[TEST-LIB-NNN]` plus cross-cutting `[TEST-*]` IDs from
+the dependent SDDs.

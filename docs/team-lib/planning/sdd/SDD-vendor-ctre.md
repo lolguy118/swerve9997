@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | CTRE-001 through CTRE-NNN (SRS §4.2) |
+| Requirements Traced | `[CTRE-001]`..`[CTRE-006]` (SRS §4.2) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -17,7 +21,7 @@ getters (ADR-003). Also covers `bridge/CommandBridge` for WPILib interop.
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `CTREMotor` — implements `ClosedLoopMotor`; wraps CTRE `ControllerTalonFX`
 - `CTREEncoder` — implements `Encoder`
@@ -25,14 +29,9 @@ getters (ADR-003). Also covers `bridge/CommandBridge` for WPILib interop.
 - `CTREGyro` — implements `Gyro` (Pigeon2)
 - `CTRELimitSwitch` — implements `LimitSwitch` (CANdi, digital input)
 - `CTRERangeSensor` — implements `RangeSensor` (CANrange)
-- Passthrough getter reference (all `getUnderlying*()` methods)
-- Phoenix 6 feature coverage matrix
+- Passthrough getter reference (§6)
+- Phoenix 6 feature coverage matrix (§7)
 - `bridge/CommandBridge` — wraps `CTREMotor` as a WPILib `MotorController`
-
-**This SDD does not cover:**
-
-- api/ interfaces → [SDD-api.md](SDD-api.md)
-- Hardware lifecycle wrappers → [SDD-hardware.md](SDD-hardware.md)
 
 ## 3. Module Decomposition
 
@@ -41,16 +40,16 @@ getters (ADR-003). Also covers `bridge/CommandBridge` for WPILib interop.
 Implements `api/motor/ClosedLoopMotor` by wrapping a
 `hardware/controllers/ControllerTalonFX` (or `ControllerTalonFXS`)
 internally. Portable code depends on the `ClosedLoopMotor` interface
-and receives a `CTREMotor` instance through `TransmissionFX.getCTRELeader()`.
+and receives a `CTREMotor` instance from the owning `TransmissionFX`.
 `CTREMotor` is the single bridge point between vendor-neutral control
 code and CTRE Phoenix 6; the `Controller*` classes do not implement
 `api/` interfaces directly — only `CTREMotor` does.
 
-CTRE-only features (Motion Magic, Dynamic Motion Magic, torque current
-FOC, timesync, direct `TalonFXConfiguration` access) are exposed as
-methods on `CTREMotor` itself, above the `ClosedLoopMotor` interface.
-Callers that need these features cast (or hold directly) a `CTREMotor`
-reference.
+CTRE-only features (Motion Magic, Dynamic Motion Magic, torque
+current FOC, timesync, direct `TalonFXConfiguration` access) are
+exposed on `CTREMotor` itself, above the `ClosedLoopMotor` interface.
+Callers that need these features cast (or hold directly) a
+`CTREMotor` reference.
 
 ### 3.2 CTRE Sensor Wrappers
 
@@ -71,20 +70,18 @@ device — see §6 below.
 ### 3.3 `bridge/CommandBridge`
 
 Bi-directional adapter between Team271's lifecycle model and WPILib's
-command-based framework.
+command-based framework. Provides three narrow adapters:
 
-- `CommandBridge.asWPISubsystem(Lifecycle, name)` — wraps a Team271
-  `Lifecycle` (typically a `Subsystem`) as a WPILib `SubsystemBase` so
-  it can appear as a requirement in a WPILib `Command`.
-- `CommandBridge.asAutoMove(Command, timeoutSec)` — wraps a WPILib
-  `Command` (e.g., a PathPlanner follow command) as a Team271
-  `AutoMove` with a **mandatory** timeout argument per ADR-011.
-- `CommandBridge.asCommand(AutoMode)` — wraps a Team271 `AutoMode` as
-  a WPILib `Command` for integration with existing command-based
-  tooling.
+- Wrap a Team271 `Lifecycle` (typically a `Subsystem`) as a WPILib
+  `SubsystemBase` so it can appear as a requirement in a WPILib
+  `Command`.
+- Wrap a WPILib `Command` (e.g., a PathPlanner follow command) as a
+  Team271 `AutoMove` with a mandatory timeout argument per
+  [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md).
+- Wrap a Team271 `AutoMode` as a WPILib `Command` for integration
+  with existing command-based tooling.
 
-Only three adapter functions are provided; the bridge is deliberately
-narrow.
+The bridge is deliberately narrow; see Javadoc for signatures.
 
 ## 4. Data Flow
 
@@ -225,5 +222,5 @@ Every test that creates a CTRE device must call
 the reflection teardown pattern documented in
 [SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).
 
-Test IDs: TEST-CTRE-NNN. Use unique CAN IDs across tests within a
-class to prevent device collisions.
+Test IDs: `[TEST-CTRE-NNN]`. Use unique CAN IDs across tests within
+a class to prevent device collisions.

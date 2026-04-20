@@ -12,12 +12,15 @@
 > capture robot-project requirements (e.g., "the robot shall score a
 > note"). Those belong in each robot project's own SRS.
 >
-> Requirement IDs (`[LIB-NNN]`, `[API-NNN]`, etc.) are used only inside
-> this document and the SVP traceability matrix. They are never copied
-> into SDDs, guides, or CLAUDE.md.
+> Requirement IDs (`[LIB-NNN]`, `[API-NNN]`, etc.) are scoped. They
+> appear only in: this SRS, the SVP traceability matrix, each SDD's
+> header-table "Requirements Traced" row, and each SDD's §9
+> "Test Coverage Requirements" test-ID listing. They are not copied
+> into SDD prose, guides, CLAUDE.md, or code comments outside
+> test-method Javadoc.
 >
-> Keyword semantics: **shall** = normative (binding). **should** =
-> recommended (non-binding).
+> Normative keywords (SHALL, SHOULD, MAY) follow the convention in
+> [`../../common/planning/README.md`](../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose and Scope
 
@@ -60,9 +63,7 @@ It excludes anything that is robot-specific.
   shall perform a single bulk refresh of all registered signals
   (ADR-007).
 - **[LIB-004]** Library code shall not allocate objects in periodic
-  methods (per CODE-GEN-004). Static analysis and code review
-  verify; library tests assert no allocation in hot paths where
-  feasible.
+  methods (per CODE-GEN-004).
 - **[LIB-005]** Library code shall not require robot-project classes
   to inherit from framework types beyond `Subsystem`, `AutoMove`, and
   their standard subclasses.
@@ -161,14 +162,13 @@ It excludes anything that is robot-specific.
   actuation shall occur in `robotPeriodicAfter()`.
 - **[SUB-003]** `SubsystemManager.forEachSafe()` shall log caught
   exceptions to the Driver Station and send throttled Elastic
-  notifications (≤ 1 per 2 s per subsystem).
+  notifications; the per-subsystem throttle window is a named
+  constant in `SubsystemManager` (see SDD-subsystem).
 - **[SUB-004]** `SubsystemManager.robotInit()` shall **not** isolate
   exceptions — an init failure shall be fatal.
 - **[SUB-005]** Homing sequences shall have a named timeout constant,
   a fail-safe action on timeout, and an Elastic alert on timeout
   (ADR-011).
-- **[SUB-006]** State-machine transitions shall be implemented with
-  enum-based `switch` that has a mandatory `default` branch.
 
 ### 4.6 Auto Layer (`[AUT-NNN]`)
 
@@ -188,7 +188,8 @@ It excludes anything that is robot-specific.
 ### 4.7 SysID Layer (`[SID-NNN]`)
 
 - **[SID-001]** `Logger` and `LoggerGeneral` shall pre-allocate data
-  vectors (default 36 000 entries = 45 s at 200 Hz).
+  vectors to a named default capacity (see SDD-sysid); no allocation
+  shall occur after `robotInit()` returns.
 - **[SID-002]** SysID logging threads shall run at priority 15 (below
   HAL's 40) to avoid starving the CAN bus.
 - **[SID-003]** On vector overflow, SysID loggers shall stop recording
@@ -236,24 +237,14 @@ It excludes anything that is robot-specific.
   shall not depend on `hardware/`, `control/`, `subsystem/`, or
   `auto/`.
 
-## 6. Non-Functional Constraints (`[CON-NNN]`)
+## 6. Non-Functional Constraints
 
-- **[CON-001]** No library code shall allocate objects in
-  periodic methods (CODE-GEN-004).
-- **[CON-002]** Loops shall have statically bounded iteration counts
-  (JPL Rule 2 — no `while (true)`).
-- **[CON-003]** Every operation that waits on a sensor condition
-  shall have a timeout, a fail-safe action, and a driver alert
-  (ADR-011 / CODE-SAF-008..011).
-- **[CON-004]** Every `switch` on an enum shall have a `default`
-  branch (CODE-CTL).
-- **[CON-005]** Every public API parameter shall be null-checked; a
-  null parameter shall throw `IllegalArgumentException` with a
-  descriptive message.
-- **[CON-006]** Library code shall not call `Thread.sleep()` in
-  periodic methods.
-- **[CON-007]** Library code shall not swallow `InterruptedException`
-  silently; it shall restore the interrupt flag or rethrow.
+Non-functional constraints binding on library code (no periodic
+allocation, bounded loops, mandatory timeouts, `switch default`
+branches, null-checks on public API, no `Thread.sleep()` in periodic,
+no silent `InterruptedException`) are inherited from the Coding
+Standard (see §2 Applicable Documents). The SRS does not re-list
+them; any change to library-binding constraints happens there.
 
 ## 7. Traceability Matrix
 
@@ -263,20 +254,19 @@ and CI reports; update the test-case column as tests are added.
 
 | Requirement | SDD Section | Test Case |
 | ----------- | ----------- | --------- |
-| LIB-001 | SDD-team271-lib §3 | TEST-LIB-001 |
-| LIB-002 | SDD-subsystem §3.2 | TEST-SUB-003 |
-| LIB-003 | SDD-hardware §3.5 | TEST-HW-010 |
-| API-001..009 | SDD-api §3 | TEST-API-* |
-| CTRE-001 | SDD-vendor-ctre §3 | TEST-CTRE-001 |
-| CTRE-002, CTRE-003 | SDD-vendor-ctre §6 | TEST-CTRE-002 |
-| CTRE-004, CTRE-005 | SDD-hardware §3.5 | TEST-HW-010 |
-| CTRE-006 | SDD-vendor-ctre §3 | TEST-CTRE-005 |
-| HW-001..007 | SDD-hardware §3 | TEST-HW-* |
-| CTL-001..006 | SDD-control §3 | TEST-CTL-* |
-| SUB-001..006 | SDD-subsystem §3 | TEST-SUB-* |
-| AUT-001..005 | SDD-auto §3 | TEST-AUT-* |
-| SID-001..004 | SDD-sysid §3 | TEST-SID-* |
-| NT-001..003 | SDD-nt §3 | TEST-NT-* |
-| UTL-001..005 | SDD-util §3 | TEST-UTL-* |
-| INT-001..007 | (package-info.java imports) | (static check) |
-| CON-001..007 | Coding standard §4 | (code review) |
+| `[LIB-001]` | SDD-team271-lib §3 | `[TEST-LIB-001]` |
+| `[LIB-002]` | SDD-subsystem §3.2 | `[TEST-SUB-003]` |
+| `[LIB-003]` | SDD-hardware §3.5 | `[TEST-HW-010]` |
+| `[API-001..009]` | SDD-api §3 | `[TEST-API-*]` |
+| `[CTRE-001]` | SDD-vendor-ctre §3 | `[TEST-CTRE-001]` |
+| `[CTRE-002]`, `[CTRE-003]` | SDD-vendor-ctre §6 | `[TEST-CTRE-002]` |
+| `[CTRE-004]`, `[CTRE-005]` | SDD-hardware §3.5 | `[TEST-HW-010]` |
+| `[CTRE-006]` | SDD-vendor-ctre §3 | `[TEST-CTRE-005]` |
+| `[HW-001..007]` | SDD-hardware §3 | `[TEST-HW-*]` |
+| `[CTL-001..006]` | SDD-control §3 | `[TEST-CTL-*]` |
+| `[SUB-001..006]` | SDD-subsystem §3 | `[TEST-SUB-*]` |
+| `[AUT-001..005]` | SDD-auto §3 | `[TEST-AUT-*]` |
+| `[SID-001..004]` | SDD-sysid §3 | `[TEST-SID-*]` |
+| `[NT-001..003]` | SDD-nt §3 | `[TEST-NT-*]` |
+| `[UTL-001..005]` | SDD-util §3 | `[TEST-UTL-*]` |
+| `[INT-001..007]` | (package-info.java imports) | (static check) |

@@ -7,12 +7,14 @@
 | Date | 2026-04-20 |
 | Status | Draft |
 
-This document is Team271-Lib's specific verification plan. The shared
-framework — test levels, coverage-target structure, hook pattern, CI
-gate list — lives in
-[`../../common/planning/verification-plan.md`](../../common/planning/verification-plan.md).
-This file records the library's concrete coverage targets, per-layer
-test conventions, hook roster, and CI workflow details.
+This document is Team271-Lib's specific verification plan. It builds
+on the shared planning framework (see §2 Applicable Documents) and
+records the library's concrete coverage targets, per-layer test
+conventions, hook roster, and CI workflow details.
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../common/planning/README.md`](../../common/planning/README.md#normative-keywords).
 
 > **Coverage note:** Coverage thresholds below are development-quality
 > targets inspired by DO-178C structural coverage disciplines. They are
@@ -40,8 +42,7 @@ specific to each season's mechanisms.
 
 ## 3. Test Levels (library-specific notes)
 
-Team271-Lib follows the shared four-level test structure
-(see [`verification-plan.md §1`](../../common/planning/verification-plan.md#1-test-levels)).
+Team271-Lib follows the shared four-level test structure.
 Library-specific notes:
 
 - **Unit tests:** Every test class that creates CTRE devices calls
@@ -67,8 +68,9 @@ Library-specific notes:
 > require adding a `jacocoTestCoverageVerification` task to
 > `build.gradle` with per-module rules. Tracked as a follow-up.
 
-Starting targets per layer (JaCoCo). The `libtest/` package is
-excluded.
+Team271-Lib tiers coverage by architectural layer rather than by
+concern (the framework permits either). Starting targets per layer
+(JaCoCo). The `libtest/` package is excluded.
 
 | Layer | Statement | Branch | Function |
 | ----- | --------- | ------ | -------- |
@@ -91,105 +93,118 @@ path does not throw.
 
 | Layer | Test-ID Prefix | Notes |
 | ----- | -------------- | ----- |
-| `api/` | `TEST-API-NNN` | No HAL required (pure interfaces) |
-| `vendor/ctre/` | `TEST-CTRE-NNN` | HAL init + CTREManager cleanup |
-| `hardware/` | `TEST-HW-NNN` | HAL init + CTREManager cleanup; unique CAN IDs per test |
-| `control/` | `TEST-CTL-NNN` | No HAL for pure PID variants; HAL for PIDFX |
-| `subsystem/` | `TEST-SUB-NNN` | HAL if hardware-backed |
-| `auto/` | `TEST-AUT-NNN` | HAL required |
-| `sysid/` | `TEST-SID-NNN` | HAL required |
-| `nt/` | `TEST-NT-NNN` | HAL required (NT4 init) |
-| `util/` | `TEST-UTL-NNN` | No HAL except `LimelightHelpers` |
+| `api/` | `[TEST-API-NNN]` | No HAL required (pure interfaces) |
+| `vendor/ctre/` | `[TEST-CTRE-NNN]` | HAL init + CTREManager cleanup |
+| `hardware/` | `[TEST-HW-NNN]` | HAL init + CTREManager cleanup; unique CAN IDs per test |
+| `control/` | `[TEST-CTL-NNN]` | No HAL for pure PID variants; HAL for PIDFX |
+| `subsystem/` | `[TEST-SUB-NNN]` | HAL if hardware-backed |
+| `auto/` | `[TEST-AUT-NNN]` | HAL required |
+| `sysid/` | `[TEST-SID-NNN]` | HAL required |
+| `nt/` | `[TEST-NT-NNN]` | HAL required (NT4 init) |
+| `util/` | `[TEST-UTL-NNN]` | No HAL except `LimelightHelpers` |
 
 ## 6. Hooks as Pre-Merge Gates (library roster)
 
-Team271-Lib installs the following hooks under `.claude/hooks/`. Each
-follows the shared hook pattern
-(see [`verification-plan.md §3`](../../common/planning/verification-plan.md#3-pre-merge-hook-pattern)).
+Team271-Lib installs the following hooks under `.claude/hooks/`.
 
 | Hook | What It Enforces | Local Run |
 | ---- | ---------------- | --------- |
 | `lint-markdown.sh` | markdownlint-cli2 rules on `.md` files | `markdownlint-cli2 docs/` |
-| `lint-yaml.sh` | yamllint on `*.yml` / `*.yaml` files | `yamllint <file>` |
-| `lint-shell.sh` | ShellCheck (severity=warning) on `*.sh` / `*.bash` files | `shellcheck --severity=warning <file>` |
 | `check-doc-tunables.sh` | No numeric tunables in `docs/**` | (runs on Edit/Write) |
 | `check-deleted-class-refs.sh` | No references to deprecated symbols | (runs on Edit/Write) |
 | `check-design-drift.sh` | Code changes paired with doc updates | (runs on Edit/Write) |
 | `check-java-compiles.sh` | Java compiles after each edit | `./gradlew compileJava` |
 | `check-spotless.sh` | Spotless format check after Java edit (advisory) | `./gradlew spotlessCheck` |
-| `check-checkstyle.sh` | Checkstyle violations after Java edit (advisory) | `./gradlew checkstyleMain` |
-| `check-spotbugs.sh` | SpotBugs findings after Java edit (advisory; fail-soft during rollout) | `./gradlew spotbugsMain` |
-| `check-javadoc.sh` | Javadoc doclint issues after Java edit (advisory) | `./gradlew javadoc` |
-| `check-jacoco.sh` | Coverage report after Java edit — opt-in via `TEAM271_RUN_JACOCO_HOOK=1` because a full test run per edit is expensive | `./gradlew jacocoTestReport` |
-| `verify-docs-hook.sh` | Wrapper that invokes `verify-docs.sh` when a doc is edited (advisory; CI is the gate) | `bash .claude/hooks/verify-docs.sh` |
 | `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint (CI-authoritative, not wired to PostToolUse directly) | `bash .claude/hooks/verify-docs.sh` |
 
-## 7. CI Pipeline Gates (library workflow)
+### 6.1 Planned Hooks
 
-GitHub Actions CI runs on every push to `main` and every pull request
-(ubuntu-24.04, JDK 17 Temurin). The authoritative workflow is
-[`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml);
-the gates below mirror it and concretize the shared framework
-(see [`verification-plan.md §4`](../../common/planning/verification-plan.md#4-ci-pipeline-gate-structure)).
+> **Status: Planned — Not Yet Implemented.**
 
-| Gate | Command / Action | Workflow job |
-| ---- | ---------------- | ------------ |
-| Spotless | `./gradlew spotlessCheck` | `build` |
-| Java compile | `./gradlew compileJava compileTestJava` | `build` |
-| Error Prone | runs inline with `compileJava` (warnings only during rollout — see `build.gradle`) | `build` |
-| Tests | `./gradlew test` | `build` |
-| Javadoc | `./gradlew javadoc` | `build` |
-| Build (non-test) | `./gradlew build -x test` | `build` |
-| Checkstyle | `./gradlew checkstyleMain checkstyleTest` (invoked by `build`); config at `config/checkstyle/checkstyle.xml` | `build` |
-| SpotBugs | `./gradlew spotbugsMain spotbugsTest` (invoked by `build`); `ignoreFailures=true` during rollout | `build` |
-| Coverage report | `./gradlew jacocoTestReport` (thresholds per §4 are targets, not gates) | `build` |
-| Coverage PR comment | `madrapps/jacoco-report@v1.7.1` (PRs only) | `build` |
-| Markdown lint | `markdownlint-cli2 "**/*.md" "#build" "#.gradle"` | `lint-docs` |
-| YAML lint | `yamllint .` | `lint-docs` |
-| Docs sweep | `bash .claude/hooks/verify-docs.sh` (broken links, stale paths, empty SDD sections) | `lint-docs` |
+The following hooks are foreseen but not yet scripted. Each **shall**
+be authored when its corresponding static-analysis tool (see §7.1)
+graduates from Planned to Adopted, or when a concrete local need
+arises.
+
+| Planned Hook | Intended Scope |
+| ------------ | -------------- |
+| `lint-yaml.sh` | yamllint on `*.yml` / `*.yaml` files |
+| `lint-shell.sh` | ShellCheck (severity=warning) on `*.sh` / `*.bash` files |
+| `check-checkstyle.sh` | Checkstyle violations after Java edit (advisory) |
+| `check-spotbugs.sh` | SpotBugs findings after Java edit (advisory; fail-soft during rollout) |
+| `check-javadoc.sh` | Javadoc doclint issues after Java edit (advisory) |
+| `check-jacoco.sh` | Coverage report after Java edit — opt-in via env var because a full test run per edit is expensive |
+| `verify-docs-hook.sh` | Wrapper that invokes `verify-docs.sh` when a doc is edited (advisory; CI is the gate) |
+
+## 7. CI Pipeline Gates (library-specific)
+
+GitHub Actions CI runs on every push to `main` and every pull
+request (ubuntu-24.04, JDK 17 Temurin). The authoritative workflow
+is [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml);
+the framework's canonical gate set is fully implemented. Only
+library-specific additions and configuration are listed here:
+
+| Gate | Library-specific detail | Workflow job |
+| ---- | ----------------------- | ------------ |
+| Error Prone | Runs inline with `compileJava` (warnings only during rollout — see `build.gradle`) | `build` |
+| Coverage PR comment | `madrapps/jacoco-report@v1.7.1` posts the JaCoCo summary to PRs | `build` |
+| Checkstyle | Config at `config/checkstyle/checkstyle.xml`; invoked by `build` | `build` |
+| SpotBugs | `ignoreFailures=true` during rollout | `build` |
+| Coverage report | Thresholds per §4 are targets, not enforced gates | `build` |
+| Markdown lint | Glob `"**/*.md" "#build" "#.gradle"` | `lint-docs` |
 | ShellCheck | `ludeeus/action-shellcheck` on `.claude/hooks/*.sh` | `shellcheck` |
-| Design-drift (tunables) | `check-doc-tunables.sh` invoked per changed file (gating) | `design-drift` |
-| Design-drift (deleted refs) | `check-deleted-class-refs.sh` invoked per changed file (gating) | `design-drift` |
-| Design-drift (doc-code pairing) | `check-design-drift.sh` invoked per changed file (advisory nudge) | `design-drift` |
+
+Workflow jobs: `build`, `lint-docs`, `shellcheck`. See ci.yml for
+exact job sequencing. Design-drift hooks (tunables, deleted refs,
+doc-code pairing) run locally only; see §6.
 
 Supporting workflows:
 
 - [`.github/workflows/claude-code-review.yml`](../../../.github/workflows/claude-code-review.yml)
-  — `anthropics/claude-code-action` runs an AI-assisted review pass on
-  every PR. Advisory only, does not block merge.
+  — AI-assisted review pass on every PR. Advisory only.
 - [`.github/workflows/dependency-submission.yml`](../../../.github/workflows/dependency-submission.yml)
-  — `gradle/actions/dependency-submission` on every push to `main`.
-  Populates GitHub's Dependency graph so vendordeps show up in
-  Dependabot alerts.
+  — dependency graph submission on every push to `main`.
 - [`.github/workflows/vendordep-freshness.yml`](../../../.github/workflows/vendordep-freshness.yml)
-  — weekly cron (Mondays 13:00 UTC) that fetches each vendordep
-  `jsonUrl`, compares `version`, and opens/updates a tracking issue
-  when any vendordep is behind upstream. See
+  — weekly cron that compares each vendordep against upstream and
+  opens a tracking issue when behind. See
   [SCMP §4](SCMP.md#4-vendordep-management-team271-lib-specifics).
 
-Hooks under `.claude/hooks/` run locally per edit; they catch a subset
-of the same issues before CI sees them. See §6.
+### 7.1 Static-Analysis Adoption Status
+
+The framework's canonical static-analysis list requires every
+project to declare per-tool adoption. Current library state:
+
+| Tool | Status | Notes |
+| ---- | ------ | ----- |
+| Spotless + Google Java Format | Adopted | `./gradlew spotlessCheck` |
+| `javac -Xlint:all` | Adopted | `build.gradle` compile flags |
+| `javac -Xdoclint:all,-missing` | Adopted (implicit) | Runs as part of `./gradlew javadoc`; consider making explicit in `build.gradle` |
+| Error Prone | Adopted | Inline during `compileJava`; warnings-only during rollout |
+| NullAway (Error Prone plugin) | Planned | Requires the null-safety annotation ADR first (see planning README Planned ADRs) |
+| SpotBugs | Adopted | `ignoreFailures=true` during rollout |
+| Checkstyle | Adopted | `config/checkstyle/checkstyle.xml` |
+| markdownlint-cli2 | Adopted | CI job `lint-docs` |
+| yamllint | Adopted | CI job `lint-docs` |
+| ShellCheck | Adopted | CI job `shellcheck` |
+| OWASP Dependency-Check / GitHub dependency review | Planned | GitHub dependency submission is wired; OWASP Gradle plugin not yet adopted. Supply-chain ADR pending (see planning README Planned ADRs) |
 
 ## 8. Traceability
 
-The SRS §7 matrix lists every requirement with its SDD section and
-an **expected** `TEST-*-NNN` identifier. The convention below is
-aspirational — existing tests (1,389 `@Test` methods across 52 files
-as of 2026-04-20) predate the convention and do not yet carry these
-tags.
+The SRS §7 matrix is the library's traceability source. As of
+2026-04-20, existing tests (1,389 `@Test` methods across 52 files)
+predate the `[TEST-*]` / `[REQ-*]` convention and do not yet carry
+the Javadoc citations.
 
-**Going forward:** new `[TEST-*]` test methods and significantly
-refactored existing tests shall cite their `[REQ-*]` requirement in a
-Javadoc comment above the method:
+Going forward — for new tests and significantly refactored existing
+tests — the Javadoc citation format is:
 
 ```java
 /**
- * [TEST-CTRE-001] Verifies CTRE-001: CTREMotor implements ClosedLoopMotor.
+ * [TEST-CTRE-001] Verifies [CTRE-001]: CTREMotor implements ClosedLoopMotor.
  */
 @Test
 void testCTREMotorImplementsClosedLoopMotor() { ... }
 ```
 
-PRs that add or modify a requirement must update the SRS §7 matrix in
-the same commit. PRs that add tests matching an existing matrix row
-should add the Javadoc citation.
+PRs that add or modify a requirement **shall** update the SRS §7
+matrix in the same commit.

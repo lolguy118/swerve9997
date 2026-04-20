@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Team271-Lib SpotBugs exclusion filter.
+
+    Kept minimal on purpose. Add exclusions with a comment explaining why
+    the finding is acceptable (vendored code, intentional pattern, etc.).
+    Prefer fixing the underlying issue over adding a suppression.
+
+    Reference: https://spotbugs.readthedocs.io/en/stable/filter.html
+-->
+<FindBugsFilter>
+
+    <!-- Vendored third-party sources that we do not own. -->
+    <Match>
+        <Class name="~.*\.LimelightHelpers"/>
+    </Match>
+
+    <!-- gversion-generated BuildConstants classes. -->
+    <Match>
+        <Class name="~.*\.BuildConstants"/>
+    </Match>
+
+</FindBugsFilter>

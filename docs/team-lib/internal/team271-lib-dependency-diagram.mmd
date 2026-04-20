@@ -7,7 +7,7 @@ graph TD
     subsystem["<b>subsystem/</b><br/>Subsystem · SubsystemManager · StateMachine"]
     control["<b>control/</b><br/>PIDBase · PIDSimple · PIDTrap · PIDWPI<br/>PIDWPI_Trap · PIDFX · Balance · Feedforward"]
     hardware["<b>hardware/</b><br/>Controllers · Transmissions · Sensors<br/>Input · HardwareManager · CTREManager"]
-    vendor_ctre["<b>vendor/ctre/</b><br/>CTREMotor · CTREEncoder · CTREGyro<br/>CTRELimitSwitch · CTRERangeSensor"]
+    vendor_ctre["<b>vendor/ctre/</b><br/>CTREMotor · CTREEncoder · CTREAbsoluteEncoder<br/>CTREGyro · CTRELimitSwitch · CTRERangeSensor"]
     api["<b>api/</b><br/>Motor · ClosedLoopMotor · Encoder<br/>AbsoluteEncoder · Gyro · LimitSwitch · RangeSensor"]
     crosscut["<b>nt/ · sysid/ · util/</b><br/>Telemetry · SysID logging · Alert · Elastic · DriveSignal"]
     bridge["<b>bridge/</b><br/>CommandBridge (WPILib interop)"]

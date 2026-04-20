@@ -5,9 +5,15 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pull-requests: write  # for JaCoCo PR coverage comment
     steps:
       - uses: actions/checkout@v4
 
@@ -29,8 +35,15 @@ jobs:
       - name: Test
         run: ./gradlew test
 
+      - name: Javadoc
+        run: ./gradlew javadoc
+
       - name: Build
         run: ./gradlew build -x test
+
+      - name: Coverage report
+        if: always()
+        run: ./gradlew jacocoTestReport
 
       - name: Upload test reports
         if: always()
@@ -42,6 +55,43 @@ jobs:
             build/test-results/test/
           retention-days: 14
 
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: |
+            build/reports/jacoco/test/
+            build/reports/jacoco/test/jacocoTestReport.xml
+          retention-days: 14
+
+      - name: Upload SpotBugs report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-report
+          path: build/reports/spotbugs/
+          retention-days: 14
+
+      - name: Upload Checkstyle report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstyle-report
+          path: build/reports/checkstyle/
+          retention-days: 14
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 0
+          min-coverage-changed-files: 0
+          title: JaCoCo Coverage
+          update-comment: true
+
   lint-docs:
     runs-on: ubuntu-24.04
     steps:
@@ -52,10 +102,32 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Markdown lint
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install markdown + YAML linters
         run: |
           npm install -g markdownlint-cli2@0.22.0
-          markdownlint-cli2 "**/*.md" "#build" "#.gradle"
+          pip install yamllint==1.38.0
+
+      - name: Markdown lint
+        run: markdownlint-cli2 "**/*.md" "#build" "#.gradle"
 
       - name: YAML lint
-        run: pip install yamllint==1.38.0 && yamllint .
+        run: yamllint .
+
+      - name: Docs verification sweep
+        run: bash .claude/hooks/verify-docs.sh
+
+  shellcheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ShellCheck on .claude/hooks
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: .claude/hooks
+          severity: warning

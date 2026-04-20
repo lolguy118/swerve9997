@@ -4,6 +4,9 @@ plugins {
     id "com.peterabeles.gversion" version "1.10"
     id "com.diffplug.spotless" version "7.0.4"
     id "jacoco"
+    id "checkstyle"
+    id "com.github.spotbugs" version "6.0.21"
+    id "net.ltgt.errorprone" version "4.0.1"
 }
 
 java {
@@ -96,6 +99,9 @@ dependencies {
 
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
+
+    // Static analysis — see "Static Analysis" block below for configuration
+    errorprone 'com.google.errorprone:error_prone_core:2.31.0'
 }
 
 test {
@@ -200,6 +206,58 @@ task(eventDeploy) {
     }
 }
 createVersionFile.dependsOn(eventDeploy)
+
+// -----------------------------------------------------------------------------
+// Static Analysis — Error Prone, SpotBugs, Checkstyle
+// -----------------------------------------------------------------------------
+//
+// Rolled out fail-soft initially so first-CI-run findings don't block merges.
+// Tighten each as historical issues are triaged:
+//   - Error Prone:  remove `allErrorsAsWarnings = true`
+//   - SpotBugs:     remove `ignoreFailures = true`
+//   - Checkstyle:   grow config/checkstyle/checkstyle.xml
+//
+// Reports land under build/reports/{spotbugs,checkstyle}/ and are uploaded as
+// CI artifacts.
+
+tasks.withType(JavaCompile).configureEach {
+    options.errorprone.disableWarningsInGeneratedCode = true
+    options.errorprone.allErrorsAsWarnings = true  // initial rollout — tighten later
+    options.errorprone.excludedPaths = ".*/build/generated/.*"
+    // Skip the vendored LimelightHelpers (upstream code we don't own)
+    if (name == 'compileJava') {
+        options.errorprone.excludedPaths = ".*/(build/generated|LimelightHelpers\\.java)"
+    }
+}
+
+// Disable Error Prone entirely on test compilation — tests intentionally
+// exercise edge cases (intentional nulls, unused results) that Error Prone flags.
+tasks.withType(JavaCompile).configureEach {
+    if (name == 'compileTestJava') {
+        options.errorprone.enabled = false
+    }
+}
+
+spotbugs {
+    toolVersion = '4.8.6'
+    // effort + reportLevel default to DEFAULT — explicit values require the
+    // com.github.spotbugs.snom.Effort / Confidence enums, not strings.
+    ignoreFailures = true  // initial rollout — remove once historical findings cleared
+    excludeFilter = file('config/spotbugs/exclude.xml')
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    reports {
+        html { required = true }
+        xml  { required = true }
+    }
+}
+
+checkstyle {
+    toolVersion = '10.17.0'
+    configFile = file('config/checkstyle/checkstyle.xml')
+    maxWarnings = 0  // start strict — the config is minimal (2 rules)
+}
 
 // Spotless formatting
 project.compileJava.dependsOn(spotlessApply)

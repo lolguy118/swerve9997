@@ -157,23 +157,56 @@ also be run locally.
 
 ## 7. CI Pipeline Gates
 
-GitHub Actions CI is **planned, not yet configured** (see
-[CLAUDE.md](../../../CLAUDE.md) §CI). The gates below define what
-will run when CI is enabled. In the meantime, these commands are
-the local pre-merge checklist; hooks enforce a subset automatically.
+GitHub Actions CI runs on every push to `main` and every pull request
+(ubuntu-24.04, JDK 17 Temurin). The authoritative workflow is
+[`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml);
+the gates below mirror it.
 
-| Gate | Command |
-| ---- | ------- |
-| Java compile | `./gradlew compileJava compileTestJava` |
-| Spotless | `./gradlew spotlessCheck` |
-| Tests | `./gradlew test` |
-| Coverage report | `./gradlew jacocoTestReport` (thresholds per §4 are targets, not gates) |
-| Markdown lint | `markdownlint-cli2 "docs/**/*.md" CLAUDE.md CONTRIBUTING.md README.md` |
+| Gate | Command / Action | Workflow job |
+| ---- | ---------------- | ------------ |
+| Spotless | `./gradlew spotlessCheck` | `build` |
+| Java compile | `./gradlew compileJava compileTestJava` | `build` |
+| Error Prone | runs inline with `compileJava` (warnings only during rollout — see `build.gradle`) | `build` |
+| Tests | `./gradlew test` | `build` |
+| Javadoc | `./gradlew javadoc` | `build` |
+| Build (non-test) | `./gradlew build -x test` | `build` |
+| Checkstyle | `./gradlew checkstyleMain checkstyleTest` (invoked by `build`); config at `config/checkstyle/checkstyle.xml` | `build` |
+| SpotBugs | `./gradlew spotbugsMain spotbugsTest` (invoked by `build`); `ignoreFailures=true` during rollout | `build` |
+| Coverage report | `./gradlew jacocoTestReport` (thresholds per §4 are targets, not gates) | `build` |
+| Coverage PR comment | `madrapps/jacoco-report@v1.7.1` (PRs only) | `build` |
+| Markdown lint | `markdownlint-cli2 "**/*.md" "#build" "#.gradle"` | `lint-docs` |
+| YAML lint | `yamllint .` | `lint-docs` |
+| Docs sweep | `bash .claude/hooks/verify-docs.sh` (broken links, stale paths, empty SDD sections) | `lint-docs` |
+| ShellCheck | `ludeeus/action-shellcheck` on `.claude/hooks/*.sh` | `shellcheck` |
+
+Supporting workflows:
+
+- [`.github/workflows/claude-code-review.yml`](../../../.github/workflows/claude-code-review.yml)
+  — `anthropics/claude-code-action` runs an AI-assisted review pass on
+  every PR. Advisory only, does not block merge.
+- [`.github/workflows/dependency-submission.yml`](../../../.github/workflows/dependency-submission.yml)
+  — `gradle/actions/dependency-submission` on every push to `main`.
+  Populates GitHub's Dependency graph so vendordeps show up in
+  Dependabot alerts.
+- [`.github/workflows/vendordep-freshness.yml`](../../../.github/workflows/vendordep-freshness.yml)
+  — weekly cron (Mondays 13:00 UTC) that fetches each vendordep
+  `jsonUrl`, compares `version`, and opens/updates a tracking issue
+  when any vendordep is behind upstream. See [SCMP §4](SCMP.md).
+
+Hooks under `.claude/hooks/` run locally per edit; they catch a subset
+of the same issues before CI sees them. See §6.
 
 ## 8. Traceability
 
-Every `[TEST-*]` test method cites its `[REQ-*]` requirement in a
-Javadoc comment at the test method:
+The SRS §7 matrix lists every requirement with its SDD section and
+an **expected** `TEST-*-NNN` identifier. The convention below is
+aspirational — existing tests (1,389 `@Test` methods across 52 files
+as of 2026-04-20) predate the convention and do not yet carry these
+tags.
+
+**Going forward:** new `[TEST-*]` test methods and significantly
+refactored existing tests shall cite their `[REQ-*]` requirement in a
+Javadoc comment above the method:
 
 ```java
 /**
@@ -183,6 +216,6 @@ Javadoc comment at the test method:
 void testCTREMotorImplementsClosedLoopMotor() { ... }
 ```
 
-The SRS §7 traceability matrix lists every requirement with its
-SDD section and test case. PRs that add or modify requirements
-must update the matrix.
+PRs that add or modify a requirement must update the SRS §7 matrix in
+the same commit. PRs that add tests matching an existing matrix row
+should add the Javadoc citation.

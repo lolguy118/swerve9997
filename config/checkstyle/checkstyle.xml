@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!--
+    Team271-Lib Checkstyle configuration.
+
+    Initial scope (mechanizable subset of .claude/rules/coding-standard.md):
+      * NeedBraces         — mandatory braces on every if/else/for/while/do
+                             even for single-statement bodies (CODE-CTL).
+      * MissingSwitchDefault — every switch must have a default branch
+                               (CODE-CTL).
+
+    Grow this config incrementally as other CODE-* rules are ready to be
+    mechanized. See docs/team-lib/Team271-Software-Coding-Standard-Compliance.md
+    for the enforcement matrix.
+
+    Run locally:   ./gradlew checkstyleMain checkstyleTest
+    CI gate:       .github/workflows/ci.yml (build job)
+-->
+
+<module name="Checker">
+    <property name="severity" value="error"/>
+    <property name="fileExtensions" value="java"/>
+
+    <!-- Exclude vendored third-party sources that we do not own. -->
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value=".*[\\/]LimelightHelpers\.java$"/>
+    </module>
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value=".*[\\/]BuildConstants\.java$"/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- CODE-CTL: braces mandatory on every control-flow construct -->
+        <module name="NeedBraces">
+            <property name="tokens"
+                      value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
+            <property name="allowSingleLineStatement" value="false"/>
+        </module>
+
+        <!-- CODE-CTL: every switch must have a default branch -->
+        <module name="MissingSwitchDefault"/>
+    </module>
+</module>

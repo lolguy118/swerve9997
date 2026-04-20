@@ -24,8 +24,12 @@ spans multiple areas.
 ## Testing checklist
 
 - [ ] `./gradlew spotlessCheck` passes
-- [ ] `./gradlew compileJava compileTestJava` passes
+- [ ] `./gradlew compileJava compileTestJava` passes (Error Prone warnings reviewed)
 - [ ] `./gradlew test` passes (existing tests)
+- [ ] `./gradlew javadoc` passes (no new Javadoc errors on public API)
+- [ ] `./gradlew checkstyleMain` passes
+- [ ] `./gradlew spotbugsMain` reviewed (reports under `build/reports/spotbugs/`)
+- [ ] `bash .claude/hooks/verify-docs.sh` passes
 - [ ] New tests added for new behaviour (or explained why not needed)
 - [ ] Tested on real hardware (describe below, or check "sim-only")
 - [ ] Sim-only change
@@ -39,7 +43,7 @@ spans multiple areas.
 
 <!--
 Any behaviour change requires a matching design doc update in the same
-PR (see CLAUDE.md "Documentation Rules"). Check all that apply:
+PR (see `.claude/rules/docs.md`). Check all that apply:
 -->
 
 - [ ] `docs/team-lib/planning/sdd/` — SDD for affected layer

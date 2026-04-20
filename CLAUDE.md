@@ -53,8 +53,16 @@ for the six-layer graph. The layering decision is
   [ADR-002](docs/team-lib/planning/adr/ADR-002-java17-wpilib-gradlerio-toolchain.md).
 - **Build system:** Gradle + GradleRIO. See `build.gradle`; version
   policy in [SCMP §3](docs/team-lib/planning/SCMP.md).
-- **CI:** GitHub Actions planned; current pre-merge gates run through
-  `.claude/hooks/`. See [SVP §7](docs/team-lib/planning/SVP.md).
+- **CI:** GitHub Actions live. `.github/workflows/ci.yml` gates PRs on
+  Spotless, compile + Error Prone, test, Javadoc, Checkstyle, SpotBugs
+  (fail-soft during rollout), JaCoCo coverage (with PR comment), build,
+  markdownlint, yamllint, `verify-docs.sh`, and ShellCheck of
+  `.claude/hooks/` — ubuntu-24.04 / JDK 17. Supporting workflows:
+  `claude-code-review.yml` (advisory AI review),
+  `dependency-submission.yml` (supply-chain graph on push to `main`),
+  `vendordep-freshness.yml` (weekly upstream version check). Local
+  pre-edit gates additionally run through `.claude/hooks/`.
+  See [SVP §7](docs/team-lib/planning/SVP.md).
 - **Platform support:** RoboRIO 2 + desktop sim on Windows/macOS/Linux.
   Matrix in [SDP §5](docs/team-lib/planning/SDP.md).
 - **Vendor dependencies:** CTRE Phoenix 6, WPILib, AdvantageKit,

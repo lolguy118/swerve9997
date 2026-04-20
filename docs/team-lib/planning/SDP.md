@@ -69,13 +69,13 @@ This document references but does not duplicate them. See
 | roboRIO 2 | Competition target | No (hardware-only) |
 | Windows 11 (desktop sim) | Primary developer platform | Yes |
 | macOS (desktop sim) | Secondary developer platform | Yes |
-| Linux (desktop sim) | Tertiary developer platform | Planned (CI runner, pending) |
+| Linux (desktop sim) | Tertiary developer platform + CI runner (`ubuntu-24.04`) | Yes |
 
 Desktop simulation requires WPILib HAL sim and Phoenix 6 sim. Tests
 are runnable on all three desktop platforms. A GitHub Actions CI
-pipeline is planned (see [CLAUDE.md](../../../CLAUDE.md) §CI);
-current pre-merge gates run via `.claude/hooks/` and local
-`./gradlew check`.
+pipeline runs on `ubuntu-24.04` for every push to `main` and every
+pull request (see [SVP §7](SVP.md#7-ci-pipeline-gates)); local
+pre-edit gates run via `.claude/hooks/`.
 
 ## 6. Layer Build Priority
 

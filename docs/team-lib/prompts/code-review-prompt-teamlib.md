@@ -175,15 +175,13 @@ TObj (base class — name, NTTable, lifecycle hooks)
 │   │   │   └── EncoderAdapter interface (FXEncoderAdapter, CANCoderAdapter)
 │   │   ├── imu/ (IMUBase → IMUCTRE → IMUPigeon2)
 │   │   ├── range/ (RangeBase → RangeCTRE → RangeCANrange)
-│   │   └── switches/ (SwitchBase → SwitchFX, SwitchCANCoder)
+│   │   └── switches/ (SwitchBase → SwitchFX, SwitchCANCoder, SwitchDIO)
 │   ├── Input/ (Input → Input8BitDuo, InputXBox, InputPS4, InputEnvisionPro)
 │   │   └── Input shaping: LINEAR, SOFT, SQUARED, CUBED, AGGRESSIVE, MORE_AGGRESSIVE, DYNAMIC
 │   └── motors/MotorBase (Falcon500, KrakenX60, KrakenX44, CTRE_Minion, NEO, NEO550, NEO_Vortex)
 ├── control/
 │   ├── pid/ (PIDBase → PIDSimple, PIDTrap, PIDWPI, PIDWPI_Trap, PIDFX)
-├── geometry/ (custom implementations, not WPILib wrappers)
-│   ├── Pose2d, Rotation2d, Translation2d, Twist2d, State
-│   └── Interfaces: IPose2d, IRotation2d, ITranslation2d
+│   └── Balance, Feedforward, ArmFeedforward, PIDController/ProfiledPIDController/HardwarePIDController interfaces
 ├── nt/ (NTTable, NTEntry, LoggedNTInput — logging + tuning via AK Logger)
 ├── wpilib/ (IterativeRobotBase, TimedRobot — custom WPILib base classes + AK lifecycle)
 ├── sysid/ (Logger, LoggerGeneral — SmartDashboard-based SysId characterization)
@@ -511,10 +509,10 @@ switch (Config.getMode()) {
 
 The tuning infrastructure (`LoggedNTInput`, `checkTuning()` pattern, and
 workflow) is documented in
-[Library Architecture — Tuning Infrastructure](../planning/sdd/SDD-team271-lib.md#tuning-infrastructure).
+[SDD-team271-lib §3.5 Tuning Infrastructure](../planning/sdd/SDD-team271-lib.md#35-tuning-infrastructure).
 Per-component tunable inventories are in
-[Hardware Abstraction](../planning/sdd/SDD-hardware.md#tuning-infrastructure) and
-[Control System](../planning/sdd/SDD-control.md#live-tuning).
+[SDD-hardware §8.2 Live-Tunable Parameters](../planning/sdd/SDD-hardware.md#82-live-tunable-parameters) and
+[SDD-control §3.2 PID Tunable Inventory](../planning/sdd/SDD-control.md#32-pid-tunable-inventory).
 
 ### Review Checklist for Tuning
 
@@ -644,7 +642,6 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 - **`hardware/sensors/`**: `EncoderFXTest`, `EncoderCANCoderTest`, `IMUPigeon2Test`, `RangeCANrangeTest`, `SwitchFXTest`, `SwitchCANCoderTest`
 - **`hardware/transmissions/`**: `TransmissionFXTest`, `ShifterPneumaticTest`
 - **`hardware/Input/`**: `InputXBoxTest`, `InputPS4Test`, `Input8BitDuoTest`, `InputEnvisionProTest`
-- **`geometry/`**: `Translation2dTest`, `Rotation2dTest`, `Pose2dTest`, `Twist2dTest`
 - **`nt/`**: `NTTableTest`, `NTEntryTest`, `LoggedNTInputTest`
 - **`auto/`**: `AutoModeTest`, `AutoMoveTest`, `AutoMoveConditionalTest`, `AutoMoveParallelTest`, `AutoMoveSequenceTest`, `AutoMoveTimedTest`, `AutoIntegrationTest`
 - **`subsystem/`**: `SubsystemTest`, `SubsystemManagerTest`

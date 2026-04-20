@@ -169,17 +169,19 @@ map across the three access paths.
 | Torque Current FOC | No | `setOutputTorqueCurrent` | Yes |
 | Current / voltage limits | Yes | Yes | Yes |
 | PID gains (P/I/D/V/S) | Yes (`setGains(slot, PIDGains)`) | Yes | Yes |
-| Gravity kG feedforward | No | No (see TODO) | Yes (via `Slot0Configs.kG`) |
+| Gravity kG feedforward | No | No (planned) | Yes (via `Slot0Configs.kG`) |
 | Continuous wrap | Yes (`setContinuousWrap`) | Yes | Yes |
 | Software limit switches | No | No | Yes |
 | Audio / beep configuration | No | No | Yes |
 | Orchestra / music | No | No | Yes (via passthrough) |
 
-TODO: `CTREMotor` does not yet expose a method for kG gravity
+> **Status: Planned — Not Yet Implemented.**
+
+`CTREMotor` does not yet expose a method for kG gravity
 feedforward. The Phoenix 6 `Slot0Configs.kG` field is reachable via
 `getConfig()` passthrough; adding a first-class method is tracked
 under the Phoenix 6 "Not Yet Implemented" list in
-[hardware-abstraction.md](SDD-hardware.md#phoenix-6-features-not-yet-implemented).
+[SDD-hardware.md](SDD-hardware.md#phoenix-6-features-not-yet-implemented).
 
 ## 8. Error Handling
 

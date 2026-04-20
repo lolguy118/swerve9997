@@ -98,14 +98,44 @@ if [ -n "$STALE_HITS" ]; then
 fi
 
 # ---------- Check 3 [SHOULD] unresolved-tbd ----------
-TBD_HITS=$(grep -rnE '\b(TODO|TBD)\b' docs/team-lib 2>/dev/null \
-  | grep -v '^docs/team-lib/planning/SRS\.md:' \
-  | grep -v 'Document No\. *| *TBD' \
-  || true)
-if [ -n "$TBD_HITS" ]; then
+# Strips fenced code blocks (preserving line numbers) and inline code
+# before searching, so teaching examples of the TODO convention in the
+# coding standard are not reported as unresolved work.
+TBD_OUT=$("$PYTHON" - <<'PY'
+import re
+from pathlib import Path
+
+root = Path('docs/team-lib')
+issues = []
+if root.is_dir():
+    for f in sorted(root.rglob('*.md')):
+        rel = f.as_posix()
+        if rel == 'docs/team-lib/planning/SRS.md':
+            continue
+        try:
+            text = f.read_text(encoding='utf-8')
+        except Exception:
+            continue
+        # Replace fenced code block content with blank lines to preserve numbering.
+        text = re.sub(r'```[\s\S]*?```',
+                      lambda m: '\n' * m.group(0).count('\n'),
+                      text)
+        for i, line in enumerate(text.split('\n'), start=1):
+            stripped = re.sub(r'`[^`\n]*`', '', line)
+            if not re.search(r'\b(TODO|TBD)\b', stripped):
+                continue
+            if re.search(r'Document No\.\s*\|\s*TBD', line):
+                continue
+            issues.append(f"{rel}:{i}:{line.rstrip()}")
+
+for line in issues:
+    print(line)
+PY
+)
+if [ -n "$TBD_OUT" ]; then
   while IFS= read -r line; do
     [ -n "$line" ] && { echo "[SHOULD] unresolved-tbd $line"; ISSUES=$((ISSUES + 1)); }
-  done <<< "$TBD_HITS"
+  done <<< "$TBD_OUT"
 fi
 
 # ---------- Check 4 [SHOULD] empty-section ----------

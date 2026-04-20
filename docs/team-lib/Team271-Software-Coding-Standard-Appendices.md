@@ -1,5 +1,6 @@
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD041 -->
 
 ## Appendix A: Standard Abbreviations
 
@@ -157,6 +158,7 @@ causing the robot to stutter or brownout.
 ### Allocation-Free Patterns
 
 **Pre-allocate objects at field declaration:**
+
 ```java
 /* GOOD: allocated once */
 private final Timer mReverseTimer = new Timer();
@@ -166,6 +168,7 @@ Timer t = new Timer(); // in periodic method
 ```
 
 **Reuse CTRE control requests:**
+
 ```java
 /* TransmissionFX already handles this internally.
  * If you use raw CTRE API, store requests as fields: */
@@ -176,6 +179,7 @@ mMotor.setControl(mVoltageRequest.withOutput(voltage));
 ```
 
 **Avoid string concatenation in hot paths:**
+
 ```java
 /* BAD: creates new String every cycle */
 Logger.recordOutput("ExampleSubsystem/" + "Speed", speed);
@@ -186,6 +190,7 @@ Logger.recordOutput(LOG_KEY_SPEED, speed);
 ```
 
 **Avoid autoboxing in loops:**
+
 ```java
 /* BAD: autoboxes int to Integer on every add */
 List<Integer> values = new ArrayList<>();

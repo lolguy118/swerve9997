@@ -1,6 +1,11 @@
 <!-- markdownlint-disable MD007 MD013 MD031 MD032 -->
 # Team 271 Java Coding Standard
 
+> **Library applications:** Rules in this chapter sometimes name Team271-Lib
+> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
+> The rule itself is framework-agnostic; the concrete library binding lives
+> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
+
 Document No: 271-JCS\
 Revision: Draft\
 Date of Release: (see revision history)
@@ -43,7 +48,7 @@ The two share most rules. Where they differ, sections explicitly note
 "library only" or "robot projects may." Notable example: subsystem
 instantiation — library code uses explicit instantiation and no
 singletons (see
-[ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md));
+[ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md));
 robot-project subsystems commonly use the singleton pattern shown in
 §3.1.
 
@@ -220,7 +225,7 @@ Spotless runs automatically before compilation
 > (the `com.team271.frc<year>.*` package). It uses the singleton
 > pattern commonly used in FRC robot code. Library code
 > (`com.team271.lib.*`) does **not** use singletons for subsystems —
-> see [ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md).
+> see [ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md).
 > Library authors should omit the `/* Singleton */` block and
 > `getInstance()` methods.
 
@@ -430,5 +435,11 @@ The following companion documents are part of this standard:
 | [`-Debug.md`](Team271-Software-Coding-Standard-Debug.md) | §4.8 Debugging and telemetry |
 | [`-Safety.md`](Team271-Software-Coding-Standard-Safety.md) | Safety Practices (CODE-SAF-*) |
 | [`-Compliance.md`](Team271-Software-Coding-Standard-Compliance.md) | §5 Static Analysis and enforcement matrix |
-| [`-Templates.md`](Team271-Software-Coding-Standard-Templates.md) | Appendix F (Subsystem) + Appendix G (Constants) |
 | [`-Appendices.md`](Team271-Software-Coding-Standard-Appendices.md) | Appendices A–E, H, I |
+
+### Library-specific companions (in `docs/team-lib/`)
+
+| File | Content |
+| ---- | ------- |
+| [`coding-standard-templates.md`](../team-lib/coding-standard-templates.md) | Appendix F (Subsystem) + Appendix G (Constants) — templates for robot-project code consuming the library |
+| [`coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md) | Concrete library-API applications of common rules (e.g., `LoggedNTInput` for `CODE-BUG-004`, `Elastic` for `CODE-SAF-004`) |

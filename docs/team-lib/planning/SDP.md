@@ -15,7 +15,7 @@ lifecycle phases, platform matrix, layer build priority, and
 milestones. It deliberately does not cover:
 
 - Coding rules, naming, or formatting → see
-  [Team271-Software-Coding-Standard.md](../Team271-Software-Coding-Standard.md)
+  [Team271-Software-Coding-Standard.md](../../common/Team271-Software-Coding-Standard.md)
 - Test strategy and coverage → see [SVP.md](SVP.md)
 - API contracts or non-functional guarantees → see [SRS.md](SRS.md)
 - Vendordep versioning or branch policy → see [SCMP.md](SCMP.md)
@@ -24,7 +24,7 @@ milestones. It deliberately does not cover:
 
 | Document | Purpose |
 | -------- | ------- |
-| [Team271-Software-Coding-Standard.md](../Team271-Software-Coding-Standard.md) + companions | Normative coding rules |
+| [Team271-Software-Coding-Standard.md](../../common/Team271-Software-Coding-Standard.md) + companions | Normative coding rules |
 | [SRS.md](SRS.md) | Library requirements |
 | [SVP.md](SVP.md) | Verification plan |
 | [SCMP.md](SCMP.md) | Configuration management |

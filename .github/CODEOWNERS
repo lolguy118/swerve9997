@@ -23,5 +23,6 @@
 /src/main/java/com/team271/lib/bridge/           @rvarone
 
 # Design docs — behaviour changes require matching doc updates
+/docs/common/                                    @rvarone
 /docs/team-lib/                                  @rvarone
 /CLAUDE.md                                       @rvarone

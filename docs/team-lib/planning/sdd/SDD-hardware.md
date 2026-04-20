@@ -308,7 +308,7 @@ Robot.robotPeriodic() @ 50 Hz
 | `HardwareManager` forward-compatible | Single entry point even if vendors expand | [SDD-vendor-ctre.md](SDD-vendor-ctre.md) |
 | Encoder adapter pattern | Swap encoder types without touching TransmissionBase | See §3.3 above |
 | Follower same-bus validation | Cross-bus followers silently sit at zero output; catch at construction | See §3.2 (Transmission Architecture) above |
-| Pre-allocated control request objects | Avoid GC pressure during match play | [CODE-GEN-004](../../Team271-Software-Coding-Standard-General.md) |
+| Pre-allocated control request objects | Avoid GC pressure during match play | [CODE-GEN-004](../../../common/Team271-Software-Coding-Standard-General.md) |
 | NaN/Infinity input guards | Bad sensor readings should skip one cycle, not disable the subsystem | See §6 Error Handling above |
 
 ## 6. Error Handling

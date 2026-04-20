@@ -29,7 +29,7 @@ mechanisms.
 | -------- | ------- |
 | [SRS.md](SRS.md) | Requirements being verified |
 | [SDP.md](SDP.md) | Development phases and toolchain |
-| [Team271-Software-Coding-Standard.md](../Team271-Software-Coding-Standard.md) | Coding rules |
+| [Team271-Software-Coding-Standard.md](../../common/Team271-Software-Coding-Standard.md) | Coding rules |
 | [ADR-009](adr/ADR-009-junit5-hal-simulation-tests.md) | Test framework decision |
 
 ## 3. Test Levels

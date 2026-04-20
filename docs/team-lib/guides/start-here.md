@@ -93,15 +93,15 @@ These rules exist because robots run in 20 ms real-time loops at competition. Vi
 
 | # | Rule | Why | Reference |
 |---|------|-----|-----------|
-| 1 | All waiting operations must have timeouts | A missing timeout locks the robot if the expected condition never arrives (motor stall, sensor failure, unreachable waypoint) | [CODE-SAF-008](../Team271-Software-Coding-Standard-Safety.md), [SDD-subsystem §6.4](../planning/sdd/SDD-subsystem.md) |
+| 1 | All waiting operations must have timeouts | A missing timeout locks the robot if the expected condition never arrives (motor stall, sensor failure, unreachable waypoint) | [CODE-SAF-008](../../common/Team271-Software-Coding-Standard-Safety.md), [SDD-subsystem §6.4](../planning/sdd/SDD-subsystem.md) |
 | 2 | Set desired state in `<mode>Periodic()`, apply outputs in `robotPeriodicAfter()` | Mixing decision and actuation in the same phase causes cross-subsystem race conditions | [ADR-014](../planning/adr/ADR-014-desired-to-actual-state-pattern.md), [SDD-subsystem §3.1](../planning/sdd/SDD-subsystem.md) |
-| 3 | Every `switch` on an enum must handle all cases including `default` | An unhandled state silently does nothing — dangerous on a 150 lb robot | [CODE-CTL rules](../Team271-Software-Coding-Standard-Control.md) |
+| 3 | Every `switch` on an enum must handle all cases including `default` | An unhandled state silently does nothing — dangerous on a 150 lb robot | [CODE-CTL rules](../../common/Team271-Software-Coding-Standard-Control.md) |
 | 4 | Register all CTRE signals before `CTREManager.init()` | Signals added after init are never included in the bulk refresh | [SDD-hardware §3.5 CTREManager](../planning/sdd/SDD-hardware.md) |
 | 5 | No tunable values in docs or CLAUDE.md | Constants in code are the single source of truth; docs reference constant names, not numbers | [ADR-008](../planning/adr/ADR-008-logged-nt-input-backed-tuning.md), [`.claude/rules/docs.md`](../../../.claude/rules/docs.md) |
-| 6 | All configurable values must be dashboard-tunable via `LoggedNTInput` | Enables field-side tuning without redeploying code | [CODE-BUG-004](../Team271-Software-Coding-Standard-Debug.md), [SDD-nt.md](../planning/sdd/SDD-nt.md) |
+| 6 | All configurable values must be dashboard-tunable via `LoggedNTInput` | Enables field-side tuning without redeploying code | [CODE-BUG-004](../../common/Team271-Software-Coding-Standard-Debug.md), [SDD-nt.md](../planning/sdd/SDD-nt.md) |
 | 7 | Every hardware wrapper must expose its underlying vendor object via a getter | The library is additive — it wraps but never blocks access to CTRE/WPILib features | [Passthrough Design](../planning/sdd/SDD-vendor-ctre.md) |
 
-See [Team271-Software-Coding-Standard-Safety.md](../Team271-Software-Coding-Standard-Safety.md) for the complete safety rules.
+See [Team271-Software-Coding-Standard-Safety.md](../../common/Team271-Software-Coding-Standard-Safety.md) for the complete safety rules.
 
 ---
 
@@ -114,7 +114,7 @@ Read in this order. Each doc builds on the previous one.
 3. **[Library Architecture](../planning/sdd/SDD-team271-lib.md)** — The core document. Covers `TObj`, `SubsystemManager`, `CTREManager`, NetworkTables tuning, and simulation infrastructure. Read this end-to-end.
 4. **[Hardware Abstraction](../planning/sdd/SDD-hardware.md)** — How motors, transmissions, encoders, IMUs, and gamepads are wrapped. Read this when you need to understand what a `TransmissionFX` or `ControllerTalonFX` does.
 5. **[Fault Tolerance](../planning/sdd/SDD-subsystem.md)** — Exception isolation, CAN fault handling, timeout patterns. Short but critical — read before writing any subsystem code.
-6. **[Java Coding Standard](../Team271-Software-Coding-Standard.md)** — At minimum, read Section 3 (naming), [`-Safety.md`](../Team271-Software-Coding-Standard-Safety.md), and [`-Compliance.md` §5.4](../Team271-Software-Coding-Standard-Compliance.md) (review checklist) before your first PR. The rest is reference.
+6. **[Java Coding Standard](../../common/Team271-Software-Coding-Standard.md)** — At minimum, read Section 3 (naming), [`-Safety.md`](../../common/Team271-Software-Coding-Standard-Safety.md), and [`-Compliance.md` §5.4](../../common/Team271-Software-Coding-Standard-Compliance.md) (review checklist) before your first PR. The rest is reference.
 7. **Area-specific docs** — pick based on what you are working on:
 
     | Working on... | Read |
@@ -140,7 +140,7 @@ Read in this order. Each doc builds on the previous one.
 | How does the robot loop work? | [SDD-subsystem §3.2 SubsystemManager](../planning/sdd/SDD-subsystem.md) |
 | How do I add a motor or sensor? | [Hardware Abstraction](../planning/sdd/SDD-hardware.md) |
 | How do I make a value tunable? | [SDD-team271-lib §3.5 Tuning Infrastructure](../planning/sdd/SDD-team271-lib.md), [SDD-nt.md](../planning/sdd/SDD-nt.md) |
-| What are the safety rules? | [`-Safety.md`](../Team271-Software-Coding-Standard-Safety.md) |
+| What are the safety rules? | [`-Safety.md`](../../common/Team271-Software-Coding-Standard-Safety.md) |
 | How do I write an auto routine? | [Auto Design](../planning/sdd/SDD-auto.md) |
 | Which package does class X belong to? | [Documentation Index](../planning/README.md) |
 | How do I run tests? | [SVP.md (Verification Plan)](../planning/SVP.md) |

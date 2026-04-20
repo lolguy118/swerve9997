@@ -85,7 +85,7 @@ and fail-safe behavior.
 
 ## References
 
-- [Team271-Software-Coding-Standard-Safety.md](../../Team271-Software-Coding-Standard-Safety.md)
+- [Team271-Software-Coding-Standard-Safety.md](../../../common/Team271-Software-Coding-Standard-Safety.md)
   (CODE-SAF-008 through CODE-SAF-011)
 - [SDD-auto.md §AutoMoveConditional](../sdd/SDD-auto.md)
 - [SDD-subsystem.md §Homing](../sdd/SDD-subsystem.md)

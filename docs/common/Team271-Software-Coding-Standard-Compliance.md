@@ -4,6 +4,11 @@
 
 ## 5. Static Analysis and Tooling
 
+> **Library applications:** Rules in this chapter sometimes name Team271-Lib
+> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
+> The rule itself is framework-agnostic; the concrete library binding lives
+> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
+
 ### 5.1 Spotless
 
 Spotless is the primary code formatting tool. Configuration in
@@ -120,4 +125,4 @@ The table above references three Java static analysers, configured in
 | Checkstyle | Mechanizable SCS rules (currently `NeedBraces`, `MissingSwitchDefault`) | Built-in `checkstyle` plugin; config at [`config/checkstyle/checkstyle.xml`](../../config/checkstyle/checkstyle.xml) | Strict (`maxWarnings = 0`); config grows incrementally |
 
 Tighten rollout (remove `allErrorsAsWarnings`, `ignoreFailures`) as
-historical findings are triaged. See [SVP §7](planning/SVP.md#7-ci-pipeline-gates).
+historical findings are triaged. See [SVP §7](../team-lib/planning/SVP.md#7-ci-pipeline-gates).

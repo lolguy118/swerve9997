@@ -12,7 +12,7 @@ REL_PATH="${FILE_PATH#"$REPO_ROOT"/}"
 [ "$REL_PATH" = "$FILE_PATH" ] && exit 0
 
 case "$REL_PATH" in
-  docs/team-lib/*.md) ;;
+  docs/common/*.md|docs/team-lib/*.md) ;;
   *) exit 0 ;;
 esac
 

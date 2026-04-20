@@ -4,6 +4,11 @@
 
 ## Variables
 
+> **Library applications:** Rules in this chapter sometimes name Team271-Lib
+> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
+> The rule itself is framework-agnostic; the concrete library binding lives
+> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
+
 ### CODE-VAR-001 -- Variable Naming Convention
 
 a. Instance fields (non-static, non-final) **shall** use the `m`

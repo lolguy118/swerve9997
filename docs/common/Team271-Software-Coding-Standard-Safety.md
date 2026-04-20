@@ -4,13 +4,15 @@
 
 ## Safety Practices
 
-> **Anchor:** The rules in this section implement the fail-safe timeout
-> pattern codified in
-> [ADR-011](planning/adr/ADR-011-mandatory-timeouts-fail-safe.md).
-> Subsystem-level fault-tolerance patterns (exception isolation, CAN
-> fault handling, brownout recovery) are described in
-> [SDD-subsystem.md](planning/sdd/SDD-subsystem.md) and
-> [SDD-hardware.md](planning/sdd/SDD-hardware.md).
+> **Library applications:** Rules in this section reference "the project's
+> driver-notification facility", "the bulk CAN refresh API", etc. For
+> Team271-Lib's concrete APIs (`Elastic`, `CTREManager.refreshAll()`,
+> `TransmissionFX.stop()`, `SubsystemManager.forEachSafe()`), see
+> [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
+> Anchor decisions and fault-tolerance patterns live in
+> [ADR-011](../team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md),
+> [SDD-subsystem.md](../team-lib/planning/sdd/SDD-subsystem.md), and
+> [SDD-hardware.md](../team-lib/planning/sdd/SDD-hardware.md).
 >
 > *Industry note: The safety rules in this section reflect the philosophy
 > of DO-178C, which requires that safety-critical software be
@@ -21,10 +23,10 @@
 
 ### CODE-SAF-001 -- Input Validation
 
-a. **(Robot-project code.)** Controller inputs **shall** be validated
-   through deadbands and input shaping before use. The `InputDriver`
-   class centralizes this validation. Library code uses the `Input`
-   base class (see [SDD-hardware.md](planning/sdd/SDD-hardware.md)).
+a. Controller inputs **shall** be validated through deadbands and input
+   shaping before use. Robot projects **should** centralize this
+   validation in a single driver-input class (Team271-Lib's base class
+   is `Input`; see [SDD-hardware.md](../team-lib/planning/sdd/SDD-hardware.md)).
 
 b. Auto chooser values **shall** be validated. The `default` case
    in auto selection **shall** select a safe "do nothing" mode:
@@ -61,7 +63,7 @@ b. Mechanisms with physical travel limits **shall** use soft limits
 
 c. Homing sequences **shall** have timeout protection to prevent
    indefinite stalling. On timeout, the subsystem **shall** fail safe
-   per [ADR-011](planning/adr/ADR-011-mandatory-timeouts-fail-safe.md):
+   per [ADR-011](../team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md):
    stop motors, restore default current limits, transition to IDLE,
    notify the driver via Elastic, and leave `mIsHomed = false` so
    closed-loop control stays disabled.
@@ -81,8 +83,9 @@ c. Homing sequences **shall** have timeout protection to prevent
    ```
 
 d. All voltage and duty-cycle commands **shall** be bounded to safe
-   ranges. The `TransmissionFX` class enforces voltage limits
-   internally; subsystem code **shall** not bypass these limits.
+   ranges. Library motor-controller wrappers enforce voltage limits
+   internally (see library notes); subsystem code **shall** not bypass
+   these limits.
 
 e. Motor neutral modes (brake vs coast) **shall** be explicitly
    configured in `robotInit()` based on the mechanism requirements.
@@ -132,9 +135,10 @@ d. Alliance flipping **shall** be tested for both red and blue
 
 ### CODE-SAF-006 -- CAN Bus Safety
 
-a. CAN signal refresh **shall** use `CTREManager.refreshAll()` for
-   bulk refresh rather than individual signal refreshes, to minimize
-   CAN bus traffic.
+a. CAN signal refresh **shall** use the project's bulk refresh API
+   rather than individual signal refreshes, to minimize CAN bus
+   traffic. In Team271-Lib this is `CTREManager.refreshAll()` (see
+   library notes).
 
 b. CTRE control requests **shall** use timesync:
 

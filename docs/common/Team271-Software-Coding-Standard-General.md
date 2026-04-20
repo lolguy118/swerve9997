@@ -4,6 +4,11 @@
 
 ## General
 
+> **Library applications:** Rules in this chapter sometimes name Team271-Lib
+> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
+> The rule itself is framework-agnostic; the concrete library binding lives
+> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
+
 ### CODE-GEN-001 -- Common Abbreviations
 
 a. Abbreviations and acronyms should be avoided unless their meanings
@@ -266,7 +271,7 @@ c. When null indicates an error, prefer throwing
 
 > **Scope:** This rule applies to **robot-project code** only. Library
 > subsystems do not use singletons — see
-> [ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md).
+> [ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md).
 
 a. Robot-project subsystems **shall** use the established singleton pattern
    with two `getInstance()` methods:

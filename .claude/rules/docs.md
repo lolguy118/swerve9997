@@ -40,7 +40,7 @@ the same PR. Robot-project-specific docs live under `docs/<robot>/`
 This rule file is the authoritative source for doc conventions. See
 also:
 
-- [`Team271-Software-Coding-Standard-Compliance.md`](../../docs/team-lib/Team271-Software-Coding-Standard-Compliance.md)
+- [`Team271-Software-Coding-Standard-Compliance.md`](../../docs/common/Team271-Software-Coding-Standard-Compliance.md)
   — enforcement matrix mapping each `CODE-*` rule (including doc
   rules) to its severity and check mechanism.
 - [`docs/team-lib/planning/README.md`](../../docs/team-lib/planning/README.md)

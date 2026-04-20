@@ -4,6 +4,11 @@
 
 ## Appendix A: Standard Abbreviations
 
+> **Library applications:** Rules in this chapter sometimes name Team271-Lib
+> classes as concrete examples (e.g., `TObj`, `Subsystem`, `LoggedNTInput`).
+> The rule itself is framework-agnostic; the concrete library binding lives
+> in [`team-lib/coding-standard-library-notes.md`](../team-lib/coding-standard-library-notes.md).
+
 | Abbreviation | Meaning |
 | ------------ | ------- |
 | addr | address |
@@ -131,7 +136,7 @@ Subsystems are registered with `SubsystemManager.addSubsystem()` in
 `Robot.robotInit()`. Robot-project subsystems typically use a
 singleton `getInstance(TObj)` accessor (see CODE-GEN-013); library
 subsystems are instantiated directly and passed by reference (see
-[ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
+[ADR-015](../team-lib/planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
 Registration order determines lifecycle call order.
 **This order is load-bearing** -- the following rules apply:
 

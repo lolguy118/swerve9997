@@ -1,9 +1,13 @@
-<!-- Part of the Team 271 Software Coding Standard.
-     See Team271-Software-Coding-Standard.md for the index. -->
+<!-- Library-specific companion to the Team 271 Software Coding Standard.
+     Templates here are for robot-project code that consumes Team271-Lib
+     (TObj, Subsystem, LoggedNTInput, etc.). For the framework-agnostic
+     standard itself, see ../common/Team271-Software-Coding-Standard.md. -->
 <!-- markdownlint-disable-file MD041 -->
 
-> **Scope:** These templates are for **robot-project code**. Library
-> subsystems follow the pattern in
+# Coding Standard — Library Templates
+
+> **Scope:** These templates are for **robot-project code** that consumes
+> Team271-Lib. Library subsystems themselves follow the pattern in
 > [SDD-subsystem.md](planning/sdd/SDD-subsystem.md) and do **not** use
 > singletons (see
 > [ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
@@ -12,7 +16,7 @@
 
 ## Appendix F: Subsystem Template
 
-See [Section 3.1](Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
+See [§3.1 in the core standard](../common/Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
 subsystem template. Key elements:
 
 1. Singleton with dual `getInstance()` (CODE-GEN-013)

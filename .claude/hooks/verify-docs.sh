@@ -105,7 +105,7 @@ TBD_OUT=$("$PYTHON" - <<'PY'
 import re
 from pathlib import Path
 
-root = Path('docs/team-lib')
+root = Path('docs')
 issues = []
 if root.is_dir():
     for f in sorted(root.rglob('*.md')):

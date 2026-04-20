@@ -7,7 +7,7 @@
 > Do NOT duplicate content from:
 >
 > - `CONTRIBUTING.md` (root) — workflow, PRs, commits, linting
-> - `docs/team-lib/Team271-Software-Coding-Standard*.md` — coding rules
+> - `docs/common/Team271-Software-Coding-Standard*.md` — coding rules
 > - `docs/team-lib/planning/` — SDP, SRS, SVP, SCMP, SDDs, ADRs
 > - `docs/team-lib/guides/` — contributor tutorials
 > - `.claude/rules/` — path-scoped AI guardrails
@@ -18,9 +18,11 @@
 ## Project Overview
 
 Team 271's reusable FRC library. See [`README.md`](README.md) for the
-project overview and quick start. Library docs live under
-`docs/team-lib/` so a robot project consuming this library can keep
-its own docs at `docs/<robot-name>/` without path collision.
+project overview and quick start. Docs are organised in three tiers —
+common to every 271 project, library-specific, project-specific — see
+[`docs/README.md`](docs/README.md) for the layout. A robot project
+consuming this library vendors `docs/common/` and `docs/team-lib/` and
+adds its own `docs/<robot-name>/` without path collision.
 
 ## Architecture
 
@@ -32,7 +34,7 @@ for the six-layer graph. The layering decision is
 
 ## Authoritative References
 
-- **Coding standard:** [`docs/team-lib/Team271-Software-Coding-Standard.md`](docs/team-lib/Team271-Software-Coding-Standard.md)
+- **Coding standard:** [`docs/common/Team271-Software-Coding-Standard.md`](docs/common/Team271-Software-Coding-Standard.md)
   — normative rules (§1–§3 inline). §4 Coding Guidelines is split into
   eight companion files (General, Format, Modules, Methods, Variables,
   Control, Comments, Debug). Also: `-Safety`, `-Compliance`,
@@ -48,7 +50,7 @@ for the six-layer graph. The layering decision is
 - **Pre-merge enforcement:** `.claude/hooks/` — markdownlint, doc-tunable
   check, deleted-class refs, design-drift, Java compile, Spotless.
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
-  [SCS §2](docs/team-lib/Team271-Software-Coding-Standard.md) and
+  [SCS §2](docs/common/Team271-Software-Coding-Standard.md) and
   [SDP §4](docs/team-lib/planning/SDP.md). Decision:
   [ADR-002](docs/team-lib/planning/adr/ADR-002-java17-wpilib-gradlerio-toolchain.md).
 - **Build system:** Gradle + GradleRIO. See `build.gradle`; version

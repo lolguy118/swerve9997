@@ -80,7 +80,6 @@ pattern shown in §3.1.
 | SemVer | Semantic Versioning |
 | SRS | Software Requirements Specification |
 | SVP | Software Verification Plan |
-| the lifecycle base class | Team 271 base object (library lifecycle root class) |
 | WPILib | WPI Robotics Library |
 
 ### 1.4 Applicable Documents
@@ -91,8 +90,13 @@ pattern shown in §3.1.
 - [CTRE Phoenix 6 Java API][phoenix6-api]
 - [AdvantageKit Documentation][akit-docs] -- Logging and replay framework
 - [PathPlanner Documentation][pathplanner-docs] -- Autonomous path following
+- [Choreo Documentation][choreo-docs] -- Autonomous trajectory editor, alternative/companion to PathPlanner
+- [Limelight Documentation][limelight-docs] -- Vision pipeline and AprilTag localization
+- [Limelight Java (LimelightHelpers) Reference][limelight-java] -- Vendored helper class API
+- [PhotonVision Documentation][photonvision-docs] -- Vision pipeline and AprilTag localization
+- [PhotonVision Java (PhotonLib) Reference][photonvision-java] -- Java client library API
 - [Google Java Style Guide][google-java] -- Basis for Spotless formatter configuration
-- [the driver-notification facility Dashboard Documentation][elastic-docs] -- FRC dashboard
+- [Elastic Dashboard Documentation][elastic-docs] -- FRC dashboard
 - [MISRA C:2023][misra] -- Safety-critical C coding guidelines (concepts adapted to Java)
 - [SEI CERT Java Coding Standard][cert-java] -- Secure Java coding rules
 - [JPL "Power of 10" Rules][jpl-power10] -- NASA/JPL rules for safety-critical code
@@ -105,6 +109,11 @@ pattern shown in §3.1.
 [phoenix6-api]: https://api.ctr-electronics.com/phoenix6/stable/java/
 [akit-docs]: https://docs.advantagekit.org/
 [pathplanner-docs]: https://pathplanner.dev/home.html
+[choreo-docs]: https://choreo.autos/
+[limelight-docs]: https://docs.limelightvision.io/
+[limelight-java]: https://limelightlib-wpijava-reference.limelightvision.io/
+[photonvision-docs]: https://docs.photonvision.org/en/latest/
+[photonvision-java]: https://javadocs.photonvision.org/
 [google-java]: https://google.github.io/styleguide/javaguide.html
 [elastic-docs]: https://frc-elastic.gitbook.io/docs
 [misra]: https://misra.org.uk/misra-c/

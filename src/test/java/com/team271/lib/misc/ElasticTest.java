@@ -2,8 +2,9 @@ package com.team271.lib.misc;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.team271.lib.misc.Elastic.Notification;
-import com.team271.lib.misc.Elastic.Notification.NotificationLevel;
+import com.team271.lib.util.Elastic;
+import com.team271.lib.util.Elastic.Notification;
+import com.team271.lib.util.Elastic.NotificationLevel;
 import edu.wpi.first.hal.HAL;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

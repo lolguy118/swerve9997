@@ -5,6 +5,7 @@ import static com.team271.lib.ConstantsLib.*;
 import edu.wpi.first.networktables.GenericSubscriber;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.Topic;
+import java.util.Objects;
 import org.littletonrobotics.junction.Logger;
 
 public class NTEntry {
@@ -22,7 +23,14 @@ public class NTEntry {
 
         if (table != null) {
             topic = table.getTopic(argTopicName);
-            logPath = table.getPath() + "/" + argTopicName;
+            // NTTable.getPath() returns "/<name>" — strip the leading slash so AK keys
+            // match direct Logger.recordOutput("Table/Field", ...) calls. Without this,
+            // AK would store at "RealOutputs//Table/Field" (double slash) and the data
+            // would appear under an empty-named folder separate from direct-logged data.
+            final String tablePath = table.getPath();
+            final String cleanTablePath =
+                    tablePath.startsWith("/") ? tablePath.substring(1) : tablePath;
+            logPath = cleanTablePath + "/" + argTopicName;
         } else {
             topic = null;
             logPath = null;
@@ -212,33 +220,46 @@ public class NTEntry {
 
     /*
      * Publish
+     *
+     * Change-detection: publish() only calls Logger.recordOutput when the value differs from
+     * the last published value for that type. First publish always goes through (null sentinel).
+     * AK's WPILOG format is append-on-change anyway — skipping the recordOutput call avoids the
+     * LogTable.put() + allocation cost, which dominates when a subsystem has hundreds of NTEntry
+     * fields (static config, controller state, fault booleans, etc.) that rarely change.
      */
+    private Boolean lastBool = null;
+    private Double lastDouble = null;
+    private Long lastLong = null;
+    private String lastString = null;
+
     public void publish(final boolean argData) {
-        if (logPath != null) {
+        if (logPath != null && (lastBool == null || lastBool.booleanValue() != argData)) {
+            lastBool = argData;
             Logger.recordOutput(logPath, argData);
         }
     }
 
     public void publish(final double argData) {
-        if (logPath != null) {
+        if (logPath != null && (lastDouble == null || lastDouble.doubleValue() != argData)) {
+            lastDouble = argData;
             Logger.recordOutput(logPath, argData);
         }
     }
 
     public void publish(final long argData) {
-        if (logPath != null) {
+        if (logPath != null && (lastLong == null || lastLong.longValue() != argData)) {
+            lastLong = argData;
             Logger.recordOutput(logPath, argData);
         }
     }
 
     public void publish(final int argData) {
-        if (logPath != null) {
-            Logger.recordOutput(logPath, (long) argData);
-        }
+        publish((long) argData);
     }
 
     public void publish(final String argData) {
-        if (logPath != null) {
+        if (logPath != null && !Objects.equals(argData, lastString)) {
+            lastString = argData;
             Logger.recordOutput(logPath, argData);
         }
     }

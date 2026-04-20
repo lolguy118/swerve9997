@@ -84,6 +84,11 @@ public class CTREManager {
     /** Hoot log path — default is RoboRIO USB drive. Set before calling {@link #init()}. */
     private static String hootLogPath = "/U/logs";
 
+    /** Whether to start CTRE SignalLogger (Hoot). Set before calling {@link #init()}. */
+    private static boolean hootLoggingEnabled = true;
+
+    private static boolean hootLoggingStarted = false;
+
     private CTREManager() {}
 
     /**
@@ -100,11 +105,32 @@ public class CTREManager {
         lastRefreshTime = null;
         lastErrorNotificationTime = 0;
         initialized = false;
+        hootLoggingStarted = false;
     }
 
     /** Sets the hoot log file path. Must be called before {@link #init()}. */
     public static void setHootLogPath(final String argPath) {
         hootLogPath = argPath;
+    }
+
+    /** Enable or disable CTRE Hoot logging. Must be called before {@link #init()}. */
+    public static void setHootLoggingEnabled(final boolean argEnabled) {
+        hootLoggingEnabled = argEnabled;
+    }
+
+    /**
+     * True if {@link #init()} started the SignalLogger. Used to guard {@link #stopHootLogging()}.
+     */
+    public static boolean isHootLoggingStarted() {
+        return hootLoggingStarted;
+    }
+
+    /** Stop CTRE Hoot logging if it was started. Safe to call unconditionally. */
+    public static void stopHootLogging() {
+        if (hootLoggingStarted) {
+            SignalLogger.stop();
+            hootLoggingStarted = false;
+        }
     }
 
     /*
@@ -194,12 +220,13 @@ public class CTREManager {
             }
         }
 
-        /* Start CTRE hoot logging if a CANivore bus exists (not supported on RIO) */
+        /* Start CTRE hoot logging if a CANivore bus exists (not supported on RIO) and the flag is set */
         boolean hasCANivore = buses.values().stream().anyMatch(CANBus::isCANivore);
-        if (hasCANivore) {
+        if (hasCANivore && hootLoggingEnabled) {
             SignalLogger.setPath(hootLogPath);
             SignalLogger.enableAutoLogging(true);
             SignalLogger.start();
+            hootLoggingStarted = true;
         }
     }
 
@@ -271,12 +298,16 @@ public class CTREManager {
      * Telemetry
      */
     public static void outputTelemetry() {
-        ntSignalCount.publish(signalsAllArray != null ? signalsAllArray.length : 0);
-        ntDeviceCount.publish(devices.size());
-        ntBusCount.publish(buses.size());
+        // dt and refresh status matter every cycle for CAN health; counts are static and gated.
         ntDt.publish(getDt());
         ntRefreshStatus.publish(
                 signalsAllArray != null && signalsAllArray.length > 0 ? "OK" : "No Signals");
+
+        if (ConstantsLib.isDebugTelemetryEnabled()) {
+            ntSignalCount.publish(signalsAllArray != null ? signalsAllArray.length : 0);
+            ntDeviceCount.publish(devices.size());
+            ntBusCount.publish(buses.size());
+        }
 
         for (CANBus bus : buses.values()) {
             bus.refresh();

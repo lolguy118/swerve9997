@@ -1,0 +1,27 @@
+# CODEOWNERS
+# ---------------------------------------------------------------------------
+# GitHub uses this file to automatically request reviews from the listed
+# owners when a pull request modifies matching paths.
+#
+# Syntax: <pattern> <owner> [<owner> ...]
+# Patterns follow .gitignore rules. Last matching rule wins.
+#
+# TODO: replace @rvarone with a @Team271/<team-name> reference once a
+# GitHub team is configured for the organization.
+# ---------------------------------------------------------------------------
+
+# Default: Richard reviews everything
+* @rvarone
+
+# Safety-critical code paths — fault tolerance, subsystem lifecycle
+/src/main/java/com/team271/lib/subsystem/        @rvarone
+/src/main/java/com/team271/lib/hardware/         @rvarone
+
+# Library API surface — changes here affect every consuming robot project
+/src/main/java/com/team271/lib/api/              @rvarone
+/src/main/java/com/team271/lib/vendor/           @rvarone
+/src/main/java/com/team271/lib/bridge/           @rvarone
+
+# Design docs — behaviour changes require matching doc updates
+/docs/team-lib/                                  @rvarone
+/CLAUDE.md                                       @rvarone

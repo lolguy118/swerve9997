@@ -7,7 +7,7 @@ import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.nt.NTEntry;
 
-public abstract class ControllerSmart extends ControllerBase implements SmartMotorController {
+public abstract class ControllerSmart extends ControllerBase {
     /*
      *
      * Telemetry (NT)
@@ -189,14 +189,12 @@ public abstract class ControllerSmart extends ControllerBase implements SmartMot
      * PID Gains (unified)
      *
      */
-    @Override
     public void setPIDGains(final int argSlot, final PIDGains gains) {
         setPIDFSlot(argSlot, gains.kP(), gains.kI(), gains.kD(), gains.kV(), gains.kS());
         setGravityGain(argSlot, gains.kG());
         setAccelGain(argSlot, gains.kA());
     }
 
-    @Override
     public PIDGains getPIDGains(final int argSlot) {
         return new PIDGains(
                 getPSlot(argSlot),
@@ -257,7 +255,6 @@ public abstract class ControllerSmart extends ControllerBase implements SmartMot
      * Current Limit (unified)
      *
      */
-    @Override
     public void setCurrentLimit(final CurrentLimitConfig config) {
         setCurrentLimitStator(config.statorEnabled(), config.statorLimit());
         /* Always set the enable flag first, then apply time-based parameters if present */
@@ -268,7 +265,6 @@ public abstract class ControllerSmart extends ControllerBase implements SmartMot
         }
     }
 
-    @Override
     public CurrentLimitConfig getCurrentLimitConfig() {
         return new CurrentLimitConfig(
                 getCurrentLimitStatorEnable(),

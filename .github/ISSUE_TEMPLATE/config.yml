@@ -1,0 +1,7 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/Team271/Team271-Lib/security/advisories/new
+    about: >
+      Do NOT open a public issue for security vulnerabilities.
+      Please report them privately via the GitHub Security Advisory form.

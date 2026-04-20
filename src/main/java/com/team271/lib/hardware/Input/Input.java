@@ -1,8 +1,11 @@
 package com.team271.lib.hardware.Input;
 
+import com.team271.lib.ConstantsLib;
 import com.team271.lib.TObj;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.subsystem.Subsystem;
+import com.team271.lib.util.Alert;
+import com.team271.lib.util.Alert.AlertType;
 import com.team271.lib.util.Elastic;
 import com.team271.lib.util.Util;
 import edu.wpi.first.hal.DriverStationJNI;
@@ -40,6 +43,8 @@ public class Input extends Subsystem {
     protected boolean isConnectedPrev = false;
 
     protected final NTEntry ntIsConnected = new NTEntry(table, "Is Connected", false);
+
+    protected Alert notConnectedAlert;
 
     // Axis
     protected double[] axis;
@@ -261,6 +266,15 @@ public class Input extends Subsystem {
         for (int i = 0; i < povCount; i++) {
             ntPOVRawPrev[i] = new NTEntry(table, "POV Raw Prev [" + i + "]", 0);
         }
+
+        /*
+         * Persistent alert — visible in the Elastic Alerts widget for as long as the
+         * controller is missing. Complements the one-shot Elastic notifications
+         * fired on the connect/disconnect transitions below.
+         */
+        notConnectedAlert =
+                new Alert(
+                        "Controllers", getName() + " controller not connected", AlertType.WARNING);
     }
 
     @Override
@@ -278,6 +292,11 @@ public class Input extends Subsystem {
             axisCount = Math.min(mController.getAxisCount(), DriverStationJNI.kMaxJoystickAxes);
             buttonCount = Math.min(mController.getButtonCount(), kMaxButtons);
             povCount = Math.min(mController.getPOVCount(), DriverStationJNI.kMaxJoystickPOVs);
+            Elastic.sendNotification(
+                    new Elastic.Notification(
+                            Elastic.NotificationLevel.INFO,
+                            "Controller Connected",
+                            getName() + " has been connected"));
         } else if (!isConnected && isConnectedPrev) {
             /*
              * Connection Lost
@@ -291,6 +310,8 @@ public class Input extends Subsystem {
             buttonCount = kMaxButtons;
             povCount = DriverStationJNI.kMaxJoystickPOVs;
         }
+
+        notConnectedAlert.set(!isConnected);
 
         if (isConnected) {
             /*
@@ -350,11 +371,15 @@ public class Input extends Subsystem {
      */
     @Override
     public void outputTelemetry() {
+        // Connection state is always-on — drivers need to know if the controller dropped.
         ntIsConnected.publish(isConnected);
 
-        /*
-         * Publish All Axis
-         */
+        // Raw axis/button/POV dumps are verbose and only useful for bringup/calibration.
+        // Subsystems publish their own interpreted input values (e.g. Driver/Forward).
+        if (!ConstantsLib.isDebugTelemetryEnabled()) {
+            return;
+        }
+
         ntAxisCount.publish(axisCount);
         for (int i = 0; i < axisCount; i++) {
             ntAxisRaw[i].publish(axis[i]);

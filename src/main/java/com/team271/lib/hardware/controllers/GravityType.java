@@ -6,7 +6,7 @@ package com.team271.lib.hardware.controllers;
  * <p>Maps to CTRE's {@code GravityTypeValue} in TalonFX implementations. Future REV implementations
  * would apply equivalent feedforward logic in software.
  *
- * @see SmartMotorController#setGravityType(int, GravityType)
+ * @see ControllerSmart#setGravityType(int, GravityType)
  */
 public enum GravityType {
     /**

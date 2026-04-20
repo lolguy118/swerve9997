@@ -53,7 +53,7 @@ The underlying vendor object is always accessible. You can call any vendor metho
 | `TransmissionFX` | `getLeaderConfig()` | `TalonFXConfiguration` | Leader's deferred config |
 | `TransmissionFX` | `getLeaderController()` | `ControllerTalonFX` | Leader's library wrapper (for multi-motor access) |
 | `TransmissionFX` | `getSimState()` | `TalonFXSimState` | Leader's simulation proxy |
-| `TransmissionFX` | `getAllControllers()` | `Set<SmartMotorController>` | All motors (leader + followers) |
+| `TransmissionFX` | `getAllControllers()` | `Set<ControllerSmart>` | All motors (leader + followers) |
 
 ### Encoders
 

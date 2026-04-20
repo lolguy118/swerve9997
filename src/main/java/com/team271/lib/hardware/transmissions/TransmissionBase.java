@@ -8,11 +8,14 @@ import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.controllers.ControllerBase.ControllerStatus;
 import com.team271.lib.hardware.controllers.ControllerBase.MotorDirection;
 import com.team271.lib.hardware.controllers.ControllerBase.NeutralState;
+import com.team271.lib.hardware.controllers.ControllerSmart;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
-import com.team271.lib.hardware.controllers.SmartMotorController;
-import com.team271.lib.hardware.sensors.encoders.*;
+import com.team271.lib.hardware.sensors.encoders.CANCoderAdapter;
 import com.team271.lib.hardware.sensors.encoders.EncoderAdapter;
 import com.team271.lib.hardware.sensors.encoders.EncoderBase.EncoderDirection;
+import com.team271.lib.hardware.sensors.encoders.EncoderCANCoder;
+import com.team271.lib.hardware.sensors.encoders.EncoderFX;
+import com.team271.lib.hardware.sensors.encoders.FXEncoderAdapter;
 import com.team271.lib.hardware.sensors.switches.SwitchBase;
 import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchTrigger;
 import com.team271.lib.hardware.sensors.switches.SwitchBase.SwitchType;
@@ -33,17 +36,27 @@ public abstract class TransmissionBase extends TObj {
     }
 
     /*
+     * Constants
+     */
+    private static final double CONFIG_ERROR_NOTIFICATION_THROTTLE_SEC = 2.0;
+    private static final double KRAKENX44_NOMINAL_VOLTAGE = 12.0;
+    private static final double KRAKENX44_STALL_TORQUE_NM = 4.05;
+    private static final double KRAKENX44_STALL_CURRENT_A = 275.0;
+    private static final double KRAKENX44_FREE_CURRENT_A = 1.4;
+    private static final double KRAKENX44_FREE_SPEED_RPM = 7530.0;
+
+    /*
      * Transmission
      */
 
     /*
      * Motors
      */
-    protected SmartMotorController leader;
-    protected SmartMotorController follower1;
-    protected SmartMotorController follower2;
-    protected SmartMotorController follower3;
-    protected Set<SmartMotorController> allControllers = new LinkedHashSet<>();
+    protected ControllerSmart mLeader;
+    protected ControllerSmart mFollower1;
+    protected ControllerSmart mFollower2;
+    protected ControllerSmart mFollower3;
+    protected Set<ControllerSmart> mAllControllers = new LinkedHashSet<>();
 
     /*
      *
@@ -54,68 +67,68 @@ public abstract class TransmissionBase extends TObj {
     /*
      * Encoder — unified adapter (eliminates per-type conditional cascades)
      */
-    protected EncoderAdapter encoder;
-    protected GearRatio gearRatio = GearRatio.IDENTITY;
+    protected EncoderAdapter mEncoder;
+    protected GearRatio mGearRatio = GearRatio.IDENTITY;
 
     /*
      * Raw encoder references (kept for subclass access and backward compatibility)
      */
-    protected EncoderFX encFX;
-    protected EncoderCANCoder encCANCoder;
+    protected EncoderFX mEncFX;
+    protected EncoderCANCoder mEncCANCoder;
 
     /*
      * Limit Switches
      */
     protected static final double LIMIT_UPDATE_FREQ_HZ = 250.0;
-    private double lastConfigErrorNotificationTime = 0;
-    protected SwitchBase revLimit;
-    protected SwitchBase fwdLimit;
+    private double mLastConfigErrorNotificationTime = 0;
+    protected SwitchBase mRevLimit;
+    protected SwitchBase mFwdLimit;
 
     /*
      * Shifters
      */
-    protected Shifter shifter;
-    protected ShifterState shifterState = ShifterState.GEAR_NONE;
+    protected Shifter mShifter;
+    protected ShifterState mShifterState = ShifterState.GEAR_NONE;
 
-    protected double sensorRatioGear1 = 1.0;
-    protected double sensorRatioGear2 = 1.0;
+    protected double mSensorRatioGear1 = 1.0;
+    protected double mSensorRatioGear2 = 1.0;
 
     /*
      * Control Loops
      */
-    protected PIDBase pid;
+    protected PIDBase mPid;
 
     /*
      *
      * Simulation
      *
      */
-    protected DCMotor simDCMotor;
+    protected DCMotor mSimDCMotor;
 
     /*
      *
      * Telemetry (NT)
      *
      */
-    final NTEntry isBrakeMode = new NTEntry(table, "Is Brake Mode", false);
+    final NTEntry ntIsBrakeMode = new NTEntry(table, "Is Brake Mode", false);
 
-    final NTEntry outputDuty = new NTEntry(table, "Output(DutyCycle)", 0.0);
-    final NTEntry outputVolt = new NTEntry(table, "Output(Voltage)", 0.0);
-    final NTEntry outputCL = new NTEntry(table, "Output(ClosedLoop)", 0.0);
+    final NTEntry ntOutputDuty = new NTEntry(table, "Output(DutyCycle)", 0.0);
+    final NTEntry ntOutputVolt = new NTEntry(table, "Output(Voltage)", 0.0);
+    final NTEntry ntOutputCL = new NTEntry(table, "Output(ClosedLoop)", 0.0);
 
-    final NTEntry isGearOne = new NTEntry(table, "Is Gear 1", false);
+    final NTEntry ntIsGearOne = new NTEntry(table, "Is Gear 1", false);
 
-    final NTEntry tSetpoint = new NTEntry(table, "Setpoint", 0.0);
+    final NTEntry ntSetpoint = new NTEntry(table, "Setpoint", 0.0);
 
-    final NTEntry tError = new NTEntry(table, "Error", 0.0);
+    final NTEntry ntError = new NTEntry(table, "Error", 0.0);
 
-    final NTEntry tTol = new NTEntry(table, "Tol", 0.0);
+    final NTEntry ntTol = new NTEntry(table, "Tol", 0.0);
 
-    final NTEntry tMechPosFX = new NTEntry(table, "Mech Pos FX", 0.0);
-    final NTEntry tMechPosEnc = new NTEntry(table, "Mech Pos Enc", 0.0);
+    final NTEntry ntMechPosFX = new NTEntry(table, "Mech Pos FX", 0.0);
+    final NTEntry ntMechPosEnc = new NTEntry(table, "Mech Pos Enc", 0.0);
 
-    final NTEntry tMechVelFX = new NTEntry(table, "Mech Vel FX", 0.0);
-    final NTEntry tMechVelEnc = new NTEntry(table, "Mech Vel Enc", 0.0);
+    final NTEntry ntMechVelFX = new NTEntry(table, "Mech Vel FX", 0.0);
+    final NTEntry ntMechVelEnc = new NTEntry(table, "Mech Vel Enc", 0.0);
 
     final NTEntry ntRotorToMechanism = new NTEntry(table, "Rotor To Mechanism", 1.0);
     final NTEntry ntSensorRelToMechanism = new NTEntry(table, "Sensor Rel To Mechanism", 1.0);
@@ -145,70 +158,70 @@ public abstract class TransmissionBase extends TObj {
     public void robotInit(final double argTimestamp) {
         int tmpNumMotors = 0;
 
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.robotInit(argTimestamp);
             ++tmpNumMotors;
         }
 
-        if (encFX != null) {
-            encFX.robotInit(argTimestamp);
+        if (mEncFX != null) {
+            mEncFX.robotInit(argTimestamp);
         }
-        if (encCANCoder != null) {
-            encCANCoder.robotInit(argTimestamp);
-        }
-
-        if (revLimit != null) {
-            revLimit.robotInit(argTimestamp);
+        if (mEncCANCoder != null) {
+            mEncCANCoder.robotInit(argTimestamp);
         }
 
-        if (fwdLimit != null) {
-            fwdLimit.robotInit(argTimestamp);
+        if (mRevLimit != null) {
+            mRevLimit.robotInit(argTimestamp);
         }
 
-        if (leader == null) {
+        if (mFwdLimit != null) {
+            mFwdLimit.robotInit(argTimestamp);
+        }
+
+        if (mLeader == null) {
             DriverStation.reportError(getName() + ": leader is null in robotInit()", false);
             return;
         }
 
-        switch (leader.getMotor().getMotorType()) {
+        switch (mLeader.getMotor().getMotorType()) {
             case FALCON500:
-                simDCMotor = DCMotor.getFalcon500Foc(tmpNumMotors);
+                mSimDCMotor = DCMotor.getFalcon500Foc(tmpNumMotors);
                 break;
             case KRAKENX60:
-                simDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
+                mSimDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
                 break;
             case KRAKENX44:
-                simDCMotor =
+                mSimDCMotor =
                         new DCMotor(
-                                12.0,
-                                4.05,
-                                275.0,
-                                1.4,
-                                RPM.of(7530).in(RadiansPerSecond),
+                                KRAKENX44_NOMINAL_VOLTAGE,
+                                KRAKENX44_STALL_TORQUE_NM,
+                                KRAKENX44_STALL_CURRENT_A,
+                                KRAKENX44_FREE_CURRENT_A,
+                                RPM.of(KRAKENX44_FREE_SPEED_RPM).in(RadiansPerSecond),
                                 tmpNumMotors);
                 break;
             case CTRE_MINION:
                 // CTRE Minion specs not yet published; default to KrakenX60 for simulation
-                simDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
+                mSimDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
                 DriverStation.reportWarning(
                         getName() + ": CTRE_MINION sim uses KrakenX60 approximation", false);
                 break;
             case NEO:
-                simDCMotor = DCMotor.getNEO(tmpNumMotors);
+                mSimDCMotor = DCMotor.getNEO(tmpNumMotors);
                 break;
             case NEO550:
-                simDCMotor = DCMotor.getNeo550(tmpNumMotors);
+                mSimDCMotor = DCMotor.getNeo550(tmpNumMotors);
                 break;
             case NEO_VORTEX:
-                simDCMotor = DCMotor.getNeoVortex(tmpNumMotors);
+                mSimDCMotor = DCMotor.getNeoVortex(tmpNumMotors);
                 break;
             default:
                 // Unknown motor type — default to KrakenX60 to avoid divide-by-zero in sim
-                simDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
+                mSimDCMotor = DCMotor.getKrakenX60Foc(tmpNumMotors);
                 DriverStation.reportWarning(
                         getName()
                                 + ": unknown motor type "
-                                + leader.getMotor().getMotorType()
+                                + mLeader.getMotor().getMotorType()
                                 + " — sim uses KrakenX60 approximation",
                         false);
                 break;
@@ -220,12 +233,12 @@ public abstract class TransmissionBase extends TObj {
      * Get Motors
      *
      */
-    public Set<SmartMotorController> getAllControllers() {
-        return allControllers;
+    public Set<ControllerSmart> getAllControllers() {
+        return mAllControllers;
     }
 
-    public SmartMotorController getMotor(final CANDeviceID argMotor) {
-        for (SmartMotorController tmpMotor : allControllers) {
+    public ControllerSmart getMotor(final CANDeviceID argMotor) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             if (argMotor.equals(tmpMotor.getID())) {
                 return tmpMotor;
             }
@@ -235,7 +248,7 @@ public abstract class TransmissionBase extends TObj {
     }
 
     public DCMotor getDCMotor() {
-        return simDCMotor;
+        return mSimDCMotor;
     }
 
     /*
@@ -244,12 +257,13 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void applyConfigs() {
-        for (SmartMotorController c : allControllers) {
+        for (ControllerSmart c : mAllControllers) {
             ControllerStatus status = c.applyConfig();
             if (status != ControllerStatus.OK) {
                 double now = Timer.getFPGATimestamp();
-                if (now - lastConfigErrorNotificationTime > 2.0) {
-                    lastConfigErrorNotificationTime = now;
+                if (now - mLastConfigErrorNotificationTime
+                        > CONFIG_ERROR_NOTIFICATION_THROTTLE_SEC) {
+                    mLastConfigErrorNotificationTime = now;
                     String msg =
                             getName()
                                     + ": config apply failed for "
@@ -270,18 +284,18 @@ public abstract class TransmissionBase extends TObj {
      * Neutral Mode
      */
     public NeutralState getNeutralMode() {
-        return leader.getNeutralMode();
+        return mLeader.getNeutralMode();
     }
 
     public void setNeutralMode(final NeutralState argNeutralState) {
-        allControllers.forEach(t -> t.setNeutralMode(argNeutralState));
+        mAllControllers.forEach(controller -> controller.setNeutralMode(argNeutralState));
     }
 
     /*
      * Direction
      */
     public void configDirection(final MotorDirection argDirection) {
-        leader.setDirection(argDirection);
+        mLeader.setDirection(argDirection);
     }
 
     /*
@@ -295,26 +309,26 @@ public abstract class TransmissionBase extends TObj {
             final double argAutoZeroValueInches) {
 
         if (argSwitchType == SwitchType.FX) {
-            if (!(leader instanceof ControllerTalonFX)) {
+            if (!(mLeader instanceof ControllerTalonFX)) {
                 DriverStation.reportError(
                         getName()
                                 + ": configLimitFwd requires ControllerTalonFX leader, got "
-                                + leader.getClass().getSimpleName(),
+                                + mLeader.getClass().getSimpleName(),
                         false);
                 return;
             }
-            fwdLimit =
+            mFwdLimit =
                     new SwitchFX(
                             this,
                             name + "(Fwd)",
-                            (ControllerTalonFX) leader,
+                            (ControllerTalonFX) mLeader,
                             true,
                             argLimitType,
                             argAutoZero,
                             argAutoZeroValueInches,
                             LIMIT_UPDATE_FREQ_HZ);
 
-            fwdLimit.setEnabled(argEnable);
+            mFwdLimit.setEnabled(argEnable);
         }
     }
 
@@ -326,26 +340,26 @@ public abstract class TransmissionBase extends TObj {
             final double argAutoZeroValueInches) {
 
         if (argSwitchType == SwitchType.FX) {
-            if (!(leader instanceof ControllerTalonFX)) {
+            if (!(mLeader instanceof ControllerTalonFX)) {
                 DriverStation.reportError(
                         getName()
                                 + ": configLimitRev requires ControllerTalonFX leader, got "
-                                + leader.getClass().getSimpleName(),
+                                + mLeader.getClass().getSimpleName(),
                         false);
                 return;
             }
-            revLimit =
+            mRevLimit =
                     new SwitchFX(
                             this,
                             name + "(Rev)",
-                            (ControllerTalonFX) leader,
+                            (ControllerTalonFX) mLeader,
                             false,
                             argLimitType,
                             argAutoZero,
                             argAutoZeroValueInches,
                             LIMIT_UPDATE_FREQ_HZ);
 
-            revLimit.setEnabled(argEnable);
+            mRevLimit.setEnabled(argEnable);
         }
     }
 
@@ -354,22 +368,24 @@ public abstract class TransmissionBase extends TObj {
      */
     public void configCurrentLimitStator(final boolean argEnable, final double argStatorCurrent) {
         /* Apply to all controllers (leader + followers) */
-        allControllers.forEach(t -> t.setCurrentLimitStator(argEnable, argStatorCurrent));
+        mAllControllers.forEach(
+                controller -> controller.setCurrentLimitStator(argEnable, argStatorCurrent));
     }
 
     public void configCurrentLimitSupply(final boolean argEnable, final double argSupplyCurrent) {
         /* Apply to all controllers (leader + followers) */
-        allControllers.forEach(t -> t.setCurrentLimitSupply(argEnable, argSupplyCurrent));
+        mAllControllers.forEach(
+                controller -> controller.setCurrentLimitSupply(argEnable, argSupplyCurrent));
     }
 
     public void configCurrentLimitSupply(
             final double argSupplyCurrentLimit,
             final double argTime,
-            double argSupplyCurrentLowerLimit) {
+            final double argSupplyCurrentLowerLimit) {
         /* Apply to all controllers (leader + followers) */
-        allControllers.forEach(
-                t ->
-                        t.setCurrentLimitSupply(
+        mAllControllers.forEach(
+                controller ->
+                        controller.setCurrentLimitSupply(
                                 argSupplyCurrentLimit, argTime, argSupplyCurrentLowerLimit));
     }
 
@@ -379,7 +395,7 @@ public abstract class TransmissionBase extends TObj {
     public void configVoltagePeak(
             final double argFwdVoltage, final double argRevVoltage, final double argTimeFilter) {
         /* Apply to leader only */
-        leader.setVoltagePeak(argFwdVoltage, argRevVoltage, argTimeFilter);
+        mLeader.setVoltagePeak(argFwdVoltage, argRevVoltage, argTimeFilter);
     }
 
     /*
@@ -387,12 +403,12 @@ public abstract class TransmissionBase extends TObj {
      */
     public void configRampOpenLoopDuty(final double argRampRateSec) {
         /* Apply to leader only */
-        leader.setRampOpenLoopDuty(argRampRateSec);
+        mLeader.setRampOpenLoopDuty(argRampRateSec);
     }
 
     public void configRampOpenLoopVoltage(final double argRampRateSec) {
         /* Apply to leader only */
-        leader.setRampOpenLoopVoltage(argRampRateSec);
+        mLeader.setRampOpenLoopVoltage(argRampRateSec);
     }
 
     /*
@@ -400,12 +416,12 @@ public abstract class TransmissionBase extends TObj {
      */
     public void configRampClosedLoopDuty(final double argRampRateSec) {
         /* Apply to leader only */
-        leader.setRampClosedLoopDuty(argRampRateSec);
+        mLeader.setRampClosedLoopDuty(argRampRateSec);
     }
 
     public void configRampClosedLoopVoltage(final double argRampRateSec) {
         /* Apply to leader only */
-        leader.setRampClosedLoopVoltage(argRampRateSec);
+        mLeader.setRampClosedLoopVoltage(argRampRateSec);
     }
 
     /*
@@ -418,7 +434,7 @@ public abstract class TransmissionBase extends TObj {
             final double argD,
             final double argV,
             final double argS) {
-        leader.setPIDFSlot(argSlot, argP, argI, argD, argV, argS);
+        mLeader.setPIDFSlot(argSlot, argP, argI, argD, argV, argS);
     }
 
     /*
@@ -427,49 +443,49 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void addEncoderFX(final double argUpdateFreqHz) {
-        if (!(leader instanceof ControllerTalonFX)) {
+        if (!(mLeader instanceof ControllerTalonFX)) {
             DriverStation.reportError(
                     getName()
                             + ": addEncoderFX requires ControllerTalonFX leader, got "
-                            + leader.getClass().getSimpleName(),
+                            + mLeader.getClass().getSimpleName(),
                     false);
             return;
         }
-        encFX = new EncoderFX(this, name, (ControllerTalonFX) leader, argUpdateFreqHz);
+        mEncFX = new EncoderFX(this, name, (ControllerTalonFX) mLeader, argUpdateFreqHz);
         /* Only set as active adapter if no CANCoder is present (CANCoder takes priority) */
-        if (encCANCoder == null) {
-            encoder = new FXEncoderAdapter(encFX, gearRatio);
+        if (mEncCANCoder == null) {
+            mEncoder = new FXEncoderAdapter(mEncFX, mGearRatio);
         }
     }
 
     public EncoderFX getEncoderFX() {
-        return encFX;
+        return mEncFX;
     }
 
     public void addCANCoder(
             final CANDeviceID argCANIDEnc,
             final EncoderDirection argEncoderDir,
             final double argUpdateFreqHz) {
-        encCANCoder = new EncoderCANCoder(this, name, argCANIDEnc, argEncoderDir, argUpdateFreqHz);
+        mEncCANCoder = new EncoderCANCoder(this, name, argCANIDEnc, argEncoderDir, argUpdateFreqHz);
         /* CANCoder always becomes the active adapter when present */
-        encoder = new CANCoderAdapter(encCANCoder, gearRatio);
+        mEncoder = new CANCoderAdapter(mEncCANCoder, mGearRatio);
     }
 
     public EncoderCANCoder getEncoderCANCoder() {
-        return encCANCoder;
+        return mEncCANCoder;
     }
 
     /** Returns the active encoder adapter, or null if no encoder is configured. */
     public EncoderAdapter getEncoder() {
-        return encoder;
+        return mEncoder;
     }
 
     public void resetEncoders() {
-        if (encFX != null) {
-            encFX.reset();
+        if (mEncFX != null) {
+            mEncFX.reset();
         }
-        if (encCANCoder != null) {
-            encCANCoder.reset();
+        if (mEncCANCoder != null) {
+            mEncCANCoder.reset();
         }
     }
 
@@ -477,21 +493,21 @@ public abstract class TransmissionBase extends TObj {
      * Position - Rotations
      */
     public void setPosRotations(final double argPositionRotations) {
-        if (encoder != null) {
-            encoder.setPositionRotations(argPositionRotations);
+        if (mEncoder != null) {
+            mEncoder.setPositionRotations(argPositionRotations);
         }
     }
 
     public double getPosAbsRotations() {
-        if (encCANCoder != null) {
-            return encCANCoder.getPosAbsRotations();
+        if (mEncCANCoder != null) {
+            return mEncCANCoder.getPosAbsRotations();
         }
         return 0.0;
     }
 
     public double getPosRotations() {
-        if (encoder != null) {
-            return encoder.getPositionRotations();
+        if (mEncoder != null) {
+            return mEncoder.getPositionRotations();
         }
         return 0.0;
     }
@@ -500,22 +516,22 @@ public abstract class TransmissionBase extends TObj {
      * Position - Mechanism Output Units
      */
     public double getPosFX() {
-        if (encFX != null) {
-            return gearRatio.rotorToOutput(encFX.getPosRotations());
+        if (mEncFX != null) {
+            return mGearRatio.rotorToOutput(mEncFX.getPosRotations());
         }
         return 0.0;
     }
 
     public double getPos() {
-        if (encoder != null) {
-            return encoder.getPosition();
+        if (mEncoder != null) {
+            return mEncoder.getPosition();
         }
         return 0.0;
     }
 
     public double getPosAbs() {
-        if (encoder != null) {
-            return encoder.getAbsolutePosition();
+        if (mEncoder != null) {
+            return mEncoder.getAbsolutePosition();
         }
         return 0.0;
     }
@@ -524,78 +540,78 @@ public abstract class TransmissionBase extends TObj {
      * Gear Ratio Configuration
      */
     public void setRotorToMechanism(final double argRotorToMechanism) {
-        gearRatio =
+        mGearRatio =
                 new GearRatio(
                         argRotorToMechanism,
-                        gearRatio.getSensorRelToMechanism(),
-                        gearRatio.getSensorAbsToMechanism(),
-                        gearRatio.getMechanismToUnits());
-        if (encoder != null) {
-            encoder.updateGearRatio(gearRatio);
+                        mGearRatio.getSensorRelToMechanism(),
+                        mGearRatio.getSensorAbsToMechanism(),
+                        mGearRatio.getMechanismToUnits());
+        if (mEncoder != null) {
+            mEncoder.updateGearRatio(mGearRatio);
         }
     }
 
     public void setSensorToMechanism(final double argSensorRelToMechanism) {
-        gearRatio =
+        mGearRatio =
                 new GearRatio(
-                        gearRatio.getRotorToMechanism(),
+                        mGearRatio.getRotorToMechanism(),
                         argSensorRelToMechanism,
-                        gearRatio.getSensorAbsToMechanism(),
-                        gearRatio.getMechanismToUnits());
-        if (encoder != null) {
-            encoder.updateGearRatio(gearRatio);
+                        mGearRatio.getSensorAbsToMechanism(),
+                        mGearRatio.getMechanismToUnits());
+        if (mEncoder != null) {
+            mEncoder.updateGearRatio(mGearRatio);
         }
     }
 
     public void setSensorAbsToMechanism(final double argSensorAbsToMechanism) {
-        gearRatio =
+        mGearRatio =
                 new GearRatio(
-                        gearRatio.getRotorToMechanism(),
-                        gearRatio.getSensorRelToMechanism(),
+                        mGearRatio.getRotorToMechanism(),
+                        mGearRatio.getSensorRelToMechanism(),
                         argSensorAbsToMechanism,
-                        gearRatio.getMechanismToUnits());
-        if (encoder != null) {
-            encoder.updateGearRatio(gearRatio);
+                        mGearRatio.getMechanismToUnits());
+        if (mEncoder != null) {
+            mEncoder.updateGearRatio(mGearRatio);
         }
     }
 
     public void setMechanismToUnits(final double argMechanismToUnits) {
-        gearRatio =
+        mGearRatio =
                 new GearRatio(
-                        gearRatio.getRotorToMechanism(),
-                        gearRatio.getSensorRelToMechanism(),
-                        gearRatio.getSensorAbsToMechanism(),
+                        mGearRatio.getRotorToMechanism(),
+                        mGearRatio.getSensorRelToMechanism(),
+                        mGearRatio.getSensorAbsToMechanism(),
                         argMechanismToUnits);
-        if (encoder != null) {
-            encoder.updateGearRatio(gearRatio);
+        if (mEncoder != null) {
+            mEncoder.updateGearRatio(mGearRatio);
         }
     }
 
     /** Sets the full gear ratio. Propagates to the encoder adapter. */
     public void setGearRatio(final GearRatio argGearRatio) {
-        gearRatio = argGearRatio;
-        if (encoder != null) {
-            encoder.updateGearRatio(gearRatio);
+        mGearRatio = argGearRatio;
+        if (mEncoder != null) {
+            mEncoder.updateGearRatio(mGearRatio);
         }
     }
 
     public GearRatio getGearRatio() {
-        return gearRatio;
+        return mGearRatio;
     }
 
     /*
      * Velocity - Rotations Per Second (RPS)
      */
     public double getVelFXRPS() {
-        if (encFX != null) {
-            return encFX.getVelRPS();
+        if (mEncFX != null) {
+            return mEncFX.getVelRPS();
         }
         return 0.0;
     }
 
     public double getVelRPS() {
-        if (encoder != null) {
-            return encoder.getVelocityRPS();
+        if (mEncoder != null) {
+            return mEncoder.getVelocityRPS();
         }
         return 0.0;
     }
@@ -604,15 +620,15 @@ public abstract class TransmissionBase extends TObj {
      * Velocity - Mechanism Output Units
      */
     public double getVelFX() {
-        if (encFX != null) {
-            return gearRatio.rotorToOutput(encFX.getVelRPS());
+        if (mEncFX != null) {
+            return mGearRatio.rotorToOutput(mEncFX.getVelRPS());
         }
         return 0.0;
     }
 
     public double getVel() {
-        if (encoder != null) {
-            return encoder.getVelocity();
+        if (mEncoder != null) {
+            return mEncoder.getVelocity();
         }
         return 0.0;
     }
@@ -623,16 +639,16 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public boolean getRevLimit() {
-        if (revLimit != null) {
-            return revLimit.getTriggered();
+        if (mRevLimit != null) {
+            return mRevLimit.getTriggered();
         }
 
         return false;
     }
 
     public boolean getFwdLimit() {
-        if (fwdLimit != null) {
-            return fwdLimit.getTriggered();
+        if (mFwdLimit != null) {
+            return mFwdLimit.getTriggered();
         }
 
         return false;
@@ -648,14 +664,14 @@ public abstract class TransmissionBase extends TObj {
      * {@link Shifter} interface for other mechanisms.
      */
     public void setShifter(final Shifter argShifter) {
-        shifter = argShifter;
+        mShifter = argShifter;
     }
 
     /** Set a shifter with per-gear sensor ratios. */
     public void setShifter(
             final Shifter argShifter, final double argSensorRatio1, final double argSensorRatio2) {
-        sensorRatioGear1 = argSensorRatio1;
-        sensorRatioGear2 = argSensorRatio2;
+        mSensorRatioGear1 = argSensorRatio1;
+        mSensorRatioGear2 = argSensorRatio2;
 
         setShifter(argShifter);
     }
@@ -680,8 +696,8 @@ public abstract class TransmissionBase extends TObj {
             final double argSensorRatio1,
             final int chGear2,
             final double argSensorRatio2) {
-        sensorRatioGear1 = argSensorRatio1;
-        sensorRatioGear2 = argSensorRatio2;
+        mSensorRatioGear1 = argSensorRatio1;
+        mSensorRatioGear2 = argSensorRatio2;
 
         addShifter(pneumaticHubCanId, chGear1, chGear2);
     }
@@ -693,21 +709,21 @@ public abstract class TransmissionBase extends TObj {
         if (argShiftTo == ShifterState.GEAR_NONE) {
             DriverStation.reportWarning(
                     getName() + ": shift(GEAR_NONE) ignored — not a valid shift target", false);
-            return shifterState;
+            return mShifterState;
         }
 
         /*
          * - Actuate shifter mechanism
          * - Update gear state
          */
-        if (shifterState != argShiftTo) {
-            if (shifter != null) {
-                shifter.actuate(argShiftTo);
+        if (mShifterState != argShiftTo) {
+            if (mShifter != null) {
+                mShifter.actuate(argShiftTo);
             }
-            shifterState = argShiftTo;
+            mShifterState = argShiftTo;
         }
 
-        return shifterState;
+        return mShifterState;
     }
 
     /*
@@ -718,35 +734,35 @@ public abstract class TransmissionBase extends TObj {
 
     /* PID Values */
     public void setPSlot(final int argSlot, final double argSetPSlot0) {
-        leader.setPSlot(argSlot, argSetPSlot0);
+        mLeader.setPSlot(argSlot, argSetPSlot0);
     }
 
     public double getPSlot(final int argSlot) {
-        return leader.getPSlot(argSlot);
+        return mLeader.getPSlot(argSlot);
     }
 
     public void setISlot(final int argSlot, final double argSetISlot0) {
-        leader.setISlot(argSlot, argSetISlot0);
+        mLeader.setISlot(argSlot, argSetISlot0);
     }
 
     public double getISlot(final int argSlot) {
-        return leader.getISlot(argSlot);
+        return mLeader.getISlot(argSlot);
     }
 
     public void setDSlot(final int argSlot, final double argSetDSlot0) {
-        leader.setDSlot(argSlot, argSetDSlot0);
+        mLeader.setDSlot(argSlot, argSetDSlot0);
     }
 
     public double getDSlot(final int argSlot) {
-        return leader.getDSlot(argSlot);
+        return mLeader.getDSlot(argSlot);
     }
 
     public double getVSlot(final int argSlot) {
-        return leader.getVSlot(argSlot);
+        return mLeader.getVSlot(argSlot);
     }
 
     public double getSSlot(final int argSlot) {
-        return leader.getSSlot(argSlot);
+        return mLeader.getSSlot(argSlot);
     }
 
     public void setPIDFSlot(
@@ -756,7 +772,7 @@ public abstract class TransmissionBase extends TObj {
             final double argD,
             final double argV,
             final double argS) {
-        leader.setPIDFSlot(argSlot, argP, argI, argD, argV, argS);
+        mLeader.setPIDFSlot(argSlot, argP, argI, argD, argV, argS);
     }
 
     /* Controller Values */
@@ -767,17 +783,17 @@ public abstract class TransmissionBase extends TObj {
     }
 
     public double getCLError() {
-        if (leader == null) {
+        if (mLeader == null) {
             return 0;
         }
-        if (encCANCoder != null) {
-            return leader.getCLError()
-                    * gearRatio.getSensorRelToMechanism()
-                    * gearRatio.getMechanismToUnits();
-        } else if (encFX != null) {
-            return leader.getCLError()
-                    * gearRatio.getRotorToMechanism()
-                    * gearRatio.getMechanismToUnits();
+        if (mEncCANCoder != null) {
+            return mLeader.getCLError()
+                    * mGearRatio.getSensorRelToMechanism()
+                    * mGearRatio.getMechanismToUnits();
+        } else if (mEncFX != null) {
+            return mLeader.getCLError()
+                    * mGearRatio.getRotorToMechanism()
+                    * mGearRatio.getMechanismToUnits();
         }
         return 0;
     }
@@ -792,7 +808,7 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void stop() {
-        allControllers.forEach(t -> t.stop());
+        mAllControllers.forEach(controller -> controller.stop());
     }
 
     /*
@@ -800,12 +816,12 @@ public abstract class TransmissionBase extends TObj {
      */
     /* Duty Cycle */
     public double getOutputDuty() {
-        return leader.getOutputDuty();
+        return mLeader.getOutputDuty();
     }
 
     public void setOutputDuty(final double argOutDuty) {
-        if (leader != null) {
-            leader.setOutputDuty(argOutDuty);
+        if (mLeader != null) {
+            mLeader.setOutputDuty(argOutDuty);
         }
     }
 
@@ -813,20 +829,20 @@ public abstract class TransmissionBase extends TObj {
     public double getOutputVoltage() {
         double tmpVoltage = 0.0;
 
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpVoltage += tmpMotor.getOutputVoltage();
         }
 
-        if (!allControllers.isEmpty()) {
-            tmpVoltage = tmpVoltage / allControllers.size();
+        if (!mAllControllers.isEmpty()) {
+            tmpVoltage = tmpVoltage / mAllControllers.size();
         }
 
         return tmpVoltage;
     }
 
     public void setOutputVoltage(final double argOutputVolts) {
-        if (leader != null) {
-            leader.setOutputVoltage(argOutputVolts);
+        if (mLeader != null) {
+            mLeader.setOutputVoltage(argOutputVolts);
         }
     }
 
@@ -839,15 +855,15 @@ public abstract class TransmissionBase extends TObj {
      * Closed Loop (CL)
      */
     public double getCLOutput() {
-        return leader.getCLOutput();
+        return mLeader.getCLOutput();
     }
 
     public void setOutputPosition(final double argPositionRot, final double argFFVolt) {
-        leader.setOutputPosition(argPositionRot, argFFVolt);
+        mLeader.setOutputPosition(argPositionRot, argFFVolt);
     }
 
     public void setOutputVelocity(final double argRPS, final double argFFVolt) {
-        leader.setOutputVelocity(argRPS, argFFVolt);
+        mLeader.setOutputVelocity(argRPS, argFFVolt);
     }
 
     /*
@@ -856,7 +872,7 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void robotPeriodicBefore(final double argTimestamp) {
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.robotPeriodicBefore(argTimestamp);
         }
     }
@@ -871,64 +887,64 @@ public abstract class TransmissionBase extends TObj {
      *
      */
     public void setSimVelRotations(final double argVelRotations) {
-        if (encCANCoder != null) {
-            encCANCoder.setSimVelRotations(argVelRotations);
+        if (mEncCANCoder != null) {
+            mEncCANCoder.setSimVelRotations(argVelRotations);
         }
 
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.setSimVelRotations(argVelRotations);
         }
     }
 
     public void setSimPosRotations(final double argPositionRotations) {
-        if (encCANCoder != null) {
-            encCANCoder.setSimPosRotations(argPositionRotations);
+        if (mEncCANCoder != null) {
+            mEncCANCoder.setSimPosRotations(argPositionRotations);
         }
 
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.setSimPosRotations(argPositionRotations);
         }
     }
 
     public void simulationInit(final double argTimestamp) {
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.simulationInit(argTimestamp);
         }
 
-        if (encFX != null) {
-            encFX.simulationInit(argTimestamp);
+        if (mEncFX != null) {
+            mEncFX.simulationInit(argTimestamp);
         }
-        if (encCANCoder != null) {
-            encCANCoder.simulationInit(argTimestamp);
-        }
-
-        if (revLimit != null) {
-            revLimit.simulationInit(argTimestamp);
+        if (mEncCANCoder != null) {
+            mEncCANCoder.simulationInit(argTimestamp);
         }
 
-        if (fwdLimit != null) {
-            fwdLimit.simulationInit(argTimestamp);
+        if (mRevLimit != null) {
+            mRevLimit.simulationInit(argTimestamp);
+        }
+
+        if (mFwdLimit != null) {
+            mFwdLimit.simulationInit(argTimestamp);
         }
     }
 
     public void simulationPeriodic(final double argTimestamp) {
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.simulationPeriodic(argTimestamp);
         }
 
-        if (encFX != null) {
-            encFX.simulationPeriodic(argTimestamp);
+        if (mEncFX != null) {
+            mEncFX.simulationPeriodic(argTimestamp);
         }
-        if (encCANCoder != null) {
-            encCANCoder.simulationPeriodic(argTimestamp);
-        }
-
-        if (revLimit != null) {
-            revLimit.simulationPeriodic(argTimestamp);
+        if (mEncCANCoder != null) {
+            mEncCANCoder.simulationPeriodic(argTimestamp);
         }
 
-        if (fwdLimit != null) {
-            fwdLimit.simulationPeriodic(argTimestamp);
+        if (mRevLimit != null) {
+            mRevLimit.simulationPeriodic(argTimestamp);
+        }
+
+        if (mFwdLimit != null) {
+            mFwdLimit.simulationPeriodic(argTimestamp);
         }
     }
 
@@ -939,49 +955,49 @@ public abstract class TransmissionBase extends TObj {
      */
     @Override
     public void outputTelemetry() {
-        for (SmartMotorController tmpMotor : allControllers) {
+        for (ControllerSmart tmpMotor : mAllControllers) {
             tmpMotor.outputTelemetry();
         }
 
-        if (encFX != null) {
-            encFX.outputTelemetry();
+        if (mEncFX != null) {
+            mEncFX.outputTelemetry();
         }
-        if (encCANCoder != null) {
-            encCANCoder.outputTelemetry();
-        }
-
-        if (pid != null) {
-            pid.outputTelemetry();
+        if (mEncCANCoder != null) {
+            mEncCANCoder.outputTelemetry();
         }
 
-        isBrakeMode.publish(getNeutralMode() == NeutralState.BRAKE);
-
-        outputDuty.publish(getOutputDuty());
-        outputVolt.publish(getOutputVoltage());
-        outputCL.publish(getCLOutput());
-
-        isGearOne.publish(shifterState == ShifterState.GEAR_1);
-
-        if (revLimit != null) {
-            revLimit.outputTelemetry();
+        if (mPid != null) {
+            mPid.outputTelemetry();
         }
 
-        if (fwdLimit != null) {
-            fwdLimit.outputTelemetry();
+        ntIsBrakeMode.publish(getNeutralMode() == NeutralState.BRAKE);
+
+        ntOutputDuty.publish(getOutputDuty());
+        ntOutputVolt.publish(getOutputVoltage());
+        ntOutputCL.publish(getCLOutput());
+
+        ntIsGearOne.publish(mShifterState == ShifterState.GEAR_1);
+
+        if (mRevLimit != null) {
+            mRevLimit.outputTelemetry();
         }
 
-        tSetpoint.publish(getSetpoint());
+        if (mFwdLimit != null) {
+            mFwdLimit.outputTelemetry();
+        }
 
-        tError.publish(getCLError());
-        tTol.publish(getTolerance());
+        ntSetpoint.publish(getSetpoint());
 
-        tMechPosFX.publish(getPosFX());
-        tMechPosEnc.publish(getPos());
+        ntError.publish(getCLError());
+        ntTol.publish(getTolerance());
 
-        tMechVelFX.publish(getVelFX());
-        tMechVelEnc.publish(getVel());
+        ntMechPosFX.publish(getPosFX());
+        ntMechPosEnc.publish(getPos());
 
-        ntRotorToMechanism.publish(gearRatio.getRotorToMechanism());
-        ntSensorRelToMechanism.publish(gearRatio.getSensorRelToMechanism());
+        ntMechVelFX.publish(getVelFX());
+        ntMechVelEnc.publish(getVel());
+
+        ntRotorToMechanism.publish(mGearRatio.getRotorToMechanism());
+        ntSensorRelToMechanism.publish(mGearRatio.getSensorRelToMechanism());
     }
 }

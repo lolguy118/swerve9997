@@ -34,7 +34,9 @@ public abstract class Subsystem extends TObj {
     protected SensorMode mode = SensorMode.SENSORED_AUTO;
     protected boolean isZeroed = false;
 
-    final NTEntry ntMode = new NTEntry(table, "Mode", "SENSORED_AUTO");
+    // Key is "SensorMode" (not "Mode") — "Mode" would collide with subsystem-specific control-mode
+    // keys published at "<Subsystem>/Mode" via Logger.recordOutput (e.g. Launcher, Index).
+    final NTEntry ntMode = new NTEntry(table, "SensorMode", "SENSORED_AUTO");
     final NTEntry ntIsZeroed = new NTEntry(table, "IsZeroed", isZeroed);
 
     /*

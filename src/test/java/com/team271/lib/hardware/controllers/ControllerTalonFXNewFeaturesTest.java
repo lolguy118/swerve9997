@@ -203,8 +203,8 @@ class ControllerTalonFXNewFeaturesTest {
     /* --- Interface Compliance --- */
 
     @Test
-    void controllerTalonFX_implementsSmartMotorController() {
-        assertTrue(controller instanceof SmartMotorController);
-        assertTrue(controller instanceof MotorController);
+    void controllerTalonFX_extendsControllerSmart() {
+        assertTrue(controller instanceof ControllerSmart);
+        assertTrue(controller instanceof ControllerBase);
     }
 }

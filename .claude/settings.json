@@ -1,13 +1,64 @@
 {
   "permissions": {
     "allow": [
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(gh *)",
+      "Bash(cmake --build*)",
+      "Bash(cppcheck*)",
+      "Bash(markdownlint-cli2*)",
+      "Bash(gersemi*)",
+      "Bash(cpplint*)",
+      "Bash(yamllint*)",
+      "Bash(doxygen*)",
       "WebFetch(domain:docs.advantagekit.org)",
       "WebSearch",
       "mcp__plugin_context7_context7__query-docs",
       "mcp__plugin_context7_context7__resolve-library-id",
       "Bash(./gradlew compileJava)",
+      "Bash(./gradlew compileJava -q)",
       "Bash(./gradlew compileTestJava)",
       "Bash(./gradlew spotlessApply compileTestJava)"
+    ],
+    "deny": [
+      "Bash(rm -rf*)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/lint-markdown.sh",
+            "description": "markdownlint on MD files"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-doc-tunables.sh",
+            "description": "flag numeric tunables in design docs"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-deleted-class-refs.sh",
+            "description": "flag references to deleted classes in docs"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-design-drift.sh",
+            "description": "nudge doc updates when behavior-defining code changes"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-java-compiles.sh",
+            "description": "compileJava after Java edit"
+          }
+        ]
+      }
     ]
   }
 }

@@ -8,6 +8,21 @@
 > This document describes the framework; robot docs describe how a specific
 > robot uses it.
 
+## Contents at a Glance
+
+- [How Library and Robot Docs Coexist](#how-library-and-robot-docs-coexist)
+- [Layered Architecture](#layered-architecture)
+- [Package Map](#package-map)
+- [Passthrough Principle](#passthrough-principle)
+- [TObj — Base Class and Lifecycle Interface](#tobj--base-class-and-lifecycle-interface)
+- [Subsystem Base Class](#subsystem-base-class)
+- [SubsystemManager — Lifecycle Orchestrator](#subsystemmanager--lifecycle-orchestrator)
+- [CTREManager — Centralized CAN Refresh](#ctremanager--centralized-can-refresh)
+- [State Machine Pattern](#state-machine-pattern)
+- [Tuning Infrastructure](#tuning-infrastructure)
+- [Simulation Architecture](#simulation-architecture)
+- [Key Design Decisions](#key-design-decisions)
+
 ---
 
 ## How Library and Robot Docs Coexist
@@ -37,6 +52,33 @@ values specific to that robot.
 
 ---
 
+## Layered Architecture
+
+The library is organized into six layers, bottom to top. Each layer depends
+only on layers below it. Vendor-neutral interfaces at Layer 0 define what
+hardware CAN do; vendor implementations at Layer 1 deliver the actual control.
+
+```text
+Layer 5: Coordination     — AutoMode, SubsystemManager, PathPlanner bridge
+Layer 4: Subsystem        — TObj, Lifecycle, Subsystem, StateMachine, telemetry
+Layer 3: Control          — PID strategies, feedforward, motion profiles
+Layer 2: Mechanism        — Transmission (gear ratios, encoders, multi-motor)
+Layer 1: Vendor Impl      — CTREMotor, CTREGyro, CTREEncoder, etc.
+Layer 0: Core Contracts   — Motor, ClosedLoopMotor, Encoder, Gyro, LimitSwitch
+```
+
+- **Layer 0** (`api/`) — vendor-neutral interfaces with zero vendor imports
+- **Layer 1** (`vendor/ctre/`) — CTRE implementations wrapping existing controller classes
+- **Layer 2** (`hardware/transmissions/`) — TransmissionFX delegates through CTREMotor
+- **Layer 3** (`control/`) — PIDController, HardwarePIDController, feedforward
+- **Layer 4** (`subsystem/`, root classes) — lifecycle, telemetry, state machines
+- **Layer 5** (`auto/`, `bridge/`) — autonomous composition, WPILib command bridge
+
+See [Vendor Abstraction Guide](vendor-abstraction-guide.md) for how to use the
+vendor-neutral interfaces and the passthrough pattern together.
+
+---
+
 ## Package Map
 
 ```text
@@ -46,6 +88,18 @@ com.team271.lib
 ├── TObj.java                  Abstract base — implements Lifecycle + Named
 ├── TRobot.java                Robot singleton
 ├── ConstantsLib.java          Library-wide constants
+│
+├── api/                       Layer 0 — vendor-neutral contracts
+│   ├── DeviceID.java          Vendor-neutral device identity
+│   ├── SignalRefreshable.java Interface for per-cycle hardware refresh
+│   ├── motor/                 Motor interfaces (Motor, ClosedLoopMotor, MotorCapabilities)
+│   └── sensor/                Sensor interfaces (Encoder, AbsoluteEncoder, Gyro, etc.)
+│
+├── vendor/                    Layer 1 — vendor implementations
+│   └── ctre/                  CTRE wrappers (CTREMotor, CTREEncoder, CTREGyro, etc.)
+│
+├── bridge/                    WPILib command framework bridge
+│   └── CommandBridge.java     Lifecycle↔Command adapters
 │
 ├── subsystem/
 │   ├── Subsystem.java         Subsystem base — SensorMode, homing
@@ -58,14 +112,17 @@ com.team271.lib
 │   ├── CANBus.java            CAN bus wrapper
 │   ├── CANDeviceID.java       Device ID (bus + number)
 │   ├── CTREManager.java       Centralized signal refresh
-│   ├── controllers/           Motor controller hierarchy
+│   ├── HardwareManager.java   Mixed-vendor refresh orchestrator
+│   ├── controllers/           Motor controller hierarchy (ControllerBase → ControllerSmart → ControllerTalonFX)
 │   ├── motors/                Motor type definitions
 │   ├── transmissions/         Multi-motor aggregation + shifters
 │   ├── sensors/               Encoders, IMUs, range, switches
 │   └── Input/                 Gamepad/joystick abstraction
 │
 ├── control/                   Control algorithms (see control-system.md)
-│   ├── pid/                   PID variants (5 types)
+│   ├── PIDController.java     Software PID interface
+│   ├── HardwarePIDController.java  Hardware PID interface (extends PIDController)
+│   ├── pid/                   PID variants (5 types, PIDFX implements HardwarePIDController)
 │   └── Balance.java           Charge station balancing
 │
 ├── nt/                        NetworkTables integration
@@ -74,11 +131,16 @@ com.team271.lib
 │   └── LoggedNTInput.java     Dashboard-tunable values (input with change detection)
 │
 ├── sysid/                     System identification logging
-├── geometry/                  2D pose and transformation utilities
 ├── util/                      Utilities (math, alerts, signals, Elastic notifications)
 │
 └── wpilib/                    WPILib framework extensions
 ```
+
+> The three-layer vendor stack (`api/` → `vendor/` → `bridge/`) is
+> covered in detail in the
+> [Vendor Abstraction Guide](vendor-abstraction-guide.md). This
+> document does not repeat that content — when adding or modifying
+> vendor-neutral interfaces, read that guide first.
 
 ---
 
@@ -203,7 +265,7 @@ Robot.robotPeriodic()
   → SubsystemManager.outputTelemetry()     — publish to NT + check tunables
 ```
 
-See [coding standard Appendix D](team271-java-coding-standard.md) for
+See [coding standard Appendix D](../quality/team271-java-coding-standard.md) for
 the full lifecycle reference.
 
 ### Exception Isolation
@@ -394,12 +456,12 @@ public class ExampleArm extends Subsystem {
         // 1. Create transmission (motor + gear ratio)
         transmission = new TransmissionFX(this, "Arm",
             new MotorBase(MotorType.KRAKENX60),
-            new CANDeviceID(10, "canivore"));
-        transmission.setRotorToMechanism(1.0 / 50.0);  // 50:1 reduction
-        transmission.setMechanismToUnits(360.0);        // output in degrees
+            new CANDeviceID(Constants.kArmCAN, Constants.kCanivoreBus));
+        transmission.setRotorToMechanism(1.0 / Constants.kArmGearRatio);
+        transmission.setMechanismToUnits(Constants.kDegreesPerRotation);
 
         // 2. Configure via library convenience API
-        transmission.configCurrentLimitStator(true, 40);
+        transmission.configCurrentLimitStator(true, Constants.kArmStatorLimit);
         transmission.configDirection(MotorDirection.CCW);
         transmission.setNeutralMode(NeutralState.BRAKE);
 
@@ -532,7 +594,7 @@ which is called by `SubsystemManager.outputTelemetry()`.
 | Balance | Speeds, tilt thresholds, debounce time | `/Balance/Tune Speed Slow` |
 
 See [Hardware Abstraction](hardware-abstraction.md) and
-[Control System](control-system.md) for complete tunable inventories.
+[Control System](../control/control-system.md) for complete tunable inventories.
 
 ### Tuning Workflow
 

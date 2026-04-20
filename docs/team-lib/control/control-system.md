@@ -80,7 +80,7 @@ wrap point instead of going the long way around.
 ### Live Tuning
 
 PIDBase follows the standard `checkTuning()` pattern documented in
-[Library Architecture — Tuning Infrastructure](library-architecture.md#tuning-infrastructure).
+[Library Architecture — Tuning Infrastructure](../architecture/library-architecture.md#tuning-infrastructure).
 
 **PIDBase tunable inventory:**
 
@@ -135,7 +135,7 @@ pidwpi.getController().setIZone(5.0);
 pidwpiTrap.getController().setTolerance(0.1, 0.5);
 ```
 
-See [Passthrough Design](passthrough-design.md) for the full reference.
+See [Passthrough Design](../architecture/passthrough-design.md) for the full reference.
 
 ---
 
@@ -198,7 +198,7 @@ configuration methods accept raw rotor values because they configure
 the TalonFX hardware directly.
 
 See the gear ratio conversion chain in
-[Hardware Abstraction — Gear Ratio Conversion](hardware-abstraction.md#gear-ratio-conversion-chain).
+[Hardware Abstraction — Gear Ratio Conversion](../architecture/hardware-abstraction.md#gear-ratio-conversion-chain).
 
 ---
 
@@ -260,6 +260,23 @@ double output = pid.calc(measurement, setpoint, timestamp);
 `setP()`, `setI()`, `setD()` sync gains to the TalonFX hardware
 via `ControllerTalonFX.setPSlot()`.
 
+### HardwarePIDController Interface
+
+`HardwarePIDController` (in `control/`) is the vendor-neutral
+interface that all hardware-backed PID implementations satisfy. It
+extends `PIDController` with explicit goal-sending semantics:
+`setGoalPosition(pos, ff)` and `setGoalVelocity(rps, ff)` make clear
+that the output is a goal *sent to hardware*, not a software-computed
+voltage. `getMotor()` returns the `api/motor/ClosedLoopMotor` the
+controller delegates to.
+
+`PIDFX` is currently the only implementation. Consumers that want to
+write portable control code (e.g., code that should work against a
+future REV implementation) should depend on `HardwarePIDController`
+rather than `PIDFX` directly. See
+[Vendor Abstraction Guide](../architecture/vendor-abstraction-guide.md) for how this
+fits into the api/vendor/hardware layering.
+
 ---
 
 ## PIDSlot Configuration
@@ -294,7 +311,7 @@ kP/kI/kD.
 > The following Phoenix 6 v26 PID features are available in the CTRE
 > API but not yet exposed through the library's controller or
 > transmission layers. See the
-> [CTRE Feature Coverage](hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
+> [CTRE Feature Coverage](../architecture/hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
 > matrix for the full list.
 
 ### kG Gravity Feedforward

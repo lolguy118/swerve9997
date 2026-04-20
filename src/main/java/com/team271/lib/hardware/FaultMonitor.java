@@ -26,6 +26,9 @@ public class FaultMonitor {
         this.deviceName = deviceName;
         this.faultTable = parent.getTable();
         this.ntHasAnyFault = new NTEntry(faultTable, "Has Fault", false);
+        // Each instance gets a unique phase offset so fault checks are spread across cycles
+        this.phaseOffset = nextPhaseOffset++ % REFRESH_INTERVAL;
+        this.refreshCounter = phaseOffset;
     }
 
     /**
@@ -46,8 +49,20 @@ public class FaultMonitor {
         }
     }
 
+    // Rate-limit fault checks — faults don't change rapidly, no need to check every cycle.
+    // Each FaultMonitor instance gets a unique phase offset so checks are spread evenly
+    // across cycles. With 15 motors and interval 10, at most 2 monitors fire per cycle.
+    private static final int REFRESH_INTERVAL = 10;
+    private static int nextPhaseOffset = 0;
+    private final int phaseOffset;
+    private int refreshCounter;
+
     /** Check all fault signals and update alerts. Call in robotPeriodicBefore(). */
     public void refresh() {
+        if (++refreshCounter < REFRESH_INTERVAL) {
+            return;
+        }
+        refreshCounter = 0;
         for (FaultEntry f : faults) {
             if (f.signal != null && f.signal.getStatus().isOK()) {
                 boolean faulted = f.signal.getValue();

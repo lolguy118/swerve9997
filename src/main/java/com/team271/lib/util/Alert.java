@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import org.littletonrobotics.junction.Logger;
 
 /* Class for managing persistent alerts to be sent over NetworkTables. */
@@ -79,7 +78,19 @@ public class Alert {
                     break;
             }
         }
-        this.active = active;
+        if (this.active != active) {
+            this.active = active;
+            markDirty();
+        }
+    }
+
+    /** Marks all groups containing this alert as dirty so cached strings are rebuilt. */
+    private void markDirty() {
+        for (SendableAlerts group : groups.values()) {
+            if (group.alerts.contains(this)) {
+                group.dirty = true;
+            }
+        }
     }
 
     /* Updates current alert text. Resets activation time if the alert is currently active. */
@@ -122,15 +133,51 @@ public class Alert {
     private static class SendableAlerts implements Sendable {
         public final List<Alert> alerts = new ArrayList<>();
 
+        // Dirty flag + cached arrays — avoids stream/sort/toArray allocation every telemetry cycle.
+        // Only recomputed when an alert's active state changes.
+        boolean dirty = true;
+        private String[] cachedErrors = new String[0];
+        private String[] cachedWarnings = new String[0];
+        private String[] cachedInfos = new String[0];
+
         public String[] getStrings(AlertType type) {
-            Predicate<Alert> activeFilter = (Alert x) -> x.type == type && x.active;
+            if (dirty) {
+                rebuildCache();
+            }
+            switch (type) {
+                case ERROR:
+                    return cachedErrors;
+                case WARNING:
+                    return cachedWarnings;
+                case INFO:
+                    return cachedInfos;
+                default:
+                    return new String[0];
+            }
+        }
+
+        private void rebuildCache() {
             Comparator<Alert> timeSorter =
                     (Alert a1, Alert a2) -> Double.compare(a2.activeStartTime, a1.activeStartTime);
-            return alerts.stream()
-                    .filter(activeFilter)
-                    .sorted(timeSorter)
-                    .map((Alert a) -> a.text)
-                    .toArray(String[]::new);
+            cachedErrors = buildArray(AlertType.ERROR, timeSorter);
+            cachedWarnings = buildArray(AlertType.WARNING, timeSorter);
+            cachedInfos = buildArray(AlertType.INFO, timeSorter);
+            dirty = false;
+        }
+
+        private String[] buildArray(AlertType type, Comparator<Alert> sorter) {
+            List<Alert> filtered = new ArrayList<>();
+            for (Alert a : alerts) {
+                if (a.type == type && a.active) {
+                    filtered.add(a);
+                }
+            }
+            filtered.sort(sorter);
+            String[] result = new String[filtered.size()];
+            for (int i = 0; i < filtered.size(); i++) {
+                result[i] = filtered.get(i).text;
+            }
+            return result;
         }
 
         @Override

@@ -14,7 +14,7 @@ Team271-Lib is a reusable FRC robot framework built on WPILib, CTRE Phoenix 6, a
 
 The library uses a **state-machine approach** instead of WPILib's command-based framework. This gives finer-grained lifecycle control: explicit before/after hooks, deterministic execution ordering within each cycle, and per-subsystem exception isolation. If one subsystem crashes, the rest keep running.
 
-See [Library Architecture](library-architecture.md) for the full rationale and design decisions.
+See [Library Architecture](../architecture/library-architecture.md) for the full rationale and design decisions.
 
 ---
 
@@ -46,7 +46,7 @@ Every piece of code in this library lives in one of five layers. Higher layers d
 - **Subsystem** — `Subsystem` extends `TObj` and adds sensor modes, homing, and exception isolation. `SubsystemManager` orchestrates all subsystem lifecycle calls in a fixed order.
 - **Auto** — Autonomous routines are composed from `AutoMove` building blocks using sequence, parallel, timed, and conditional containers. No timing constants — timing emerges from composition.
 
-See [Library Architecture](library-architecture.md), [Hardware Abstraction](hardware-abstraction.md), [Control System](control-system.md), [Auto Design](auto-design.md).
+See [Library Architecture](../architecture/library-architecture.md), [Hardware Abstraction](../architecture/hardware-abstraction.md), [Control System](../control/control-system.md), [Auto Design](../control/auto-design.md).
 
 ---
 
@@ -75,7 +75,7 @@ This **read → decide → act → report** ordering guarantees:
 - All decisions complete before any hardware commands fire (no cross-subsystem race conditions).
 - If a subsystem throws an exception, `SubsystemManager` catches it and continues with the next subsystem — the robot keeps running.
 
-See [Library Architecture — SubsystemManager](library-architecture.md#subsystemmanager--lifecycle-orchestrator), [Fault Tolerance](fault-tolerance.md).
+See [Library Architecture — SubsystemManager](../architecture/library-architecture.md#subsystemmanager--lifecycle-orchestrator), [Fault Tolerance](../quality/fault-tolerance.md).
 
 ---
 
@@ -85,15 +85,15 @@ These rules exist because robots run in 20 ms real-time loops at competition. Vi
 
 | # | Rule | Why | Reference |
 |---|------|-----|-----------|
-| 1 | All waiting operations must have timeouts | A missing timeout locks the robot if the expected condition never arrives (motor stall, sensor failure, unreachable waypoint) | [CODE-SAF-008](team271-java-coding-standard.md), [Fault Tolerance](fault-tolerance.md) |
-| 2 | Set desired state in `<mode>Periodic()`, apply outputs in `robotPeriodicAfter()` | Mixing decision and actuation in the same phase causes cross-subsystem race conditions | [State Machine Pattern](library-architecture.md#state-machine-pattern) |
-| 3 | Every `switch` on an enum must handle all cases including `default` | An unhandled state silently does nothing — dangerous on a 150 lb robot | [CODE-SAF-003](team271-java-coding-standard.md) |
-| 4 | Register all CTRE signals before `CTREManager.init()` | Signals added after init are never included in the bulk refresh | [CTREManager](library-architecture.md#ctremanager--centralized-can-refresh) |
+| 1 | All waiting operations must have timeouts | A missing timeout locks the robot if the expected condition never arrives (motor stall, sensor failure, unreachable waypoint) | [CODE-SAF-008](../quality/team271-java-coding-standard.md), [Fault Tolerance](../quality/fault-tolerance.md) |
+| 2 | Set desired state in `<mode>Periodic()`, apply outputs in `robotPeriodicAfter()` | Mixing decision and actuation in the same phase causes cross-subsystem race conditions | [State Machine Pattern](../architecture/library-architecture.md#state-machine-pattern) |
+| 3 | Every `switch` on an enum must handle all cases including `default` | An unhandled state silently does nothing — dangerous on a 150 lb robot | [CODE-SAF-003](../quality/team271-java-coding-standard.md) |
+| 4 | Register all CTRE signals before `CTREManager.init()` | Signals added after init are never included in the bulk refresh | [CTREManager](../architecture/library-architecture.md#ctremanager--centralized-can-refresh) |
 | 5 | No tunable values in docs or CLAUDE.md | Constants in code are the single source of truth; docs reference constant names, not numbers | [Documentation Rules](../../CLAUDE.md) |
-| 6 | All configurable values must be dashboard-tunable via `LoggedNTInput` | Enables field-side tuning without redeploying code | [CODE-BUG-004](team271-java-coding-standard.md), [Tuning Infrastructure](library-architecture.md#tuning-infrastructure) |
-| 7 | Every hardware wrapper must expose its underlying vendor object via a getter | The library is additive — it wraps but never blocks access to CTRE/WPILib features | [Passthrough Design](passthrough-design.md) |
+| 6 | All configurable values must be dashboard-tunable via `LoggedNTInput` | Enables field-side tuning without redeploying code | [CODE-BUG-004](../quality/team271-java-coding-standard.md), [Tuning Infrastructure](../architecture/library-architecture.md#tuning-infrastructure) |
+| 7 | Every hardware wrapper must expose its underlying vendor object via a getter | The library is additive — it wraps but never blocks access to CTRE/WPILib features | [Passthrough Design](../architecture/passthrough-design.md) |
 
-See [Java Coding Standard — Section 4.9](team271-java-coding-standard.md) for the complete safety rules.
+See [Java Coding Standard — Section 4.9](../quality/team271-java-coding-standard.md) for the complete safety rules.
 
 ---
 
@@ -103,24 +103,24 @@ Read in this order. Each doc builds on the previous one.
 
 1. **You are here** — this guide gives you the mental model.
 2. **[Development Setup](development-setup.md)** — Get the code building before reading further. You will want to reference actual source files as you read the architecture docs.
-3. **[Library Architecture](library-architecture.md)** — The core document. Covers `TObj`, `SubsystemManager`, `CTREManager`, NetworkTables tuning, and simulation infrastructure. Read this end-to-end.
-4. **[Hardware Abstraction](hardware-abstraction.md)** — How motors, transmissions, encoders, IMUs, and gamepads are wrapped. Read this when you need to understand what a `TransmissionFX` or `ControllerTalonFX` does.
-5. **[Fault Tolerance](fault-tolerance.md)** — Exception isolation, CAN fault handling, timeout patterns. Short but critical — read before writing any subsystem code.
-6. **[Java Coding Standard](team271-java-coding-standard.md)** — At minimum, read Section 3 (naming), Section 4.9 (safety), and Section 5.4 (review checklist) before your first PR. The rest is reference.
+3. **[Library Architecture](../architecture/library-architecture.md)** — The core document. Covers `TObj`, `SubsystemManager`, `CTREManager`, NetworkTables tuning, and simulation infrastructure. Read this end-to-end.
+4. **[Hardware Abstraction](../architecture/hardware-abstraction.md)** — How motors, transmissions, encoders, IMUs, and gamepads are wrapped. Read this when you need to understand what a `TransmissionFX` or `ControllerTalonFX` does.
+5. **[Fault Tolerance](../quality/fault-tolerance.md)** — Exception isolation, CAN fault handling, timeout patterns. Short but critical — read before writing any subsystem code.
+6. **[Java Coding Standard](../quality/team271-java-coding-standard.md)** — At minimum, read Section 3 (naming), Section 4.9 (safety), and Section 5.4 (review checklist) before your first PR. The rest is reference.
 7. **Area-specific docs** — pick based on what you are working on:
 
 | Working on... | Read |
 |---------------|------|
-| Autonomous routines | [Auto Design](auto-design.md) |
-| PID tuning or control | [Control System](control-system.md) |
+| Autonomous routines | [Auto Design](../control/auto-design.md) |
+| PID tuning or control | [Control System](../control/control-system.md) |
 | Simulation | [Simulation Guide](simulation-guide.md) |
 | System identification | [SysID Workflow](sysid-workflow.md) |
 | Joystick curves | [Input Shaping Guide](input-shaping-guide.md) |
-| Vendordep upgrades | [Vendor Dependencies](vendor-dependencies.md) |
-| Geometry / math | [Geometry Package](geometry-package.md) |
-| Alerts / utilities | [Utility Package](utility-package.md) |
+| Vendordep upgrades | [Vendor Dependencies](../reference/vendor-dependencies.md) |
+| Geometry / math | [Geometry Package](../reference/geometry-package.md) |
+| Alerts / utilities | [Utility Package](../reference/utility-package.md) |
 
-8. **[Documentation Index](documentation-index.md)** — The master mapping from package to doc. Use as a lookup table when you encounter unfamiliar code.
+8. **[Documentation Index](../reference/documentation-index.md)** — The master mapping from package to doc. Use as a lookup table when you encounter unfamiliar code.
 
 ---
 
@@ -129,11 +129,11 @@ Read in this order. Each doc builds on the previous one.
 | Question | Answer |
 |----------|--------|
 | How do I build? | [Development Setup](development-setup.md) |
-| What is `TObj`? | [Library Architecture — TObj](library-architecture.md#tobj--base-class) |
-| How does the robot loop work? | [Library Architecture — SubsystemManager](library-architecture.md#subsystemmanager--lifecycle-orchestrator) |
-| How do I add a motor or sensor? | [Hardware Abstraction](hardware-abstraction.md) |
-| How do I make a value tunable? | [Library Architecture — Tuning Infrastructure](library-architecture.md#tuning-infrastructure) |
-| What are the safety rules? | [Coding Standard — Section 4.9](team271-java-coding-standard.md) |
-| How do I write an auto routine? | [Auto Design](auto-design.md) |
-| Which package does class X belong to? | [Documentation Index](documentation-index.md) |
-| How do I run tests? | [Testing Strategy](testing-strategy.md) |
+| What is `TObj`? | [Library Architecture — TObj](../architecture/library-architecture.md#tobj--base-class) |
+| How does the robot loop work? | [Library Architecture — SubsystemManager](../architecture/library-architecture.md#subsystemmanager--lifecycle-orchestrator) |
+| How do I add a motor or sensor? | [Hardware Abstraction](../architecture/hardware-abstraction.md) |
+| How do I make a value tunable? | [Library Architecture — Tuning Infrastructure](../architecture/library-architecture.md#tuning-infrastructure) |
+| What are the safety rules? | [Coding Standard — Section 4.9](../quality/team271-java-coding-standard.md) |
+| How do I write an auto routine? | [Auto Design](../control/auto-design.md) |
+| Which package does class X belong to? | [Documentation Index](../reference/documentation-index.md) |
+| How do I run tests? | [Testing Strategy](../quality/testing-strategy.md) |

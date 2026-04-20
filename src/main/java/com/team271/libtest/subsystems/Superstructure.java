@@ -2,9 +2,9 @@ package com.team271.libtest.subsystems;
 
 import com.team271.lib.TObj;
 import com.team271.lib.auto.AutoMode;
-import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.subsystem.Subsystem;
+import com.team271.lib.util.Elastic;
 import com.team271.libtest.auto.auto_modes.Auto0;
 
 /**
@@ -73,7 +73,7 @@ public class Superstructure extends Subsystem {
         if (desiredState != actualState) {
             Elastic.sendNotification(
                     new Elastic.Notification(
-                            Elastic.Notification.NotificationLevel.INFO,
+                            Elastic.NotificationLevel.INFO,
                             "State Transition",
                             actualState.name() + " -> " + desiredState.name()));
             actualState = desiredState;

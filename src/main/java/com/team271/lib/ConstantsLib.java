@@ -20,6 +20,23 @@ public final class ConstantsLib {
      */
     public static final double DELAY_THRESHOLD_SEC = 0.01;
 
+    /**
+     * Runtime-settable gate for verbose/chatty telemetry in lib classes (per-device current dumps,
+     * PID internals, raw input dumps, static counts). Robot project wires this from its {@code
+     * Constants.SubsystemFlags.DEBUG_TELEMETRY} flag in {@code robotInit()}.
+     *
+     * <p>Default {@code false} so lib code stays quiet when used outside the robot project.
+     */
+    private static boolean debugTelemetryEnabled = false;
+
+    public static void setDebugTelemetryEnabled(final boolean argEnabled) {
+        debugTelemetryEnabled = argEnabled;
+    }
+
+    public static boolean isDebugTelemetryEnabled() {
+        return debugTelemetryEnabled;
+    }
+
     /*
      * Enums
      */

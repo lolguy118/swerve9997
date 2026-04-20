@@ -36,7 +36,7 @@ The library uses the following Phoenix 6 v26-specific features:
 Phoenix 6 v26 features available but not yet used by the library
 (kG gravity feedforward, ContinuousWrap, software limit switches,
 expanded fault monitoring, CANdi, TalonFXS, etc.) are documented
-in the [CTRE Feature Coverage](hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
+in the [CTRE Feature Coverage](../architecture/hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
 matrix.
 
 ---

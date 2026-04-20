@@ -33,11 +33,32 @@ public class LoggedNTInput {
     private long lastLong = 0;
     private String lastStr = "";
 
+    // Change-detection: skip Logger.recordOutput when the value is unchanged since the last
+    // read. `firstLog` per type ensures the default / startup value is recorded once so replays
+    // have a concrete value from the start (not "unknown until the driver edits").
+    private boolean dblFirstLog = true;
+    private boolean boolFirstLog = true;
+    private boolean longFirstLog = true;
+    private boolean strFirstLog = true;
+
+    /**
+     * Build the AdvantageKit log key for this input. NTTable.getPath() returns "/<name>", but
+     * Logger.recordOutput prepends "RealOutputs/" — so a leading slash produces "RealOutputs//..."
+     * which appears under an empty-named folder in AdvantageScope. Strip the leading slash so
+     * LoggedNTInput entries land in the same RealOutputs namespace as direct recordOutput calls.
+     */
+    private static String akLogKey(final NTTable table, final String name) {
+        final String tablePath = table.getPath();
+        final String cleanTablePath =
+                tablePath.startsWith("/") ? tablePath.substring(1) : tablePath;
+        return cleanTablePath + "/" + name;
+    }
+
     /* Double */
     public LoggedNTInput(final NTTable table, final String name, final double defaultValue) {
         lastDbl = defaultValue;
         if (table != null) {
-            logPath = table.getPath() + "/" + name;
+            logPath = akLogKey(table, name);
             Topic topic = table.getTopic(name);
             sub =
                     topic.genericSubscribe(
@@ -57,7 +78,7 @@ public class LoggedNTInput {
     public LoggedNTInput(final NTTable table, final String name, final boolean defaultValue) {
         lastBool = defaultValue;
         if (table != null) {
-            logPath = table.getPath() + "/" + name;
+            logPath = akLogKey(table, name);
             Topic topic = table.getTopic(name);
             sub =
                     topic.genericSubscribe(
@@ -77,7 +98,7 @@ public class LoggedNTInput {
     public LoggedNTInput(final NTTable table, final String name, final long defaultValue) {
         lastLong = defaultValue;
         if (table != null) {
-            logPath = table.getPath() + "/" + name;
+            logPath = akLogKey(table, name);
             Topic topic = table.getTopic(name);
             sub =
                     topic.genericSubscribe(
@@ -97,7 +118,7 @@ public class LoggedNTInput {
     public LoggedNTInput(final NTTable table, final String name, final String defaultValue) {
         lastStr = defaultValue;
         if (table != null) {
-            logPath = table.getPath() + "/" + name;
+            logPath = akLogKey(table, name);
             Topic topic = table.getTopic(name);
             sub =
                     topic.genericSubscribe(
@@ -118,8 +139,9 @@ public class LoggedNTInput {
      */
     public double getDbl() {
         double val = (sub != null) ? sub.getDouble(lastDbl) : lastDbl;
-        if (logPath != null) {
+        if (logPath != null && (dblFirstLog || val != lastDbl)) {
             Logger.recordOutput(logPath, val);
+            dblFirstLog = false;
         }
         lastDbl = val;
         return val;
@@ -127,8 +149,9 @@ public class LoggedNTInput {
 
     public boolean getBool() {
         boolean val = (sub != null) ? sub.getBoolean(lastBool) : lastBool;
-        if (logPath != null) {
+        if (logPath != null && (boolFirstLog || val != lastBool)) {
             Logger.recordOutput(logPath, val);
+            boolFirstLog = false;
         }
         lastBool = val;
         return val;
@@ -136,8 +159,9 @@ public class LoggedNTInput {
 
     public long getLong() {
         long val = (sub != null) ? sub.getInteger(lastLong) : lastLong;
-        if (logPath != null) {
+        if (logPath != null && (longFirstLog || val != lastLong)) {
             Logger.recordOutput(logPath, val);
+            longFirstLog = false;
         }
         lastLong = val;
         return val;
@@ -145,11 +169,45 @@ public class LoggedNTInput {
 
     public String getString() {
         String val = (sub != null) ? sub.getString(lastStr) : lastStr;
-        if (logPath != null) {
+        if (logPath != null && (strFirstLog || !java.util.Objects.equals(val, lastStr))) {
             Logger.recordOutput(logPath, val);
+            strFirstLog = false;
         }
         lastStr = val;
         return val;
+    }
+
+    /*
+     * Setters — write back to NT publisher so dashboard stays in sync when code mutates the value
+     * (e.g. operator-controller gain bumps). Also updates the cached last* field so getX() returns
+     * the new value immediately without a round-trip through the subscriber.
+     */
+    public void setDbl(final double val) {
+        if (pub != null) {
+            pub.setDouble(val);
+        }
+        lastDbl = val;
+    }
+
+    public void setBool(final boolean val) {
+        if (pub != null) {
+            pub.setBoolean(val);
+        }
+        lastBool = val;
+    }
+
+    public void setLong(final long val) {
+        if (pub != null) {
+            pub.setInteger(val);
+        }
+        lastLong = val;
+    }
+
+    public void setString(final String val) {
+        if (pub != null) {
+            pub.setString(val);
+        }
+        lastStr = val;
     }
 
     /**

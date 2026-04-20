@@ -10,20 +10,30 @@
 
 ---
 
+## Contents at a Glance
+
+- [Controller Hierarchy](#controller-hierarchy)
+- [CTRE Phoenix 6 Feature Coverage](#ctre-phoenix-6-feature-coverage)
+- [Transmission Architecture](#transmission-architecture)
+- [Tuning Infrastructure](#tuning-infrastructure)
+- [Simulation Support](#simulation-support)
+- [Sensor Abstractions](#sensor-abstractions)
+- [Input System](#input-system)
+
+---
+
 ## Controller Hierarchy
 
 ```text
-Interfaces (vendor-neutral contracts):
-  MotorController                (identity, open-loop, neutral mode, direction, following, sim)
-  └── SmartMotorController       (current limits, voltage limits, ramping, PID slots,
-                                  gravity type, continuous wrap, software limits,
-                                  closed-loop position/velocity with slot selection)
-
-Implementation hierarchy:
+CTRE-facing wrapper hierarchy (used directly by TransmissionFX):
   TObj
-  └── ControllerBase             implements MotorController
-      └── ControllerSmart        implements SmartMotorController
-          ├── ControllerTalonFX   (Phoenix 6 TalonFX/Kraken: brushless, FOC, all control modes)
+  └── ControllerBase             (identity, open-loop, neutral mode, direction,
+      │                           following, sim)
+      └── ControllerSmart        (current + voltage limits, ramping, PID slots,
+          │                       gravity type, continuous wrap, software limits,
+          │                       closed-loop position/velocity with slot selection)
+          ├── ControllerTalonFX   (Phoenix 6 TalonFX/Kraken: brushless, FOC,
+          │                        all control modes)
           └── ControllerTalonFXS  (Phoenix 6 TalonFXS: brushed motors, non-FOC subset)
 
 Value objects:
@@ -31,6 +41,15 @@ Value objects:
   PIDGains                       (immutable kP/kI/kD/kV/kS/kG/kA, builder methods)
   GravityType                    (ARM_COSINE, ELEVATOR_STATIC)
 ```
+
+> **Vendor-neutral access:** The `api/motor/Motor` and
+> `api/motor/ClosedLoopMotor` interfaces are implemented by
+> `vendor/ctre/CTREMotor`, which wraps `ControllerTalonFX` internally.
+> Robot code should prefer the `CTREMotor` passthrough (or the
+> `ClosedLoopMotor` interface for portable code) over talking to
+> `ControllerSmart` directly. See
+> [Vendor Abstraction Guide](vendor-abstraction-guide.md) for the full
+> story on api/vendor/bridge layering.
 
 ### ControllerBase — Abstract Foundation
 

@@ -6,7 +6,7 @@ import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.NTEntry;
 
-public abstract class ControllerBase extends TObj implements MotorController {
+public abstract class ControllerBase extends TObj {
     public enum ControllerStatus {
         UNKNOWN,
         ERROR,

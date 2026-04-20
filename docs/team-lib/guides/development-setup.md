@@ -125,7 +125,7 @@ Team271-Lib/
 └── .editorconfig                      Editor formatting hints
 ```
 
-See [Library Architecture](library-architecture.md) for the full
+See [Library Architecture](../architecture/library-architecture.md) for the full
 package map and class hierarchy.
 
 ---
@@ -154,10 +154,10 @@ Ensure JAVA_HOME points to a JDK 17 installation, not a JRE.
 ### Vendor dependency errors
 
 Run `./gradlew build --refresh-dependencies` to re-download.
-See [Vendor Dependencies](vendor-dependencies.md) for upgrade
+See [Vendor Dependencies](../reference/vendor-dependencies.md) for upgrade
 instructions.
 
 ### Tests fail with native library errors
 
 Ensure `HAL.initialize(500, 0)` is called in `@BeforeAll`.
-See [Testing Strategy](testing-strategy.md).
+See [Testing Strategy](../quality/testing-strategy.md).

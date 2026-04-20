@@ -244,7 +244,7 @@ before proceeding:
 ```java
 new AutoMoveSequence(
     new SpinUpLauncherMove(),
-    new AutoMoveConditional("AtSpeed", Launcher::isReady, 2.0),
+    new AutoMoveConditional("AtSpeed", Launcher::isReady, Constants.kSpinupTimeout),
     new FeedAndShootMove()
 );
 ```
@@ -256,8 +256,8 @@ Use `AutoMoveTimed` for fixed-duration actions (intake, wait, coast):
 ```java
 new AutoMoveSequence(
     new IntakeMove(),
-    new AutoMoveTimed(0.5),  // brief pause
-    new ShootMove(0.0)
+    new AutoMoveTimed(Constants.kIntakePauseSec),
+    new ShootMove(Constants.kShootDelaySec)
 );
 ```
 

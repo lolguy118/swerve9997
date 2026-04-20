@@ -3,7 +3,7 @@
 
 > **Scope:** This guide explains when to use each input shaping mode.
 > For the Input class hierarchy and controller implementations, see
-> [Hardware Abstraction — Input System](hardware-abstraction.md#input-system).
+> [Hardware Abstraction — Input System](../architecture/hardware-abstraction.md#input-system).
 
 ---
 

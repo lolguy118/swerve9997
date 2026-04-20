@@ -2,9 +2,9 @@ package com.team271.libtest.subsystems;
 
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.sensors.imu.IMUPigeon2;
-import com.team271.lib.misc.Elastic;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.subsystem.Subsystem;
+import com.team271.lib.util.Elastic;
 import com.team271.libtest.Constants;
 import edu.wpi.first.wpilibj.RobotController;
 
@@ -69,9 +69,7 @@ public class Infrastructure extends Subsystem {
         robotMode = RobotMode.DISABLED;
         Elastic.sendNotification(
                 new Elastic.Notification(
-                        Elastic.Notification.NotificationLevel.WARNING,
-                        "Robot Mode",
-                        "Robot Disabled"));
+                        Elastic.NotificationLevel.WARNING, "Robot Mode", "Robot Disabled"));
     }
 
     @Override
@@ -79,9 +77,7 @@ public class Infrastructure extends Subsystem {
         robotMode = RobotMode.AUTONOMOUS;
         Elastic.sendNotification(
                 new Elastic.Notification(
-                        Elastic.Notification.NotificationLevel.INFO,
-                        "Robot Mode",
-                        "Autonomous Enabled"));
+                        Elastic.NotificationLevel.INFO, "Robot Mode", "Autonomous Enabled"));
     }
 
     @Override
@@ -89,9 +85,7 @@ public class Infrastructure extends Subsystem {
         robotMode = RobotMode.TELEOP;
         Elastic.sendNotification(
                 new Elastic.Notification(
-                        Elastic.Notification.NotificationLevel.INFO,
-                        "Robot Mode",
-                        "Teleop Enabled"));
+                        Elastic.NotificationLevel.INFO, "Robot Mode", "Teleop Enabled"));
     }
 
     @Override

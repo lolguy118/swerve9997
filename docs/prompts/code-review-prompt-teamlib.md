@@ -511,10 +511,10 @@ switch (Config.getMode()) {
 
 The tuning infrastructure (`LoggedNTInput`, `checkTuning()` pattern, and
 workflow) is documented in
-[Library Architecture — Tuning Infrastructure](../team-lib/library-architecture.md#tuning-infrastructure).
+[Library Architecture — Tuning Infrastructure](../team-lib/architecture/library-architecture.md#tuning-infrastructure).
 Per-component tunable inventories are in
-[Hardware Abstraction](../team-lib/hardware-abstraction.md#tuning-infrastructure) and
-[Control System](../team-lib/control-system.md#live-tuning).
+[Hardware Abstraction](../team-lib/architecture/hardware-abstraction.md#tuning-infrastructure) and
+[Control System](../team-lib/control/control-system.md#live-tuning).
 
 ### Review Checklist for Tuning
 

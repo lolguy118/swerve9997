@@ -1,8 +1,11 @@
 package com.team271.lib.control.pid;
 
 import com.team271.lib.TObj;
+import com.team271.lib.api.motor.ClosedLoopMotor;
+import com.team271.lib.control.HardwarePIDController;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
 import com.team271.lib.nt.NTEntry;
+import com.team271.lib.vendor.ctre.CTREMotor;
 
 /**
  * PID controller that delegates to the TalonFX motor controller's onboard PID.
@@ -11,20 +14,20 @@ import com.team271.lib.nt.NTEntry;
  * TalonFX hardware at 1 kHz. This class sends position/velocity goals to the controller and reads
  * back closed-loop error and output for telemetry and {@link #atSetpoint()} checks.
  */
-public class PIDFX extends PIDBase {
-    protected final ControllerTalonFX controller;
-    protected final int slot;
+public class PIDFX extends PIDBase implements HardwarePIDController {
+    private final ControllerTalonFX mController;
+    private final int mSlot;
 
-    protected double goal = 0.0;
-    protected double feedForward = 0.0;
+    private double mGoal = 0.0;
+    private double mFeedForward = 0.0;
 
     /*
      *
      * Telemetry (NT)
      *
      */
-    final NTEntry ntGoal = new NTEntry(table, "Goal", 0.0);
-    final NTEntry ntFeedForward = new NTEntry(table, "Feed Forward", 0.0);
+    private final NTEntry ntGoal = new NTEntry(table, "Goal", 0.0);
+    private final NTEntry ntFeedForward = new NTEntry(table, "Feed Forward", 0.0);
 
     /*
      *
@@ -34,7 +37,7 @@ public class PIDFX extends PIDBase {
     public PIDFX(
             final TObj argParent,
             final String argName,
-            final ControllerTalonFX argTalonFX,
+            final ControllerTalonFX argController,
             final double argP,
             final double argI,
             final double argD,
@@ -42,10 +45,10 @@ public class PIDFX extends PIDBase {
             final int argSlot) {
         super(argParent, "(TALONFX)" + argName, PIDType.TALONFX, argP, argI, argD, argTol);
 
-        controller = argTalonFX;
-        slot = argSlot;
+        mController = argController;
+        mSlot = argSlot;
 
-        controller.setPIDFSlot(slot, argP, argI, argD, 0.0, 0.0);
+        mController.setPIDFSlot(mSlot, argP, argI, argD, 0.0, 0.0);
 
         reset();
     }
@@ -53,26 +56,27 @@ public class PIDFX extends PIDBase {
     public PIDFX(
             final TObj argParent,
             final String argName,
-            final ControllerTalonFX argTalonFX,
+            final ControllerTalonFX argController,
             final double argP,
             final double argI,
             final double argD,
             final double argTol) {
-        this(argParent, argName, argTalonFX, argP, argI, argD, argTol, 0);
+        this(argParent, argName, argController, argP, argI, argD, argTol, 0);
     }
 
     public PIDFX(
             final TObj argParent,
             final String argName,
-            final ControllerTalonFX argTalonFX,
+            final ControllerTalonFX argController,
             final double argP,
             final double argI,
             final double argD) {
-        this(argParent, argName, argTalonFX, argP, argI, argD, 0.0, 0);
+        this(argParent, argName, argController, argP, argI, argD, 0.0, 0);
     }
 
-    public PIDFX(final TObj argParent, final String argName, final ControllerTalonFX argTalonFX) {
-        this(argParent, argName, argTalonFX, 0.0, 0.0, 0.0, 0.0, 0);
+    public PIDFX(
+            final TObj argParent, final String argName, final ControllerTalonFX argController) {
+        this(argParent, argName, argController, 0.0, 0.0, 0.0, 0.0, 0);
     }
 
     /*
@@ -83,36 +87,36 @@ public class PIDFX extends PIDBase {
     @Override
     public void setP(final double argP) {
         super.setP(argP);
-        controller.setPSlot(slot, argP);
+        mController.setPSlot(mSlot, argP);
     }
 
     @Override
     public void setI(final double argI) {
         super.setI(argI);
-        controller.setISlot(slot, argI);
+        mController.setISlot(mSlot, argI);
     }
 
     @Override
     public void setD(final double argD) {
         super.setD(argD);
-        controller.setDSlot(slot, argD);
+        mController.setDSlot(mSlot, argD);
     }
 
     @Override
     public void enableContinuousInput(final double argMinInput, final double argMaxInput) {
         super.enableContinuousInput(argMinInput, argMaxInput);
-        controller.setContinuousWrap(true);
+        mController.setContinuousWrap(true);
     }
 
     @Override
     public void disableContinuousInput() {
         super.disableContinuousInput();
-        controller.setContinuousWrap(false);
+        mController.setContinuousWrap(false);
     }
 
     /** Returns the PID slot index used by this controller. */
     public int getSlot() {
-        return slot;
+        return mSlot;
     }
 
     /**
@@ -121,8 +125,8 @@ public class PIDFX extends PIDBase {
      * @param argGoalPosition Target position in rotations
      */
     public void setGoal(final double argGoalPosition) {
-        goal = argGoalPosition;
-        controller.setOutputPosition(goal, slot, feedForward);
+        mGoal = argGoalPosition;
+        mController.setOutputPosition(mGoal, mSlot, mFeedForward);
     }
 
     /**
@@ -132,9 +136,32 @@ public class PIDFX extends PIDBase {
      * @param argFeedForward Feed-forward voltage
      */
     public void setGoal(final double argGoalPosition, final double argFeedForward) {
-        goal = argGoalPosition;
-        feedForward = argFeedForward;
-        controller.setOutputPosition(goal, slot, feedForward);
+        mGoal = argGoalPosition;
+        mFeedForward = argFeedForward;
+        mController.setOutputPosition(mGoal, mSlot, mFeedForward);
+    }
+
+    /*
+     *
+     * HardwarePIDController Interface
+     *
+     */
+
+    @Override
+    public void setGoalPosition(final double argPosition, final double argFeedForward) {
+        setGoal(argPosition, argFeedForward);
+    }
+
+    @Override
+    public void setGoalVelocity(final double argRPS, final double argFeedForward) {
+        mGoal = argRPS;
+        mFeedForward = argFeedForward;
+        mController.setOutputVelocity(mGoal, mSlot, mFeedForward);
+    }
+
+    @Override
+    public ClosedLoopMotor getMotor() {
+        return new CTREMotor(mController);
     }
 
     /*
@@ -162,8 +189,8 @@ public class PIDFX extends PIDBase {
         lastTimestamp = argTimestamp;
 
         prevError = posError;
-        posError = controller.getCLError();
-        output = controller.getCLOutput();
+        posError = mController.getCLError();
+        output = mController.getCLOutput();
 
         return output;
     }
@@ -177,7 +204,7 @@ public class PIDFX extends PIDBase {
     public void outputTelemetry() {
         super.outputTelemetry();
 
-        ntGoal.publish(goal);
-        ntFeedForward.publish(feedForward);
+        ntGoal.publish(mGoal);
+        ntFeedForward.publish(mFeedForward);
     }
 }

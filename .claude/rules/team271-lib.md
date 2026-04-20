@@ -1,0 +1,70 @@
+# Rule: Team271-Lib Library Code
+
+Applies to library source under `src/main/java/com/team271/lib/**`.
+Merges the former `hardware-abstraction.md` and `passthrough.md`
+rules into one library-scoped file.
+
+## Layering
+
+Team271-Lib has six layers. Each layer may depend only on layers
+below it ([ADR-004](../../docs/team-lib/planning/adr/ADR-004-layered-architecture.md)):
+
+1. `api/` — vendor-neutral interfaces (Motor, Encoder, Gyro, etc.)
+2. `vendor/ctre/` — CTRE Phoenix 6 implementations
+3. `hardware/` — TObj-lifecycle wrappers (controllers, transmissions, sensors, input)
+4. `control/` — PID variants, Balance, Feedforward
+5. `subsystem/` — Subsystem base, SubsystemManager, StateMachine
+6. `auto/` — autonomous move composition
+
+Cross-cutting (`nt/`, `sysid/`, `util/`, `bridge/`) may be used by any
+layer but depends on none above itself.
+
+## Rules Claude must apply
+
+- **CTRE-focused.** The only supported motor controllers and sensors
+  are CTRE Phoenix 6 devices. No WPILib PWM motors; no REV. Do not
+  speculate alternative vendor implementations — build them only when
+  a concrete need exists
+  ([ADR-006](../../docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md)).
+- **`CTREMotor` is the api/ bridge, not the `Controller*` classes.**
+  Do not add `api/` interface implementations to `ControllerBase`,
+  `ControllerSmart`, `ControllerTalonFX`, or `ControllerTalonFXS`.
+- **Passthrough — wrapper, not wall** ([ADR-003](../../docs/team-lib/planning/adr/ADR-003-passthrough-wrapper-not-wall.md)).
+  Every hardware wrapper exposes its underlying vendor object via a
+  public getter returning the raw CTRE type (`TalonFX`, `CANcoder`,
+  `Pigeon2`, `CANrange`). Never hide the raw object behind private
+  access.
+- **Prefer `HardwareManager.refreshAll()`** over
+  `CTREManager.refreshAll()` in robot startup code — it is the
+  forward-compatible entry point.
+- **Bulk CAN refresh**
+  ([ADR-007](../../docs/team-lib/planning/adr/ADR-007-centralized-can-refresh.md)).
+  Register StatusSignals with `CTREManager` at `robotInit()` and let
+  `HardwareManager.refreshAll()` do one bulk refresh per cycle. Do
+  not call `signal.refresh()` inside periodic loops.
+- **No duplicate CTRE device objects on the same CAN ID.** Construct
+  each device once and pass the reference.
+- **Desired-to-actual pattern** ([ADR-014](../../docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md)).
+  Read sensors in `robotPeriodicBefore()`; act on desired state in
+  `robotPeriodicAfter()`. Never apply operator input directly to
+  hardware.
+- **Every `TObj` implements** `robotInit`,
+  `robotPeriodicBefore`, `robotPeriodicAfter`, `outputTelemetry`.
+  Don't skip `outputTelemetry()` — it is how Alerts reach the
+  dashboard.
+- **New feature lives in api/ or CTREMotor?** Portable features
+  (gains, current limits, continuous wrap, basic closed loop) go on
+  `api/ClosedLoopMotor`. CTRE-only (Motion Magic, FOC, torque
+  current, timesync) go on `CTREMotor` directly or via passthrough.
+
+## Authoritative docs
+
+- [SDD-team271-lib.md](../../docs/team-lib/planning/sdd/SDD-team271-lib.md)
+- [SDD-vendor-ctre.md](../../docs/team-lib/planning/sdd/SDD-vendor-ctre.md)
+- [SDD-hardware.md](../../docs/team-lib/planning/sdd/SDD-hardware.md)
+- ADRs
+  [003](../../docs/team-lib/planning/adr/ADR-003-passthrough-wrapper-not-wall.md),
+  [004](../../docs/team-lib/planning/adr/ADR-004-layered-architecture.md),
+  [006](../../docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md),
+  [007](../../docs/team-lib/planning/adr/ADR-007-centralized-can-refresh.md),
+  [014](../../docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md)

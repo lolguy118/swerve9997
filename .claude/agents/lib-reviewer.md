@@ -26,17 +26,17 @@ and review that set.
 
 ## What to check
 
-Use [docs/prompts/code-review-prompt-teamlib.md](../../docs/prompts/code-review-prompt-teamlib.md)
+Use [docs/team-lib/prompts/code-review-prompt-teamlib.md](../../docs/team-lib/prompts/code-review-prompt-teamlib.md)
 as your full checklist. In addition, specifically confirm:
 
 - No references to deleted symbols in `.claude/rules/deprecated-symbols.txt`
 - All new waiting operations have timeout + fail-safe + driver alert
   (see `.claude/rules/safety.md`)
 - Any behavior change has a corresponding doc update in
-  `docs/team-lib/architecture/`, `.../control/`, or `.../quality/`
+  `docs/team-lib/planning/sdd/` or `docs/team-lib/planning/adr/`
   (see `.claude/rules/docs.md`)
 - Passthrough getters still exist on any new hardware wrapper
-  (see `.claude/rules/passthrough.md`)
+  (see `.claude/rules/team271-lib.md`)
 - No numeric tunables added to design docs
 
 ## Output format

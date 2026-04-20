@@ -12,20 +12,20 @@ REL_PATH="${FILE_PATH#"$REPO_ROOT"/}"
 
 case "$REL_PATH" in
   src/main/java/com/team271/lib/subsystem/*.java)
-    DOC="docs/team-lib/architecture/library-architecture.md" ;;
+    DOC="docs/team-lib/planning/sdd/SDD-team271-lib.md" ;;
   src/main/java/com/team271/lib/hardware/*.java \
   | src/main/java/com/team271/lib/hardware/**/*.java)
-    DOC="docs/team-lib/architecture/hardware-abstraction.md" ;;
+    DOC="docs/team-lib/planning/sdd/SDD-hardware.md" ;;
   src/main/java/com/team271/lib/control/*.java \
   | src/main/java/com/team271/lib/control/**/*.java)
-    DOC="docs/team-lib/control/control-system.md" ;;
+    DOC="docs/team-lib/planning/sdd/SDD-control.md" ;;
   src/main/java/com/team271/lib/auto/*.java \
   | src/main/java/com/team271/lib/auto/**/*.java)
-    DOC="docs/team-lib/control/auto-design.md" ;;
+    DOC="docs/team-lib/planning/sdd/SDD-auto.md" ;;
   src/main/java/com/team271/lib/api/**/*.java \
   | src/main/java/com/team271/lib/vendor/**/*.java \
   | src/main/java/com/team271/lib/bridge/**/*.java)
-    DOC="docs/team-lib/architecture/vendor-abstraction-guide.md" ;;
+    DOC="docs/team-lib/planning/sdd/SDD-vendor-ctre.md" ;;
   *) exit 0 ;;
 esac
 

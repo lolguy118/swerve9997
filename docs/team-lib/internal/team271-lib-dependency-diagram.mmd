@@ -1,0 +1,35 @@
+%% Team271-Lib — 6-Layer Architecture Dependency Diagram
+%% Each layer may depend only on layers below it.
+%% Arrow direction: "depends on"
+
+graph TD
+    auto["<b>auto/</b><br/>AutoMode · AutoMove · Containers"]
+    subsystem["<b>subsystem/</b><br/>Subsystem · SubsystemManager · StateMachine"]
+    control["<b>control/</b><br/>PIDBase · PIDSimple · PIDTrap · PIDWPI<br/>PIDWPI_Trap · PIDFX · Balance · Feedforward"]
+    hardware["<b>hardware/</b><br/>Controllers · Transmissions · Sensors<br/>Input · HardwareManager · CTREManager"]
+    vendor_ctre["<b>vendor/ctre/</b><br/>CTREMotor · CTREEncoder · CTREGyro<br/>CTRELimitSwitch · CTRERangeSensor"]
+    api["<b>api/</b><br/>Motor · ClosedLoopMotor · Encoder<br/>AbsoluteEncoder · Gyro · LimitSwitch · RangeSensor"]
+    crosscut["<b>nt/ · sysid/ · util/</b><br/>Telemetry · SysID logging · Alert · Elastic · DriveSignal"]
+    bridge["<b>bridge/</b><br/>CommandBridge (WPILib interop)"]
+
+    auto --> subsystem
+    subsystem --> control
+    subsystem --> hardware
+    control --> hardware
+    hardware --> vendor_ctre
+    vendor_ctre --> api
+    bridge --> vendor_ctre
+    bridge --> api
+
+    subsystem --> crosscut
+    hardware --> crosscut
+    control --> crosscut
+
+    style api fill:#d4edda,stroke:#28a745
+    style vendor_ctre fill:#cce5ff,stroke:#004085
+    style hardware fill:#fff3cd,stroke:#856404
+    style control fill:#f8d7da,stroke:#721c24
+    style subsystem fill:#e2e3e5,stroke:#383d41
+    style auto fill:#d1ecf1,stroke:#0c5460
+    style crosscut fill:#f5f5f5,stroke:#aaa,stroke-dasharray: 5 5
+    style bridge fill:#f5f5f5,stroke:#aaa,stroke-dasharray: 5 5

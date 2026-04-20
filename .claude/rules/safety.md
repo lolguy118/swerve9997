@@ -8,7 +8,8 @@ blocking operation in the code must fail safe.
 - **All waiting operations must have a timeout.** Homing sequences,
   launcher spin-up waits, PathPlanner follow-to-waypoint, sensor-gated
   state transitions — all of them. No unbounded `while` loops on a
-  sensor condition.
+  sensor condition. See
+  [ADR-011](../../docs/team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md).
 - **Timeout constants must be named.** Not magic numbers. Put them in
   the subsystem's `Constants` class.
 - **On timeout, fail safe:** stop motors, restore default current
@@ -34,10 +35,16 @@ When reviewing library changes, flag:
 - `setCurrentLimit*` paths that don't propagate to followers
 - New waiting operations without timeout + fail-safe + driver alert
 - Fault-tolerance regressions per
-  [docs/team-lib/fault-tolerance.md](../../docs/team-lib/quality/fault-tolerance.md)
+  [SDD-subsystem.md](../../docs/team-lib/planning/sdd/SDD-subsystem.md)
+  and [SDD-hardware.md](../../docs/team-lib/planning/sdd/SDD-hardware.md)
 
 ## Authoritative docs
 
-[docs/team-lib/fault-tolerance.md](../../docs/team-lib/quality/fault-tolerance.md)
-and coding standard Section 4.9 in
-[docs/team-lib/team271-java-coding-standard.md](../../docs/team-lib/quality/team271-java-coding-standard.md).
+- [ADR-010](../../docs/team-lib/planning/adr/ADR-010-subsystem-exception-isolation.md)
+  — exception isolation
+- [ADR-011](../../docs/team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md)
+  — mandatory timeouts
+- [Team271-Software-Coding-Standard-Safety.md](../../docs/team-lib/Team271-Software-Coding-Standard-Safety.md)
+  — CODE-SAF-* rules
+- [SDD-subsystem.md](../../docs/team-lib/planning/sdd/SDD-subsystem.md)
+  — fault-tolerance patterns

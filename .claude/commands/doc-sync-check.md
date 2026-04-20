@@ -15,11 +15,16 @@ doc updates.
 
    | Code path prefix | Design doc |
    |------------------|------------|
-   | `subsystem/` | `docs/team-lib/architecture/library-architecture.md` |
-   | `hardware/` | `docs/team-lib/architecture/hardware-abstraction.md` |
-   | `control/` | `docs/team-lib/control/control-system.md` |
-   | `auto/` | `docs/team-lib/control/auto-design.md` |
-   | `api/`, `vendor/`, `bridge/` | `docs/team-lib/architecture/vendor-abstraction-guide.md` |
+   | `api/` | `docs/team-lib/planning/sdd/SDD-api.md` |
+   | `vendor/ctre/`, `bridge/` | `docs/team-lib/planning/sdd/SDD-vendor-ctre.md` |
+   | `hardware/` | `docs/team-lib/planning/sdd/SDD-hardware.md` |
+   | `control/` | `docs/team-lib/planning/sdd/SDD-control.md` |
+   | `subsystem/` | `docs/team-lib/planning/sdd/SDD-subsystem.md` |
+   | `auto/` | `docs/team-lib/planning/sdd/SDD-auto.md` |
+   | `sysid/` | `docs/team-lib/planning/sdd/SDD-sysid.md` |
+   | `nt/` | `docs/team-lib/planning/sdd/SDD-nt.md` |
+   | `util/` | `docs/team-lib/planning/sdd/SDD-util.md` |
+   | `TObj`, `TRobot`, `wpilib/` | `docs/team-lib/planning/sdd/SDD-team271-lib.md` |
 
 3. For each expected doc, check whether it was modified in the diff:
 

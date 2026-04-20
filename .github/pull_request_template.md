@@ -42,11 +42,11 @@ Any behaviour change requires a matching design doc update in the same
 PR (see CLAUDE.md "Documentation Rules"). Check all that apply:
 -->
 
-- [ ] `docs/team-lib/architecture/` — library, hardware, vendor, passthrough
-- [ ] `docs/team-lib/control/` — control-system, auto-design
-- [ ] `docs/team-lib/quality/` — fault-tolerance, testing-strategy
-- [ ] `docs/team-lib/guides/` — start-here, setup, sim, sysid, input
-- [ ] `docs/team-lib/reference/` — index, vendor-deps, utility, geometry
+- [ ] `docs/team-lib/planning/sdd/` — SDD for affected layer
+- [ ] `docs/team-lib/planning/adr/` — new ADR if decision reversal
+- [ ] `docs/team-lib/planning/SRS.md` — requirement added/changed
+- [ ] `docs/team-lib/planning/SVP.md` — test strategy change
+- [ ] `docs/team-lib/guides/` — guide update
 - [ ] No behaviour change — docs unaffected
 
 ## Library review

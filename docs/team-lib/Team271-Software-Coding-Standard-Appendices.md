@@ -1,0 +1,222 @@
+<!-- Part of the Team 271 Software Coding Standard.
+     See Team271-Software-Coding-Standard.md for the index. -->
+
+## Appendix A: Standard Abbreviations
+
+| Abbreviation | Meaning |
+| ------------ | ------- |
+| addr | address |
+| arg | argument (method parameter prefix) |
+| auto | autonomous |
+| avg | average |
+| buf | buffer |
+| can | Controller Area Network |
+| cfg | configuration |
+| ch | channel |
+| cmd | command |
+| cnt | count |
+| ctrl | control |
+| def | default |
+| deg | degree |
+| dev | device |
+| drv | driver |
+| en | enable |
+| err | error |
+| ext | extension / extended |
+| freq | frequency |
+| hw | hardware |
+| hz | hertz |
+| idx | index |
+| init | initialize |
+| intf | interface |
+| len | length |
+| max | maximum |
+| min | minimum |
+| mod | module |
+| mps | meters per second |
+| msg | message |
+| num | number |
+| pid | proportional-integral-derivative |
+| pos | position |
+| pwr | power |
+| rad | radian |
+| req | request |
+| rps | rotations per second |
+| rx | receive |
+| sec | second |
+| sw | software |
+| teleop | teleoperated |
+| tmp | temporary |
+| tx | transmit |
+| val | value |
+| vel | velocity |
+| ver | version |
+
+---
+
+## Appendix B: Java Reserved Words
+
+The following identifiers shall not be used as variable, method, or
+class names:
+
+`abstract`, `assert`, `boolean`, `break`, `byte`, `case`, `catch`,
+`char`, `class`, `const`, `continue`, `default`, `do`, `double`,
+`else`, `enum`, `extends`, `final`, `finally`, `float`, `for`,
+`goto`, `if`, `implements`, `import`, `instanceof`, `int`,
+`interface`, `long`, `native`, `new`, `package`, `private`,
+`protected`, `public`, `return`, `short`, `static`,
+`strictfp` (reserved but no-op since Java 17),
+`super`, `switch`, `synchronized`, `this`, `throw`, `throws`,
+`transient`, `try`, `void`, `volatile`, `while`
+
+Also avoid: `var` (reserved type name), `record`, `sealed`,
+`permits`, `yield` (context keywords), `true`, `false`, `null`
+(literal values).
+
+---
+
+## Appendix C: `final` Keyword Usage Guide
+
+### When to Use `final`
+
+| Context | Requirement | Example |
+| ------- | ----------- | ------- |
+| Method parameters | **Shall** (mandatory) | `void foo(final int argValue)` |
+| Fields set once | **Shall** (mandatory) | `private final Timer mTimer = new Timer();` |
+| Constants | **Shall** (mandatory) | `static final double MAX_SPEED = 4.5` |
+| Utility classes | **Shall** (mandatory) | `public final class Constants` |
+| Constants inner classes | **Shall** (mandatory) | `public static final class CAN` |
+| Local variables | **Should** (encouraged) | `final double voltage = speed * 12.0` |
+| Methods | Rarely needed | Only to prevent override in specific cases |
+| Classes (non-utility) | Rarely needed | Only for leaf classes that must not be extended |
+
+### Why `final`?
+
+- **Parameters**: Prevents accidental reassignment; makes intent clear.
+- **Fields**: Enables the compiler to detect accidental mutation.
+  Communicates "this value is set once and never changes."
+- **Constants**: `static final` enables compile-time constant folding
+  and communicates that the value is a true constant.
+- **Utility classes**: Prevents meaningless subclassing.
+
+---
+
+## Appendix D: FRC Robot Lifecycle Reference
+
+### Team 271 Execution Flow
+
+```text
+Robot.robotPeriodic()
+  → CTREManager.refreshAll()             // bulk CAN signal refresh
+  → SubsystemManager.robotPeriodicBefore() // read sensors (all subsystems)
+  → <mode>Periodic()                     // state machine logic
+  → SubsystemManager.robotPeriodicAfter() // apply motor outputs (all subsystems)
+  → SubsystemManager.outputTelemetry()   // publish NT/logs (all subsystems)
+```
+
+### Mode Transitions
+
+```text
+Power On → robotInit()
+         → disabledInit() → disabledPeriodic() [repeats]
+         → autonomousInit() → autonomousPeriodic() [repeats for 15 sec]
+         → teleopInit() → teleopPeriodic() [repeats for ~2:15]
+         → disabledInit() → disabledPeriodic() [match ends]
+```
+
+### Subsystem Registration Order
+
+Subsystems are created via their singleton `getInstance(TObj)` methods
+and registered with `SubsystemManager.addSubsystem()` in
+`Robot.robotInit()`. Registration order determines lifecycle call order.
+**This order is load-bearing** -- the following rules apply:
+
+- Input/controller subsystems **shall** be registered first so that
+  other subsystems can read their state during the same cycle.
+- Subsystems that produce data consumed by other subsystems (e.g., a
+  subsystem whose state gates another (e.g., a shooter gating a feeder)) **shall** be registered
+  before their consumers.
+- Actuator subsystems that depend on sensor data from other subsystems
+  **shall** be registered after their data sources.
+
+See the robot-specific reference document (e.g., `docs/robot-<year>-reference.md`)
+for the current year's concrete registration order.
+
+---
+
+## Appendix E: GC Pressure Minimization Guide
+
+### The Problem
+
+The RoboRIO runs Java with a Serial GC (`-XX:+UseSerialGC`) optimized
+for low-pause-time (`-XX:MaxGCPauseMillis=50`). Every object allocation
+in a periodic method creates garbage that must eventually be collected.
+Excessive allocation can cause GC pauses that exceed the 20ms cycle,
+causing the robot to stutter or brownout.
+
+### Allocation-Free Patterns
+
+**Pre-allocate objects at field declaration:**
+```java
+/* GOOD: allocated once */
+private final Timer mReverseTimer = new Timer();
+
+/* BAD: allocated every cycle */
+Timer t = new Timer(); // in periodic method
+```
+
+**Reuse CTRE control requests:**
+```java
+/* TransmissionFX already handles this internally.
+ * If you use raw CTRE API, store requests as fields: */
+private final VoltageOut mVoltageRequest = new VoltageOut(0);
+
+/* In periodic: reuse the object */
+mMotor.setControl(mVoltageRequest.withOutput(voltage));
+```
+
+**Avoid string concatenation in hot paths:**
+```java
+/* BAD: creates new String every cycle */
+Logger.recordOutput("ExampleSubsystem/" + "Speed", speed);
+
+/* GOOD: use a constant key */
+private static final String LOG_KEY_SPEED = "ExampleSubsystem/Speed";
+Logger.recordOutput(LOG_KEY_SPEED, speed);
+```
+
+**Avoid autoboxing in loops:**
+```java
+/* BAD: autoboxes int to Integer on every add */
+List<Integer> values = new ArrayList<>();
+for (int i = 0; i < count; i++) {
+    values.add(i); // autoboxing
+}
+
+/* GOOD: use primitive arrays when possible */
+int[] values = new int[count];
+```
+
+---
+
+## Appendix I: Naming Convention Quick Reference
+
+| Context | Convention | Prefix | Example |
+| ------- | ---------- | ------ | ------- |
+| Classes | PascalCase | (none) | `ExampleDrive`, `ExampleShooter` |
+| Inner classes | PascalCase | (none) | `ExampleSubsystemConstants` |
+| Enums (type) | PascalCase | (none) | `ExampleControlState` |
+| Enum values | UPPER_SNAKE_CASE | (none) | `IDLE`, `SHOOT`, `PATH_FOLLOWING` |
+| Interfaces | PascalCase | (none) | `Interpolable` |
+| Methods | camelCase | (none) | `robotInit()`, `isZeroed()` |
+| Instance fields | camelCase | `m` | `mInstance`, `mControlState` |
+| Operational constants | UPPER_SNAKE_CASE | (none) | `SHOOT_RPS`, `EXAMPLE_SPEED` |
+| Tunable constants | camelCase | `k` | `kTranslationKp`, `kHomingVoltage` |
+| Static mutable fields | camelCase | `m` | `mInstance` (singleton) |
+| Method parameters | camelCase | `arg` | `argParent`, `argTimestamp` |
+| Local variables | camelCase | (none) | `speed`, `voltage` |
+| Temporary locals | camelCase | `tmp` | `tmpStatusReturn` |
+| NetworkTables fields | camelCase | `nt` | `ntRobot`, `ntMMCruiseVel` |
+| Packages | lowercase | (none) | `com.team271.frc<year>.subsystems` |
+| Boolean fields | camelCase | `mIs`/`mHas` | `mIsHomed`, `mHasTarget` |
+| Boolean methods | camelCase | `is`/`has`/`can` | `isZeroed()`, `hasTarget()` |

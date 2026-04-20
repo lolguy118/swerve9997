@@ -1,8 +1,9 @@
 # Rule: Documentation
 
-Team271-Lib's design docs live in `docs/team-lib/` and are part of the
-contract. Code changes that alter behavior require doc updates in the
-same PR.
+Team271-Lib's design docs live under `docs/team-lib/` and are part of
+the contract. Code changes that alter behavior require doc updates in
+the same PR. Robot-project-specific docs live under `docs/<robot>/`
+(separate repo); this rule applies only to library docs.
 
 ## Rules Claude must apply
 
@@ -12,9 +13,11 @@ same PR.
   the constant name (`kArmStatorLimit`) — never the value.
   - Allowed: datasheet values, physical dimensions, gear ratios, CAN
     IDs, rationale for *why* a value was chosen.
+  - Enforced automatically by
+    [`.claude/hooks/check-doc-tunables.sh`](../hooks/check-doc-tunables.sh).
 - **Planned features must be clearly marked.** Any section describing
   unimplemented functionality must start with
-  `> **Status: Planned — Not Yet Implemented.**`
+  `> **Status: Planned — Not Yet Implemented.**`.
 - **Telemetry keys must match `outputTelemetry()`.** When you add or
   remove a key in code, update the telemetry table in the
   corresponding design doc in the same change.
@@ -25,6 +28,12 @@ same PR.
 - **Prompt the user for doc updates** after code changes that alter
   subsystem behavior, state machines, control flow, controller
   bindings, homing, timeouts, or cross-subsystem coordination.
+- **Cross-references use file-relative paths** (e.g.,
+  `[ADR-007](../adr/ADR-007-centralized-can-refresh.md)`), not
+  absolute repo paths.
+- **Max line length: 140 characters** (enforced by
+  [`.claude/hooks/lint-markdown.sh`](../hooks/lint-markdown.sh));
+  tables and URLs are exempt but keep them as short as possible.
 
 ## Authoritative doc
 

@@ -5,7 +5,7 @@
 > simulation using the library's simulation infrastructure. For the
 > infrastructure itself (SimState architecture, DCMotor models,
 > lifecycle, capability matrix), see
-> [Library Architecture — Simulation Architecture](../architecture/library-architecture.md#simulation-architecture).
+> [Library Architecture — Simulation Architecture](../planning/sdd/SDD-team271-lib.md#simulation-architecture).
 
 ---
 
@@ -298,5 +298,5 @@ using a faster loop, adjust accordingly.
   implemented, will need SimState integration with motor type
   selection similar to `ControllerTalonFX.simulationInit()`.
 
-See the [CTRE Feature Coverage](../architecture/hardware-abstraction.md#ctre-phoenix-6-feature-coverage)
+See the [CTRE Feature Coverage](../planning/sdd/SDD-hardware.md#ctre-phoenix-6-feature-coverage)
 matrix for the full list of planned device support.

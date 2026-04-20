@@ -7,11 +7,10 @@
 | Date | 2026-04-20 |
 | Status | Draft |
 
-This document is Team271-Lib's specific development plan. The shared
-framework — toolchain baseline, platform matrix pattern, FRC-calendar
-phase model, milestone-event structure — lives in
-[`../../common/planning/development-plan.md`](../../common/planning/development-plan.md).
-This file records the library's specifics.
+This document is Team271-Lib's specific development plan. It builds
+on the shared planning framework (see §2 Applicable Documents) and
+records the library's concrete pins, platform deltas, layer build
+order, and deviations.
 
 The normative keywords SHALL, SHOULD, and MAY follow the convention
 defined in
@@ -32,7 +31,8 @@ and milestones. Does not cover:
 
 | Document | Purpose |
 | -------- | ------- |
-| [`../../common/planning/development-plan.md`](../../common/planning/development-plan.md) | Shared toolchain, platform matrix, phase model |
+| [`../../common/planning/development-plan.md`](../../common/planning/development-plan.md) | Shared toolchain, platform matrix, phase model, milestones, deviations table format source |
+| [`../../common/planning/configuration-management.md`](../../common/planning/configuration-management.md) | Versioning, vendordep upgrade, deviation-tracking row format |
 | [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) + companions | Normative coding rules |
 | [SRS.md](SRS.md) | Library requirements |
 | [SVP.md](SVP.md) | Verification plan |
@@ -58,9 +58,8 @@ graph is drawn in
 
 ## 4. Development Environment (library pins)
 
-Team271-Lib follows the shared toolchain baseline
-(see [`development-plan.md §1`](../../common/planning/development-plan.md#1-development-environment-baseline)).
-Concrete pins for this library:
+Concrete pins for this library's toolchain (component categories
+inherited from the framework):
 
 | Component | Version | Source |
 | --------- | ------- | ------ |
@@ -79,24 +78,19 @@ The authoritative version list is `vendordeps/*.json` and
 See [SCMP.md §4](SCMP.md#4-vendordep-management-team271-lib-specifics)
 for upgrade process.
 
-## 5. Platform Matrix (library-specific rows)
+## 5. Platform Matrix (library-specific deltas)
 
-Team271-Lib follows the shared platform-matrix pattern
-(see [`development-plan.md §2`](../../common/planning/development-plan.md#2-platform-matrix-pattern)).
-The library's concrete matrix:
+Team271-Lib targets every platform named in the framework.
+Library-specific facts:
 
-| Platform | Purpose | CI? |
-| -------- | ------- | --- |
-| roboRIO 2 | Competition target | No (hardware-only) |
-| Windows 11 (desktop sim) | Primary developer platform | Yes |
-| macOS (desktop sim) | Secondary developer platform | Yes |
-| Linux (desktop sim) | Tertiary developer platform + CI runner (`ubuntu-24.04`) | Yes |
-
-Desktop simulation requires WPILib HAL sim and Phoenix 6 sim. Tests
-are runnable on all three desktop platforms. GitHub Actions runs on
-`ubuntu-24.04` for every push to `main` and every pull request
-(see [SVP §7](SVP.md#7-ci-pipeline-gates-library-workflow)); local pre-edit gates run
-via `.claude/hooks/`.
+- Desktop sim **shall** initialize both WPILib HAL sim and Phoenix 6
+  sim; the library's CTRE wrappers depend on vendor sim.
+- CI runs on `ubuntu-24.04` (GitHub Actions default) for every push
+  to `main` and every pull request
+  (see [SVP §7](SVP.md#7-ci-pipeline-gates-library-workflow)).
+- Local pre-edit gates run via `.claude/hooks/`.
+- Hardware target is roboRIO 2 only; the library does not target
+  roboRIO 1.
 
 ## 6. Layer Build Priority
 
@@ -114,38 +108,10 @@ layers below them ([ADR-004](adr/ADR-004-layered-architecture.md)).
 | 6 | `auto/` | `subsystem/` | Autonomous composes subsystem commands |
 | C | `sysid/`, `nt/`, `util/` | (cross-cutting) | Used by any layer; depend on none above |
 
-## 7. Development Phases
+## 7. Deviations from SCS
 
-Team271-Lib adopts the shared four-phase FRC-calendar model as-is
-(see [`development-plan.md §3`](../../common/planning/development-plan.md#3-frc-calendar-phase-model)).
-Offseason contains the internal API-freeze milestone at which the
-next-season MINOR is tagged.
-
-## 8. Milestones
-
-### 8.1 Version Tag Events
-
-| Event | Action | Example |
-| ----- | ------ | ------- |
-| Offseason start | Tag prior season final | `v2026.N.P` |
-| Offseason API freeze | Tag next-season MINOR=0 | `v2027.0.0` |
-| Each competition hotfix | Tag patch | `v2027.0.P` |
-
-### 8.2 Phase Transitions (no tag)
-
-| Event | Action |
-| ----- | ------ |
-| Build season start | No-new-features rule takes effect |
-| Postseason | Retrospective; ADR drafts for next offseason |
-
-Version format: `YYYY.MINOR.PATCH`. See
-[SCMP.md §3](SCMP.md#3-library-versioning) for semantics.
-
-## 9. Deviations from SCS
-
-Library-specific deviations from the shared coding standard. Format
-per
-[`configuration-management.md §5`](../../common/planning/configuration-management.md#5-deviation-tracking).
+Library-specific deviations from the shared coding standard. Table
+format inherited from the framework (see §2 Applicable Documents).
 
 | Rule ID | File / Scope | Rationale | Approved By | Date |
 | ------- | ------------ | --------- | ----------- | ---- |

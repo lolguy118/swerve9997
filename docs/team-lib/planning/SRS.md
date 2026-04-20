@@ -48,6 +48,7 @@ It excludes anything that is robot-specific.
 | [ADR-010](adr/ADR-010-subsystem-exception-isolation.md) | Exception isolation |
 | [ADR-011](adr/ADR-011-mandatory-timeouts-fail-safe.md) | Timeout contract |
 | [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | State pattern |
+| [ADR-016](adr/ADR-016-vendor-neutral-vision-abstraction.md) | Vision abstraction |
 
 ## 3. Library-Level Requirements (`[LIB-NNN]`)
 
@@ -220,6 +221,27 @@ It excludes anything that is robot-specific.
 - **[UTL-005]** `Util` math helpers shall be stateless and
   thread-safe.
 
+### 4.10 Vision Layer (`[VIS-NNN]`)
+
+- **[VIS-001]** The `Camera` interface shall expose the latest
+  pose estimate via `Optional<PoseEstimate>`; an empty `Optional`
+  shall indicate stale, disconnected, or out-of-policy readings.
+- **[VIS-002]** The `Camera` interface shall expose the latest
+  target via `Optional<TargetDetection>`, with an empty `Optional`
+  when no target is visible.
+- **[VIS-003]** `Camera` implementations shall report connection
+  state via `isConnected()`; a stale reading within a single
+  periodic cycle shall yield an empty `Optional` from the getters
+  without flipping `isConnected()` to `false`.
+- **[VIS-004]** `PoseEstimate` shall carry tag count, average
+  tag distance, single-tag ambiguity (or `NaN` when multi-tag),
+  and a vendor-computed recommended standard-deviation vector.
+- **[VIS-005]** Each vendor camera wrapper shall expose its raw
+  vendor surface via passthrough getters (ADR-003); for vendors
+  without a raw device object (e.g., Limelight), the passthrough
+  shall return the vendor-specific handle needed to call the
+  vendor's helper API directly.
+
 ## 5. Cross-Layer Interface Requirements (`[INT-NNN]`)
 
 - **[INT-001]** `api/` shall not depend on any other library package.
@@ -234,6 +256,14 @@ It excludes anything that is robot-specific.
 - **[INT-006]** `auto/` shall depend only on `subsystem/` and
   cross-cutting packages.
 - **[INT-007]** Cross-cutting packages (`nt/`, `sysid/`, `util/`)
+  shall not depend on `hardware/`, `control/`, `subsystem/`, or
+  `auto/`.
+- **[INT-008]** `vendor/limelight/` shall depend only on
+  `api/vision/`, `util/LimelightHelpers`, and WPILib types; it
+  shall not depend on `hardware/`, `control/`, `subsystem/`, or
+  `auto/`.
+- **[INT-009]** `vendor/photonvision/` shall depend only on
+  `api/vision/`, WPILib types, and the `photonlib` vendordep; it
   shall not depend on `hardware/`, `control/`, `subsystem/`, or
   `auto/`.
 
@@ -269,4 +299,5 @@ and CI reports; update the test-case column as tests are added.
 | `[SID-001..004]` | SDD-sysid §3 | `[TEST-SID-*]` |
 | `[NT-001..003]` | SDD-nt §3 | `[TEST-NT-*]` |
 | `[UTL-001..005]` | SDD-util §3 | `[TEST-UTL-*]` |
-| `[INT-001..007]` | (package-info.java imports) | (static check) |
+| `[VIS-001..005]` | SDD-vision §3 | `[TEST-VIS-*]` |
+| `[INT-001..009]` | (package-info.java imports) | (static check) |

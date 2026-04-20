@@ -9,8 +9,8 @@ rules into one library-scoped file.
 Team271-Lib has six layers. Each layer may depend only on layers
 below it ([ADR-004](../../docs/team-lib/planning/adr/ADR-004-layered-architecture.md)):
 
-1. `api/` — vendor-neutral interfaces (Motor, Encoder, Gyro, etc.)
-2. `vendor/ctre/` — CTRE Phoenix 6 implementations
+1. `api/` — vendor-neutral interfaces (Motor, Encoder, Gyro, Camera, etc.)
+2. `vendor/ctre/`, `vendor/limelight/`, `vendor/photonvision/` — vendor implementations
 3. `hardware/` — TObj-lifecycle wrappers (controllers, transmissions, sensors, input)
 4. `control/` — PID variants, Balance, Feedforward
 5. `subsystem/` — Subsystem base, SubsystemManager, StateMachine
@@ -56,15 +56,25 @@ layer but depends on none above itself.
   (gains, current limits, continuous wrap, basic closed loop) go on
   `api/ClosedLoopMotor`. CTRE-only (Motion Magic, FOC, torque
   current, timesync) go on `CTREMotor` directly or via passthrough.
+- **Vision is a separate vendor family** ([ADR-016](../../docs/team-lib/planning/adr/ADR-016-vendor-neutral-vision-abstraction.md)).
+  Portable vision features (pose, target tx/ty, connection, stddev)
+  go on `api/vision/Camera` / `PoseEstimate` / `TargetDetection`.
+  Vendor-only features (Limelight pipeline switch, Photon
+  `PhotonPoseEstimator` tuning) go on the vendor wrapper or via
+  passthrough. Cameras pull — the library does not push estimates
+  into a pose estimator. Empty `Optional` is the fail-safe; do not
+  return stale or out-of-policy readings.
 
 ## Authoritative docs
 
 - [SDD-team271-lib.md](../../docs/team-lib/planning/sdd/SDD-team271-lib.md)
 - [SDD-vendor-ctre.md](../../docs/team-lib/planning/sdd/SDD-vendor-ctre.md)
 - [SDD-hardware.md](../../docs/team-lib/planning/sdd/SDD-hardware.md)
+- [SDD-vision.md](../../docs/team-lib/planning/sdd/SDD-vision.md)
 - ADRs
   [003](../../docs/team-lib/planning/adr/ADR-003-passthrough-wrapper-not-wall.md),
   [004](../../docs/team-lib/planning/adr/ADR-004-layered-architecture.md),
   [006](../../docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md),
   [007](../../docs/team-lib/planning/adr/ADR-007-centralized-can-refresh.md),
-  [014](../../docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md)
+  [014](../../docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md),
+  [016](../../docs/team-lib/planning/adr/ADR-016-vendor-neutral-vision-abstraction.md)

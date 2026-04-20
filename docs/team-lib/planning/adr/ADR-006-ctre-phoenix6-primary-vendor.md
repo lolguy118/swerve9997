@@ -88,3 +88,5 @@ that need them; the library does not abstract them.
 - [SCMP.md §4](../SCMP.md)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
 - [ADR-003](ADR-003-passthrough-wrapper-not-wall.md)
+- [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) — cameras
+  are a separate vendor ecosystem outside ADR-006's scope

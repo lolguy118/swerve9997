@@ -42,6 +42,7 @@ it.
 | `com.team271.lib.sysid.*` | [SDD-sysid.md](sdd/SDD-sysid.md) |
 | `com.team271.lib.nt.*` | [SDD-nt.md](sdd/SDD-nt.md) |
 | `com.team271.lib.util.*` | [SDD-util.md](sdd/SDD-util.md) |
+| `com.team271.lib.api.vision.*`, `com.team271.lib.vendor.limelight.*`, `com.team271.lib.vendor.photonvision.*` | [SDD-vision.md](sdd/SDD-vision.md) |
 
 ## Architecture Decision Records
 
@@ -69,6 +70,7 @@ Each ADR records one architectural decision. Statuses:
 | [ADR-013](adr/ADR-013-pathplanner-autonomous.md) | PathPlanner for Autonomous Path Following | Accepted |
 | [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | Desired-to-Actual State Pattern in Subsystems | Accepted |
 | [ADR-015](adr/ADR-015-explicit-instantiation-no-singletons.md) | Explicit Object Instantiation, No Singletons in Library Code | Accepted |
+| [ADR-016](adr/ADR-016-vendor-neutral-vision-abstraction.md) | Vendor-Neutral Vision Abstraction in `api/vision/` | Accepted |
 
 ## Planned ADRs
 
@@ -83,7 +85,6 @@ that depends on it — not speculatively.
 | Null-safety annotation policy | Choice of annotation set (JSpecify, JetBrains, JSR-305) and rollout plan before NullAway becomes a CI gate |
 | Supply-chain / CVE response | How the library triages OWASP / GitHub dependency-review findings and which severities trigger an out-of-phase hotfix |
 | CAN-bus abstraction in `api/` | Whether to introduce a vendor-neutral `CANBus` interface (and update `DeviceID` to hold a reference) once a concrete consumer emerges — e.g., bus utilization alerts, follower-bus validation refactor, or multi-bus routing |
-| Vision abstraction in `api/` | Vendor-neutral vision interfaces (`Camera`, `PoseEstimate`, `TargetDetection`) once a concrete consumer emerges; decision drives the shape of `SDD-vision.md` (below) |
 | Unlimited followers in `TransmissionBase` | Whether to lift the current 4-motor cap (1 leader + 3 followers). Phoenix 6 itself imposes no limit; the cap is design-imposed and tied to pre-allocated control-request arrays. Change when a concrete mechanism (e.g., 6-wheel tank, exotic climber) needs it |
 
 ## Planned SDDs
@@ -94,9 +95,7 @@ Reserved slots for design documents that don't yet exist. Each
 **shall** be authored alongside (or after) its enabling ADR, when
 the corresponding code ships.
 
-| Planned SDD | Scope |
-| ----------- | ----- |
-| `SDD-vision.md` | Vision layer (Limelight / PhotonVision / Luma) — camera identity, pose estimation, target detection. Currently only vendor-provided `util/LimelightHelpers` exists; this SDD will document the library's own vision abstraction once the Vision-abstraction ADR is written |
+None currently planned.
 
 ## What These Documents Do NOT Cover
 

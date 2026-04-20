@@ -79,6 +79,13 @@ and Megatag pose estimation. When the camera is disconnected, the
 helpers return safe defaults (zero or empty `Pose2d`) rather than
 throwing.
 
+`LimelightHelpers` is the raw vendor surface consumed by
+`vendor/limelight/LimelightCamera` — see
+[SDD-vision.md](SDD-vision.md). It plays the same role for
+Limelight that `TalonFX` plays for CTRE (ADR-003 passthrough).
+Robot projects may call it directly when they need a Limelight
+feature `Camera` does not express.
+
 ### 3.5 `Util`
 
 Static math utility class with no instance state. Provides:

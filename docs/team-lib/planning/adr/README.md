@@ -27,6 +27,7 @@ is written.
 | [ADR-013](ADR-013-pathplanner-autonomous.md) | PathPlanner for Autonomous Path Following | Accepted |
 | [ADR-014](ADR-014-desired-to-actual-state-pattern.md) | Desired-to-Actual State Pattern in Subsystems | Accepted |
 | [ADR-015](ADR-015-explicit-instantiation-no-singletons.md) | Explicit Object Instantiation, No Singletons in Library Code | Accepted |
+| [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) | Vendor-Neutral Vision Abstraction in `api/vision/` | Accepted |
 
 ## ADR Template
 

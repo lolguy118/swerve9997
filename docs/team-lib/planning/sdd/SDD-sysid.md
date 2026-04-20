@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | SID-001 through SID-NNN (SRS §4.7) |
+| Requirements Traced | `[SID-001]`..`[SID-004]` (SRS §4.7) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -16,7 +20,7 @@ frequency into AdvantageKit-compatible format for post-processing.
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `Logger` — single-mechanism SysID data logger
 - `LoggerGeneral` — multi-mechanism or general-purpose SysID logger
@@ -24,24 +28,18 @@ frequency into AdvantageKit-compatible format for post-processing.
 - Thread priority configuration for timing consistency
 - Quasistatic and dynamic test mode routing
 
-**This SDD does not cover:**
-
-- SysID test execution (robot-project responsibility)
-- SysID data analysis (WPILib SysID tool)
-- Regular telemetry logging → [SDD-team271-lib.md §3.5 Tuning Infrastructure](SDD-team271-lib.md) and [SDD-nt.md](SDD-nt.md)
-
 ## 3. Module Decomposition
 
 ### 3.1 `Logger`
 
 Single-mechanism SysID data capture. Owns a fixed-size pre-allocated
 vector sized to cover the full characterization window at the
-configured sample rate. `start()` resets the write index and starts
-sampling; every periodic call appends a tuple of (timestamp,
-voltage, position, velocity) until the vector is full or `stop()`
-is called. `Logger` records samples via AdvantageKit so the captured
-data appears in the WPILib data log, which the SysID tool can read
-directly.
+configured sample rate. Starting the logger resets the write index
+and begins sampling; every periodic call appends a tuple of
+(timestamp, voltage, position, velocity) until the vector is full
+or sampling is stopped. `Logger` records samples via AdvantageKit
+so the captured data appears in the WPILib data log, which the
+SysID tool can read directly.
 
 ### 3.2 `LoggerGeneral`
 
@@ -53,10 +51,10 @@ signals (current, setpoint error) alongside the SysID inputs.
 
 ### 3.3 Memory Discipline
 
-Both loggers allocate their vectors at construction time in
-`robotInit()` so the garbage collector never runs during sampling.
-Vector size and sample rate are defined as constants in the robot
-project; the library does not dictate numeric values.
+Both loggers allocate their vectors at robot-init time so the
+garbage collector never runs during sampling. Vector size and
+sample rate are defined as constants in the robot project; the
+library does not dictate numeric values.
 
 ## 4. Data Flow
 
@@ -135,5 +133,5 @@ a no-op on desktop simulation and has no adverse effect.
 | `start/stop` bookkeeping | No | Verify index reset, active flag transitions |
 | AdvantageKit output wiring | Yes | `HAL.initialize(500, 0)` required; verify recorded keys |
 
-Test IDs: TEST-SID-NNN. Characterization accuracy is validated on
-hardware, not in unit tests.
+Test IDs: `[TEST-SID-NNN]`. Characterization accuracy is validated
+on hardware, not in unit tests.

@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | AUT-001 through AUT-NNN (SRS §4.6) |
+| Requirements Traced | `[AUT-001]`..`[AUT-005]` (SRS §4.6) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -17,7 +21,7 @@ here (ADR-013).
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `AutoMode` — top-level autonomous routine; owns the move sequence lifecycle
 - `AutoMove` — abstract base for a single step in an autonomous routine
@@ -28,11 +32,6 @@ here (ADR-013).
 - `AutoMoveParallel` — container: runs moves concurrently
 - `WaitMove` — delay move
 - PathPlanner `AutoMoveFollow` integration bridge (ADR-013)
-
-**This SDD does not cover:**
-
-- Path definitions and tuning (robot-project responsibility)
-- Subsystem state machines → [SDD-subsystem.md](SDD-subsystem.md)
 
 ## 3. Module Decomposition
 
@@ -48,14 +47,14 @@ AutoMode
 
 | Class | Responsibility |
 | ----- | -------------- |
-| `AutoMode` | Top-level sequencer. Holds the flat move list and `currentMoveIdx`. Owns the overall `elapsedTimer`. Delegates `robotPeriodicBefore`, `autonomousPeriodic`, and `robotPeriodicAfter` to the current move; advances via `nextMove()` when the current move reports `isComplete`. Sends Elastic notifications on start and end. |
-| `AutoMove` | Abstract base. Each move tracks its own `elapsedTimer` (no shared clock). Provides template methods `onStart()`, `onEnd()`, `autonomousPeriodic()`, and `robotPeriodicBefore()`. Gate method `canRun()` returns `isRunning && isWithinTimeLimit() && !isComplete`. Move authors override hooks — they do not subclass deep. |
-| `AutoMoveTimed` | Completes after a fixed `length` seconds. Optional `delay` and safety `timeout`. Completion checked in `robotPeriodicBefore` (fires every cycle regardless of `canRun()`). |
-| `AutoMoveConditional` | Waits for a `BooleanSupplier` with a **required** timeout argument. On condition true, ends normally. On timeout, sends a WARNING Elastic notification (including the move name), calls `end()`, and allows the parent to advance. |
-| `AutoMoveSequence` | Container that runs children in declaration order. Each child must complete before the next starts. Advances via `advanceToNext()` in `robotPeriodicAfter`. |
-| `AutoMoveParallel` | Container that starts all children simultaneously. Completes only when every child reports `isComplete`. Children keep independent timers and completion state. |
+| `AutoMode` | Top-level sequencer. Holds the flat move list and a current-move index. Owns the overall elapsed-time tracker. Delegates pre-periodic, autonomous-periodic, and post-periodic calls to the current move; advances to the next move when the current move reports completion. Sends Elastic notifications on start and end. |
+| `AutoMove` | Abstract base. Each move tracks its own elapsed time (no shared clock). Provides template methods for start, end, autonomous-periodic, and pre-periodic behaviors. A gate predicate returns true only while the move is running, within its time limit, and not yet complete. Move authors override hooks — they do not subclass deep. |
+| `AutoMoveTimed` | Completes after a fixed duration (`length` seconds). Optional start delay and safety timeout. Completion is checked every pre-periodic cycle, regardless of the gate predicate. |
+| `AutoMoveConditional` | Waits for a boolean supplier with a **required** timeout argument. On condition true, ends normally. On timeout, sends a WARNING Elastic notification (including the move name), terminates, and allows the parent to advance. |
+| `AutoMoveSequence` | Container that runs children in declaration order. Each child must complete before the next starts. Advances during the post-periodic hook. |
+| `AutoMoveParallel` | Container that starts all children simultaneously. Completes only when every child reports completion. Children keep independent timers and completion state. |
 | `WaitMove` | Explicit delay move — thin specialization of `AutoMoveTimed` with no subsystem commands. Used inside `AutoMoveSequence` / `AutoMoveParallel` for timing offsets. |
-| PathPlanner bridge | Robot projects wrap PathPlanner `Command` objects via `CommandBridge.asAutoMove(cmd, timeoutSec)` (see [SDD-vendor-ctre.md §CommandBridge](SDD-vendor-ctre.md)). The bridge enforces the mandatory-timeout rule by making the timeout a required constructor argument. |
+| PathPlanner bridge | Robot projects wrap PathPlanner `Command` objects through `CommandBridge` (see [SDD-vendor-ctre.md §3.3](SDD-vendor-ctre.md)). The bridge enforces the mandatory-timeout rule by making the timeout a required constructor argument. |
 
 ## 4. Data Flow
 
@@ -178,6 +177,6 @@ projects document their own auto routines in their own design docs.
 | `AutoMode` indexing and `nextMove` | Yes | Run through all moves in order; verify `currentMoveIdx` |
 | `CommandBridge.asAutoMove` | Yes | Verify WPILib command ends correctly inside an AutoMode |
 
-Test IDs: TEST-AUT-NNN. Existing auto tests (5 classes) live under
-`src/test/java/com/team271/lib/auto/` — see
+Test IDs: `[TEST-AUT-NNN]`. Existing auto tests (5 classes) live
+under `src/test/java/com/team271/lib/auto/` — see
 [SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).

@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | NT-001 through NT-NNN (SRS §4.8) |
+| Requirements Traced | `[NT-001]`..`[NT-003]` (SRS §4.8) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -17,17 +21,12 @@ implementation of ADR-008.
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `NTTable` — wrapper around a NetworkTable topic
 - `NTEntry<T>` — typed NT entry with default and get/set
-- `LoggedNTInput` — combines `NTEntry` with `Logger.recordOutput()` so
+- `LoggedNTInput` — combines `NTEntry` with AdvantageKit recording so
   every tunable read is also captured in the match log
-
-**This SDD does not cover:**
-
-- General telemetry output (use `Logger.recordOutput()` directly)
-- Dashboard layout (Elastic / Shuffleboard concern)
 
 ## 3. Module Decomposition
 
@@ -36,18 +35,18 @@ implementation of ADR-008.
 Hierarchical namespace container wrapping a WPILib `NetworkTable`.
 Each `TObj` creates a child `NTTable` under its parent, producing
 automatic NT path hierarchy such as `/Drivetrain/LeftTransmission/Leader`.
-Provides `getEntry(key, default)` for typed subscription/publication
-and a `getSubTable(name)` helper for further nesting. `NTTable` has
-no change detection — it is a namespace only.
+Provides typed entry construction (key + default) and a sub-table
+helper for further nesting. `NTTable` has no change detection — it
+is a namespace only.
 
 ### 3.2 `NTEntry`
 
 Typed NT entry for **output-only** telemetry. Supports `boolean`,
-`double`, `long`, `int`, and `String` types. The `publish(value)`
-method sets the NT topic value and routes through AdvantageKit
-`Logger.recordOutput()` so the value appears in the match log as well
-as on the live dashboard. `NTEntry` has no change detection — callers
-that read an entry receive the most recently published value.
+`double`, `long`, `int`, and `String` types. Publishing a value sets
+the NT topic and simultaneously records the value through
+AdvantageKit so it appears in the match log as well as on the live
+dashboard. `NTEntry` has no change detection — callers that read an
+entry receive the most recently published value.
 
 ### 3.3 `LoggedNTInput`
 
@@ -64,8 +63,8 @@ detection:
 | long | `hasLongChanged()` | `getLong()` |
 | String | `hasStringChanged()` | `getString()` |
 
-Every `get*()` call also records the value through AdvantageKit so
-replays reproduce the exact tunable value used on each cycle.
+Every read also records the value through AdvantageKit so replays
+reproduce the exact tunable value used on each cycle.
 `LoggedNTInput` is null-safe: if the parent `NTTable` is null the
 input returns cached defaults and change detection always returns
 false, so unit tests can exercise consumers without a live NT
@@ -156,7 +155,7 @@ for the full inventory.
 | `LoggedNTInput.hasChanged()` | Yes (NT4) | Publish via a separate subscriber to simulate dashboard edit |
 | `LoggedNTInput` null-safety | No | Test with null table; verify no NPE |
 
-Test IDs: TEST-NT-NNN. Reset of NT between tests is generally not
+Test IDs: `[TEST-NT-NNN]`. Reset of NT between tests is generally not
 required — HAL teardown handles it — but tests that share table
 names should use unique keys to avoid cross-contamination (same
 pattern as unique CAN IDs per test; see

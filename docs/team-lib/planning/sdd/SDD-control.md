@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | CTL-001 through CTL-NNN (SRS §4.4) |
+| Requirements Traced | `[CTL-001]`..`[CTL-006]` (SRS §4.4) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -16,7 +20,7 @@ interface, enabling hot-swap by changing the constructor call only.
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `PIDBase` — shared features (error tracking, output clamping, continuous
   mode, tolerance, live tuning)
@@ -30,19 +34,14 @@ interface, enabling hot-swap by changing the constructor call only.
 - `Feedforward`, `ArmFeedforward`
 - `Balance` — tilt-correction algorithm
 
-**This SDD does not cover:**
-
-- PathPlanner trajectory following → [SDD-auto.md](SDD-auto.md)
-- CAN-layer signal refresh → [SDD-hardware.md](SDD-hardware.md)
-
 ## 3. Module Decomposition
 
 ### 3.1 PID Hierarchy
 
 ```text
 Interfaces (for swapping implementations):
-  PIDController                 (calculate, atSetpoint, gains, continuous input, reset)
-  └── ProfiledPIDController     (setGoal, setConstraints, atGoal, setpoint pos/vel)
+  PIDController                 (calculation, setpoint-tolerance check, gain mutators, continuous input, reset)
+  └── ProfiledPIDController     (goal + constraint management, goal-reached check, profiled-setpoint pos/vel readback)
 
 Implementation hierarchy:
   TObj
@@ -60,15 +59,15 @@ Vendor-neutral hardware-backed PID:
 
 | Class | Responsibility |
 | ----- | -------------- |
-| `PIDBase` | Shared state: P/I/D output terms, error tracking, `minOutput`/`maxOutput` clamp, `iZone`/`iMin`/`iMax` integral guards, `posTolerance`/`velTolerance` for `atSetpoint`, `pDeadband`, continuous-mode wrap, `PIDSlot` inner value class, `LoggedNTInput` tuning wiring, telemetry levels (FULL / MINIMAL / OFF). |
+| `PIDBase` | Shared state: P/I/D output terms, error tracking, `minOutput`/`maxOutput` clamp, `iZone`/`iMin`/`iMax` integral guards, `posTolerance`/`velTolerance` used by the tolerance check, `pDeadband`, continuous-mode wrap, `PIDSlot` inner value class, `LoggedNTInput` tuning wiring, telemetry levels (FULL / MINIMAL / OFF). |
 | `PIDSimple` | Software PID without motion profiling. Produces output from (measurement, setpoint, timestamp). Used for simple software loops and prototyping. |
 | `PIDTrap` | Integrates WPILib `TrapezoidProfile` with `PIDBase` for smooth position control under velocity/acceleration limits. Implements `ProfiledPIDController`. |
-| `PIDWPI` | Thin wrapper around `edu.wpi.first.math.controller.PIDController`. Setters synchronized so PIDBase and WPILib state stay in sync. `getController()` passthrough. |
-| `PIDWPI_Trap` | Wraps `ProfiledPIDController`. Exposes profiled setpoint position and velocity. `getController()` passthrough. |
-| `PIDFX` | Reads closed-loop error and output from a `ControllerTalonFX`; actual PID runs at 1 kHz on the motor firmware. `setP/I/D` sync hardware gains via `setPSlot()` etc. Implements `HardwarePIDController`. |
-| `HardwarePIDController` | Vendor-neutral interface for hardware-backed PID. Adds `setGoalPosition(pos, ff)`, `setGoalVelocity(rps, ff)`, `getMotor()` returning the backing `ClosedLoopMotor`. See [SDD-vendor-ctre.md](SDD-vendor-ctre.md). |
+| `PIDWPI` | Thin wrapper around `edu.wpi.first.math.controller.PIDController`. Setters synchronized so PIDBase and WPILib state stay in sync. Passthrough getter exposes the raw controller. |
+| `PIDWPI_Trap` | Wraps `ProfiledPIDController`. Exposes profiled setpoint position and velocity. Passthrough getter exposes the raw controller. |
+| `PIDFX` | Reads closed-loop error and output from a `ControllerTalonFX`; actual PID runs at 1 kHz on the motor firmware. Gain mutators sync hardware gains through the underlying controller. Implements `HardwarePIDController`. |
+| `HardwarePIDController` | Vendor-neutral interface for hardware-backed PID. Adds goal-position and goal-velocity mutators plus a getter returning the backing `ClosedLoopMotor`. See [SDD-vendor-ctre.md](SDD-vendor-ctre.md). |
 | `PIDGains` | Immutable record of kP, kI, kD, kV, kS, kG, kA. Builder methods for incremental construction. |
-| `Feedforward` | `@FunctionalInterface` supplying feedforward voltage given (position, velocity). Factory methods: `simple()`, `elevator()`, `fromWPILib(...)`. Composable with any PID variant. |
+| `Feedforward` | `@FunctionalInterface` supplying feedforward voltage given (position, velocity). Factory helpers produce simple-constant, elevator, and WPILib-adapter variants. Composable with any PID variant. |
 | `ArmFeedforward` | Position-dependent feedforward: `kS·sign(v) + kG·cos(pos) + kV·v + kA·a`. |
 | `Balance` | State machine for autonomous charge-station balancing. Not a PID — uses four discrete speed states gated by tilt angle thresholds and a debounce timer. Its own `LoggedNTInput` tunables for speeds and angles. |
 
@@ -85,8 +84,8 @@ PIDBase responsibility summary):
 | `tuneIZone` | `Tune I Zone` | `pidSlot.iZone` |
 | `tuneOutputMin` / `tuneOutputMax` | `Tune Output Min/Max` | `minOutput` / `maxOutput` |
 
-For `PIDFX`, `setP/I/D` additionally call
-`ControllerTalonFX.setPSlot()` to sync to hardware.
+For `PIDFX`, gain mutators additionally sync to the underlying
+controller's hardware slot.
 
 ## 4. Data Flow
 
@@ -226,6 +225,6 @@ source file; tilt thresholds are sign-inverted when constructed with
 | `Feedforward` / `ArmFeedforward` | No | No | Verify factory methods and math |
 | `Balance` state machine | No | No | Drive simulated pitch through states; verify debounce |
 
-Test IDs: TEST-CTL-NNN. The existing test suite covers PIDSimple,
-PIDTrap, PIDWPI, PIDFX, and Balance (see
+Test IDs: `[TEST-CTL-NNN]`. The existing test suite covers
+PIDSimple, PIDTrap, PIDWPI, PIDFX, and Balance (see
 [SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes)).

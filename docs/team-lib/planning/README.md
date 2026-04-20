@@ -84,6 +84,7 @@ that depends on it — not speculatively.
 | Supply-chain / CVE response | How the library triages OWASP / GitHub dependency-review findings and which severities trigger an out-of-phase hotfix |
 | CAN-bus abstraction in `api/` | Whether to introduce a vendor-neutral `CANBus` interface (and update `DeviceID` to hold a reference) once a concrete consumer emerges — e.g., bus utilization alerts, follower-bus validation refactor, or multi-bus routing |
 | Vision abstraction in `api/` | Vendor-neutral vision interfaces (`Camera`, `PoseEstimate`, `TargetDetection`) once a concrete consumer emerges; decision drives the shape of `SDD-vision.md` (below) |
+| Unlimited followers in `TransmissionBase` | Whether to lift the current 4-motor cap (1 leader + 3 followers). Phoenix 6 itself imposes no limit; the cap is design-imposed and tied to pre-allocated control-request arrays. Change when a concrete mechanism (e.g., 6-wheel tank, exotic climber) needs it |
 
 ## Planned SDDs
 

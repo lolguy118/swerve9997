@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | HW-001 through HW-NNN (SRS §4.3) |
+| Requirements Traced | `[HW-001]`..`[HW-007]` (SRS §4.3) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -17,7 +21,7 @@ and `HardwareManager` (the forward-compatible refresh entry point).
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - **Controllers:** `ControllerBase`, `ControllerSmart`, `ControllerTalonFX`,
   `ControllerTalonFXS` — CTRE-facing lifecycle wrappers
@@ -27,14 +31,9 @@ and `HardwareManager` (the forward-compatible refresh entry point).
   limit switch wrappers
 - **Input:** `Input` base + joystick devices
 - `CTREManager` — centralized CAN bus refresh, optimization, timesync, logging
-- `HardwareManager` — forward-compatible `refreshAll()` entry point
+- `HardwareManager` — forward-compatible refresh entry point
 - `CANBus`, `CANDeviceID` — CAN topology helpers
 - `FaultMonitor` — sticky-fault tracking per device
-
-**This SDD does not cover:**
-
-- CTRE Phoenix 6 implementations → [SDD-vendor-ctre.md](SDD-vendor-ctre.md)
-- api/ interfaces → [SDD-api.md](SDD-api.md)
 
 ## 3. Module Decomposition
 
@@ -89,11 +88,10 @@ TObj
 ```
 
 `TransmissionBase` manages up to four motors in a `LinkedHashSet`
-(for deterministic iteration). Configuration calls
-(`configCurrentLimitStator`, `configVoltagePeak`, `configRamp*`)
-apply to **all** motors; PID, direction, and control-mode calls
-apply to the **leader only**. Followers are established via
-`ControllerBase.follow()` which validates that leader and follower
+(for deterministic iteration). Configuration calls (current limits,
+voltage peaks, ramp rates) apply to **all** motors; PID, direction,
+and control-mode calls apply to the **leader only**. Followers are
+established via a follow call that validates leader and follower
 share the same CAN bus — cross-bus follow attempts return
 `ERROR_INVALID_BUS` because the follower would otherwise sit idle
 at zero output with no error indication.
@@ -108,9 +106,9 @@ reject zero ratios).
 
 `TransmissionFX` pre-allocates all 20 control request objects at
 construction to avoid GC pressure during match play, and stores
-`timesyncApplicators` lambdas for bulk timesync reconfiguration.
-All closed-loop output methods guard against NaN/Infinity inputs
-via `hasInvalidInput()` before sending to hardware.
+timesync applicator lambdas for bulk timesync reconfiguration. All
+closed-loop output methods guard against NaN / Infinity inputs
+before sending to hardware; see §6 Error Handling.
 
 ### 3.3 Sensor Abstractions
 
@@ -137,15 +135,13 @@ TObj
 ```
 
 Every sensor wrapper registers its StatusSignals with `CTREManager`
-during `robotInit()` at the appropriate update frequency — see
-§8.3 (StatusSignal Update Frequencies) below and `ConstantsLib` for
-the concrete frequency constants. Each `robotPeriodicBefore()`
-simply reads the cached value that `CTREManager.refreshAll()` has
-already updated; individual `refresh()` calls on StatusSignals are
-avoided because they defeat bulk refresh optimization. `IMUPigeon2`
-uses `BaseStatusSignal.getLatencyCompensatedValue()` for yaw reads.
-`IMUPigeon2` also owns a `FaultMonitor` tracking 6 sticky faults
-(see [§3.7 FaultMonitor](SDD-hardware.md) above).
+during robot init at the appropriate update frequency — see §8.3
+below and `ConstantsLib` for the concrete frequency constants.
+Each sensor's pre-periodic read returns the cached value that the
+bulk refresh has already updated; individual per-signal refresh
+calls are avoided because they defeat the bulk-refresh optimization.
+`IMUPigeon2` uses latency-compensated yaw reads. `IMUPigeon2` also
+owns a `FaultMonitor` tracking 6 sticky faults (see §3.7 below).
 
 The encoder adapter pattern (`EncoderAdapter`, `FXEncoderAdapter`,
 `CANCoderAdapter`) means adding a new encoder type requires only a
@@ -165,13 +161,13 @@ TObj
 ```
 
 `Input` extends `Subsystem` (not just `TObj`) because it
-participates in the SubsystemManager lifecycle — its
-`robotPeriodicBefore` caches raw axis / button / POV values so all
-downstream reads within a cycle see consistent values. It provides
-edge detection (`getButtonPressed`, `getButtonReleased`) and
-returns zero for all axes when the controller is disconnected
-(safe default). Axis values are clamped to [-1.0, 1.0]; robot
-project subclasses apply axis inversion per controller mapping.
+participates in the SubsystemManager lifecycle — its pre-periodic
+hook caches raw axis / button / POV values so all downstream reads
+within a cycle see consistent values. It provides edge detection
+(pressed / released transitions) and returns zero for all axes when
+the controller is disconnected (safe default). Axis values are
+clamped to [-1.0, 1.0]; robot project subclasses apply axis
+inversion per controller mapping.
 
 Input shaping modes (`NONE`, `LINEAR`, `SOFT`, `SQUARED`, `CUBED`,
 `AGGRESSIVE`, `MORE_AGGRESSIVE`, `DYNAMIC`) make joysticks less
@@ -184,40 +180,40 @@ for selection criteria.
 Static singleton that owns all CTRE devices and StatusSignals.
 Lifecycle:
 
-1. **Registration** (during `robotInit()`) — each hardware wrapper
-   calls `addSignalTalonFX(signal, freqHz)`, `addSignalCANCoder`,
-   `addSignalPigeon`, or `addSignalCANrange`. The internal helper
-   validates the signal's `StatusCode`, adds it to the global list,
-   and sets its update frequency. `addSignalCANdi` exists for future
-   CANdi support.
-2. **Initialization** (`CTREManager.init()`) — converts the
-   `ArrayList<StatusSignal<?>>` to a primitive array for efficient
-   bulk refresh, runs `ParentDevice.optimizeBusUtilizationForAll()`
-   per CAN bus, and starts `SignalLogger` auto-logging if any
+1. **Registration** (during robot init) — each hardware wrapper
+   registers its StatusSignals with a per-device-family helper
+   (separate helpers for TalonFX, CANcoder, Pigeon, CANrange; a
+   CANdi helper is reserved for future use). The helpers validate
+   the signal's `StatusCode`, add it to the global list, and set
+   its update frequency.
+2. **Initialization** — after registration completes, the manager
+   converts its `ArrayList<StatusSignal<?>>` to a primitive array
+   for efficient bulk refresh, runs Phoenix 6 bus-utilization
+   optimization per CAN bus, and starts vendor auto-logging if any
    CANivore bus is registered (hoot files written to `/U/logs`).
-3. **Refresh** (every cycle) — `refreshAll()` calls
-   `BaseStatusSignal.refreshAll()` on the entire signal array in a
-   single pass, tracks timestamps for `getDt()`, and on failure
-   sends a throttled Elastic notification (throttle interval
-   defined in `ConstantsLib`, global). Returns `StatusCode`.
-4. **Teardown** — `stopLogging()` stops `SignalLogger` on CANivore
-   buses. `resetForTesting()` clears all internal state for unit
-   tests without reflection.
+3. **Refresh** (every cycle) — the bulk-refresh pass updates the
+   entire signal array in a single CAN round-trip, tracks timestamps
+   for delta-time queries, and on failure sends a throttled Elastic
+   notification (throttle interval defined in `ConstantsLib`,
+   global). Returns the aggregate `StatusCode`.
+4. **Teardown** — vendor auto-logging stops on CANivore buses. A
+   test-only reset clears all internal state for unit tests without
+   reflection.
 
 Devices are tracked in two structures: a global list and a
 `LinkedHashMap<String, ArrayList<ParentDevice>>` keyed by bus name
 for per-bus optimization. **All registration must complete before
-`init()`** — signals added after `init()` are not included in the
+initialization** — signals added afterward are not included in the
 refresh array.
 
 ### 3.6 `HardwareManager`
 
-Forward-compatible entry point for `refreshAll()`. Today it
-delegates to `CTREManager.refreshAll()`; in the future it will also
+Forward-compatible entry point for per-cycle bulk CAN refresh.
+Today it delegates to `CTREManager`; in the future it will also
 refresh non-CTRE devices that implement `SignalRefreshable`. Per
-[.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md),
-robot startup code should call `HardwareManager.refreshAll()` not
-`CTREManager.refreshAll()` directly.
+[team271-lib rule](../../../../.claude/rules/team271-lib.md), robot
+startup code should invoke `HardwareManager` rather than
+`CTREManager` directly.
 
 ### 3.7 `FaultMonitor`
 
@@ -226,8 +222,8 @@ Registers named fault signals with `CTREManager`, refreshes them
 each cycle, publishes per-fault booleans plus a summary `Has Fault`
 boolean to NetworkTables, and raises a persistent `Alert` in the
 "Faults" group for each active fault. Per-device fault inventories
-are listed in
-§3.7 FaultMonitor above.
+are enumerated in code — the specific fault set varies by device
+type (TalonFX, CANcoder, Pigeon2, CANrange).
 
 ### 3.8 Passthrough Getter Reference
 
@@ -400,12 +396,10 @@ methods. This is enforced by convention (not by an assert).
 
 `TransmissionFX` exposes Motion Magic parameters and PID gains as
 tunables (`Tune/MMCruiseVel`, `Tune/MMAccel`, `Tune/MMJerk`,
-`Tune/PID_kP` through `Tune/PID_kS`). Full inventory in
-§8.2 above for the full list of tunable parameters.
+`Tune/PID_kP` through `Tune/PID_kS`).
 
-Changes are detected in `checkTuning()` (called from
-`outputTelemetry()`) and applied via `configPIDFSlot` or
-`setMMConfig`, which issue single-signal CAN writes.
+Changes are detected during telemetry output and applied via
+single-signal CAN writes.
 
 ### 8.3 `StatusSignal` Update Frequencies
 
@@ -436,4 +430,4 @@ and call `CTREManager.resetForTesting()` in `@BeforeEach`. See the
 CTREManager cleanup pattern in
 [SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).
 
-Test IDs: TEST-HW-NNN.
+Test IDs: `[TEST-HW-NNN]`.

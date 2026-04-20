@@ -1,4 +1,4 @@
-# ADR-004: Layered Architecture — api ← vendor/ctre ← hardware ← control ← subsystem ← auto
+# ADR-004: Layered Architecture — api ← vendor/* ← hardware ← control ← subsystem ← auto
 
 ## Status
 
@@ -26,6 +26,8 @@ layers below it. From bottom to top:
 | ----- | ------- | ---------- |
 | 1 | `api/` | (none — pure interfaces) |
 | 2 | `vendor/ctre/` | `api/` + CTRE Phoenix 6 |
+| 2 | `vendor/limelight/` | `api/` + `util/LimelightHelpers` |
+| 2 | `vendor/photonvision/` | `api/` + `photonlib` |
 | 3 | `hardware/` | `vendor/ctre/`, `api/` |
 | 4 | `control/` | `hardware/` |
 | 5 | `subsystem/` | `control/`, `hardware/` |
@@ -46,9 +48,11 @@ See [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-li
 3. **Change impact.** A change in `api/` requires updates in every
    layer above; a change in `auto/` never requires updates below.
    This maps directly to how the library is evolved.
-4. **Vendor pluggability.** The api/ ← vendor/ctre/ split leaves a
-   seam for a future WPILib or REV implementation, without forcing
-   one to exist today (ADR-006).
+4. **Vendor pluggability.** The api/ ← vendor/* split supports
+   multiple vendor implementations per `api/` interface. CTRE was
+   V1 (ADR-006); Limelight + PhotonVision under `api/vision/`
+   (ADR-016) demonstrate that the same seam accommodates a
+   second, independent domain.
 
 ## Consequences
 
@@ -78,6 +82,8 @@ See [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-li
 
 ## References
 
-- [SDD-team271-lib.md §2](../sdd/SDD-team271-lib.md)
-- [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-lib-dependency-diagram.mmd)
+- [SDD-team271-lib.md §2 Scope and Boundaries](../sdd/SDD-team271-lib.md#2-scope-and-boundaries)
+- [team271-lib dependency diagram](../../internal/team271-lib-dependency-diagram.mmd)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
+- [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md) — CTRE vendor
+- [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) — Vision vendor(s)

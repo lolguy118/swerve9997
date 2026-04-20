@@ -80,14 +80,15 @@ and fail-safe behavior.
 - **Timeout as a guideline, not a rule.** Rejected — guidelines decay
   under schedule pressure; rules enforced at the type system do not.
 - **Global timeout wrapper.** Rejected — different mechanisms need
-  different timeouts (homing takes 2 s, launcher spin-up takes 3 s);
-  globals are always wrong somewhere.
+  different timeouts (a quick-to-settle homing vs. a longer launcher
+  spin-up are very different operations); globals are always wrong
+  somewhere.
 
 ## References
 
 - [Team271-Software-Coding-Standard-Safety.md](../../../common/Team271-Software-Coding-Standard-Safety.md)
   (CODE-SAF-008 through CODE-SAF-011)
-- [SDD-auto.md §AutoMoveConditional](../sdd/SDD-auto.md)
-- [SDD-subsystem.md §Homing](../sdd/SDD-subsystem.md)
+- [SDD-auto.md §3 Module Decomposition](../sdd/SDD-auto.md#3-module-decomposition) (see AutoMoveConditional)
+- [SDD-subsystem.md §6.4 Homing Timeout](../sdd/SDD-subsystem.md#64-homing-timeout)
 - [.claude/rules/safety.md](../../../../.claude/rules/safety.md)
 - [ADR-010](ADR-010-subsystem-exception-isolation.md)

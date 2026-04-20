@@ -42,18 +42,6 @@ This SDD covers:
   implementation backed by the `photonlib` vendordep
 - Passthrough getter inventory for the vision layer (§6)
 
-This SDD does **not** cover:
-
-- `util/LimelightHelpers` itself — see
-  [SDD-util.md §3.4](SDD-util.md)
-- Pose-estimator integration (e.g.,
-  `SwerveDrivePoseEstimator.addVisionMeasurement`) — that happens
-  in robot-project subsystem code, not in the library
-- Neural / ML-based object detection — deferred; see §9 "Planned"
-- Luma P1 implementation — deferred; see §9 "Planned"
-- Multi-camera aggregation (`VisionSubsystem`, pushed consumers) —
-  deferred; see §9 "Planned"
-
 ## 3. Module Decomposition
 
 ### 3.1 `api/vision/Camera`
@@ -135,14 +123,13 @@ whether to push robot orientation each cycle). Defaults live in
 `LimelightCameraConfig` — never in this SDD (per
 [`.claude/rules/docs.md`](../../../../.claude/rules/docs.md)).
 
-`robotPeriodicBefore()` reads the Megatag estimate and fiducial
+The pre-periodic hook reads the Megatag estimate and fiducial
 array **once per cycle** via `LimelightHelpers`, applies the
 pre-publish rejection filter, and caches a `PoseEstimate` +
-`TargetDetection` pair. `getLatestPoseEstimate()` and
-`getLatestTarget()` return those cached values wrapped in
-`Optional`. `robotPeriodicAfter()` is a no-op unless
-`updateRobotOrientation` is enabled, in which case it pushes
-the latest gyro yaw back to the Limelight.
+`TargetDetection` pair. The latest-accessor getters return those
+cached values wrapped in `Optional`. The post-periodic hook is a
+no-op unless `updateRobotOrientation` is enabled, in which case it
+pushes the latest gyro yaw back to the Limelight.
 
 ### 3.6 `vendor/photonvision/PhotonCamera`
 
@@ -160,11 +147,11 @@ asymmetry with `LimelightCamera` is intentional — PhotonVision
 requires the field layout and camera-to-robot transform because
 the consumer computes pose; Limelight computes pose internally.
 
-`robotPeriodicBefore()` pulls the latest `PhotonPipelineResult`,
-runs the configured `PhotonPoseEstimator` with
+The pre-periodic hook pulls the latest `PhotonPipelineResult`, runs
+the configured `PhotonPoseEstimator` with
 `MULTI_TAG_PNP_ON_COPROCESSOR` (fallback: `LOWEST_AMBIGUITY`),
 applies the rejection filter, and caches a `PoseEstimate` +
-`TargetDetection` pair. Strategy enum reflects whichever branch
+`TargetDetection` pair. The strategy enum reflects whichever branch
 produced the cached estimate.
 
 ## 4. Data Flow
@@ -210,7 +197,7 @@ autoAlign.execute()
 | Both raw signals and recommended stddev on `PoseEstimate` | Default for simple robots; escape hatch for tuned ones | [ADR-016](../adr/ADR-016-vendor-neutral-vision-abstraction.md) |
 | Passthrough per vendor (ADR-003) | Preserves access to vendor-specific features not on `Camera` | [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md) |
 | Limelight passthrough is NT-name + helper records | Limelight has no "raw object" like `TalonFX` | See §6 |
-| Per-camera `robotPeriodicBefore()` read | Matches desired-to-actual + bulk-refresh discipline | [ADR-014](../adr/ADR-014-desired-to-actual-state-pattern.md), [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
+| Per-camera pre-periodic read | Matches desired-to-actual + bulk-refresh discipline | [ADR-014](../adr/ADR-014-desired-to-actual-state-pattern.md), [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
 | Record allocation per cycle is acceptable | ~48 bytes × cameras × 50 Hz; CODE-GEN-004 targets unbounded allocation in hot loops, not small value records returned from cached state | [CODE-GEN-004](../../../common/Team271-Software-Coding-Standard-General.md) |
 
 ## 6. Passthrough Getter Reference

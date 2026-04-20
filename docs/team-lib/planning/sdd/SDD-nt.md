@@ -30,7 +30,53 @@ This SDD covers:
 
 ## 3. Module Decomposition
 
-### 3.1 `NTTable`
+### 3.1 Telemetry, Logging, and Dashboard Landscape
+
+The library emits observable data to several sinks via primitives
+that live across `nt/`, `util/`, and `hardware/`. This subsection
+is the navigation hub; overlap rules live here so reviewers do not
+invent new paths.
+
+**Sinks:**
+
+| Sink | Nature | Readers |
+| ---- | ------ | ------- |
+| NetworkTables 4 | Live key/value, bidirectional | Elastic, Shuffleboard, operator tools during a match |
+| AdvantageKit `.wpilog` | Time-series log; on-robot write, offline replay | AdvantageScope, WPILib SysID tool, post-match analysis |
+| Elastic notifications | Transient UI popups (INFO / WARNING / ERROR) | Elastic dashboard during a match |
+| Driver Station console | Text messages from `DriverStation.report*` | Driver Station app's console |
+| CTRE SignalLogger `.hoot` | Raw Phoenix 6 CANivore signals | AdvantageScope (via Phoenix 6 tooling) |
+
+**Library primitives:**
+
+| Primitive | Owning SDD | Writes to |
+| --------- | ---------- | --------- |
+| `NTEntry` | this SDD (§3.3) | NT **and** AdvantageKit (dual sink) |
+| `LoggedNTInput` | this SDD (§3.4) | reads NT; records to AdvantageKit on every read |
+| `NTTable` | this SDD (§3.2) | namespace only; no value writes |
+| `Alert` | [SDD-util.md](SDD-util.md) | AdvantageKit (active state per cycle); Elastic + Driver Station on activation |
+| `Elastic.sendNotification` | [SDD-util.md](SDD-util.md) | Elastic UI only (transient; not replayable) |
+| CTRE `SignalLogger` | [SDD-hardware.md §3.5](SDD-hardware.md) | `.hoot` files on CANivore buses |
+| AdvantageKit `Logger.recordOutput` | external (AdvantageKit) | AdvantageKit only (no NT) |
+
+**Decision matrix — "I need to emit this data; which primitive?":**
+
+| Intent | Use |
+| ------ | --- |
+| Telemetry value visible live **and** captured for replay | `NTEntry` (dual sink) |
+| Tunable the operator can adjust from the dashboard | `LoggedNTInput` |
+| Log-only metric (too noisy for NT, no operator value) | AdvantageKit `Logger.recordOutput` directly |
+| Persistent state flag surviving across cycles (e.g., disconnected device) | `Alert` |
+| One-shot operator notification (timeout, command failure) | `Elastic.sendNotification` |
+| Raw Phoenix 6 signal capture for post-match analysis | Let CTRE `SignalLogger` handle it (wired by `CTREManager`) |
+
+Two primitives write to the same AdvantageKit log — `NTEntry` (as a
+side effect of its NT publish) and direct `Logger.recordOutput`
+calls. Prefer `NTEntry` whenever the value is also useful on a
+live dashboard; fall back to direct AdvantageKit recording only
+when NT bandwidth would be wasted on a reader-less topic.
+
+### 3.2 `NTTable`
 
 Hierarchical namespace container wrapping a WPILib `NetworkTable`.
 Each `TObj` creates a child `NTTable` under its parent, producing
@@ -39,7 +85,7 @@ Provides typed entry construction (key + default) and a sub-table
 helper for further nesting. `NTTable` has no change detection — it
 is a namespace only.
 
-### 3.2 `NTEntry`
+### 3.3 `NTEntry`
 
 Typed NT entry for **output-only** telemetry. Supports `boolean`,
 `double`, `long`, `int`, and `String` types. Publishing a value sets
@@ -48,7 +94,7 @@ AdvantageKit so it appears in the match log as well as on the live
 dashboard. `NTEntry` has no change detection — callers that read an
 entry receive the most recently published value.
 
-### 3.3 `LoggedNTInput`
+### 3.4 `LoggedNTInput`
 
 Dashboard-tunable parameter with built-in change detection and
 AdvantageKit logging. Each instance owns both an NT publisher (to push

@@ -33,7 +33,7 @@ routines and a state-machine pattern for subsystems:
   separates **desired state** from **actual state**
   (see [ADR-014](ADR-014-desired-to-actual-state-pattern.md)), with
   `robotPeriodicBefore()`/`robotPeriodicAfter()` as lifecycle hooks.
-  They are not WPILib `CommandSubsystem`s.
+  They are not WPILib `SubsystemBase`s.
 - **Autonomous routines** compose from `AutoMove` (the atomic unit),
   `AutoMoveSequence`, `AutoMoveParallel`, `AutoMoveTimed`, and
   `AutoMoveConditional` (with mandatory timeout). There is no
@@ -55,10 +55,11 @@ routines and a state-machine pattern for subsystems:
    (idle, homing, running, error) are naturally expressed as enum
    transitions; forcing them into `Command`s adds ceremony without
    clarity.
-4. **Simpler exception isolation.**
-   [SubsystemManager.forEachSafe()](ADR-010-subsystem-exception-isolation.md)
-   wraps every subsystem's periodic call. Command-Based's scheduler has
-   its own exception semantics that interact unpredictably with this.
+4. **Simpler exception isolation.** The library's per-subsystem
+   exception-isolated iteration ([ADR-010](ADR-010-subsystem-exception-isolation.md))
+   wraps every subsystem's periodic call. Command-Based's scheduler
+   has its own exception semantics that interact unpredictably with
+   this.
 5. **Still interoperable.** `CommandBridge` lets the library consume
    PathPlanner without re-implementing path following.
 

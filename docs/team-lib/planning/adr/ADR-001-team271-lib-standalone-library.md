@@ -74,4 +74,4 @@ any specific robot's geometry, subsystems, or autonomous routines.
 
 - [SDD-team271-lib.md](../sdd/SDD-team271-lib.md)
 - [ADR-004](ADR-004-layered-architecture.md)
-- [SCMP.md §Library Versioning](../SCMP.md)
+- [SCMP.md §3 Library Versioning](../SCMP.md#3-library-versioning)

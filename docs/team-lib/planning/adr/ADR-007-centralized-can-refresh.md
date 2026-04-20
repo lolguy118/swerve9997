@@ -82,7 +82,7 @@ non-CTRE `SignalRefreshable` sources (e.g., a WPILib sensor bridge).
 
 ## References
 
-- [SDD-hardware.md §CTREManager](../sdd/SDD-hardware.md)
-- [SDD-team271-lib.md §Robot Periodic Cycle](../sdd/SDD-team271-lib.md)
-- [Fault tolerance — CAN Bus Fault Handling](../sdd/SDD-hardware.md)
+- [SDD-hardware.md §3.5 CTREManager](../sdd/SDD-hardware.md#35-ctremanager--centralized-can-refresh)
+- [SDD-team271-lib.md §4 Data Flow](../sdd/SDD-team271-lib.md#4-data-flow)
+- [SDD-hardware.md §6 Error Handling](../sdd/SDD-hardware.md#6-error-handling)
 - [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md)

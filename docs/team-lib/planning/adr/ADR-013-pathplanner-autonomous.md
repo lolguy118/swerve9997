@@ -84,7 +84,7 @@ following in autonomous mode. Integration follows three rules:
 ## References
 
 - [SDD-auto.md](../sdd/SDD-auto.md)
-- [SDD-vendor-ctre.md §CommandBridge](../sdd/SDD-vendor-ctre.md)
-- [SCMP.md §4 Vendordep Management](../SCMP.md)
+- [SDD-vendor-ctre.md §3.3 bridge/CommandBridge](../sdd/SDD-vendor-ctre.md#33-bridgecommandbridge)
+- [SCMP.md §4 Vendordep Management](../SCMP.md#4-vendordep-management-team271-lib-specifics)
 - [ADR-005](ADR-005-composition-over-commands.md)
 - PathPlanner docs: <https://pathplanner.dev/home.html>

@@ -27,8 +27,8 @@ threw an NPE.
 try-catch. On exception:
 
 1. The error is logged to the Driver Station console.
-2. A throttled (1 per 2 seconds per subsystem) Elastic notification
-   alerts the driver.
+2. A throttled Elastic notification alerts the driver (per-subsystem
+   throttle window is a named constant in `ConstantsLib`).
 3. The exception is swallowed. Other subsystems continue to run.
 
 `robotInit()` is the one exception to isolation: a failure during init
@@ -78,5 +78,5 @@ initialized subsystem.
 
 ## References
 
-- [SDD-subsystem.md — Exception Isolation](../sdd/SDD-subsystem.md)
+- [SDD-subsystem.md §6.1 Exception Isolation](../sdd/SDD-subsystem.md#61-exception-isolation)
 - [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md)

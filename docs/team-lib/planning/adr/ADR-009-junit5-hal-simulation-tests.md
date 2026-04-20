@@ -89,6 +89,6 @@ coverage metrics.
 
 ## References
 
-- [SVP.md §3](../SVP.md)
-- [SDD-hardware.md §HAL Init](../sdd/SDD-hardware.md)
-- [docs/guides/development-setup.md](../../guides/development-setup.md)
+- [SVP.md §3 Test Levels](../SVP.md#3-test-levels-library-specific-notes)
+- [SDD-hardware.md §9 Test Coverage Requirements](../sdd/SDD-hardware.md#9-test-coverage-requirements)
+- [development-setup.md](../../guides/development-setup.md)

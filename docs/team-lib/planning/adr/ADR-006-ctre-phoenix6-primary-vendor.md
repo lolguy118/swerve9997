@@ -24,7 +24,7 @@ robot is a CTRE device.
 ## Decision
 
 Team271-Lib is CTRE-focused. The only supported motor controllers
-and rotational sensors are CTRE Phoenix 6 devices:
+and sensors are CTRE Phoenix 6 devices:
 
 - **Motors:** TalonFX (Kraken X60 / Kraken X44 / Falcon 500), TalonFXS
 - **Encoders:** CANcoder (absolute + relative), FX internal rotor
@@ -85,7 +85,7 @@ that need them; the library does not abstract them.
 
 - [SDD-vendor-ctre.md](../sdd/SDD-vendor-ctre.md)
 - [SDD-api.md](../sdd/SDD-api.md)
-- [SCMP.md §4](../SCMP.md)
+- [SCMP.md §4 Vendordep Management](../SCMP.md#4-vendordep-management-team271-lib-specifics)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
 - [ADR-003](ADR-003-passthrough-wrapper-not-wall.md)
 - [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) — cameras

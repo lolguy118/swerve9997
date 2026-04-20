@@ -87,7 +87,7 @@ in this library.**
 
 ## References
 
-- [SDD-team271-lib.md §TObj Lifecycle](../sdd/SDD-team271-lib.md)
-- [SDD-subsystem.md §SubsystemManager](../sdd/SDD-subsystem.md)
-- [SDD-hardware.md §CTREManager](../sdd/SDD-hardware.md)
+- [SDD-team271-lib.md §3.2 TObj](../sdd/SDD-team271-lib.md#32-tobj)
+- [SDD-subsystem.md §3.2 SubsystemManager](../sdd/SDD-subsystem.md#32-subsystemmanager)
+- [SDD-hardware.md §3.5 CTREManager](../sdd/SDD-hardware.md#35-ctremanager--centralized-can-refresh)
 - [ADR-001](ADR-001-team271-lib-standalone-library.md)

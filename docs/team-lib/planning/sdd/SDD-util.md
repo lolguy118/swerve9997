@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | UTL-001 through UTL-NNN (SRS §4.9) |
+| Requirements Traced | `[UTL-001]`..`[UTL-005]` (SRS §4.9) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -16,7 +20,7 @@ math utilities.
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `Alert` — persistent, typed (ERROR / WARNING / INFO) driver-station alerts;
   grouped and output to AdvantageKit
@@ -25,59 +29,50 @@ math utilities.
 - `LimelightHelpers` — wrapper around Limelight JSON API
 - `Util` — math helpers (clamp, deadband, interpolation, etc.)
 
-**This SDD does not cover:**
-
-- NT tuning entries → [SDD-nt.md](SDD-nt.md)
-- Vision processing beyond Limelight helpers
-
 ## 3. Module Decomposition
 
 ### 3.1 `Alert`
 
-`Alert` represents a single persistent, categorized driver-station alert.
-Each alert has a type (`ERROR`, `WARNING`, or `INFO`), a message, and
-an active/inactive state. When `set(true)` is called on an inactive
-alert, the alert logs to the DriverStation and sends a matching Elastic
-notification at the corresponding severity; `set(false)` clears the
-active state silently. Alerts live in named groups (default group:
-`"Alerts"`) auto-created via a thread-safe `ConcurrentHashMap`. The
-`Alert.outputTelemetry()` static method publishes every group's active
-alerts to AdvantageKit as string arrays, keyed by alert type — it is
-invoked each cycle by `SubsystemManager` so alerts appear in both the
-dashboard and the match log. `alert.remove()` deregisters an alert
-from its group.
+`Alert` represents a single persistent, categorized driver-station
+alert. Each alert has a type (`ERROR`, `WARNING`, or `INFO`), a
+message, and an active/inactive state. Activating an inactive alert
+logs to the DriverStation console and sends a matching Elastic
+notification at the corresponding severity; clearing the alert is
+silent. Alerts live in named groups (default group: `"Alerts"`)
+auto-created via a thread-safe `ConcurrentHashMap`. Every cycle,
+the static alert-telemetry pass publishes each group's active
+alerts to AdvantageKit as string arrays, keyed by alert type, so
+alerts appear in both the dashboard and the match log.
 
 ### 3.2 `Elastic`
 
 `Elastic` provides fire-and-forget notifications to the Elastic
-Dashboard. `Elastic.sendNotification(Notification)` serializes a
-notification to JSON via Jackson and publishes it to
-`/Elastic/RobotNotifications`. The `Notification` class supports a
-fluent builder (`withLevel`, `withTitle`, `withDescription`,
-`withDisplaySeconds`, `withWidth`, `withHeight`) and three severity
-levels (`INFO`, `WARNING`, `ERROR`). `Elastic.selectTab(name)` and
-`Elastic.selectTab(index)` switch the visible tab. Unlike `Alert`,
+Dashboard. A notification is built with a severity level (`INFO`,
+`WARNING`, `ERROR`), a title, a description, and optional display
+geometry (display seconds, width, height) via a fluent builder; the
+notification is serialized to JSON through Jackson and published to
+`/Elastic/RobotNotifications`. A separate tab-selection helper
+switches the visible Elastic tab by name or index. Unlike `Alert`,
 Elastic has no persistent state — each call produces a transient
 popup.
 
 ### 3.3 `DriveSignal`
 
-Immutable data class carrying differential-drive motor outputs: left
-and right duty cycle (clamped to [-1.0, 1.0] at construction) plus a
-brake-mode flag. Exposes `getLeft()`, `getRight()`, `getBrakeMode()`,
-and `normalize()` (scales outputs so the larger magnitude equals 1.0).
-Static constants `NEUTRAL` and `BRAKE` provide common defaults. The
-class is final with `private final` fields — it cannot be mutated
-after construction.
+Immutable data class carrying differential-drive motor outputs:
+left and right duty cycle (clamped to [-1.0, 1.0] at construction)
+plus a brake-mode flag. Accessors expose the two duty-cycle values
+and the brake flag; a normalization helper scales both outputs so
+the larger magnitude equals 1.0. Static constants `NEUTRAL` and
+`BRAKE` provide common defaults. The class is final with
+`private final` fields — it cannot be mutated after construction.
 
 ### 3.4 `LimelightHelpers`
 
 Static helper class wrapping the Limelight NetworkTables JSON API.
-Provides accessors for targeting validity (`getTV`), horizontal and
-vertical offset (`getTX`, `getTY`), area, robot pose in 2D and 3D,
-and Megatag pose estimation. When the camera is disconnected, the
-helpers return safe defaults (zero or empty `Pose2d`) rather than
-throwing.
+Provides accessors for targeting validity, horizontal and vertical
+offsets, area, robot pose in 2D and 3D, and Megatag pose estimation.
+When the camera is disconnected, the helpers return safe defaults
+(zero or empty `Pose2d`) rather than throwing.
 
 `LimelightHelpers` is the raw vendor surface consumed by
 `vendor/limelight/LimelightCamera` — see
@@ -88,16 +83,16 @@ feature `Camera` does not express.
 
 ### 3.5 `Util`
 
-Static math utility class with no instance state. Provides:
+Static math utility class with no instance state. Provides helpers
+for:
 
-- Comparison/range: `epsilonEquals`, `inRange`, `allCloseTo`
-- Clamping/mapping: `limit`, `interpolate`, `reMap`
-- Joystick shaping: `handleDeadzone` (1D), `handleDeadzone_Radial` (2D),
-  `convertTrigger`
-- Miscellaneous: `getMACAddress` (first non-loopback MAC)
+- Floating-point comparison and range checks
+- Clamping, linear interpolation, and value remapping
+- Joystick shaping (1D and radial deadzones, trigger conversion)
+- Host-identity helpers (first non-loopback MAC address)
 
-The `kEpsilon` constant is used as the default tolerance for
-floating-point comparisons.
+The `kEpsilon` constant is the default tolerance for floating-point
+comparisons.
 
 ## 4. Data Flow
 
@@ -181,6 +176,6 @@ required.
 | `Elastic` | Yes (NT4) | Requires HAL for NT publishing; test JSON serialization |
 | `LimelightHelpers` | Yes (NT4) | NT backed; publish values in test fixture |
 
-Test IDs: TEST-UTL-NNN. The `libtest` package is excluded from
+Test IDs: `[TEST-UTL-NNN]`. The `libtest` package is excluded from
 coverage metrics per
-[SVP.md §Coverage Targets](../SVP.md).
+[SVP.md §4](../SVP.md#4-coverage-targets-library-specific-numbers).

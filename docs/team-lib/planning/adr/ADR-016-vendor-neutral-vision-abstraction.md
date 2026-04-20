@@ -182,10 +182,10 @@ derive their own trust model from the raw signals.
 
 - [SDD-vision.md](../sdd/SDD-vision.md)
 - [SDD-api.md](../sdd/SDD-api.md)
-- [SDD-util.md](../sdd/SDD-util.md) — `LimelightHelpers`
+- [SDD-util.md §3.4 LimelightHelpers](../sdd/SDD-util.md#34-limelighthelpers)
 - [ADR-003](ADR-003-passthrough-wrapper-not-wall.md) — passthrough contract
 - [ADR-004](ADR-004-layered-architecture.md) — layered architecture
 - [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md) — motor/sensor
   vendor scope (cameras are out of scope for ADR-006)
-- [SCMP.md §4](../SCMP.md) — vendordep management
+- [SCMP.md §4 Vendordep Management](../SCMP.md#4-vendordep-management-team271-lib-specifics)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)

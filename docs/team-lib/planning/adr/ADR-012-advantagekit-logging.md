@@ -82,7 +82,7 @@ framework:
 
 ## References
 
-- [SDD-team271-lib.md §Telemetry](../sdd/SDD-team271-lib.md)
+- [SDD-nt.md §3.1 Telemetry, Logging, and Dashboard Landscape](../sdd/SDD-nt.md#31-telemetry-logging-and-dashboard-landscape)
 - [SDD-sysid.md](../sdd/SDD-sysid.md)
 - [ADR-008](ADR-008-logged-nt-input-backed-tuning.md)
 - AdvantageKit docs: <https://docs.advantagekit.org/>

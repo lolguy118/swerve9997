@@ -74,7 +74,7 @@ automatically on every doc edit.
 
 ## References
 
-- [SDD-nt.md](../sdd/SDD-nt.md)
-- [SDD-team271-lib.md §Tuning Infrastructure](../sdd/SDD-team271-lib.md)
+- [SDD-nt.md §3.4 LoggedNTInput](../sdd/SDD-nt.md#34-loggedntinput)
+- [SDD-team271-lib.md §3.5 Tuning Infrastructure](../sdd/SDD-team271-lib.md#35-tuning-infrastructure)
 - [.claude/hooks/check-doc-tunables.sh](../../../../.claude/hooks/check-doc-tunables.sh)
 - [ADR-012](ADR-012-advantagekit-logging.md)

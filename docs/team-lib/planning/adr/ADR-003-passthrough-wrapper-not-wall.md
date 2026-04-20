@@ -77,6 +77,6 @@ Concretely:
 
 ## References
 
-- [SDD-vendor-ctre.md §Passthrough Reference](../sdd/SDD-vendor-ctre.md)
+- [SDD-vendor-ctre.md §6 Passthrough Getter Reference](../sdd/SDD-vendor-ctre.md#6-passthrough-getter-reference)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
 - [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md)

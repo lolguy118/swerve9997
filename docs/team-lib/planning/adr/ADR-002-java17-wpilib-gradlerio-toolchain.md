@@ -66,6 +66,6 @@ Format; dependencies are managed via vendordep JSON files under
 
 ## References
 
-- [Team271-Software-Coding-Standard.md §2](../../../common/Team271-Software-Coding-Standard.md)
-- [SDP.md §4](../SDP.md)
-- [SCMP.md §4](../SCMP.md)
+- [Team271-Software-Coding-Standard.md §2 Programming Language](../../../common/Team271-Software-Coding-Standard.md#2-programming-language)
+- [SDP.md §4 Development Environment](../SDP.md#4-development-environment-library-pins)
+- [SCMP.md §4 Vendordep Management](../SCMP.md#4-vendordep-management-team271-lib-specifics)

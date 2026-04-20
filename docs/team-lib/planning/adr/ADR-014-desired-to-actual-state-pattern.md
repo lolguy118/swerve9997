@@ -87,7 +87,7 @@ axes update `desiredState`; hardware is commanded in
 
 ## References
 
-- [SDD-subsystem.md §State-Machine Pattern](../sdd/SDD-subsystem.md)
+- [SDD-subsystem.md §3.1 Subsystem](../sdd/SDD-subsystem.md#31-subsystem)
 - [ADR-005](ADR-005-composition-over-commands.md)
 - [ADR-010](ADR-010-subsystem-exception-isolation.md)
 - [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md)

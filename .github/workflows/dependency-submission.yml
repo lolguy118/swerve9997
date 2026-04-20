@@ -20,5 +20,11 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # Fail-soft: the POST to GitHub's Dependency Graph API requires the
+      # "Dependency graph" feature to be enabled in repo Settings → Code
+      # security. Until that is turned on by an admin, this step returns a
+      # 404/403 and would otherwise mark the run red. Flip back to default
+      # (remove continue-on-error) once the feature is enabled.
       - name: Submit Gradle dependency graph
         uses: gradle/actions/dependency-submission@v4
+        continue-on-error: true

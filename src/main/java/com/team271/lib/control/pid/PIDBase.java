@@ -572,14 +572,28 @@ public class PIDBase extends TObj implements PIDController {
      *
      */
     protected void checkTuning() {
-        if (telemetryLevel != TelemetryLevel.FULL) return;
+        if (telemetryLevel != TelemetryLevel.FULL) {
+            return;
+        }
 
-        if (tuneP.hasChanged()) setP(tuneP.getDbl());
-        if (tuneI.hasChanged()) setI(tuneI.getDbl());
-        if (tuneD.hasChanged()) setD(tuneD.getDbl());
-        if (tunePosTol.hasChanged()) setTolerance(tunePosTol.getDbl());
-        if (tunePDeadband.hasChanged()) setPDeadband(tunePDeadband.getDbl());
-        if (tuneIZone.hasChanged()) setIZone(tuneIZone.getDbl());
+        if (tuneP.hasChanged()) {
+            setP(tuneP.getDbl());
+        }
+        if (tuneI.hasChanged()) {
+            setI(tuneI.getDbl());
+        }
+        if (tuneD.hasChanged()) {
+            setD(tuneD.getDbl());
+        }
+        if (tunePosTol.hasChanged()) {
+            setTolerance(tunePosTol.getDbl());
+        }
+        if (tunePDeadband.hasChanged()) {
+            setPDeadband(tunePDeadband.getDbl());
+        }
+        if (tuneIZone.hasChanged()) {
+            setIZone(tuneIZone.getDbl());
+        }
         if (tuneOutputMin.hasChanged() || tuneOutputMax.hasChanged()) {
             setOutputRange(tuneOutputMin.getDbl(), tuneOutputMax.getDbl());
         }
@@ -591,7 +605,9 @@ public class PIDBase extends TObj implements PIDController {
      *
      */
     public void outputTelemetry() {
-        if (telemetryLevel == TelemetryLevel.OFF) return;
+        if (telemetryLevel == TelemetryLevel.OFF) {
+            return;
+        }
 
         checkTuning();
 

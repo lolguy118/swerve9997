@@ -11,20 +11,20 @@ import com.team271.lib.hardware.controllers.GravityType;
  * configuration, gravity compensation, continuous wrap, software limits, and closed-loop
  * position/velocity control.
  *
- * <h3>PID Slot Model</h3>
+ * <h2>PID Slot Model</h2>
  *
  * <p>Supports up to 3 independent PID + feedforward gain slots (0, 1, 2). Each slot stores kP, kI,
  * kD, kV, kS, kG, and kA. The active slot is selected at runtime when calling closed-loop output
  * methods.
  *
- * <h3>Gravity Compensation</h3>
+ * <h2>Gravity Compensation</h2>
  *
  * <ul>
  *   <li>{@link GravityType#ARM_COSINE} — output = kG * cos(position). For pivots/arms.
  *   <li>{@link GravityType#ELEVATOR_STATIC} — output = kG (constant). For elevators.
  * </ul>
  *
- * <h3>Continuous Wrap</h3>
+ * <h2>Continuous Wrap</h2>
  *
  * <p>When enabled, the closed-loop error wraps at the discontinuity point, taking the shortest path
  * to the target. Essential for swerve azimuth and turrets.

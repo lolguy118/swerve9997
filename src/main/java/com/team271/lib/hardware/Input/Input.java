@@ -183,6 +183,8 @@ public class Input extends Subsystem {
             case INPUT_SHAPING_DYNAMIC:
                 tmpValue = (1.0 * Math.cos(Math.PI * (tmpValue + 1.0)) / 2.0) + 0.5;
                 break;
+            default:
+                break;
         }
 
         /*

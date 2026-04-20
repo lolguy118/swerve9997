@@ -135,15 +135,21 @@ public class Balance {
     }
 
     protected void checkTuning() {
-        if (tuneSpeedSlow.hasChanged()) robotSpeedSlow = tuneSpeedSlow.getDbl();
-        if (tuneSpeedFast.hasChanged()) robotSpeedFast = tuneSpeedFast.getDbl();
+        if (tuneSpeedSlow.hasChanged()) {
+            robotSpeedSlow = tuneSpeedSlow.getDbl();
+        }
+        if (tuneSpeedFast.hasChanged()) {
+            robotSpeedFast = tuneSpeedFast.getDbl();
+        }
         if (tuneOnChargeDeg.hasChanged()) {
             onChargeStationDegree = isFwd ? -tuneOnChargeDeg.getDbl() : tuneOnChargeDeg.getDbl();
         }
         if (tuneLevelDeg.hasChanged()) {
             levelDegree = isFwd ? -tuneLevelDeg.getDbl() : tuneLevelDeg.getDbl();
         }
-        if (tuneDebounceTime.hasChanged()) debounceTime = tuneDebounceTime.getDbl();
+        if (tuneDebounceTime.hasChanged()) {
+            debounceTime = tuneDebounceTime.getDbl();
+        }
     }
 
     public void outputTelemetry() {

@@ -259,6 +259,14 @@ checkstyle {
     maxWarnings = 0  // start strict — the config is minimal (2 rules)
 }
 
+// Javadoc: silence "missing @return/@param/no comment" doclint warnings during
+// rollout so the task only fails on real errors (malformed HTML, broken refs,
+// etc.). Tighten by removing individual `-missing` flags as Javadoc coverage
+// grows. See CODE-COM enforcement in -Compliance.md.
+tasks.named('javadoc').configure {
+    options.addStringOption('Xdoclint:all,-missing', '-quiet')
+}
+
 // Spotless formatting
 project.compileJava.dependsOn(spotlessApply)
 spotless {

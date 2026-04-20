@@ -101,7 +101,9 @@ public class RangeCANrange extends RangeCTRE {
         for (int i = 0; i < ConstantsLib.CAN_RETRY_COUNT; ++i) {
             ctreStatus =
                     range.getConfigurator().apply(rangeConfig, ConstantsLib.CAN_LONG_TIMEOUT_MS);
-            if (ctreStatus.isOK()) break;
+            if (ctreStatus.isOK()) {
+                break;
+            }
         }
 
         return ctreStatus;

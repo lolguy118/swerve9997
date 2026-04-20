@@ -115,7 +115,9 @@ public class IMUPigeon2 extends IMUCTRE {
         /* Retry config apply up to retryCountCAN times, report if failure */
         for (int i = 0; i < ConstantsLib.CAN_RETRY_COUNT; ++i) {
             ctreStatus = imu.getConfigurator().apply(imuConfig, ConstantsLib.CAN_LONG_TIMEOUT_MS);
-            if (ctreStatus.isOK()) break;
+            if (ctreStatus.isOK()) {
+                break;
+            }
         }
 
         return ctreStatus;

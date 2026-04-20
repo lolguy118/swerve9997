@@ -666,7 +666,9 @@ public class ControllerTalonFX extends ControllerSmart {
 
     public void setPSlot(final int argSlot, final double argSetP) {
         SlotAccess s = slotAccess(argSlot);
-        if (s != null) s.setP.accept(argSetP);
+        if (s != null) {
+            s.setP.accept(argSetP);
+        }
     }
 
     public double getPSlot(final int argSlot) {
@@ -676,7 +678,9 @@ public class ControllerTalonFX extends ControllerSmart {
 
     public void setISlot(final int argSlot, final double argSetI) {
         SlotAccess s = slotAccess(argSlot);
-        if (s != null) s.setI.accept(argSetI);
+        if (s != null) {
+            s.setI.accept(argSetI);
+        }
     }
 
     public double getISlot(final int argSlot) {
@@ -686,7 +690,9 @@ public class ControllerTalonFX extends ControllerSmart {
 
     public void setDSlot(final int argSlot, final double argSetD) {
         SlotAccess s = slotAccess(argSlot);
-        if (s != null) s.setD.accept(argSetD);
+        if (s != null) {
+            s.setD.accept(argSetD);
+        }
     }
 
     public double getDSlot(final int argSlot) {
@@ -862,7 +868,9 @@ public class ControllerTalonFX extends ControllerSmart {
     @Override
     public void setGravityGain(final int argSlot, final double argKG) {
         SlotAccess s = slotAccess(argSlot);
-        if (s != null) s.setG.accept(argKG);
+        if (s != null) {
+            s.setG.accept(argKG);
+        }
     }
 
     @Override
@@ -874,7 +882,9 @@ public class ControllerTalonFX extends ControllerSmart {
     @Override
     public void setAccelGain(final int argSlot, final double argKA) {
         SlotAccess s = slotAccess(argSlot);
-        if (s != null) s.setA.accept(argKA);
+        if (s != null) {
+            s.setA.accept(argKA);
+        }
     }
 
     @Override

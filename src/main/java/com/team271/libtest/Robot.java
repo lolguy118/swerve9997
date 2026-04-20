@@ -70,6 +70,8 @@ public class Robot extends TimedRobot {
                 Logger.addDataReceiver(
                         new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
                 break;
+            default:
+                break;
         }
 
         // Start AdvantageKit logger

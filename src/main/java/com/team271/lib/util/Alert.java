@@ -76,6 +76,8 @@ public class Alert {
                             new Elastic.Notification(
                                     Elastic.NotificationLevel.INFO, "Alert", text));
                     break;
+                default:
+                    break;
             }
         }
         if (this.active != active) {
@@ -106,6 +108,8 @@ public class Alert {
                     break;
                 case INFO:
                     DriverStation.reportWarning(text, false);
+                    break;
+                default:
                     break;
             }
         }

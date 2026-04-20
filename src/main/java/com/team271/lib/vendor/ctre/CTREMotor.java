@@ -47,7 +47,7 @@ import com.team271.lib.nt.NTTable;
  * <p>Wraps {@link ControllerTalonFX} and exposes the full CTRE feature set through both the
  * vendor-neutral interface and passthrough getters.
  *
- * <h3>Passthrough Access</h3>
+ * <h2>Passthrough Access</h2>
  *
  * <pre>
  * CTREMotor motor = ...;

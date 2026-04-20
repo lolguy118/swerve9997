@@ -31,7 +31,8 @@ it.
 
 | Source Package | SDD |
 | -------------- | --- |
-| `com.team271.lib` (root — TObj, Named, Lifecycle, TRobot) | [SDD-team271-lib.md](sdd/SDD-team271-lib.md) |
+| `com.team271.lib` (root — TObj, Named, Lifecycle, TRobot, ConstantsLib) | [SDD-team271-lib.md](sdd/SDD-team271-lib.md) |
+| `com.team271.lib.wpilib.*` (IterativeRobotBase, TimedRobot extensions) | [SDD-team271-lib.md](sdd/SDD-team271-lib.md) |
 | `com.team271.lib.api.*` | [SDD-api.md](sdd/SDD-api.md) |
 | `com.team271.lib.vendor.ctre.*`, `com.team271.lib.bridge.*` | [SDD-vendor-ctre.md](sdd/SDD-vendor-ctre.md) |
 | `com.team271.lib.hardware.*` | [SDD-hardware.md](sdd/SDD-hardware.md) |
@@ -68,9 +69,10 @@ Deliberately excluded to prevent duplication with authoritative sources:
 
 | Topic | Authoritative Source |
 | ----- | -------------------- |
-| Coding rules, naming, formatting | `../Team271-Software-Coding-Standard.md` |
-| Git workflow, PR process, commit rules | `../../CONTRIBUTING.md` (repository root) |
-| Vendordep versions | `../../vendordeps/*.json`, `../../build.gradle` |
+| Coding rules, naming, formatting | [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) |
+| Shared planning policy (SemVer, phase model, CI framework) | [`../../common/planning/`](../../common/planning/) |
+| Git workflow, PR process, commit rules | `../../../CONTRIBUTING.md` (repository root) |
+| Vendordep versions | `../../../vendordeps/*.json`, `../../../build.gradle` |
 | Robot-project requirements | Each robot project's own planning docs |
 
 ## Scope of Planning Documents

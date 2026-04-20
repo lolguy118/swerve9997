@@ -28,7 +28,7 @@ Format; dependencies are managed via vendordep JSON files under
 1. **Java over C++.** Java has a gentler onboarding curve for high
    school students who may be writing their first production code.
    Garbage collection is an acceptable tradeoff in a 20 ms periodic
-   loop with the discipline in `CODE-PERF` (no allocations in periodic
+   loop with the discipline in `CODE-GEN-004` (no allocations in periodic
    methods).
 2. **Java 17 over older Java.** Sealed types, pattern-matching switches,
    records, and text blocks make state-machine code, configuration
@@ -50,7 +50,7 @@ Format; dependencies are managed via vendordep JSON files under
 
 **Harder:**
 
-- Memory pressure matters: see `CODE-PERF` rules in the coding standard.
+- Memory pressure matters: see `CODE-GEN-004` rules in the coding standard.
 - JVM startup time is nonzero; the robot's first loop is sometimes
   slower than subsequent loops.
 - Upgrading Java version is tied to WPILib's release schedule.

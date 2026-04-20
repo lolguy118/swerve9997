@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
 
@@ -25,38 +25,29 @@ a. Year-specific robot code **shall** be in
 b. Reusable library code **shall** be in `com.team271.lib` and its
    subpackages.
 
-c. Subsystems **shall** be in the `subsystems` subpackage. Input
-   handling **shall** be in `subsystems.Input`.
+c. **(Robot-project code.)** Robot-project subsystems **shall** be
+   in the `subsystems` subpackage. Input handling **shall** be in
+   `subsystems.Input`. Library subsystems live in
+   `com.team271.lib.subsystem.*` and are out of scope for this item.
 
    **Exception:** the swerve drivetrain class implements the WPILib
    `edu.wpi.first.wpilibj2.command.Subsystem` interface (not the
    team271 `com.team271.lib.subsystem.Subsystem` base class) because
-   it extends the CTRE-generated drivetrain class. It is owned by the drive subsystem
-   and does not participate in the `SubsystemManager` lifecycle
-   directly.
+   it extends the CTRE-generated drivetrain class. It is owned by
+   the drive subsystem and does not participate in the
+   `SubsystemManager` lifecycle directly.
 
 d. Package names **shall** be all lowercase with no underscores.
 
-### CODE-MAF-003 -- Import Rules
-
-a. Absolute imports **shall** be used. No relative imports.
-
-b. Static imports **should** be used for frequently referenced
-   constants when it improves readability (e.g.,
-   `import static com.team271.frc<year>.Constants.CAN_BUS_CANIVORE_SUBSYSTEMS`).
-
-c. Each source file **shall** be free of unused imports (enforced
-   by Spotless).
-
-### CODE-MAF-004 -- Constants Organization
+### CODE-MAF-003 -- Constants Organization
 
 a. Robot-wide constants **shall** be organized in `Constants.java`
    using nested `public static final class` inner classes grouped
    by subsystem or function:
 
    ```java
-   public static final class ExampleSubsystemConstants { ... }
-   public static final class ExampleSubsystemConstants { ... }
+   public static final class ExampleASubsystemConstants { ... }
+   public static final class ExampleBSubsystemConstants { ... }
    public static final class AutoConstants { ... }
    ```
 
@@ -68,7 +59,7 @@ c. Constants specific to a single subsystem **may** alternatively be
    class, but **should** be placed in `Constants.java` when they are
    referenced by multiple classes.
 
-### CODE-MAF-005 -- Generated Code
+### CODE-MAF-004 -- Generated Code
 
 a. Generated files (`BuildConstants.java`, `TunerConstants.java`)
    **shall** not be manually edited. Changes to generated code

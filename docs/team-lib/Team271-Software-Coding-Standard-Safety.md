@@ -4,6 +4,14 @@
 
 ## Safety Practices
 
+> **Anchor:** The rules in this section implement the fail-safe timeout
+> pattern codified in
+> [ADR-011](planning/adr/ADR-011-mandatory-timeouts-fail-safe.md).
+> Subsystem-level fault-tolerance patterns (exception isolation, CAN
+> fault handling, brownout recovery) are described in
+> [SDD-subsystem.md](planning/sdd/SDD-subsystem.md) and
+> [SDD-hardware.md](planning/sdd/SDD-hardware.md).
+>
 > *Industry note: The safety rules in this section reflect the philosophy
 > of DO-178C, which requires that safety-critical software be
 > deterministic, defensive, and traceable. DO-178C is the standard used
@@ -13,9 +21,10 @@
 
 ### CODE-SAF-001 -- Input Validation
 
-a. Controller inputs **shall** be validated through deadbands and
-   input shaping before use. The `InputDriver` class centralizes
-   this validation.
+a. **(Robot-project code.)** Controller inputs **shall** be validated
+   through deadbands and input shaping before use. The `InputDriver`
+   class centralizes this validation. Library code uses the `Input`
+   base class (see [SDD-hardware.md](planning/sdd/SDD-hardware.md)).
 
 b. Auto chooser values **shall** be validated. The `default` case
    in auto selection **shall** select a safe "do nothing" mode:
@@ -51,13 +60,23 @@ b. Mechanisms with physical travel limits **shall** use soft limits
    that are only enabled after homing completes.
 
 c. Homing sequences **shall** have timeout protection to prevent
-   indefinite stalling:
+   indefinite stalling. On timeout, the subsystem **shall** fail safe
+   per [ADR-011](planning/adr/ADR-011-mandatory-timeouts-fail-safe.md):
+   stop motors, restore default current limits, transition to IDLE,
+   notify the driver via Elastic, and leave `mIsHomed = false` so
+   closed-loop control stays disabled.
 
    ```java
    if (mHomingTimer.hasElapsed(ExampleSubsystemConstants.kHomingTimeoutSec)) {
-       /* Homing timed out -- assume position and continue */
-       DriverStation.reportError("Subsystem homing timed out", false);
-       mIsHomed = true;
+       /* Homing timed out -- fail safe per ADR-011 */
+       mTransmission.stop();
+       mTransmission.setCurrentLimitStator(
+           true, ExampleSubsystemConstants.kDefaultStatorLimit);
+       mDesiredControlState = ExampleControlState.IDLE;
+       Elastic.sendNotification(new Elastic.Notification(
+           Elastic.NotificationLevel.WARNING,
+           "Homing Timeout", getName() + " homing timed out"));
+       // leave mIsHomed = false so closed-loop stays disabled
    }
    ```
 

@@ -84,8 +84,7 @@ command-based framework.
   tooling.
 
 Only three adapter functions are provided; the bridge is deliberately
-narrow. See
-[vendor-abstraction-guide.md §CommandBridge](SDD-vendor-ctre.md#commandbridge-wpilib-interop).
+narrow.
 
 ## 4. Data Flow
 
@@ -124,9 +123,9 @@ robot project
 
 ## 6. Passthrough Getter Reference
 
-The full passthrough getter inventory is documented in
-[passthrough-design.md](SDD-vendor-ctre.md).
-The table below reproduces the vendor-layer entries.
+The table below is the authoritative passthrough getter inventory
+for the `vendor/ctre/` layer. Each wrapper exposes at least one
+`getUnderlying*()`-style getter per [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md).
 
 | Class | Method | Returns | Notes |
 | ----- | ------ | ------- | ----- |
@@ -151,10 +150,11 @@ purpose.
 
 ## 7. Phoenix 6 Feature Coverage Matrix
 
-The authoritative feature matrix lives in the
-[CTRE Phoenix 6 Feature Coverage section](SDD-hardware.md#ctre-phoenix-6-feature-coverage)
-of `hardware-abstraction.md`. The summary below shows how features
-map across the three access paths.
+The matrix below is the authoritative summary of which Phoenix 6
+features are accessible through each of the three access paths:
+the vendor-neutral `api/ClosedLoopMotor` interface, the
+`CTREMotor` convenience API, and the raw CTRE types reached via
+`getTalonFX()` passthrough.
 
 | Feature | `api/ClosedLoopMotor` | `CTREMotor` method | Raw CTRE (`getTalonFX()`) |
 | ------- | --------------------- | ------------------ | -------------------------- |
@@ -179,9 +179,9 @@ map across the three access paths.
 
 `CTREMotor` does not yet expose a method for kG gravity
 feedforward. The Phoenix 6 `Slot0Configs.kG` field is reachable via
-`getConfig()` passthrough; adding a first-class method is tracked
-under the Phoenix 6 "Not Yet Implemented" list in
-[SDD-hardware.md](SDD-hardware.md#phoenix-6-features-not-yet-implemented).
+`getConfig()` passthrough (per [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md)).
+Adding a first-class method to `CTREMotor` is deferred until
+multiple callers need it.
 
 ## 8. Error Handling
 
@@ -201,7 +201,7 @@ errors according to the library's fault-tolerance patterns:
   this flag so control frames are not sent to disconnected devices.
 - **Fault signals** — each device's `FaultMonitor` tracks sticky
   faults and raises persistent `Alert`s in the "Faults" group. See
-  [fault-tolerance.md §CTRE Fault Coverage](SDD-subsystem.md#ctre-fault-coverage-faultmonitor).
+  [SDD-hardware.md §3.7 FaultMonitor](SDD-hardware.md).
 - **Input validation** — `TransmissionFX.hasInvalidInput()` rejects
   NaN/Infinity setpoints before they reach `CTREMotor`, logging a
   throttled DriverStation warning.
@@ -223,7 +223,7 @@ WARNING notification sent).
 Every test that creates a CTRE device must call
 `CTREManager.resetForTesting()` in `@BeforeEach` (preferred) or use
 the reflection teardown pattern documented in
-[testing-strategy.md](../SVP.md#critical-pattern-ctremanager-static-state-cleanup).
+[SVP.md](../SVP.md#critical-pattern-ctremanager-static-state-cleanup).
 
 Test IDs: TEST-CTRE-NNN. Use unique CAN IDs across tests within a
 class to prevent device collisions.

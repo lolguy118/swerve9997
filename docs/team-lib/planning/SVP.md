@@ -89,17 +89,24 @@ robot-specific WPILib sim classes).
 
 | Tool | What It Checks | When |
 | ---- | -------------- | ---- |
-| Spotless + Google Java Format | Formatting, import order | `./gradlew spotlessCheck` |
-| `javac -Xlint` | Unchecked, deprecation, serial warnings | `./gradlew compileJava` |
+| Spotless + Google Java Format (AOSP) | Formatting, import order | `./gradlew spotlessCheck` |
+| `javac -Xlint:all` | Unchecked, deprecation, serial, fallthrough warnings | `./gradlew compileJava` |
 | markdownlint-cli2 | Markdown rules (140-char lines, heading hierarchy) | Hook + CI |
-| `.claude/hooks/check-doc-tunables.sh` | No numeric tunables in docs | Hook |
-| `.claude/hooks/check-deleted-class-refs.sh` | No references to deprecated classes | Hook |
-| `.claude/hooks/check-design-drift.sh` | Code changes paired with doc updates | Hook |
+
+For the full list of `.claude/hooks/` pre-merge hooks (which are
+tooling around the above plus doc-drift checks), see
+[§6 Hooks as Pre-Merge Gates](#6-hooks-as-pre-merge-gates).
 
 ## 4. Coverage Requirements
 
-JaCoCo thresholds per layer. Starting targets; rise each season. The
-`libtest/` package is excluded.
+> **Status:** The thresholds below are **targets**, not enforced
+> gates. `./gradlew jacocoTestReport` generates the coverage report
+> but does not fail on threshold violations. Enforcement would
+> require adding a `jacocoTestCoverageVerification` task to
+> `build.gradle` with per-module rules. Tracked as a follow-up.
+
+Starting targets per layer (JaCoCo). The `libtest/` package is
+excluded.
 
 | Layer | Statement | Branch | Function |
 | ----- | --------- | ------ | -------- |
@@ -134,8 +141,9 @@ the call path does not throw.
 
 ## 6. Hooks as Pre-Merge Gates
 
-The `.claude/hooks/` scripts fire on every Edit/Write operation and
-function as pre-merge gates. They can also be run locally.
+The `.claude/hooks/` scripts fire on Edit/Write tool operations (most
+advisory, some blocking) and function as pre-merge gates. They can
+also be run locally.
 
 | Hook | What It Enforces | Local Run |
 | ---- | ---------------- | --------- |
@@ -144,19 +152,23 @@ function as pre-merge gates. They can also be run locally.
 | `check-deleted-class-refs.sh` | No references to deprecated symbols | (runs on Edit/Write) |
 | `check-design-drift.sh` | Code changes paired with doc updates | (runs on Edit/Write) |
 | `check-java-compiles.sh` | Java compiles after each edit | `./gradlew compileJava` |
+| `check-spotless.sh` | Spotless format check after Java edit (advisory) | `./gradlew spotlessCheck` |
+| `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint | `bash .claude/hooks/verify-docs.sh` |
 
 ## 7. CI Pipeline Gates
 
-All gates must pass before a PR can merge. CI runs these in order;
-failure of any gate blocks merge.
+GitHub Actions CI is **planned, not yet configured** (see
+[CLAUDE.md](../../../CLAUDE.md) §CI). The gates below define what
+will run when CI is enabled. In the meantime, these commands are
+the local pre-merge checklist; hooks enforce a subset automatically.
 
-| Gate | Command | Required |
-| ---- | ------- | -------- |
-| Java compile | `./gradlew compileJava compileTestJava` | Yes |
-| Spotless | `./gradlew spotlessCheck` | Yes |
-| Tests | `./gradlew test` | Yes |
-| Coverage | `./gradlew jacocoTestReport` (enforced thresholds per §4) | Yes |
-| Markdown lint | `markdownlint-cli2 docs/ CLAUDE.md` | Yes |
+| Gate | Command |
+| ---- | ------- |
+| Java compile | `./gradlew compileJava compileTestJava` |
+| Spotless | `./gradlew spotlessCheck` |
+| Tests | `./gradlew test` |
+| Coverage report | `./gradlew jacocoTestReport` (thresholds per §4 are targets, not gates) |
+| Markdown lint | `markdownlint-cli2 "docs/**/*.md" CLAUDE.md CONTRIBUTING.md README.md` |
 
 ## 8. Traceability
 

@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
 
@@ -63,10 +63,11 @@ d. Method bodies **should** not exceed 80 lines of code, excluding
    blank lines and comments. Methods that exceed this limit
    **should** be decomposed into smaller helper methods.
 
-   > *Industry note: JPL Rule 4 says no function should be longer than
-   > about 60 lines (one printed page). Short methods are easier to
-   > understand, test, and debug -- especially under time pressure at
-   > a competition.*
+   > *Industry note: JPL Rule 4 recommends 60 lines (one printed page).
+   > We allow up to 80 because robot periodic methods occasionally
+   > contain unavoidable `switch`-case length for state-machine
+   > handling. Exceeding 80 triggers PR review. Short methods are
+   > still strongly preferred.*
 
 e. Methods **should** not have more than 7 parameters. If more
    parameters are needed, consider a configuration object or builder
@@ -85,6 +86,10 @@ b. Utility classes **shall** be declared `final` with a `private`
    constructor to prevent instantiation.
 
 ### CODE-FUN-004 -- Robot Lifecycle Contract
+
+> **Anchor:** This rule codifies the lifecycle ordering underpinning
+> the desired-to-actual state pattern in
+> [ADR-014](planning/adr/ADR-014-desired-to-actual-state-pattern.md).
 
 a. Subsystem lifecycle methods **shall** be called in this order by
    the `SubsystemManager`:
@@ -106,6 +111,12 @@ c. Sensor reading **shall** be done in `robotPeriodicBefore()`, not
 
 ### CODE-FUN-005 -- State Machine Pattern
 
+> **Anchor:** See
+> [ADR-014](planning/adr/ADR-014-desired-to-actual-state-pattern.md)
+> for the architectural decision, and
+> [SDD-subsystem.md](planning/sdd/SDD-subsystem.md) for the library's
+> `Subsystem` base-class implementation.
+>
 > *Industry note: DO-178C (the avionics software certification standard)
 > emphasizes deterministic, traceable state management. The
 > desired-state/actual-state pattern makes every transition explicit and
@@ -113,11 +124,13 @@ c. Sensor reading **shall** be done in `robotPeriodicBefore()`, not
 > did it get there?" This is the same pattern used in flight control
 > software.*
 
-a. Subsystems that use state machines **shall** maintain two state
-   variables: `mControlState` (current) and `mDesiredControlState`
-   (desired). The desired state is set in `teleopPeriodic()` or
-   `autonomousPeriodic()`; the actual state is applied in
-   `robotPeriodicAfter()`.
+a. **(Robot-project code.)** Subsystems that use state machines
+   **shall** maintain two state variables: `mControlState` (current)
+   and `mDesiredControlState` (desired). The desired state is set in
+   `teleopPeriodic()` or `autonomousPeriodic()`; the actual state is
+   applied in `robotPeriodicAfter()`. Library subsystems follow the
+   same pattern with non-`m`-prefixed field names — see
+   [SDD-subsystem.md](planning/sdd/SDD-subsystem.md).
 
    ```java
    /* Set in teleopPeriodic */

@@ -12,20 +12,25 @@ REL_PATH="${FILE_PATH#"$REPO_ROOT"/}"
 
 case "$REL_PATH" in
   src/main/java/com/team271/lib/subsystem/*.java)
-    DOC="docs/team-lib/planning/sdd/SDD-team271-lib.md" ;;
-  src/main/java/com/team271/lib/hardware/*.java \
-  | src/main/java/com/team271/lib/hardware/**/*.java)
+    DOC="docs/team-lib/planning/sdd/SDD-subsystem.md" ;;
+  src/main/java/com/team271/lib/hardware/*.java)
     DOC="docs/team-lib/planning/sdd/SDD-hardware.md" ;;
-  src/main/java/com/team271/lib/control/*.java \
-  | src/main/java/com/team271/lib/control/**/*.java)
+  src/main/java/com/team271/lib/control/*.java)
     DOC="docs/team-lib/planning/sdd/SDD-control.md" ;;
-  src/main/java/com/team271/lib/auto/*.java \
-  | src/main/java/com/team271/lib/auto/**/*.java)
+  src/main/java/com/team271/lib/auto/*.java)
     DOC="docs/team-lib/planning/sdd/SDD-auto.md" ;;
-  src/main/java/com/team271/lib/api/**/*.java \
-  | src/main/java/com/team271/lib/vendor/**/*.java \
-  | src/main/java/com/team271/lib/bridge/**/*.java)
+  src/main/java/com/team271/lib/api/*.java)
+    DOC="docs/team-lib/planning/sdd/SDD-api.md" ;;
+  src/main/java/com/team271/lib/vendor/*.java|src/main/java/com/team271/lib/bridge/*.java)
     DOC="docs/team-lib/planning/sdd/SDD-vendor-ctre.md" ;;
+  src/main/java/com/team271/lib/nt/*.java)
+    DOC="docs/team-lib/planning/sdd/SDD-nt.md" ;;
+  src/main/java/com/team271/lib/sysid/*.java)
+    DOC="docs/team-lib/planning/sdd/SDD-sysid.md" ;;
+  src/main/java/com/team271/lib/util/*.java)
+    DOC="docs/team-lib/planning/sdd/SDD-util.md" ;;
+  src/main/java/com/team271/lib/wpilib/*.java|src/main/java/com/team271/lib/*.java)
+    DOC="docs/team-lib/planning/sdd/SDD-team271-lib.md" ;;
   *) exit 0 ;;
 esac
 

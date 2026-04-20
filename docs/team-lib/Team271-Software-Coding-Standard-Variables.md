@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
 
@@ -151,7 +151,8 @@ a. Enum values **shall** use UPPER_SNAKE_CASE:
    ```
 
 b. Enums used for state machines **shall** include a brief comment
-   or JavaDoc describing each value's purpose:
+   or JavaDoc when the value's name is not self-explanatory (see
+   [`CODE-COM-002b`](Team271-Software-Coding-Standard-Comments.md)):
 
    ```java
    public enum ExampleControlState {
@@ -215,17 +216,14 @@ b. All tunable values (voltages, speeds, PID gains, current limits,
    }
    ```
 
-### CODE-INT-001 -- Shift Operator Constraints
+### CODE-VAR-009 -- Shift Operator Constraints
 
-> **Note:** Bit-shift operators are rare in FRC Java code. This rule
-> is included for completeness.
+a. Shift amounts for `<<` and `>>` **shall** be non-negative and
+   less than 32 (for `int`) or 64 (for `long`). Shifting by a
+   negative number or by more than the bit width produces
+   unpredictable results.
 
-a. If bit-shift operators (`<<`, `>>`) are used, the shift amount
-   **shall** be non-negative and less than 32 (for `int`) or 64 (for
-   `long`). Shifting by a negative number or by more than the bit
-   width produces unpredictable results.
-
-### CODE-INT-002 -- Division by Zero Prevention
+### CODE-VAR-010 -- Division by Zero Prevention
 
 a. Before any division (`/`) or remainder (`%`) operation where the
    divisor is a variable, the divisor **shall** be checked for zero:

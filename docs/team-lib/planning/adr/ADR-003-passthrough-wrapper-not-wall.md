@@ -79,5 +79,4 @@ Concretely:
 
 - [SDD-vendor-ctre.md §Passthrough Reference](../sdd/SDD-vendor-ctre.md)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
-  (merges into `.claude/rules/team271-lib.md` in Phase 6)
 - [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md)

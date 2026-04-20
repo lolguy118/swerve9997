@@ -60,7 +60,7 @@ It excludes anything that is robot-specific.
   shall perform a single bulk refresh of all registered signals
   (ADR-007).
 - **[LIB-004]** Library code shall not allocate objects in periodic
-  methods (per CODE-PERF rules). Static analysis and code review
+  methods (per CODE-GEN-004). Static analysis and code review
   verify; library tests assert no allocation in hot paths where
   feasible.
 - **[LIB-005]** Library code shall not require robot-project classes
@@ -147,8 +147,11 @@ It excludes anything that is robot-specific.
   configured range on each call.
 - **[CTL-005]** `atSetpoint()` shall return true only when the
   absolute error is within the configured tolerance.
-- **[CTL-006]** `HardwarePIDController` shall fall back to software
-  PID if the hardware (PIDFX) initialization fails.
+- **[CTL-006]** When `PIDFX` initialization fails, the caller may
+  reconstruct the controller with a software PID variant
+  (`PIDSimple`, `PIDTrap`, `PIDWPI`, `PIDWPI_Trap`). The library
+  does not automate this fallback; fallback policy is
+  robot-project scoped (see SDD-control.md §Error Handling).
 
 ### 4.5 Subsystem Layer (`[SUB-NNN]`)
 
@@ -236,9 +239,9 @@ It excludes anything that is robot-specific.
 ## 6. Non-Functional Constraints (`[CON-NNN]`)
 
 - **[CON-001]** No library code shall allocate objects in
-  periodic methods (CODE-PERF).
+  periodic methods (CODE-GEN-004).
 - **[CON-002]** Loops shall have statically bounded iteration counts
-  (JPL Rule 3 — no `while (true)`).
+  (JPL Rule 2 — no `while (true)`).
 - **[CON-003]** Every operation that waits on a sensor condition
   shall have a timeout, a fail-safe action, and a driver alert
   (ADR-011 / CODE-SAF-008..011).
@@ -254,25 +257,26 @@ It excludes anything that is robot-specific.
 
 ## 7. Traceability Matrix
 
-The matrix below maps requirements to SDD sections and SVP test cases.
-Entries marked `TBD` indicate tests that do not yet exist.
+The matrix below maps requirements to SDD sections and expected
+test-case identifiers. Verification status lives in the test tree
+and CI reports; update the test-case column as tests are added.
 
-| Requirement | SDD Section | Test Case | Status |
-| ----------- | ----------- | --------- | ------ |
-| LIB-001 | SDD-team271-lib §3 | TEST-LIB-001 | TBD |
-| LIB-002 | SDD-subsystem §3.2 | TEST-SUB-003 | Exists |
-| LIB-003 | SDD-hardware §3.5 | TEST-HW-010 | Exists |
-| API-001..009 | SDD-api §3 | TEST-API-* | Partial |
-| CTRE-001 | SDD-vendor-ctre §3 | TEST-CTRE-001 | Exists |
-| CTRE-002, CTRE-003 | SDD-vendor-ctre §6 | TEST-CTRE-002 | Exists |
-| CTRE-004, CTRE-005 | SDD-hardware §3.5 | TEST-HW-010 | Exists |
-| CTRE-006 | SDD-vendor-ctre §3 | TEST-CTRE-005 | TBD |
-| HW-001..007 | SDD-hardware §3 | TEST-HW-* | Partial |
-| CTL-001..006 | SDD-control §3 | TEST-CTL-* | Partial |
-| SUB-001..006 | SDD-subsystem §3 | TEST-SUB-* | Partial |
-| AUT-001..005 | SDD-auto §3 | TEST-AUT-* | Partial |
-| SID-001..004 | SDD-sysid §3 | TEST-SID-* | TBD |
-| NT-001..003 | SDD-nt §3 | TEST-NT-* | Partial |
-| UTL-001..005 | SDD-util §3 | TEST-UTL-* | Partial |
-| INT-001..007 | (package-info.java imports) | (static check) | TBD |
-| CON-001..007 | Coding standard §4 | (code review) | Ongoing |
+| Requirement | SDD Section | Test Case |
+| ----------- | ----------- | --------- |
+| LIB-001 | SDD-team271-lib §3 | TEST-LIB-001 |
+| LIB-002 | SDD-subsystem §3.2 | TEST-SUB-003 |
+| LIB-003 | SDD-hardware §3.5 | TEST-HW-010 |
+| API-001..009 | SDD-api §3 | TEST-API-* |
+| CTRE-001 | SDD-vendor-ctre §3 | TEST-CTRE-001 |
+| CTRE-002, CTRE-003 | SDD-vendor-ctre §6 | TEST-CTRE-002 |
+| CTRE-004, CTRE-005 | SDD-hardware §3.5 | TEST-HW-010 |
+| CTRE-006 | SDD-vendor-ctre §3 | TEST-CTRE-005 |
+| HW-001..007 | SDD-hardware §3 | TEST-HW-* |
+| CTL-001..006 | SDD-control §3 | TEST-CTL-* |
+| SUB-001..006 | SDD-subsystem §3 | TEST-SUB-* |
+| AUT-001..005 | SDD-auto §3 | TEST-AUT-* |
+| SID-001..004 | SDD-sysid §3 | TEST-SID-* |
+| NT-001..003 | SDD-nt §3 | TEST-NT-* |
+| UTL-001..005 | SDD-util §3 | TEST-UTL-* |
+| INT-001..007 | (package-info.java imports) | (static check) |
+| CON-001..007 | Coding standard §4 | (code review) |

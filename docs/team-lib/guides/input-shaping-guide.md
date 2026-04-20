@@ -108,11 +108,11 @@ default. Tune from there based on driver feedback.
 ```java
 // In your Input subclass or teleopPeriodic():
 double rawY = driver.getLeftY();
-double shapedY = driver.inputShaping(InputShaping.INPUT_SHAPING_SQUARED, rawY);
+double shapedY = driver.inputShaping(InputShaping.SQUARED, rawY);
 
 // Apply deadzone BEFORE shaping for best feel:
 double deadzoned = Util.handleDeadzone(rawY, 0.05);
-double shaped = driver.inputShaping(InputShaping.INPUT_SHAPING_SQUARED, deadzoned);
+double shaped = driver.inputShaping(InputShaping.SQUARED, deadzoned);
 ```
 
 ### Combining with Deadzone

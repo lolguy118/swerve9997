@@ -35,8 +35,13 @@ the same PR. Robot-project-specific docs live under `docs/<robot>/`
   [`.claude/hooks/lint-markdown.sh`](../hooks/lint-markdown.sh));
   tables and URLs are exempt but keep them as short as possible.
 
-## Authoritative doc
+## Authoritative docs
 
-The "Documentation Rules" section of
-[CLAUDE.md](../../CLAUDE.md). When the user asks whether a doc update
-is needed, use that checklist.
+This rule file is the authoritative source for doc conventions. See
+also:
+
+- [`Team271-Software-Coding-Standard-Compliance.md`](../../docs/team-lib/Team271-Software-Coding-Standard-Compliance.md)
+  — enforcement matrix mapping each `CODE-*` rule (including doc
+  rules) to its severity and check mechanism.
+- [`docs/team-lib/planning/README.md`](../../docs/team-lib/planning/README.md)
+  — map of every planning document.

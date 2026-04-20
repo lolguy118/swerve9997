@@ -68,7 +68,7 @@ framework:
 - Log size grows quickly; storage management is a robot-project
   concern.
 - `Logger.recordOutput()` must be called from `outputTelemetry()`
-  only, not from periodic control code (CODE-DBG rules).
+  only, not from periodic control code (CODE-BUG rules).
 - Replay fidelity depends on every input being logged — missing one
   breaks replay.
 

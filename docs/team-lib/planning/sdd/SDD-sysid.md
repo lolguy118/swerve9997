@@ -28,7 +28,7 @@ frequency into AdvantageKit-compatible format for post-processing.
 
 - SysID test execution (robot-project responsibility)
 - SysID data analysis (WPILib SysID tool)
-- Regular telemetry logging → [SDD-team271-lib.md §Telemetry](SDD-team271-lib.md)
+- Regular telemetry logging → [SDD-team271-lib.md §3.5 Tuning Infrastructure](SDD-team271-lib.md) and [SDD-nt.md](SDD-nt.md)
 
 ## 3. Module Decomposition
 

@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
 
@@ -37,7 +37,9 @@ b. Fall-through between `case` labels **shall** not occur without
    an explicit `// fall through` comment.
 
 c. Switch expressions using the `->` syntax are permitted and
-   preferred for value computation:
+   preferred for value computation (the compiler verifies
+   exhaustiveness for switch expressions over enums, eliminating
+   the need for a `default` case in that form):
 
    ```java
    double targetRps = switch (mShotMode) {
@@ -125,35 +127,5 @@ a. The right-hand operand of `&&` and `||` operators **should** not
        }
    }
    ```
-
-### CODE-CTL-007 -- Enhanced Switch
-
-a. Switch expressions (`->`) are preferred for value computation
-   (no fall-through risk, exhaustive checking by compiler).
-
-b. Traditional `switch` with `:` and `break` is required when cases
-   have side effects (motor commands, state assignments, method calls).
-
-c. When switching on an enum, the compiler verifies exhaustiveness
-   for switch expressions. A `default` case is still required for
-   traditional `switch` statements (CODE-FUN-006a).
-
-### CODE-CTL-008 -- Exception Control Flow
-
-a. Exceptions **shall** not be used for normal control flow. Use
-   return values, enums, or `Optional<T>` instead.
-
-b. `catch` blocks **shall** catch the most specific exception type:
-
-   ```java
-   /* WRONG */
-   catch (Exception e) { ... }
-
-   /* CORRECT */
-   catch (IOException e) { ... }
-   ```
-
-c. `catch (Throwable t)` **shall** not be used except in top-level
-   robot lifecycle methods where preventing a crash is critical.
 
 ---

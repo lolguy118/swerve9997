@@ -85,7 +85,7 @@ queries inside periodic code.
 | -------- | --------- | --------- |
 | CTRE-focused — interfaces scoped to CTRE feature set | See ADR-006 | [ADR-006](../adr/ADR-006-ctre-phoenix6-primary-vendor.md) |
 | Passthrough getters on implementations, not on interfaces | See ADR-003 | [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md) |
-| CTRE-only features (Motion Magic, FOC, torque current) excluded from api/ | Keeps api/ portable; CTRE-only features live on `CTREMotor` passthrough | [vendor-abstraction-guide.md](SDD-vendor-ctre.md) |
+| CTRE-only features (Motion Magic, FOC, torque current) excluded from api/ | Keeps api/ portable; CTRE-only features live on `CTREMotor` passthrough | [SDD-vendor-ctre.md](SDD-vendor-ctre.md) |
 
 ## 6. Error Handling
 
@@ -95,8 +95,8 @@ standard fault-tolerance patterns:
 
 - No checked exceptions on any interface method.
 - Closed-loop methods silently no-op when the underlying device is
-  disconnected (see [SDD-hardware.md §CAN Fault Handling](SDD-hardware.md)
-  and [fault-tolerance.md](SDD-subsystem.md)).
+  disconnected (see [SDD-hardware.md §Error Handling](SDD-hardware.md)
+  and [SDD-subsystem.md §Error Handling](SDD-subsystem.md)).
 - Callers should not assume any particular failure mode; portable code
   that needs to detect failure should use `MotorCapabilities` at
   construction and avoid runtime branches.
@@ -104,7 +104,7 @@ standard fault-tolerance patterns:
 Input validation (NaN / Infinity guards) is the implementation's
 responsibility. `CTREMotor` inherits the `TransmissionFX`
 `hasInvalidInput()` guard — see
-[fault-tolerance.md §Input Validation](SDD-subsystem.md#input-validation-naninfinity-guards).
+[SDD-hardware.md §Error Handling](SDD-hardware.md).
 
 ## 7. Platform Portability Notes
 

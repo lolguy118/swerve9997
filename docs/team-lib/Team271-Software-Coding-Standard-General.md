@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
 
@@ -27,7 +27,9 @@ a. The following methods and patterns **shall** not be used in robot code:
 | `Thread.stop()` | Deprecated; unsafe thread termination |
 | `System.gc()` | Unpredictable GC pauses in real-time code |
 | `Object.finalize()` | Deprecated; unreliable cleanup |
-| `System.out.println()` | Use `Logger.recordOutput()` or `DriverStation.reportError()` |
+| `System.out.println()` | Use `Logger.recordOutput()`, `DriverStation.reportError()`, `DriverStation.reportWarning()`, or `Elastic.sendNotification()` |
+| `System.err.println()` | Same as `System.out.println()` above |
+| `System.currentTimeMillis()` | Not monotonic, not FPGA-synchronized. Use `Timer.getFPGATimestamp()` |
 | Raw `new Thread()` | Use WPILib `Notifier` for background tasks |
 
 b. The `volatile` keyword **should** only be used when a field is
@@ -110,6 +112,13 @@ d. String concatenation in periodic methods **should** be avoided.
 
 e. Autoboxing (e.g., `int` to `Integer`) in loops **shall** be avoided.
 
+f. Elastic `Notification` objects **should** be pre-allocated when
+   used repeatedly (e.g., a recurring fault notification).
+
+g. Collections that grow dynamically (e.g., `ArrayList`, `HashMap`)
+   **should** be pre-sized in `robotInit()` if their maximum size
+   is known.
+
 ### CODE-GEN-005 -- Return Value Checking
 
 > *Industry note: Three separate standards agree on this one. JPL Rule 7:
@@ -179,9 +188,13 @@ d. `@SuppressWarnings` **shall** only be used with a comment
    @SuppressWarnings("unchecked") // Safe: CTRE API returns raw SignalValue
    ```
 
+e. The `@Deprecated` annotation **should** include a `@deprecated`
+   JavaDoc tag explaining the replacement.
+
 ### CODE-GEN-008 -- External Input Validation
 
-a. Controller inputs **shall** be validated before use. Deadbands,
+a. **(Robot-project code.)** Controller inputs **shall** be validated
+   before use. Deadbands,
    trigger thresholds, and input shaping are defined in
    `InputDriver.java` and **shall** be applied consistently.
 
@@ -212,45 +225,7 @@ a. Code **shall** be written to minimize runtime exceptions. The
    - **ArithmeticException**: Division operations **shall** check
      for zero divisors when the divisor comes from a variable.
 
-### CODE-GEN-011 -- Annotation Discipline
-
-a. `@Override` **shall** always be present on overriding methods
-   (CODE-GEN-003d).
-
-b. `@SuppressWarnings` **shall** not be used without a documented
-   justification comment (CODE-GEN-007d).
-
-c. `@Deprecated` **should** include a `@deprecated` JavaDoc tag
-   explaining the replacement.
-
-### CODE-GEN-012 -- Prohibited Standard Library Usage
-
-a. `System.out.println()` and `System.err.println()` **shall** not
-   be used for robot telemetry or error reporting. Use:
-   - `Logger.recordOutput()` for telemetry data
-   - `DriverStation.reportError()` for errors
-   - `DriverStation.reportWarning()` for warnings
-   - `Elastic.sendNotification()` for driver-visible notifications
-
-b. `System.currentTimeMillis()` **shall** not be used for robot
-   timing. Use `Timer.getFPGATimestamp()` which is synchronized
-   with the FPGA clock and is monotonic.
-
-### CODE-GEN-013 -- Object Reuse in Real-Time Code
-
-a. The following objects **shall** be pre-allocated and reused rather
-   than created in periodic methods:
-
-   - `Timer` objects
-   - CTRE control requests (handled by `TransmissionFX`)
-   - `Notification` objects for Elastic dashboard
-   - Arrays and collections used for computation
-
-b. Collections that grow dynamically (e.g., `ArrayList`, `HashMap`)
-   **should** be pre-sized in `robotInit()` if their maximum size
-   is known.
-
-### CODE-GEN-014 -- Exception Handling
+### CODE-GEN-011 -- Exception Handling
 
 > *Industry note: CERT Java ERR00-J says "do not suppress or ignore
 > checked exceptions." Swallowing an exception hides the problem --
@@ -264,6 +239,9 @@ a. Periodic methods (`robotPeriodic`, `teleopPeriodic`,
 
 b. `catch (Throwable t)` and `catch (Exception e)` **shall** not be
    used broadly. Catch the most specific exception type possible.
+   Exception: `catch (Throwable t)` is permitted only in top-level
+   robot lifecycle methods (e.g., `Robot.robotPeriodic`) where
+   preventing a crash is critical.
 
 c. Exceptions **shall** not be used for normal control flow. Use
    return values, enums, or state variables instead.
@@ -272,7 +250,7 @@ d. When calling external APIs that may throw (e.g., file I/O for
    path loading), the call **shall** be wrapped in a try-catch that
    logs the error and provides a safe fallback.
 
-### CODE-GEN-015 -- Null Safety
+### CODE-GEN-012 -- Null Safety
 
 a. Public methods **should** document their null behavior in JavaDoc
    (`@param` descriptions should state whether null is permitted).
@@ -284,9 +262,13 @@ c. When null indicates an error, prefer throwing
    `IllegalStateException` (as done in `getInstance()`) over
    returning null.
 
-### CODE-GEN-016 -- Singleton Pattern
+### CODE-GEN-013 -- Singleton Pattern (Robot Projects)
 
-a. All subsystems **shall** use the established singleton pattern
+> **Scope:** This rule applies to **robot-project code** only. Library
+> subsystems do not use singletons — see
+> [ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md).
+
+a. Robot-project subsystems **shall** use the established singleton pattern
    with two `getInstance()` methods:
 
    ```java
@@ -331,7 +313,7 @@ d. After creation, subsystem references **shall** be stored in
    public static InputDriver controllerDriver;
    ```
 
-### CODE-GEN-017 -- Object Equality
+### CODE-GEN-014 -- Object Equality
 
 a. Object comparison **shall** use `.equals()`, not `==`, unless
    checking for null or intentional reference identity:
@@ -358,7 +340,7 @@ c. If a class overrides `equals()`, it **shall** also override
    causes broken behavior in `HashMap`, `HashSet`, and other
    hash-based collections.
 
-### CODE-GEN-018 -- Resource Management
+### CODE-GEN-015 -- Resource Management
 
 a. Code that opens resources (files, streams, connections) **shall**
    use try-with-resources to guarantee cleanup:
@@ -374,14 +356,18 @@ a. Code that opens resources (files, streams, connections) **shall**
    This is particularly relevant for auto path loading from the
    filesystem.
 
-### CODE-GEN-019 -- Mutable Static Fields
+### CODE-GEN-016 -- Mutable Static Fields
+
+> **Scope:** Item `a` applies to both library and robot-project code.
+> The `Globals.java` exception in item `b` is a **robot-project**
+> convention; the library does not have a `Globals.java`.
 
 a. Mutable `static` fields **shall** only be used for the singleton
    pattern (`mInstance`). Other shared mutable state **should** be
    passed explicitly through constructors or method parameters.
 
-b. **Accepted exceptions** (documented here to avoid repeated review
-   flags):
+b. **Accepted exceptions in robot-project code** (documented here to
+   avoid repeated review flags):
    - `Globals.java` fields — public static references to subsystems and
      `InputDriver`. These serve as a global registry initialized once in
      `Robot.robotInit()` and read thereafter. They use no `m` prefix

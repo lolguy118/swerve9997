@@ -42,22 +42,32 @@ constants), use `// spotless:off` / `// spotless:on` markers sparingly.
 
 ## Coding Standard
 
-The full coding standard lives in
-[`docs/team-lib/Team271-Software-Coding-Standard.md`](docs/team-lib/Team271-Software-Coding-Standard.md).
-Key sections:
+The coding standard is split across a core document and topical
+companions. The core
+[`docs/team-lib/Team271-Software-Coding-Standard.md`](docs/team-lib/Team271-Software-Coding-Standard.md)
+indexes the rest:
 
-- **Section 4** — Language rules (naming, safety, state machines, GC)
-- **Section 5.1–5.3** — Tooling (Spotless, compiler warnings, JVM config)
-- **Section 5.4** — Code review checklist (items that automated tools cannot catch)
+- Core — §1 Introduction, §2 Programming Language, §3 Source Code
+  Presentation, §4 Coding Guidelines (router to companions)
+- `-General.md`, `-Format.md`, `-Modules.md`, `-Methods.md`,
+  `-Variables.md`, `-Control.md`, `-Comments.md`, `-Debug.md`,
+  `-Safety.md` — the `CODE-*` rules by category
+- [`-Templates.md`](docs/team-lib/Team271-Software-Coding-Standard-Templates.md)
+  — file and class templates
+- [`-Appendices.md`](docs/team-lib/Team271-Software-Coding-Standard-Appendices.md)
+  — reference tables (final-keyword guide, unit conventions, GC, etc.)
+- [`-Compliance.md`](docs/team-lib/Team271-Software-Coding-Standard-Compliance.md)
+  — §5 static analysis + tooling + §5.4 review checklist
 
-Read at least Sections 4 and 5 before your first contribution.
+Read at least the core doc and `-Safety.md` before your first
+contribution.
 
 ## Code Review Checklist
 
 Before opening a PR, verify the items in
-[Section 5.4](docs/team-lib/Team271-Software-Coding-Standard.md) of the coding
-standard. These include state machine completeness, motor safety,
-subsystem lifecycle ordering, naming conventions, and timeout protection.
+[`-Compliance.md` §5.4 Code Review Checklist](docs/team-lib/Team271-Software-Coding-Standard-Compliance.md#54-code-review-checklist).
+These include state machine completeness, motor safety, subsystem
+lifecycle ordering, naming conventions, and timeout protection.
 
 ## Documentation Updates
 
@@ -71,23 +81,24 @@ corresponding design doc in the same commit:**
 - Homing behavior, soft limits, or safety logic
 - Telemetry keys
 
-Design docs live in [`docs/`](docs/). See the Documentation Rules
-section of [`CLAUDE.md`](CLAUDE.md) for which doc is authoritative for
-each behavior.
+Design docs live in [`docs/team-lib/`](docs/team-lib/). See
+[`.claude/rules/docs.md`](.claude/rules/docs.md) and
+[`docs/team-lib/planning/README.md`](docs/team-lib/planning/README.md)
+for the authoritative map of which doc owns each topic.
 
 ## Commit Conventions
 
 - Use imperative mood in commit messages (e.g., "add", "fix", "refactor")
 - Prefix with a type when appropriate: `feat:`, `fix:`, `refactor:`, `docs:`
 - Keep the first line under 72 characters
-- Reference the subsystem or area in the message (e.g., `feat: add DEPOT shot mode to launcher`)
+- Reference the subsystem or area in the message (e.g., `feat(control): add ProfiledPIDFOC variant`)
 
 ## Generated Files
 
-The following files are generated and should not be manually formatted:
+The following files are generated or vendor-supplied and should not be
+manually formatted:
 
 - `BuildConstants.java` (gversion plugin)
-- `TunerConstants.java` (CTRE Tuner X export)
-- `LimelightHelpers.java` (vendor library)
+- `LimelightHelpers.java` (vendor library, vendored under `util/`)
 
 These are exempt from formatting rules but not from safety rules.

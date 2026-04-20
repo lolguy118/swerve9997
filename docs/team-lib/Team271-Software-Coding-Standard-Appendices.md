@@ -127,9 +127,12 @@ Power On → robotInit()
 
 ### Subsystem Registration Order
 
-Subsystems are created via their singleton `getInstance(TObj)` methods
-and registered with `SubsystemManager.addSubsystem()` in
-`Robot.robotInit()`. Registration order determines lifecycle call order.
+Subsystems are registered with `SubsystemManager.addSubsystem()` in
+`Robot.robotInit()`. Robot-project subsystems typically use a
+singleton `getInstance(TObj)` accessor (see CODE-GEN-013); library
+subsystems are instantiated directly and passed by reference (see
+[ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
+Registration order determines lifecycle call order.
 **This order is load-bearing** -- the following rules apply:
 
 - Input/controller subsystems **shall** be registered first so that
@@ -149,11 +152,19 @@ for the current year's concrete registration order.
 
 ### The Problem
 
-The RoboRIO runs Java with a Serial GC (`-XX:+UseSerialGC`) optimized
-for low-pause-time (`-XX:MaxGCPauseMillis=50`). Every object allocation
-in a periodic method creates garbage that must eventually be collected.
-Excessive allocation can cause GC pauses that exceed the 20ms cycle,
-causing the robot to stutter or brownout.
+The RoboRIO runs Java with a Serial GC (`-XX:+UseSerialGC`), a
+stop-the-world collector chosen for its small memory footprint on
+the RoboRIO's limited resources. SerialGC does **not** support
+pause-time goals — `MaxGCPauseMillis` is a G1GC/ZGC hint and has
+no effect here. See
+[Team271-Software-Coding-Standard-Compliance.md §5.3](Team271-Software-Coding-Standard-Compliance.md)
+for the actual JVM configuration.
+
+Every object allocation in a periodic method creates garbage that
+must eventually be collected. Excessive allocation can cause GC
+pauses that exceed the 20ms cycle, causing the robot to stutter or
+brownout. Because we can't tune pause times, we minimize them by
+minimizing allocations — the patterns below are the mechanism.
 
 ### Allocation-Free Patterns
 
@@ -203,8 +214,6 @@ int[] values = new int[count];
 ```
 
 ---
-
-<!-- markdownlint-disable-file MD041 -->
 
 ## Appendix H: CTRE Phoenix 6 Usage Patterns
 

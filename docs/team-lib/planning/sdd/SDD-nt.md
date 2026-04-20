@@ -92,7 +92,7 @@ SubsystemManager.outputTelemetry()
 
 The `checkTuning()` pattern runs once per cycle as part of the
 standard `outputTelemetry()` order. See
-[library-architecture.md §checkTuning Pattern](SDD-team271-lib.md#the-checktuning-pattern)
+[SDD-team271-lib.md §3.5 Tuning Infrastructure](SDD-team271-lib.md)
 for the canonical implementation template.
 
 ## 5. Key Design Decisions
@@ -144,7 +144,7 @@ directory configured by the robot project.
 Tunable key conventions (`Tune/kP`, `Tune/StatorLimit`, etc.) live in
 the component that owns the tunable — `PIDBase`, `ControllerSmart`,
 `TransmissionFX`, and `Balance`. See
-[library-architecture.md §Where Tunables Live](SDD-team271-lib.md#where-tunables-live)
+[SDD-team271-lib.md §3.5 Tuning Infrastructure](SDD-team271-lib.md)
 for the full inventory.
 
 ## 9. Test Coverage Requirements
@@ -158,6 +158,6 @@ for the full inventory.
 
 Test IDs: TEST-NT-NNN. Reset of NT between tests is generally not
 required — HAL teardown handles it — but tests that share table
-names should use unique keys to avoid cross-contamination (see
-[testing-strategy.md §CAN ID Uniqueness](../SVP.md#can-id-uniqueness)
-for the equivalent pattern).
+names should use unique keys to avoid cross-contamination (same
+pattern as unique CAN IDs per test; see
+[SVP.md §5 Per-Layer Test Requirements](../SVP.md)).

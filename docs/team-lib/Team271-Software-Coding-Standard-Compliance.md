@@ -1,6 +1,6 @@
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
-<!-- markdownlint-disable-file MD041 -->
+<!-- markdownlint-disable-file MD013 MD041 -->
 
 ## 5. Static Analysis and Tooling
 
@@ -39,10 +39,14 @@ option is configured in `build.gradle`:
 ```groovy
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
+    options.compilerArgs.add '-Xlint:all'
 }
 ```
 
-Additional `-Xlint` flags **should** be added to catch common issues.
+The `-Xlint:all` flag enables every javac warning category
+(`unchecked`, `deprecation`, `serial`, `fallthrough`, `rawtypes`,
+etc.). Combined with the zero-warnings rule, this catches many
+potential defects at compile time.
 
 ### 5.3 JVM Configuration
 
@@ -58,7 +62,7 @@ SerialGC is a stop-the-world collector with the smallest memory footprint,
 appropriate for the RoboRIO's limited resources. It does not support
 pause-time goals (`MaxGCPauseMillis` is a G1GC/ZGC hint and has no
 effect on SerialGC). Instead, we minimize GC pressure through the coding
-practices in CODE-GEN-004 and CODE-GEN-013.
+practices in CODE-GEN-004.
 
 ### 5.4 Code Review Checklist
 
@@ -77,23 +81,29 @@ cannot be caught by automated tools):
 - [ ] Motor direction: `configDirection()` matches physical mechanism intent
 - [ ] Telemetry keys: pre-defined string constants, not computed or concatenated per-cycle
 - [ ] Resource cleanup: timers and sensor subscriptions cleaned up in mode exit methods
-- [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (CODE-SAF-009c)
+- [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (see ADR-011; implemented in CODE-SAF-002c, CODE-SAF-008, CODE-SAF-010)
 - [ ] Runtime tunability: configurable values use `LoggedNTInput` + `checkTuning()` pattern (CODE-BUG-004)
 
 ---
 
 ## Enforcement Matrix
 
-The table below maps each CODE-* rule group to its enforcement mechanism.
+The table below maps each CODE-* rule prefix to its enforcement mechanism.
+Prefixes reflect the actual rule IDs used across the coding-standard
+companion files.
 
-| Rule Group | Prefix | Enforced By | Gate |
-| ---------- | ------ | ----------- | ---- |
-| Safety Practices | CODE-SAF | Manual code review + `/lib-review` | PR review |
-| Formatting | CODE-FMT | Spotless (Google Java Format) | `./gradlew spotlessCheck` |
-| Naming | CODE-NAM | Manual code review | PR review |
-| Methods | CODE-MTH | Compiler warnings + manual review | Compile + PR review |
-| Variables | CODE-VAR | Manual code review | PR review |
-| Control Structures | CODE-CTL | Compiler (switch exhaustiveness) + manual review | Compile + PR review |
-| Comments | CODE-CMT | Manual code review | PR review |
-| Debugging / Telemetry | CODE-DBG | Manual code review + design-drift hook | PR review |
-| GC Discipline | CODE-PERF | Manual code review | PR review |
+| Rule Group | Prefix | Rule Count | Enforced By | Gate |
+| ---------- | ------ | ---------: | ----------- | ---- |
+| General (keywords, annotations, type safety, exceptions, GC) | CODE-GEN | 16 | Manual review + `check-java-compiles.sh`, `check-spotless.sh` | Compile + PR review |
+| Formatting (braces, parens, blank lines, line endings, imports) | CODE-FMT | 6 | Spotless (AOSP Google Java Format) + `.gitattributes` | `./gradlew spotlessCheck` |
+| Modules and Files (naming, packages, constants, generated code) | CODE-MAF | 4 | Compiler + manual review | Compile + PR review |
+| Methods (naming, lifecycle, state machines) | CODE-FUN | 6 | Compiler warnings + manual review | Compile + PR review |
+| Variables (naming, init, types, magic numbers) | CODE-VAR | 10 | Compiler + manual review | Compile + PR review |
+| Control Structures (if/switch/loops) | CODE-CTL | 6 | Compiler (switch exhaustiveness) + manual review | Compile + PR review |
+| Comments (JavaDoc, block, inline) | CODE-COM | 2 | Manual review | PR review |
+| Debugging and Telemetry (LoggedNTInput, Elastic, reports) | CODE-BUG | 4 | Manual review + `check-doc-tunables.sh`, `check-design-drift.sh` | PR review + hooks |
+| Safety Practices (timeouts, fail-safe, CAN, vision, brownout) | CODE-SAF | 11 | Manual review + `/lib-review` agent | PR review |
+
+Counts reflect the current rule set (see individual `-*.md`
+companion files for rule IDs). Adding or removing rules requires
+updating the count in this matrix.

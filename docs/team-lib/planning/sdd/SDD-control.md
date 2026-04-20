@@ -66,7 +66,7 @@ Vendor-neutral hardware-backed PID:
 | `PIDWPI` | Thin wrapper around `edu.wpi.first.math.controller.PIDController`. Setters synchronized so PIDBase and WPILib state stay in sync. `getController()` passthrough. |
 | `PIDWPI_Trap` | Wraps `ProfiledPIDController`. Exposes profiled setpoint position and velocity. `getController()` passthrough. |
 | `PIDFX` | Reads closed-loop error and output from a `ControllerTalonFX`; actual PID runs at 1 kHz on the motor firmware. `setP/I/D` sync hardware gains via `setPSlot()` etc. Implements `HardwarePIDController`. |
-| `HardwarePIDController` | Vendor-neutral interface for hardware-backed PID. Adds `setGoalPosition(pos, ff)`, `setGoalVelocity(rps, ff)`, `getMotor()` returning the backing `ClosedLoopMotor`. See [vendor-abstraction-guide.md](SDD-vendor-ctre.md). |
+| `HardwarePIDController` | Vendor-neutral interface for hardware-backed PID. Adds `setGoalPosition(pos, ff)`, `setGoalVelocity(rps, ff)`, `getMotor()` returning the backing `ClosedLoopMotor`. See [SDD-vendor-ctre.md](SDD-vendor-ctre.md). |
 | `PIDGains` | Immutable record of kP, kI, kD, kV, kS, kG, kA. Builder methods for incremental construction. |
 | `Feedforward` | `@FunctionalInterface` supplying feedforward voltage given (position, velocity). Factory methods: `simple()`, `elevator()`, `fromWPILib(...)`. Composable with any PID variant. |
 | `ArmFeedforward` | Position-dependent feedforward: `kS·sign(v) + kG·cos(pos) + kV·v + kA·a`. |
@@ -74,8 +74,8 @@ Vendor-neutral hardware-backed PID:
 
 ### 3.2 PID Tunable Inventory
 
-PIDBase creates the following tunables (full details in
-[control-system.md §PIDBase](SDD-control.md#pidbase--abstract-foundation)):
+PIDBase creates the following tunables (see §3.1 above for the
+PIDBase responsibility summary):
 
 | LoggedNTInput | NT Key | Applies To |
 | ------------- | ------ | ---------- |
@@ -123,11 +123,11 @@ pid.checkTuning():
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
 | 5 PID variants + swap-by-constructor | Match mechanism needs without API changes | SRS §4.4 |
-| Continuous mode for wrapping axes | Prevents wrap-around error spike on swerve / turret | [control-system.md](SDD-control.md) |
+| Continuous mode for wrapping axes | Prevents wrap-around error spike on swerve / turret | See §8.3 below |
 | `PIDFX` uses on-motor closed-loop | Deterministic 1 kHz timing, no CAN round-trip per cycle | [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
-| `HardwarePIDController` interface | Portable abstraction for future non-CTRE hardware PID | [vendor-abstraction-guide.md](SDD-vendor-ctre.md) |
-| `Balance` is stateful, not PID | Physical behavior better modeled as discrete speed states with debounce | [control-system.md §Balance](SDD-control.md#balance-algorithm) |
-| Telemetry levels (FULL / MINIMAL / OFF) | Reduce NT overhead when many PIDs are active in competition | [control-system.md §Telemetry Levels](SDD-control.md#telemetry-levels) |
+| `HardwarePIDController` interface | Portable abstraction for future non-CTRE hardware PID | [SDD-vendor-ctre.md](SDD-vendor-ctre.md) |
+| `Balance` is stateful, not PID | Physical behavior better modeled as discrete speed states with debounce | See §3.1 (Balance row) and §8.4 |
+| Telemetry levels (FULL / MINIMAL / OFF) | Reduce NT overhead when many PIDs are active in competition | See §3.1 (PIDBase row) |
 
 ## 6. Error Handling
 
@@ -141,7 +141,7 @@ pid.checkTuning():
   reported by the underlying `ControllerTalonFX` are surfaced via the
   standard CAN fault-handling path (throttled Elastic notification,
   `isConnected` guard on output calls). See
-  [fault-tolerance.md](SDD-subsystem.md).
+  [SDD-subsystem.md](SDD-subsystem.md).
 - **`HardwarePIDController` fallback** — when a `PIDFX` init fails,
   the consumer is free to fall back to a software PID variant by
   reconstructing with a different implementation. The library does
@@ -155,7 +155,7 @@ pid.checkTuning():
   that need hardware continuous wrap must use Phoenix 6's
   `ClosedLoopGeneralConfigs.ContinuousWrap` via the CTRE passthrough;
   this is called out in
-  [control-system.md §Phoenix 6 Advanced PID Features](SDD-control.md#phoenix-6-advanced-pid-features).
+  [SDD-vendor-ctre.md §Passthrough Getter Reference](SDD-vendor-ctre.md).
 
 ## 7. Platform Portability Notes
 
@@ -168,9 +168,10 @@ pid.checkTuning():
 | `PIDFX` | TalonFX firmware | Phoenix 6 firmware simulation models the 1 kHz loop; sim tuning is a reasonable starting point for hardware tuning |
 | `Balance` | Any Java runtime | Pure software — identical in both |
 
-Tuning workflow (`./gradlew simulateJava` with Elastic connected to
-`localhost`) is documented in
-[control-system.md §Tuning PID in Simulation](SDD-control.md#tuning-pid-in-simulation).
+Tuning workflow: run `./gradlew simulateJava` with Elastic connected
+to `localhost`, then adjust `Tune/*` values via the dashboard. For
+setup details see
+[docs/team-lib/guides/simulation-guide.md](../../guides/simulation-guide.md).
 
 ## 8. Configuration
 
@@ -186,8 +187,13 @@ coefficients. Gains are applied via:
   `ControllerTalonFX.setPSlot()` etc., applying the gains to Slot 0 on
   the device.
 - **Transmission-level** — `TransmissionFX.configPIDFSlot(slot, P, I, D, V, S)`
-  configures the Phoenix 6 slot directly (kP–kS; kG configuration
-  planned but not yet wired through `setPIDFSlot`).
+  configures the Phoenix 6 slot directly (kP–kS).
+
+> **Status: Planned — Not Yet Implemented.** kG (gravity feedforward)
+> is reachable today via the CTRE passthrough
+> (`getLeaderConfig().Slot0.kG`) but is not yet wired into
+> `configPIDFSlot`. A first-class method will be added when multiple
+> callers need it.
 
 ### 8.2 Output Clamping & Integrator Range
 
@@ -222,4 +228,4 @@ source file; tilt thresholds are sign-inverted when constructed with
 
 Test IDs: TEST-CTL-NNN. The existing test suite covers PIDSimple,
 PIDTrap, PIDWPI, PIDFX, and Balance (see
-[testing-strategy.md §Test Structure](../SVP.md#test-structure)).
+[SVP.md §Test Structure](../SVP.md#test-structure)).

@@ -45,8 +45,7 @@ active state silently. Alerts live in named groups (default group:
 alerts to AdvantageKit as string arrays, keyed by alert type — it is
 invoked each cycle by `SubsystemManager` so alerts appear in both the
 dashboard and the match log. `alert.remove()` deregisters an alert
-from its group. See [utility-package.md §Alert](SDD-util.md)
-for the full type and behavior table.
+from its group.
 
 ### 3.2 `Elastic`
 
@@ -142,7 +141,7 @@ DriverStation but never throws, so a malformed notification cannot
 crash the calling subsystem. `Alert.set(true)` routes through
 `Elastic.sendNotification`, so it shares the same fail-quiet behavior.
 Throttling of repeated notifications is the caller's responsibility
-(see [fault-tolerance.md §Error Notification Throttling](SDD-subsystem.md#error-notification-throttling)).
+(see [SDD-subsystem.md §6.2](SDD-subsystem.md)).
 
 ## 7. Platform Portability Notes
 
@@ -177,4 +176,4 @@ required.
 
 Test IDs: TEST-UTL-NNN. The `libtest` package is excluded from
 coverage metrics per
-[testing-strategy.md §Coverage Targets](../SVP.md).
+[SVP.md §Coverage Targets](../SVP.md).

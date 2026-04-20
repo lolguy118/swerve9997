@@ -1,4 +1,4 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
 
@@ -56,6 +56,13 @@ c. Repeated warnings **shall** be rate-limited to avoid console spam.
    ```
 
 ### CODE-BUG-004 -- Runtime Tunability
+
+> **Anchor:** This rule codifies the tuning model decided in
+> [ADR-008](planning/adr/ADR-008-logged-nt-input-backed-tuning.md).
+> The implementation lives in
+> [SDD-nt.md](planning/sdd/SDD-nt.md) (`NTTable`, `NTEntry`,
+> `LoggedNTInput`); the integration point is described in
+> [SDD-team271-lib.md §Tuning Infrastructure](planning/sdd/SDD-team271-lib.md).
 
 a. All configurable control values **shall** be tunable at runtime via
    SmartDashboard / NetworkTables using the `LoggedNTInput` +

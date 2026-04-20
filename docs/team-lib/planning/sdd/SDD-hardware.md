@@ -138,14 +138,14 @@ TObj
 
 Every sensor wrapper registers its StatusSignals with `CTREManager`
 during `robotInit()` at the appropriate update frequency — see
-[hardware-abstraction.md §Supported TalonFX Signals](SDD-hardware.md#supported-talonfx-signals)
-for the per-device frequency table. Each `robotPeriodicBefore()`
+§8.3 (StatusSignal Update Frequencies) below and `ConstantsLib` for
+the concrete frequency constants. Each `robotPeriodicBefore()`
 simply reads the cached value that `CTREManager.refreshAll()` has
 already updated; individual `refresh()` calls on StatusSignals are
 avoided because they defeat bulk refresh optimization. `IMUPigeon2`
 uses `BaseStatusSignal.getLatencyCompensatedValue()` for yaw reads.
 `IMUPigeon2` also owns a `FaultMonitor` tracking 6 sticky faults
-(see [fault-tolerance.md §CTRE Fault Coverage](SDD-subsystem.md#ctre-fault-coverage-faultmonitor)).
+(see [§3.7 FaultMonitor](SDD-hardware.md) above).
 
 The encoder adapter pattern (`EncoderAdapter`, `FXEncoderAdapter`,
 `CANCoderAdapter`) means adding a new encoder type requires only a
@@ -227,12 +227,17 @@ each cycle, publishes per-fault booleans plus a summary `Has Fault`
 boolean to NetworkTables, and raises a persistent `Alert` in the
 "Faults" group for each active fault. Per-device fault inventories
 are listed in
-[fault-tolerance.md §Monitored Faults by Device](SDD-subsystem.md#monitored-faults-by-device).
+§3.7 FaultMonitor above.
 
 ### 3.8 Passthrough Getter Reference
 
-Mirrored from
-[passthrough-design.md](SDD-vendor-ctre.md):
+The table below lists hardware-layer passthrough getters. For
+vendor-layer wrappers (`CTREMotor`, `CTREEncoder`, `CTREGyro`,
+`CTRERangeSensor`), see
+[SDD-vendor-ctre.md §6 Passthrough Getter Reference](SDD-vendor-ctre.md).
+The two tables are complementary — this one covers
+`Controller*`/`Transmission*` and direct sensor wrappers; the other
+covers the api/-implementing `CTRE*` classes.
 
 | Class | Method | Returns | Notes |
 | ----- | ------ | ------- | ----- |
@@ -300,11 +305,11 @@ Robot.robotPeriodic() @ 50 Hz
 | Centralized bulk refresh | Consistent timestamps, lower bus utilization, simpler latency compensation | [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
 | `Controller*` classes do not implement api/ | Keeps controller hierarchy CTRE-focused; `CTREMotor` is the api/ bridge | [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md) |
 | No duplicate CAN IDs | Construct each device once, pass reference | [.claude/rules/safety.md](../../../../.claude/rules/safety.md) |
-| `HardwareManager` forward-compatible | Single entry point even if vendors expand | [vendor-abstraction-guide.md](SDD-vendor-ctre.md) |
-| Encoder adapter pattern | Swap encoder types without touching TransmissionBase | [hardware-abstraction.md §Encoder Adapter](SDD-hardware.md#encoder-adapter-pattern) |
-| Follower same-bus validation | Cross-bus followers silently sit at zero output; catch at construction | [fault-tolerance.md §Bus Validation](SDD-subsystem.md#bus-validation-for-followers) |
-| Pre-allocated control request objects | Avoid GC pressure during match play | [hardware-abstraction.md](SDD-hardware.md) |
-| NaN/Infinity input guards | Bad sensor readings should skip one cycle, not disable the subsystem | [fault-tolerance.md §Input Validation](SDD-subsystem.md#input-validation-naninfinity-guards) |
+| `HardwareManager` forward-compatible | Single entry point even if vendors expand | [SDD-vendor-ctre.md](SDD-vendor-ctre.md) |
+| Encoder adapter pattern | Swap encoder types without touching TransmissionBase | See §3.3 above |
+| Follower same-bus validation | Cross-bus followers silently sit at zero output; catch at construction | See §3.2 (Transmission Architecture) above |
+| Pre-allocated control request objects | Avoid GC pressure during match play | [CODE-GEN-004](../../Team271-Software-Coding-Standard-General.md) |
+| NaN/Infinity input guards | Bad sensor readings should skip one cycle, not disable the subsystem | See §6 Error Handling above |
 
 ## 6. Error Handling
 
@@ -354,7 +359,7 @@ Robot.robotPeriodic() @ 50 Hz
   into `EncoderFX` reads; external CANcoders and CANranges use
   their own sim states. The library's simulation-lifecycle plumbing
   (`simulationInit`, `simulationPeriodic`) is documented in
-  [library-architecture.md §Simulation Architecture](SDD-team271-lib.md#simulation-architecture).
+  [SDD-team271-lib.md §3.6 Simulation Architecture](SDD-team271-lib.md).
 - **`StatusSignal` values** — in unit tests (as opposed to desktop
   sim), StatusSignals return default/zero values. Tests verify
   API wiring, not signal values.
@@ -396,7 +401,7 @@ methods. This is enforced by convention (not by an assert).
 `TransmissionFX` exposes Motion Magic parameters and PID gains as
 tunables (`Tune/MMCruiseVel`, `Tune/MMAccel`, `Tune/MMJerk`,
 `Tune/PID_kP` through `Tune/PID_kS`). Full inventory in
-[hardware-abstraction.md §TransmissionFX Tunables](SDD-hardware.md#transmissionfx-tunables).
+§8.2 above for the full list of tunable parameters.
 
 Changes are detected in `checkTuning()` (called from
 `outputTelemetry()`) and applied via `configPIDFSlot` or
@@ -405,10 +410,8 @@ Changes are detected in `checkTuning()` (called from
 ### 8.3 `StatusSignal` Update Frequencies
 
 Per-signal update frequencies are set at registration time. Default
-values are documented in
-[hardware-abstraction.md §Supported TalonFX Signals](SDD-hardware.md#supported-talonfx-signals)
-(per-signal frequency table) and stored as named constants in
-`ConstantsLib`. CANrange uses a lower default frequency than the
+values are stored as named constants in `ConstantsLib`; the
+canonical list lives alongside the constants themselves. CANrange uses a lower default frequency than the
 TalonFX / CANcoder / Pigeon2 devices.
 
 Follower motors can restrict their signal set via `Signals.NONE`
@@ -431,6 +434,6 @@ telemetry.
 All tests creating CTRE devices use unique CAN IDs within a class
 and call `CTREManager.resetForTesting()` in `@BeforeEach`. See the
 CTREManager cleanup pattern in
-[testing-strategy.md](../SVP.md#critical-pattern-ctremanager-static-state-cleanup).
+[SVP.md](../SVP.md#critical-pattern-ctremanager-static-state-cleanup).
 
 Test IDs: TEST-HW-NNN.

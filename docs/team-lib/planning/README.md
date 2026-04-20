@@ -1,8 +1,11 @@
 # Planning Documentation Index
 
-This directory contains the formal planning and design documents for Team271-Lib.
-These documents satisfy the reference IDs listed in
-`../Team271-Software-Coding-Standard.md §1.4`.
+This directory contains the formal planning and design documents for
+Team271-Lib. They describe **what** the library does (SRS), **how**
+it's built (SDP), **how** it's verified (SVP), and **how** it's
+versioned (SCMP). The Software Design Descriptions (SDDs) document
+the architecture of each layer; the Architecture Decision Records
+(ADRs) capture the rationale behind key decisions.
 
 ## Document Map
 

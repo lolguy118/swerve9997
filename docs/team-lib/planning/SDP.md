@@ -69,10 +69,13 @@ This document references but does not duplicate them. See
 | roboRIO 2 | Competition target | No (hardware-only) |
 | Windows 11 (desktop sim) | Primary developer platform | Yes |
 | macOS (desktop sim) | Secondary developer platform | Yes |
-| Linux (desktop sim) | Tertiary developer platform | Yes (CI runner) |
+| Linux (desktop sim) | Tertiary developer platform | Planned (CI runner, pending) |
 
-Desktop simulation requires WPILib HAL sim and Phoenix 6 sim. Tests run
-on all three desktop platforms in CI.
+Desktop simulation requires WPILib HAL sim and Phoenix 6 sim. Tests
+are runnable on all three desktop platforms. A GitHub Actions CI
+pipeline is planned (see [CLAUDE.md](../../../CLAUDE.md) §CI);
+current pre-merge gates run via `.claude/hooks/` and local
+`./gradlew check`.
 
 ## 6. Layer Build Priority
 
@@ -129,19 +132,26 @@ not set calendar dates — phases begin when entry conditions are met.
 ### 7.5 Postseason (May)
 
 - **Entry:** championship concluded.
-- **Deliverables:** retrospective, `v202Y.0.0` offseason MAJOR tag,
-  docs updates, ADR drafts for the next offseason.
+- **Deliverables:** retrospective, next-season major tag (e.g.,
+  `v2027.0.0`), docs updates, ADR drafts for the next offseason.
 - **Exit:** offseason begins.
 
 ## 8. Milestones
 
-| Event | Action | Version |
+### 8.1 Version Tag Events
+
+| Event | Action | Example |
 | ----- | ------ | ------- |
 | Offseason start | Tag prior season final | `v2026.N.P` |
-| Preseason API freeze | Tag minor bump | `v2027.0.0` |
-| Build season start | No-new-features rule in effect | — |
+| Preseason API freeze | Tag next-season MINOR=0 | `v2027.0.0` |
 | Each competition hotfix | Tag patch | `v2027.0.P` |
-| Postseason | Retrospective | — |
+
+### 8.2 Phase Transitions (no tag)
+
+| Event | Action |
+| ----- | ------ |
+| Build season start | No-new-features rule takes effect |
+| Postseason | Retrospective; ADR drafts for next offseason |
 
 Version format: `YYYY.MINOR.PATCH`. See
 [SCMP.md §3](SCMP.md) for semantics.

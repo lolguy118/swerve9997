@@ -2,12 +2,20 @@
      See Team271-Software-Coding-Standard.md for the index. -->
 <!-- markdownlint-disable-file MD041 -->
 
+> **Scope:** These templates are for **robot-project code**. Library
+> subsystems follow the pattern in
+> [SDD-subsystem.md](planning/sdd/SDD-subsystem.md) and do **not** use
+> singletons (see
+> [ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
+> Library-level constants live in `ConstantsLib.java`, not in the
+> `Constants.java` shown in Appendix G.
+
 ## Appendix F: Subsystem Template
 
 See [Section 3.1](Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
 subsystem template. Key elements:
 
-1. Singleton with dual `getInstance()` (CODE-GEN-016)
+1. Singleton with dual `getInstance()` (CODE-GEN-013)
 2. State enum with all states including IDLE (CODE-FUN-005)
 3. `m` prefix on all instance fields (CODE-VAR-001a)
 4. `arg` prefix on all parameters (CODE-VAR-001b)

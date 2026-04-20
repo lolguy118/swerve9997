@@ -78,6 +78,5 @@ initialized subsystem.
 
 ## References
 
-- [SDD-subsystem.md §Exception Isolation](../sdd/SDD-subsystem.md)
-- [Fault tolerance — Exception Isolation](../sdd/SDD-subsystem.md)
+- [SDD-subsystem.md — Exception Isolation](../sdd/SDD-subsystem.md)
 - [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md)

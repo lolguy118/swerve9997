@@ -91,8 +91,10 @@ robotPeriodicBefore:
 ```
 
 The separation between `robotPeriodicBefore` (time / condition
-checks) and `autonomousPeriodic` (subsystem commands) is documented
-in [auto-design.md §canRun vs robotPeriodicBefore Contract](SDD-auto.md#canrun-vs-robotperiodicbefore-contract).
+checks) and `autonomousPeriodic` (subsystem commands) is captured
+by the `AutoMove.canRun()` gate described in §3 above: timing
+and completion updates fire every cycle via `robotPeriodicBefore`,
+but only `autonomousPeriodic` is gated by `canRun()`.
 
 ## 5. Key Design Decisions
 
@@ -102,8 +104,8 @@ in [auto-design.md §canRun vs robotPeriodicBefore Contract](SDD-auto.md#canrun-
 | No shared state between moves | Moves are independent; avoid coupling bugs | SRS §4.6 |
 | Mandatory timeout on conditional moves | Physical safety — path must end | [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md) |
 | PathPlanner integration via `CommandBridge` | Reuse proven path generation without re-architecting | [ADR-013](../adr/ADR-013-pathplanner-autonomous.md) |
-| Independent timers per move | Makes nested composition work without cross-coupling | [auto-design.md](SDD-auto.md) |
-| Move author owns `onEnd()` cleanup | Library cannot know which subsystem commands a move issued | [auto-design.md §onEnd Responsibility](SDD-auto.md#onend-responsibility) |
+| Independent timers per move | Makes nested composition work without cross-coupling | See §3 (AutoMove row) |
+| Move author owns `onEnd()` cleanup | Library cannot know which subsystem commands a move issued | See §3 (AutoMove row) and §6 |
 
 ## 6. Error Handling
 
@@ -162,8 +164,8 @@ timestamps.
   PathPlanner's alliance-flipping helpers, not by the library.
 
 Auto routines are composed in each `AutoMode` constructor via
-`addMove(...)`; there is no external configuration file. See the
-[Building a New Auto Routine example](SDD-auto.md#building-a-new-auto-routine).
+`addMove(...)`; there is no external configuration file. Robot
+projects document their own auto routines in their own design docs.
 
 ## 9. Test Coverage Requirements
 
@@ -178,4 +180,4 @@ Auto routines are composed in each `AutoMode` constructor via
 
 Test IDs: TEST-AUT-NNN. Existing auto tests (5 classes) live under
 `src/test/java/com/team271/lib/auto/` — see
-[testing-strategy.md §Test Structure](../SVP.md#test-structure).
+[SVP.md §Test Structure](../SVP.md#test-structure).

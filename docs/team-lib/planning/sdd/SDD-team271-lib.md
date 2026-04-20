@@ -125,9 +125,7 @@ The library provides two complementary simulation layers:
 The library publishes infrastructure; robot projects implement the
 physics. `transmission.setSimPosRotations()` propagates through the
 entire stack (encoder sim, controller sim state, internal encoder
-reads). See
-[library-architecture.md §Simulation Architecture](SDD-team271-lib.md#simulation-architecture)
-for the full capability matrix.
+reads).
 
 ## 4. Data Flow
 
@@ -169,8 +167,8 @@ hardware is commanded — eliminating single-cycle race conditions.
 | 6-layer architecture | See ADR-004 | [ADR-004](../adr/ADR-004-layered-architecture.md) |
 | AdvantageKit for telemetry | See ADR-012 | [ADR-012](../adr/ADR-012-advantagekit-logging.md) |
 | LoggedNTInput-backed tuning | See ADR-008 | [ADR-008](../adr/ADR-008-logged-nt-input-backed-tuning.md) |
-| `TObj` instead of WPILib `SubsystemBase` | Finer-grained lifecycle hooks, exception isolation, sim hooks | [library-architecture.md §Why TObj](SDD-team271-lib.md#why-tobj-instead-of-wpilib-subsystem) |
-| Singletons for managers (`SubsystemManager`, `CTREManager`) | Exactly one robot, one CAN system, one registry | [library-architecture.md §Why Singletons](SDD-team271-lib.md#why-singletons-for-managers) |
+| `TObj` instead of WPILib `SubsystemBase` | Finer-grained lifecycle hooks, exception isolation, sim hooks | See §3.2 above |
+| Singletons for managers (`SubsystemManager`, `CTREManager`) | Exactly one robot, one CAN system, one registry | [ADR-015](../adr/ADR-015-explicit-instantiation-no-singletons.md) |
 | Centralized bulk CAN refresh | Consistent timestamps, lower bus utilization | [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
 
 ## 6. Error Handling
@@ -181,8 +179,7 @@ The root library's fault-tolerance contract:
   `SubsystemManager.forEachSafe()`. One broken subsystem does not
   stop others. Error notifications are throttled per subsystem
   (throttle interval in `ConstantsLib`). See
-  [SDD-subsystem.md](SDD-subsystem.md) and
-  [fault-tolerance.md §Exception Isolation](SDD-subsystem.md#exception-isolation-subsystemmanager).
+  [SDD-subsystem.md §6.1](SDD-subsystem.md).
 - **`robotInit()` failure is fatal** — not isolated, by design. A
   partially initialized robot is unsafe.
 - **TRobot-level uncaught exceptions** — propagate through the
@@ -192,13 +189,13 @@ The root library's fault-tolerance contract:
   emits Elastic notifications from the periodic path applies the
   library's standard throttle interval. The canonical pattern is
   documented in
-  [fault-tolerance.md §Error Notification Throttling](SDD-subsystem.md#error-notification-throttling).
+  [SDD-subsystem.md §6.2](SDD-subsystem.md).
 - **Safe defaults** — every subsystem that can fail has a safe
   default output: motors guard on `isConnected`, inputs return 0.0
   when disconnected, PID output is clamped to `[minOutput, maxOutput]`,
   integral term bounded by `[iMin, iMax]` and zeroed outside
   `iZone`. Full inventory in
-  [fault-tolerance.md §Safe Defaults](SDD-subsystem.md#safe-defaults).
+  [SDD-subsystem.md §6.3](SDD-subsystem.md).
 
 ## 7. Platform Portability Notes
 
@@ -220,7 +217,7 @@ mechanism by which robot projects plug in platform-specific physics.
 Unit tests (JUnit 5) run in a third context with HAL initialized
 but no CTRE simulation tick — they exercise construction,
 configuration, and pure-Java math. See
-[testing-strategy.md §Desktop Simulation vs Unit Tests](../SVP.md#desktop-simulation-vs-unit-tests).
+[SVP.md §Desktop Simulation vs Unit Tests](../SVP.md#desktop-simulation-vs-unit-tests).
 
 ## 8. Configuration
 
@@ -257,7 +254,7 @@ documents reference constant names (`kHomingTimeoutSec`,
 | Crash-report routing | Yes | Optional; robot-project-specific |
 
 HAL initialization and CTREManager reset requirements are documented
-in [testing-strategy.md](../SVP.md).
+in [SVP.md](../SVP.md).
 The `libtest` harness assembles a minimal full-robot stack for
 cross-layer smoke tests; it is excluded from JaCoCo coverage
 metrics.

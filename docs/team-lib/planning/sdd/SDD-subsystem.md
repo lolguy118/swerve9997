@@ -145,33 +145,61 @@ SubsystemManager.outputTelemetry()
 | -------- | --------- | --------- |
 | Exception isolation in `forEachSafe()` | One broken subsystem must not crash the robot loop | [ADR-010](../adr/ADR-010-subsystem-exception-isolation.md) |
 | Desired-to-actual separation | Decouples operator input from hardware; all reads finish before writes | [ADR-014](../adr/ADR-014-desired-to-actual-state-pattern.md) |
-| Registration order is execution order | Load-bearing ordering documented in robot project | [library-architecture.md §Registration Order](SDD-team271-lib.md#registration-order) |
+| Registration order is execution order | Load-bearing ordering documented in robot project | See §3.2 (`SubsystemManager`) above |
 | Homing must have timeout + fail-safe + Elastic | Physical safety — robot must stop if homing hangs | [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md) |
-| `StateMachine` is a helper, not a base class | Keeps subsystem inheritance single-axis; simple subsystems skip it | [library-architecture.md §StateMachine Helper](SDD-team271-lib.md#statemachine-helper-optional) |
-| `SubsystemManager` is a singleton | There is exactly one subsystem registry per robot | [library-architecture.md §Why Singletons for Managers](SDD-team271-lib.md#why-singletons-for-managers) |
-| `robotInit()` is not exception-isolated | Init failure is fatal; partial init is unsafe | [fault-tolerance.md §Exception Isolation](SDD-subsystem.md#exception-isolation-subsystemmanager) |
+| `StateMachine` is a helper, not a base class | Keeps subsystem inheritance single-axis; simple subsystems skip it | See §3.3 above |
+| `SubsystemManager` is a singleton | There is exactly one subsystem registry per robot | [ADR-015](../adr/ADR-015-explicit-instantiation-no-singletons.md) |
+| `robotInit()` is not exception-isolated | Init failure is fatal; partial init is unsafe | See §6.1 |
 
 ## 6. Error Handling
 
-- **Per-phase isolation** — `forEachSafe` catches any `Throwable` in
-  a subsystem's lifecycle call, logs the phase name plus exception
-  to the DriverStation, and sends a throttled Elastic
-  `ERROR`-level notification. The subsystem list is not modified — a
-  subsystem that throws will be retried next cycle.
-- **Throttling** — each subsystem has its own
-  `lastErrorNotificationTime` entry. A persistent null-pointer bug
-  produces one notification per throttle interval, not one per
-  periodic cycle.
-- **`robotInit` failure** — not isolated. Exceptions propagate to
-  `Robot.robotInit()` and crash early, which is the intended
-  behavior (see [fault-tolerance.md](SDD-subsystem.md)).
-- **Homing timeout** — each subsystem that homes must implement its
-  own timeout (`kHomingTimeoutSec` in that subsystem's `Constants`),
-  fail safe, and Elastic notification. The library does not generic
-  this pattern because the fail-safe action is subsystem-specific.
-- **`StateMachine` exceptions** — exceptions thrown from `onEnter`
-  or `onExit` callbacks propagate to the enclosing subsystem's
-  lifecycle call and therefore through `forEachSafe`.
+### 6.1 Exception Isolation
+
+`forEachSafe` catches any `Throwable` in a subsystem's lifecycle call,
+logs the phase name plus exception to the DriverStation, and sends a
+throttled Elastic `ERROR`-level notification. The subsystem list is
+not modified — a subsystem that throws will be retried next cycle.
+
+`robotInit` failure is the one phase that is **not** isolated.
+Exceptions propagate to `Robot.robotInit()` and crash early, which is
+the intended behavior — a partially initialized subsystem is worse
+than a crashed robot (see [ADR-010](../adr/ADR-010-subsystem-exception-isolation.md)).
+
+### 6.2 Error Notification Throttling
+
+Each subsystem has its own `lastErrorNotificationTime` entry. A
+persistent null-pointer bug produces one notification per throttle
+interval (defined in `ConstantsLib`), not one per periodic cycle.
+Without throttling, a sustained exception would flood the dashboard
+with 50 notifications per second.
+
+### 6.3 Safe Defaults
+
+Library-level safe defaults that subsystems inherit:
+
+- Motor output: guarded on `isConnected` — no command sent to
+  disconnected devices.
+- Input axes: return 0.0 when controller disconnected.
+- Config failure: motor falls back to Phoenix 6 factory defaults
+  (which include safe current limits).
+- `StateMachine` transitions: callbacks fire only on actual state
+  change; no-op for same-state transitions.
+
+### 6.4 Homing Timeout
+
+Each subsystem that homes must implement its own timeout
+(`kHomingTimeoutSec` in that subsystem's `Constants`), fail-safe
+action, and Elastic notification (per
+[ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md)). The
+library does not generic this pattern because the fail-safe action
+is subsystem-specific.
+
+### 6.5 StateMachine Exception Propagation
+
+Exceptions thrown from `onEnter` or `onExit` callbacks propagate to
+the enclosing subsystem's lifecycle call, and therefore through
+`forEachSafe` (see §6.1). Callback authors do not need to catch
+routine exceptions — the isolation covers them.
 
 ## 7. Platform Portability Notes
 
@@ -186,7 +214,7 @@ Unit tests that exercise subsystem lifecycle typically:
 1. Initialize HAL: `HAL.initialize(500, 0)`.
 2. Reset CTRE state: `CTREManager.resetForTesting()`.
 3. Clear any previous `SubsystemManager` registrations (see
-   [testing-strategy.md §Test Isolation](../SVP.md#test-isolation-guidelines)).
+   [SVP.md §Test Isolation](../SVP.md#test-isolation-guidelines)).
 4. Construct the subsystem and drive it manually by calling
    lifecycle methods directly.
 
@@ -217,4 +245,4 @@ project configures its own subsystems via:
 
 Test IDs: TEST-SUB-NNN. Existing tests live under
 `src/test/java/com/team271/lib/subsystem/` (2 classes) — see
-[testing-strategy.md §Test Structure](../SVP.md#test-structure).
+[SVP.md §Test Structure](../SVP.md#test-structure).

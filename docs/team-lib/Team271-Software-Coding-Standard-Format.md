@@ -1,12 +1,21 @@
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
 
 ## Format
 
 > **Note:** Most formatting rules are automatically enforced by Spotless
-> (Google Java Format, AOSP variant). This section documents what the
-> formatter does and identifies rules that require manual compliance.
+> (Google Java Format, AOSP variant). Specifically, Spotless enforces:
+>
+> - 4-space indentation (AOSP)
+> - no tab characters
+> - unused-import removal
+> - import ordering
+> - long-string reflow
+>
+> The rules below cover **manual-compliance** items (braces,
+> parentheses, blank lines, line endings, wildcard-import exception)
+> that Spotless does not catch.
 
 ### CODE-FMT-001 -- Line Length
 
@@ -42,7 +51,7 @@ b. Brace style follows Google Java Format AOSP: opening brace on
 > parentheses costs nothing and prevents misreading.*
 
 a. Parentheses **shall** be used to clarify operator precedence when
-   mixing different categories of operators (arithmetic with comparison,
+   mixing categories of operators (arithmetic with comparison,
    bitwise with logical, ternary within larger expressions):
 
    ```java
@@ -51,14 +60,12 @@ a. Parentheses **shall** be used to clarify operator precedence when
    if ((a + b) > (c * d)) { ... }
    ```
 
-   For simple comparisons joined by `&&` or `||`, extra parentheses
-   are **recommended** but not required -- Java's precedence for
-   comparison operators (`>`, `<`, `==`) binding tighter than logical
-   operators (`&&`, `||`) is well-established:
+b. Parentheses are **not required** for simple boolean chains using
+   `&&` or `||` with comparison operators. Java's comparison-before-logical
+   precedence is standard:
 
    ```java
-   /* Both are acceptable */
-   if ((depth > 0) && (depth < MAX_DEPTH)) { ... }
+   /* CORRECT: no unnecessary parens */
    if (depth > 0 && depth < MAX_DEPTH) { ... }
    ```
 
@@ -85,17 +92,7 @@ c. Section comments using block comment style **shall** be used to
 
 d. Section comment text **shall** be concise (1-3 words).
 
-### CODE-FMT-005 -- Indentation
-
-a. Each indentation level **shall** be 4 spaces (AOSP standard).
-   Enforced by Spotless.
-
-### CODE-FMT-006 -- Tabs
-
-a. Tab characters **shall** not appear in source files. Enforced
-   by Spotless.
-
-### CODE-FMT-007 -- Line Endings
+### CODE-FMT-005 -- Line Endings
 
 a. All source files **shall** use LF (0x0A) line endings. This is
    **not** automatically enforced by Spotless (the `endWithNewline()`
@@ -103,7 +100,7 @@ a. All source files **shall** use LF (0x0A) line endings. This is
    ending style). Enforce LF via `.gitattributes` (`* text=auto eol=lf`)
    or by adding `lineEndings('UNIX')` to the Spotless configuration.
 
-### CODE-FMT-008 -- Import Statements
+### CODE-FMT-006 -- Import Statements
 
 a. Wildcard imports (`import foo.*`) **shall** not be used, with one
    documented exception: `import static edu.wpi.first.units.Units.*`
@@ -113,5 +110,9 @@ b. Unused imports **shall** be removed. Spotless
    `removeUnusedImports()` enforces this automatically.
 
 c. Import order is managed by Spotless. Do not manually reorder.
+
+d. Static imports **should** be used for frequently referenced
+   constants when it improves readability (e.g.,
+   `import static com.team271.frc<year>.Constants.CAN_BUS_CANIVORE_SUBSYSTEMS`).
 
 ---

@@ -32,8 +32,9 @@ and rotational sensors are CTRE Phoenix 6 devices:
 - **Range sensor:** CANrange
 - **Limit switches:** CANdi, digital input via TalonFX hardware limit pins
 
-WPILib PWM motor controllers (Spark, Talon SRX legacy, etc.), REV
-Robotics motor controllers, and Kauai Labs NavX are not wrapped by the
+WPILib PWM motor controllers (`PWMSparkMax`, `PWMVictorSPX`,
+`PWMTalonFX`, etc.), REV Robotics motor controllers (CAN-based
+SparkMax, SparkFlex), and Kauai Labs NavX are not wrapped by the
 library. They can be used directly via WPILib APIs in robot projects
 that need them; the library does not abstract them.
 

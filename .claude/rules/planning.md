@@ -16,9 +16,12 @@ SCMP, ADRs, and SDDs.
   Decomposition, Data Flow, Key Design Decisions, Error Handling,
   Platform Portability Notes, Configuration, Test Coverage
   Requirements.
-- **Requirement IDs `[PREFIX-NNN]`** are used **only inside SRS
-  tables and the SVP traceability matrix.** Never in SDDs, guides,
-  CLAUDE.md, or code comments outside test methods.
+- **Requirement IDs `[PREFIX-NNN]`** are scoped. Allowed locations:
+  (a) SRS requirement tables, (b) SVP traceability matrix, (c) each
+  SDD's header-table "Requirements Traced" row, and (d) each SDD's
+  §9 "Test Coverage Requirements" test-ID listing. Not allowed
+  anywhere else — no IDs in SDD prose, guides, CLAUDE.md, coding
+  standards, or code comments outside test-method Javadoc.
 - **One ADR per decision.** If you find yourself writing an ADR with
   two decisions, split it. If you find yourself writing an ADR that
   duplicates an existing one, update the existing one instead.

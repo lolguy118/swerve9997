@@ -30,9 +30,10 @@ layers below it. From bottom to top:
 | 4 | `control/` | `hardware/` |
 | 5 | `subsystem/` | `control/`, `hardware/` |
 | 6 | `auto/` | `subsystem/` |
+| C | `nt/`, `sysid/`, `util/` | (cross-cutting; depend on none above) |
 
-Cross-cutting packages (`nt/`, `sysid/`, `util/`) may be used by any
-layer but may not depend on any layer above themselves.
+Cross-cutting packages may be used by any layer but may not depend on
+any layer above themselves.
 See [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-lib-dependency-diagram.mmd).
 
 ## Rationale
@@ -80,4 +81,3 @@ See [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-li
 - [SDD-team271-lib.md §2](../sdd/SDD-team271-lib.md)
 - [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-lib-dependency-diagram.mmd)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
-  (merges into `.claude/rules/team271-lib.md` in Phase 6)

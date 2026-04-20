@@ -38,7 +38,9 @@ any specific robot's geometry, subsystems, or autonomous routines.
    schedule.
 3. **Testability.** Library code is unit-tested independently
    (see [ADR-009](ADR-009-junit5-hal-simulation-tests.md)). A robot
-   project does not pay the cost of running library tests.
+   project that consumes the library as a published artifact does
+   not pay the cost of running library tests (source-included
+   consumption is an exception).
 4. **Onboarding clarity.** New students learn the library once; the
    library does not change from season to season in ways that invalidate
    their learning.

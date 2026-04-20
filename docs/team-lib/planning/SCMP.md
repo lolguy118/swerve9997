@@ -13,9 +13,9 @@
 
 ## 1. Purpose
 
-Satisfy the CM plan reference identified in
-`../Team271-Software-Coding-Standard.md §1.4`. Points to the authoritative
-CM documents listed below.
+This plan summarizes Team271-Lib's configuration management:
+versioning, vendordep upgrades, branch policy, and deviation
+tracking. The authoritative CM sources are listed in §2.
 
 ## 2. Authoritative CM Documents
 
@@ -33,9 +33,11 @@ Team271-Lib uses Semantic Versioning (SemVer):
 - **MINOR** — new API surface (typically once per season)
 - **PATCH** — bug fix (any phase)
 
-Version format: `2026.MINOR.PATCH` (season year prefix). Version is set in
-`build.gradle`. Git tags are created at season boundaries: `v2026.0.0` at
-offseason start, updated at preseason freeze.
+Version format: `YYYY.MINOR.PATCH` (season year prefix). Version is set
+in `build.gradle`. Git tags are applied at season boundaries per
+[SDP §8.1](SDP.md): the prior season's final tag (e.g., `v2026.3.2`) is
+applied at offseason start; the next-season MINOR=0 tag (e.g.,
+`v2027.0.0`) is applied at preseason API freeze.
 
 ## 4. Vendordep Management
 
@@ -50,9 +52,9 @@ Upgrading a vendordep requires:
 
 ## 5. Baseline Control
 
-- `main` branch is protected; no direct push.
+- `main` branch **should** be protected on GitHub (no direct push,
+  no force-push). Verify this is actually configured on the remote.
 - Season-boundary baselines are Git tags on `main` (signed).
-- Force-push to `main` is never allowed.
 - Feature branches: `feat/short-description` or `fix/short-description`.
 
 ## 6. Change Control

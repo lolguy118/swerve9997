@@ -11,16 +11,7 @@
       "Bash(./gradlew test:*)",
       "Bash(./gradlew spotlessCheck)",
       "Bash(java -version)",
-      "Bash(where java:*)",
-      "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/controllers/PPHolonomicDriveController.java\")",
-      "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/trajectory/PathPlannerTrajectory.java\")",
-      "Bash(unzip -p \"PathplannerLib-java-2026.1.2-sources.jar\" \"com/pathplanner/lib/path/PathPlannerPath.java\")",
-      "Bash(sort -t: -k2)",
-      "Bash(for file:*)",
-      "Bash(do echo:*)",
-      "Bash(sed 's/.*public void //')",
-      "Bash(sed 's/\\(.*\\)//')",
-      "Bash(grep -E \"CONTRIBUTING|\\\\.md$\")"
+      "Bash(where java:*)"
     ]
   }
 }

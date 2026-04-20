@@ -20,7 +20,9 @@ blocking operation in the code must fail safe.
   subsystem's design doc.
 - **Do not suggest `--no-verify`** or other hook-skipping behavior to
   work around safety checks. If a hook fails, investigate the root
-  cause.
+  cause. Enforced automatically by the deny list in
+  [`.claude/settings.json`](../settings.json) (`--no-verify`,
+  `--no-gpg-sign`, `git commit -n`).
 - **Do not introduce duplicate CTRE device objects** on the same CAN
   ID — construct each device once and pass the reference.
 

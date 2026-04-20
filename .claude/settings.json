@@ -24,7 +24,16 @@
     "deny": [
       "Bash(rm -rf*)",
       "Bash(git push --force*)",
-      "Bash(git reset --hard*)"
+      "Bash(git reset --hard*)",
+      "Bash(*--no-verify*)",
+      "Bash(*--no-gpg-sign*)",
+      "Bash(git commit -n*)",
+      "Bash(git clean -f*)",
+      "Bash(git clean -d*)",
+      "Bash(git checkout -- *)",
+      "Bash(git restore .*)",
+      "Bash(git branch -D*)",
+      "Bash(git commit --amend*)"
     ]
   },
   "hooks": {
@@ -56,6 +65,11 @@
             "type": "command",
             "command": ".claude/hooks/check-java-compiles.sh",
             "description": "compileJava after Java edit"
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-spotless.sh",
+            "description": "spotlessCheck after Java edit"
           }
         ]
       }

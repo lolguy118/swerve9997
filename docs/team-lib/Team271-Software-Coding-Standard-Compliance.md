@@ -1,5 +1,6 @@
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD041 -->
 
 ## 5. Static Analysis and Tooling
 
@@ -78,9 +79,6 @@ cannot be caught by automated tools):
 - [ ] Resource cleanup: timers and sensor subscriptions cleaned up in mode exit methods
 - [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (CODE-SAF-009c)
 - [ ] Runtime tunability: configurable values use `LoggedNTInput` + `checkTuning()` pattern (CODE-BUG-004)
-
----
-
 
 ---
 

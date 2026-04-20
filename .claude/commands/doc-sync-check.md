@@ -2,6 +2,8 @@
 description: Check that design docs are in sync with code changes on the current branch.
 ---
 
+# Doc Sync Check
+
 Audit whether the current branch's code changes have matching design
 doc updates.
 
@@ -14,7 +16,7 @@ doc updates.
 2. For each changed file, map it to the likely-affected design doc:
 
    | Code path prefix | Design doc |
-   |------------------|------------|
+   | ---------------- | ---------- |
    | `api/` | `docs/team-lib/planning/sdd/SDD-api.md` |
    | `vendor/ctre/`, `bridge/` | `docs/team-lib/planning/sdd/SDD-vendor-ctre.md` |
    | `hardware/` | `docs/team-lib/planning/sdd/SDD-hardware.md` |

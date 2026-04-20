@@ -1,5 +1,6 @@
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD041 -->
 
 ### 4.9 Safety Practices
 
@@ -117,6 +118,7 @@ a. CAN signal refresh **shall** use `CTREManager.refreshAll()` for
    CAN bus traffic.
 
 b. CTRE control requests **shall** use timesync:
+
    ```java
    .withUseTimesync(true).withUpdateFreqHz(0)
    ```

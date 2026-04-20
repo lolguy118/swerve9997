@@ -1,9 +1,10 @@
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD041 -->
 
 ## Appendix F: Subsystem Template
 
-See [Section 3.1](#31-java-source-file-template) for the complete
+See [Section 3.1](Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
 subsystem template. Key elements:
 
 1. Singleton with dual `getInstance()` (CODE-GEN-016)

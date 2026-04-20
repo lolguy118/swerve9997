@@ -374,7 +374,7 @@ instantiation.
 
 a. Abbreviations and acronyms should be avoided unless their meanings
    are widely understood. See
-   [Appendix A](#appendix-a-standard-abbreviations) for approved
+   [Appendix A](Team271-Software-Coding-Standard-Appendices.md#appendix-a-standard-abbreviations) for approved
    abbreviations.
 
 b. FRC-specific abbreviations (CAN, PID, RPS, IMU, etc.) are acceptable
@@ -1673,9 +1673,6 @@ f. `checkTuning()` **shall** be called at the beginning of
    `outputTelemetry()`, ensuring tuning changes are applied at the
    end of the robot cycle (after control outputs, before the next
    sensor read).
-
----
-
 
 ---
 

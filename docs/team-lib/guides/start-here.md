@@ -109,16 +109,16 @@ Read in this order. Each doc builds on the previous one.
 6. **[Java Coding Standard](../Team271-Software-Coding-Standard.md)** — At minimum, read Section 3 (naming), Section 4.9 (safety), and Section 5.4 (review checklist) before your first PR. The rest is reference.
 7. **Area-specific docs** — pick based on what you are working on:
 
-| Working on... | Read |
-|---------------|------|
-| Autonomous routines | [Auto Design](../planning/sdd/SDD-auto.md) |
-| PID tuning or control | [Control System](../planning/sdd/SDD-control.md) |
-| Simulation | [Simulation Guide](simulation-guide.md) |
-| System identification | [SysID Workflow](sysid-workflow.md) |
-| Joystick curves | [Input Shaping Guide](input-shaping-guide.md) |
-| Vendordep upgrades | [Vendor Dependencies](../planning/SCMP.md) |
-| Geometry / math | [Geometry Package](../planning/README.md) |
-| Alerts / utilities | [Utility Package](../planning/sdd/SDD-util.md) |
+    | Working on... | Read |
+    |---------------|------|
+    | Autonomous routines | [Auto Design](../planning/sdd/SDD-auto.md) |
+    | PID tuning or control | [Control System](../planning/sdd/SDD-control.md) |
+    | Simulation | [Simulation Guide](simulation-guide.md) |
+    | System identification | [SysID Workflow](sysid-workflow.md) |
+    | Joystick curves | [Input Shaping Guide](input-shaping-guide.md) |
+    | Vendordep upgrades | [Vendor Dependencies](../planning/SCMP.md) |
+    | Geometry / math | [Geometry Package](../planning/README.md) |
+    | Alerts / utilities | [Utility Package](../planning/sdd/SDD-util.md) |
 
 8. **[Documentation Index](../planning/README.md)** — The master mapping from package to doc. Use as a lookup table when you encounter unfamiliar code.
 

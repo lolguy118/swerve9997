@@ -1,5 +1,6 @@
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD041 -->
 
 ## Appendix H: CTRE Phoenix 6 Usage Patterns
 

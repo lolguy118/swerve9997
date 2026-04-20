@@ -1120,12 +1120,31 @@ class TransmissionFXTest {
 
     /* Slot Assignment Regression */
 
-    private int getSlot(TransmissionFX tx, String fieldName) throws Exception {
-        Field f = TransmissionFX.class.getDeclaredField(fieldName);
-        f.setAccessible(true);
-        Object req = f.get(tx);
-        Field slotField = req.getClass().getField("Slot");
-        return slotField.getInt(req);
+    /**
+     * Walks a reflective path from {@code root} through private fields named in {@code path}, then
+     * reads the public {@code Slot} field on the terminal CTRE request object. Lets these
+     * regression tests target CTRE request objects that have moved across classes over time.
+     */
+    private int getSlot(Object root, String... path) throws Exception {
+        Object current = root;
+        for (String fieldName : path) {
+            Field field = null;
+            Class<?> cls = current.getClass();
+            while (cls != null && field == null) {
+                try {
+                    field = cls.getDeclaredField(fieldName);
+                } catch (NoSuchFieldException ignored) {
+                    cls = cls.getSuperclass();
+                }
+            }
+            if (field == null) {
+                throw new NoSuchFieldException(fieldName);
+            }
+            field.setAccessible(true);
+            current = field.get(current);
+        }
+        Field slotField = current.getClass().getField("Slot");
+        return slotField.getInt(current);
     }
 
     @Test
@@ -1136,7 +1155,7 @@ class TransmissionFXTest {
 
         tx.setOutputPosition(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorPositionFF"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mController", "motorPosition"));
     }
 
     @Test
@@ -1147,7 +1166,7 @@ class TransmissionFXTest {
 
         tx.setOutputVelocity(10.0, 0.2);
 
-        assertEquals(0, getSlot(tx, "motorVelocityFF"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mController", "motorVelocity"));
     }
 
     @Test
@@ -1158,7 +1177,7 @@ class TransmissionFXTest {
 
         tx.setOutputPositionDuty(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorPositionDuty"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mPositionDuty"));
     }
 
     @Test
@@ -1169,7 +1188,7 @@ class TransmissionFXTest {
 
         tx.setOutputVelocityDuty(10.0, 0.2);
 
-        assertEquals(0, getSlot(tx, "motorVelocityDuty"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mVelocityDuty"));
     }
 
     @Test
@@ -1180,7 +1199,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMPositionVoltage(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorMMFF"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMPositionVoltage"));
     }
 
     @Test
@@ -1191,7 +1210,7 @@ class TransmissionFXTest {
 
         tx.setOutputDynMMPositionVoltage(1.0, 100.0, 200.0, 1000.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorDynMMFF"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mDynMMVoltage"));
     }
 
     @Test
@@ -1202,7 +1221,7 @@ class TransmissionFXTest {
 
         tx.setOutputPositionTorqueCurrent(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorPositionTC"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mPositionTC"));
     }
 
     @Test
@@ -1213,7 +1232,7 @@ class TransmissionFXTest {
 
         tx.setOutputVelocityTorqueCurrent(10.0, 0.2);
 
-        assertEquals(0, getSlot(tx, "motorVelocityTC"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mVelocityTC"));
     }
 
     @Test
@@ -1224,7 +1243,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMPositionDuty(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorMMOut"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMPositionDuty"));
     }
 
     @Test
@@ -1235,7 +1254,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMPositionTorqueCurrent(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorMMTC"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMPositionTC"));
     }
 
     @Test
@@ -1246,7 +1265,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMVelocityDuty(10.0, 0.2);
 
-        assertEquals(0, getSlot(tx, "motorMMVelOut"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMVelocityDuty"));
     }
 
     @Test
@@ -1257,7 +1276,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMVelocityVoltage(10.0, 0.2);
 
-        assertEquals(0, getSlot(tx, "motorMMVelFF"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMVelocityVoltage"));
     }
 
     @Test
@@ -1268,7 +1287,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMVelocityTorqueCurrent(10.0, 0.2);
 
-        assertEquals(0, getSlot(tx, "motorMMVelTC"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMVelocityTC"));
     }
 
     @Test
@@ -1279,7 +1298,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMExpoPositionDuty(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorMMExpoOut"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMExpoDuty"));
     }
 
     @Test
@@ -1290,7 +1309,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMExpoPositionVoltage(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorMMExpoFF"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMExpoVoltage"));
     }
 
     @Test
@@ -1301,7 +1320,7 @@ class TransmissionFXTest {
 
         tx.setOutputMMExpoPositionTorqueCurrent(1.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorMMExpoTC"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mMMExpoTC"));
     }
 
     @Test
@@ -1312,7 +1331,7 @@ class TransmissionFXTest {
 
         tx.setOutputDynMMPositionDuty(1.0, 100.0, 200.0, 1000.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorDynMMOut"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mDynMMDuty"));
     }
 
     @Test
@@ -1323,7 +1342,7 @@ class TransmissionFXTest {
 
         tx.setOutputDynMMPositionTorqueCurrent(1.0, 100.0, 200.0, 1000.0, 0.1);
 
-        assertEquals(0, getSlot(tx, "motorDynMMTC"));
+        assertEquals(0, getSlot(tx, "mCTRELeader", "mDynMMTC"));
     }
 
     /* ========== CANCoder Encoder Selection Branches ========== */

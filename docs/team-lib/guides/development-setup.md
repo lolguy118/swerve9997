@@ -99,6 +99,7 @@ Format: Google Java Format with AOSP 4-space indent. See
 ```
 
 This launches the WPILib simulation GUI with:
+
 - Simulated motor controllers (TalonFX sim state)
 - Simulated sensors (encoders, IMU, range sensors)
 - NetworkTables connection for dashboard testing

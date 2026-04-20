@@ -1,11 +1,46 @@
-# Planning Documentation Index
+# Team271-Lib — Planning and Design Documents
 
-Formal planning and design documents for Team271-Lib. They describe
-**what** the library does (SRS), **how** it's built (SDP), **how**
-it's verified (SVP), and **how** it's versioned (SCMP). The Software
-Design Descriptions (SDDs) document the architecture of each layer;
-the Architecture Decision Records (ADRs) capture the rationale behind
-key decisions.
+This folder holds the formal planning and design documents for
+**Team271-Lib**, Team 271's reusable FRC (FIRST Robotics Competition)
+library. If you're new, this folder is where you learn what the
+library does, how it's built, and why it's built the way it is.
+
+Each kind of document answers a different question:
+
+- **What** the library promises → [SRS.md](SRS.md) — Software
+  Requirements Specification
+- **How** the library is built → [SDP.md](SDP.md) — Software
+  Development Plan
+- **How** the library is tested → [SVP.md](SVP.md) — Software
+  Verification Plan
+- **How** versions and releases are managed → [SCMP.md](SCMP.md) —
+  Software Configuration Management Plan
+- **How** each layer is designed → [sdd/](sdd/) — Software Design
+  Descriptions (SDDs)
+- **Why** we made big architectural choices → [adr/](adr/) —
+  Architecture Decision Records (ADRs)
+
+## Start here
+
+If you're new to the library, read in this order:
+
+1. [`../README.md`](../README.md) — the `docs/team-lib/` overview.
+2. [`../guides/start-here.md`](../guides/start-here.md) — the
+   onboarding guide for contributors.
+3. [ADR-004 Layered Architecture](adr/ADR-004-layered-architecture.md)
+   — the six-layer picture that everything else depends on.
+4. The Software Design Description (SDD) for whatever you're
+   working on:
+    - Motors and sensors → [SDD-api.md](sdd/SDD-api.md) +
+      [SDD-vendor-ctre.md](sdd/SDD-vendor-ctre.md) +
+      [SDD-hardware.md](sdd/SDD-hardware.md)
+    - Closed-loop control (PID, feedforward) →
+      [SDD-control.md](sdd/SDD-control.md)
+    - State-machine-based subsystems →
+      [SDD-subsystem.md](sdd/SDD-subsystem.md)
+    - Autonomous routines → [SDD-auto.md](sdd/SDD-auto.md)
+    - Vision (camera pose estimates, AprilTags) →
+      [SDD-vision.md](sdd/SDD-vision.md)
 
 ## Shared framework (common)
 
@@ -29,8 +64,11 @@ it.
 
 ## Package-to-SDD Map
 
-| Source Package | SDD |
-| -------------- | --- |
+Every Java source package in the library maps to one Software Design
+Description (SDD):
+
+| Source Package | Software Design Description |
+| -------------- | --------------------------- |
 | `com.team271.lib` (root — TObj, Named, Lifecycle, TRobot, ConstantsLib) | [SDD-team271-lib.md](sdd/SDD-team271-lib.md) |
 | `com.team271.lib.wpilib.*` (IterativeRobotBase, TimedRobot extensions) | [SDD-team271-lib.md](sdd/SDD-team271-lib.md) |
 | `com.team271.lib.api.*` | [SDD-api.md](sdd/SDD-api.md) |
@@ -46,12 +84,18 @@ it.
 
 ## Architecture Decision Records
 
-Each ADR records one architectural decision. Statuses:
+Each Architecture Decision Record (ADR) captures one architectural
+decision — its context, what was decided, why, and what it makes
+easier or harder. Reading the ADRs is the fastest way to understand
+why the library is built the way it is.
+
+Statuses an ADR can have:
 
 - **Proposed** — under discussion; not yet binding.
 - **Accepted** — binding. Contributors **shall** follow the decision.
-- **Superseded** — replaced by a later ADR, which the Superseded ADR
-  points at. Accepted ADRs are never deleted; they are Superseded.
+- **Superseded** — replaced by a later ADR, which the Superseded
+  ADR points at. Accepted ADRs are never deleted; they are marked
+  Superseded instead.
 
 | ADR | Title | Status |
 | --- | ----- | ------ |

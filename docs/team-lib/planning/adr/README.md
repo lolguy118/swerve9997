@@ -1,18 +1,45 @@
-# Architecture Decision Records
+# Architecture Decision Records (ADRs)
 
-This directory contains Architecture Decision Records (ADRs) for
-Team271-Lib. Each ADR captures a key architectural decision, its
-context, rationale, and consequences.
+When Team271-Lib makes a **big architectural choice** — like "use
+CTRE (Cross The Road Electronics) devices only" or "wrap vendor
+objects instead of hiding them" — we write it down as an
+**Architecture Decision Record (ADR)**.
 
-ADRs are permanent records — once `Accepted`, they are not deleted.
-If a decision is reversed, the original ADR is marked `Superseded`
-and a new ADR is written.
+Each ADR explains:
 
-The normative keywords SHALL, SHOULD, and MAY follow the convention
-defined in
+- **Context** — what problem we were trying to solve.
+- **Decision** — what we decided to do.
+- **Rationale** — why that decision, and not something else.
+- **Consequences** — what the decision makes easier or harder.
+- **Alternatives Considered** — other options we looked at and
+  rejected, with reasons.
+
+Reading the ADRs is the fastest way to understand **why** the
+library is built the way it is.
+
+## Start here
+
+If you're new:
+
+- The full ADR list (with status legend) is in
+  [`../README.md`](../README.md#architecture-decision-records).
+- Good first ADRs to read, in this order:
+  1. [ADR-001: Team271-Lib as a Standalone Library](ADR-001-team271-lib-standalone-library.md)
+  2. [ADR-004: Layered Architecture](ADR-004-layered-architecture.md)
+  3. [ADR-003: Passthrough — Wrapper, Not Wall](ADR-003-passthrough-wrapper-not-wall.md)
+  4. [ADR-006: CTRE Phoenix 6 as the Primary Motor/Sensor Vendor](ADR-006-ctre-phoenix6-primary-vendor.md)
+
+## Permanence
+
+ADRs are permanent. Once an ADR is **Accepted**, it is not deleted.
+If a later decision reverses it, the original ADR is marked
+**Superseded by ADR-XXX** and the new ADR is written alongside it.
+This way the full decision history stays legible — you can always
+read why the library was built the way it was at any point in time.
+
+The normative keywords **SHALL**, **SHOULD**, and **MAY** follow
+the convention defined in
 [`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
-The authoritative ADR list and status legend live in
-[`../README.md`](../README.md#architecture-decision-records).
 
 ## ADR Template
 

@@ -1,14 +1,24 @@
 <!-- markdownlint-disable MD013 -->
 # Common Docs
 
-Framework-agnostic policy that applies to every Team 271 Java/FRC
-project. Anything here is portable: it should apply unchanged to the
-library, to any season's robot code, and to any standalone tool the
-team writes.
+This folder holds the **shared policy** that applies to every
+Team 271 Java / FRC (FIRST Robotics Competition) project — the
+library, any season's robot code, and any standalone tool the team
+writes. Anything in here is portable: it should apply unchanged to
+every project.
 
-Project-specific applications (concrete class names, library APIs,
-robot-specific deviations) live in the consuming project's own docs
-tier, not here.
+> **Industry bridge.** Professional software teams ship a *coding
+> standard* (how code must be written) separately from *design
+> docs* (what's being built). This folder holds our coding standard;
+> `team-lib/planning/` holds the design docs. Keeping them separate
+> is what real-world projects do.
+
+## Start here
+
+- [`Team271-Software-Coding-Standard.md`](Team271-Software-Coding-Standard.md)
+  — the core coding standard. Read this first.
+- Then pick whichever companion file (below) matches what you're
+  changing.
 
 ## Coding Standard
 

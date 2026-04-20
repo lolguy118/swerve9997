@@ -1,17 +1,31 @@
 <!-- markdownlint-disable MD013 -->
-# Docs Layout
+# Documentation Layout
 
-This directory is organized in three tiers so Team271-Lib and every robot
-project that consumes it share a common doc surface without forking or
-copy-pasting policy.
+This folder contains **all the documentation** for Team271-Lib.
+Because the same rules are shared by this library and by the robot
+projects that use it, the `docs/` folder is organized in three tiers
+so nothing has to be copy-pasted or forked between repositories.
 
 ```text
 docs/
-├── common/       ← applies to any Team271 Java/FRC project
-├── team-lib/     ← specific to this library's architecture
+├── common/       ← rules that apply to any Team 271 Java / FRC project
+├── team-lib/     ← specific to this library
 └── <project>/    ← specific to the robot project using the library
                     (lives only in that robot's repo, not here)
 ```
+
+## Start here
+
+If you're new, open these in order:
+
+1. [`team-lib/guides/start-here.md`](team-lib/guides/start-here.md)
+   — the onboarding guide for library contributors.
+2. [`team-lib/planning/README.md`](team-lib/planning/README.md) —
+   the library's planning and design-document index (Software
+   Development Plan, Software Design Descriptions, Architecture
+   Decision Records, etc.).
+3. [`common/README.md`](common/README.md) — the coding standard
+   (how to write Java for Team 271 projects).
 
 ## common/
 
@@ -31,12 +45,15 @@ See [`common/README.md`](common/README.md) and
 
 ## team-lib/
 
-Specific to the **library**. Planning docs (SDP, SRS, SVP, SCMP)
-concretize the common planning framework with the library's specific
-choices. ADRs record library-wide decisions. SDDs describe library
-package internals. Guides walk through library architecture and
-contributor setup. Prompts and internal diagrams support the library's
-review and maintenance workflow.
+Specific to the **library**. Planning docs — Software Development
+Plan (SDP), Software Requirements Specification (SRS), Software
+Verification Plan (SVP), and Software Configuration Management Plan
+(SCMP) — fill in the common planning framework with the library's
+specific choices. Architecture Decision Records (ADRs) record
+library-wide decisions. Software Design Descriptions (SDDs) describe
+library package internals. Guides walk through library architecture
+and contributor setup. Prompts and internal diagrams support the
+library's review and maintenance workflow.
 
 See [`team-lib/planning/README.md`](team-lib/planning/README.md) for
 the planning-doc map.
@@ -44,9 +61,10 @@ the planning-doc map.
 ## `<project>/` (robot projects)
 
 A robot project that depends on Team271-Lib creates its own
-`docs/<project>/` directory in the robot's repo. Inside it belong:
+`docs/<project>/` directory in the robot's repository. Inside it
+belong:
 
-- The robot's own SDP/SRS/SVP/SCMP
+- The robot's own SDP, SRS, SVP, and SCMP
 - The robot's ADRs (decisions specific to that season's mechanisms)
 - The robot's SDDs (subsystems unique to that robot)
 - The robot's guides

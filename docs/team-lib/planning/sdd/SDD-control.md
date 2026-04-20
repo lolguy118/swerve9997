@@ -228,4 +228,4 @@ source file; tilt thresholds are sign-inverted when constructed with
 
 Test IDs: TEST-CTL-NNN. The existing test suite covers PIDSimple,
 PIDTrap, PIDWPI, PIDFX, and Balance (see
-[SVP.md §Test Structure](../SVP.md#test-structure)).
+[SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes)).

@@ -1,7 +1,11 @@
 # Rule: Planning Documents
 
-Applies to everything under `docs/team-lib/planning/`: SDP, SRS, SVP,
-SCMP, ADRs, and SDDs.
+Applies to planning docs in two tiers:
+
+- `docs/common/planning/` — shared framework (SemVer policy,
+  phase model, verification framework).
+- `docs/team-lib/planning/` — library-specific instances (SDP, SRS,
+  SVP, SCMP, ADRs, SDDs) that cite the common framework.
 
 ## Rules Claude must apply
 

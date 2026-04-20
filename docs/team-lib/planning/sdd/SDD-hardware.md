@@ -434,6 +434,6 @@ telemetry.
 All tests creating CTRE devices use unique CAN IDs within a class
 and call `CTREManager.resetForTesting()` in `@BeforeEach`. See the
 CTREManager cleanup pattern in
-[SVP.md](../SVP.md#critical-pattern-ctremanager-static-state-cleanup).
+[SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).
 
 Test IDs: TEST-HW-NNN.

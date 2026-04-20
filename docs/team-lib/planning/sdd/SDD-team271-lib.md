@@ -217,7 +217,7 @@ mechanism by which robot projects plug in platform-specific physics.
 Unit tests (JUnit 5) run in a third context with HAL initialized
 but no CTRE simulation tick — they exercise construction,
 configuration, and pure-Java math. See
-[SVP.md §Desktop Simulation vs Unit Tests](../SVP.md#desktop-simulation-vs-unit-tests).
+[SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).
 
 ## 8. Configuration
 

@@ -180,4 +180,4 @@ projects document their own auto routines in their own design docs.
 
 Test IDs: TEST-AUT-NNN. Existing auto tests (5 classes) live under
 `src/test/java/com/team271/lib/auto/` — see
-[SVP.md §Test Structure](../SVP.md#test-structure).
+[SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).

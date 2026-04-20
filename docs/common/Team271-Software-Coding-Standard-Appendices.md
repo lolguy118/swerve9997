@@ -109,10 +109,10 @@ Also avoid: `var` (reserved type name), `record`, `sealed`,
 ```text
 Robot.robotPeriodic()
   → hardwareMgr.refreshAll()             // bulk CAN signal refresh
-  → SubsystemMgr.robotPeriodicBefore() // read sensors (all subsystems)
+  → SubsystemManager.robotPeriodicBefore() // read sensors (all subsystems)
   → <mode>Periodic()                     // state machine logic
-  → SubsystemMgr.robotPeriodicAfter() // apply motor outputs (all subsystems)
-  → SubsystemMgr.outputTelemetry()   // publish NT/logs (all subsystems)
+  → SubsystemManager.robotPeriodicAfter() // apply motor outputs (all subsystems)
+  → SubsystemManager.outputTelemetry()   // publish NT/logs (all subsystems)
 ```
 
 ### Mode Transitions
@@ -127,12 +127,11 @@ Power On → robotInit()
 
 ### Subsystem Registration Order
 
-Subsystems are registered with `SubsystemMgr.addSubsystem()` in
+Subsystems are registered with `SubsystemManager.addSubsystem()` in
 `Robot.robotInit()`. Robot-project subsystems typically use a
-singleton `getInstance(LifecycleBase)` accessor (see CODE-GEN-013); library
-subsystems are instantiated directly and passed by reference (see
-the relevant architecture decision).
-Registration order determines lifecycle call order.
+singleton `getInstance(LifecycleBase)` accessor (see CODE-GEN-013);
+reusable library subsystems are instantiated directly and passed by
+reference. Registration order determines lifecycle call order.
 **This order is load-bearing** -- the following rules apply:
 
 - Input/controller subsystems **shall** be registered first so that

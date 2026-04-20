@@ -8,7 +8,8 @@
 >
 > - `CONTRIBUTING.md` (root) — workflow, PRs, commits, linting
 > - `docs/common/Team271-Software-Coding-Standard*.md` — coding rules
-> - `docs/team-lib/planning/` — SDP, SRS, SVP, SCMP, SDDs, ADRs
+> - `docs/common/planning/` — shared planning framework
+> - `docs/team-lib/planning/` — library SDP, SRS, SVP, SCMP, SDDs, ADRs
 > - `docs/team-lib/guides/` — contributor tutorials
 > - `docs/team-lib/coding-standard-templates.md` — robot-project templates
 > - `docs/team-lib/coding-standard-library-notes.md` — library bindings for common rules
@@ -40,9 +41,12 @@ for the six-layer graph. The layering decision is
   — normative rules (§1–§3 inline). §4 Coding Guidelines is split into
   eight companion files (General, Format, Modules, Methods, Variables,
   Control, Comments, Debug). Also: `-Safety`, `-Compliance`,
-  `-Templates`, `-Appendices`. See the "Companion Documents" section
-  of the core file for the full index.
-- **Planning:** [docs/team-lib/planning/README.md](docs/team-lib/planning/README.md)
+  `-Appendices`. See the "Companion Documents" section of the core
+  file for the full index. Library-specific templates live at
+  [docs/team-lib/coding-standard-templates.md](docs/team-lib/coding-standard-templates.md).
+- **Planning framework (common):** [docs/common/planning/README.md](docs/common/planning/README.md)
+  — shared SemVer / phase-model / verification-framework policy.
+- **Planning (library-specific):** [docs/team-lib/planning/README.md](docs/team-lib/planning/README.md)
   — SDP, SRS, SVP, SCMP, ADRs, SDDs.
 - **Guides:** [docs/team-lib/guides/start-here.md](docs/team-lib/guides/start-here.md)
   is the first read for new contributors.

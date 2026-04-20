@@ -32,20 +32,19 @@ requirement. Rules specified with "should" are recommended practices.
 
 ### 1.2 Scope
 
-This standard applies to all Java source code in the `com.team271`
-packages, covering both:
+This standard applies to all Java source code written by the team,
+covering both:
 
-- **Library code** (`com.example.lib.*`) in this repository.
-- **Robot-project code** (`com.example.app*`) in each season's
-  downstream repository that depends on this library.
+- **Reusable library code** (`com.example.lib.*` placeholder) —
+  packaged for consumption by any downstream project.
+- **Robot-project code** (`com.example.app.*` placeholder) — the
+  season robot's application that depends on the library.
 
 The two share most rules. Where they differ, sections explicitly note
 "library only" or "robot projects may." Notable example: subsystem
-instantiation — library code uses explicit instantiation and no
-singletons (see
-the relevant architecture decision);
-robot-project subsystems commonly use the singleton pattern shown in
-§3.1.
+instantiation — reusable library code uses explicit instantiation and
+no singletons; robot-project subsystems commonly use the singleton
+pattern shown in §3.1.
 
 **Exempt from formatting rules** (but not safety rules):
 
@@ -217,19 +216,17 @@ Spotless runs automatically before compilation
 ### 3.1 Java Source File Template
 
 > **Scope note:** This template is for **robot-project subsystems**
-> (the `com.example.app*` package). It uses the singleton
-> pattern commonly used in FRC robot code. Library code
-> (`com.example.lib.*`) does **not** use singletons for subsystems —
-> see the relevant architecture decision.
-> Library authors should omit the `/* Singleton */` block and
-> `getInstance()` methods.
+> (the application package). It uses the singleton pattern commonly
+> used in FRC robot code. Reusable library code does **not** use
+> singletons for subsystems — library authors should omit the
+> `/* Singleton */` block and `getInstance()` methods.
 
 Every robot-project `.java` subsystem file shall follow this structure:
 
 ```java
 package com.example.app;
 
-import com.example.lib;
+import com.example.lib.LifecycleBase;
 import edu.wpi.first.wpilibj.Timer;
 import org.littletonrobotics.junction.Logger;
 

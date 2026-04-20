@@ -27,7 +27,7 @@ b. Method parameters **shall** use the `arg` prefix followed by
    with `argTimestamp` parameters. WPILib's own lifecycle methods
    (e.g., `robotPeriodic()`, `teleopPeriodic()`) take no parameters;
    the `argTimestamp` is a Team 271 convention passed through
-   `SubsystemMgr`.
+   `SubsystemManager`.
 
 c. Local variables **shall** use camelCase without prefix. Short-lived
    temporary variables **may** use the `tmp` prefix:

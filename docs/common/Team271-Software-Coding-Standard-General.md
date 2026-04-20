@@ -112,8 +112,8 @@ d. String concatenation in periodic methods **should** be avoided.
 
 e. Autoboxing (e.g., `int` to `Integer`) in loops **shall** be avoided.
 
-f. the driver-notification facility `Notification` objects **should** be pre-allocated when
-   used repeatedly (e.g., a recurring fault notification).
+f. Driver-notification objects **should** be pre-allocated when used
+   repeatedly (e.g., a recurring fault notification).
 
 g. Collections that grow dynamically (e.g., `ArrayList`, `HashMap`)
    **should** be pre-sized in `robotInit()` if their maximum size
@@ -264,9 +264,9 @@ c. When null indicates an error, prefer throwing
 
 ### CODE-GEN-013 -- Singleton Pattern (Robot Projects)
 
-> **Scope:** This rule applies to **robot-project code** only. Library
-> subsystems do not use singletons — see
-> the relevant architecture decision.
+> **Scope:** This rule applies to **robot-project code** only.
+> Reusable library subsystems do not use singletons — they are
+> instantiated directly and passed by reference.
 
 a. Robot-project subsystems **shall** use the established singleton pattern
    with two `getInstance()` methods:
@@ -294,7 +294,7 @@ b. The `getInstance(LifecycleBase)` overload creates the instance on first
    `IllegalStateException` if not yet initialized.
 
 c. Subsystem singletons **shall** only be created in `Robot.robotInit()`
-   and registered with `SubsystemMgr.addSubsystem()`.
+   and registered with `SubsystemManager.addSubsystem()`.
 
 d. After creation, subsystem references **shall** be stored in
    `Globals.java` as `public static` fields so that other classes

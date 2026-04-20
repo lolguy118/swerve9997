@@ -3,7 +3,7 @@
 
 > **Scope:** This guide explains when to use each input shaping mode.
 > For the Input class hierarchy and controller implementations, see
-> [Hardware Abstraction — Input System](../planning/sdd/SDD-hardware.md#input-system).
+> [Hardware Abstraction — Input System](../planning/sdd/SDD-hardware.md#34-input-system).
 
 ---
 

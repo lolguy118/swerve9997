@@ -13,7 +13,7 @@
                                (CODE-CTL-002).
 
     Grow this config incrementally as other CODE-* rules are ready to be
-    mechanized. See docs/team-lib/Team271-Software-Coding-Standard-Compliance.md
+    mechanized. See docs/common/Team271-Software-Coding-Standard-Compliance.md
     for the enforcement matrix.
 
     Run locally:   ./gradlew checkstyleMain checkstyleTest

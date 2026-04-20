@@ -88,7 +88,7 @@ The library's concrete matrix:
 Desktop simulation requires WPILib HAL sim and Phoenix 6 sim. Tests
 are runnable on all three desktop platforms. GitHub Actions runs on
 `ubuntu-24.04` for every push to `main` and every pull request
-(see [SVP §7](SVP.md#7-ci-pipeline-gates)); local pre-edit gates run
+(see [SVP §7](SVP.md#7-ci-pipeline-gates-library-workflow)); local pre-edit gates run
 via `.claude/hooks/`.
 
 ## 6. Layer Build Priority

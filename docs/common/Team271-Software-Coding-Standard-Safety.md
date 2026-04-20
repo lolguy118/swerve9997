@@ -44,11 +44,10 @@ b. Mechanisms with physical travel limits **shall** use soft limits
    that are only enabled after homing completes.
 
 c. Homing sequences **shall** have timeout protection to prevent
-   indefinite stalling. On timeout, the subsystem **shall** fail safe
-   per the relevant architecture decision:
+   indefinite stalling. On timeout, the subsystem **shall** fail safe:
    stop motors, restore default current limits, transition to IDLE,
-   notify the driver via the driver-notification facility, and leave `mIsHomed = false` so
-   closed-loop control stays disabled.
+   notify the driver via the project's driver-notification facility,
+   and leave `mIsHomed = false` so closed-loop control stays disabled.
 
    ```java
    if (mHomingTimer.hasElapsed(ExampleSubsystemConstants.kHomingTimeoutSec)) {

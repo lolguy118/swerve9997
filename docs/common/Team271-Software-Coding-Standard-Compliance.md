@@ -81,7 +81,7 @@ cannot be caught by automated tools):
 - [ ] Motor direction: `configDirection()` matches physical mechanism intent
 - [ ] Telemetry keys: pre-defined string constants, not computed or concatenated per-cycle
 - [ ] Resource cleanup: timers and sensor subscriptions cleaned up in mode exit methods
-- [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (see the relevant architecture decision; implemented in CODE-SAF-002c, CODE-SAF-008, CODE-SAF-010)
+- [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (implemented in CODE-SAF-002c, CODE-SAF-008, CODE-SAF-010)
 - [ ] Runtime tunability: configurable values use `TunableInput` + `applyTuning()` pattern (CODE-BUG-004)
 
 ---

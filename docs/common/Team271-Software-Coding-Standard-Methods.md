@@ -88,11 +88,11 @@ b. Utility classes **shall** be declared `final` with a `private`
 ### CODE-FUN-004 -- Robot Lifecycle Contract
 
 > **Anchor:** This rule codifies the lifecycle ordering underpinning
-> the desired-to-actual state pattern in
-> the relevant architecture decision.
+> the desired-to-actual state pattern. Projects typically record this
+> choice in their own architecture decision record.
 
 a. Subsystem lifecycle methods **shall** be called in this order by
-   the `SubsystemMgr`:
+   the `SubsystemManager`:
 
    ```text
    robotInit(argTimestamp)
@@ -128,7 +128,7 @@ a. **(Robot-project code.)** Subsystems that use state machines
    and `mDesiredControlState` (desired). The desired state is set in
    `teleopPeriodic()` or `autonomousPeriodic()`; the actual state is
    applied in `robotPeriodicAfter()`. Library subsystems follow the
-   same pattern with non-`m`-prefixed field names —.
+   same pattern with non-`m`-prefixed field names.
 
    ```java
    /* Set in teleopPeriodic */

@@ -223,7 +223,7 @@ WARNING notification sent).
 Every test that creates a CTRE device must call
 `CTREManager.resetForTesting()` in `@BeforeEach` (preferred) or use
 the reflection teardown pattern documented in
-[SVP.md](../SVP.md#critical-pattern-ctremanager-static-state-cleanup).
+[SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).
 
 Test IDs: TEST-CTRE-NNN. Use unique CAN IDs across tests within a
 class to prevent device collisions.

@@ -214,7 +214,7 @@ Unit tests that exercise subsystem lifecycle typically:
 1. Initialize HAL: `HAL.initialize(500, 0)`.
 2. Reset CTRE state: `CTREManager.resetForTesting()`.
 3. Clear any previous `SubsystemManager` registrations (see
-   [SVP.md §Test Isolation](../SVP.md#test-isolation-guidelines)).
+   [SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes)).
 4. Construct the subsystem and drive it manually by calling
    lifecycle methods directly.
 
@@ -245,4 +245,4 @@ project configures its own subsystems via:
 
 Test IDs: TEST-SUB-NNN. Existing tests live under
 `src/test/java/com/team271/lib/subsystem/` (2 classes) — see
-[SVP.md §Test Structure](../SVP.md#test-structure).
+[SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).

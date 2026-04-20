@@ -35,7 +35,7 @@ c. **(Robot-project code.)** Robot-project subsystems **shall** be
    team271 `com.example.lib` base class) because
    it extends the CTRE-generated drivetrain class. It is owned by
    the drive subsystem and does not participate in the
-   `SubsystemMgr` lifecycle directly.
+   `SubsystemManager` lifecycle directly.
 
 d. Package names **shall** be all lowercase with no underscores.
 

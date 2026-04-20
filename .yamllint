@@ -1,0 +1,21 @@
+---
+# yamllint configuration for Team271-Lib
+# Relaxes defaults to accommodate auto-generated GitHub Actions workflows
+# (e.g. anthropics/claude-code-action) which use long conditional lines
+# and URL-bearing comments that exceed the 80-character default.
+extends: default
+
+rules:
+  line-length:
+    max: 200
+    allow-non-breakable-words: true
+    allow-non-breakable-inline-mappings: true
+  document-start: disable
+  truthy:
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 1

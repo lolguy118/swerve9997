@@ -6,7 +6,11 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | SUB-001 through SUB-NNN (SRS §4.5) |
+| Requirements Traced | `[SUB-001]`..`[SUB-005]` (SRS §4.5) |
+
+The normative keywords SHALL, SHOULD, and MAY follow the convention
+defined in
+[`../../../common/planning/README.md`](../../../common/planning/README.md#normative-keywords).
 
 ## 1. Purpose
 
@@ -16,20 +20,14 @@ isolation (ADR-010) and the desired-to-actual state pattern (ADR-014).
 
 ## 2. Scope and Boundaries
 
-**This SDD covers:**
+This SDD covers:
 
 - `Subsystem` — base class extending TObj; defines sensor-mode pattern,
   homing contract, per-subsystem telemetry
 - `SubsystemManager` — singleton registry, lifecycle orchestration,
-  `forEachSafe()` exception isolation
+  exception-isolated per-subsystem iteration
 - `StateMachine` — generic desired-to-actual enum helper with optional
   transition callbacks
-
-**This SDD does not cover:**
-
-- Robot-project subsystem implementations (arm, elevator, etc.)
-- Motor/sensor wiring → [SDD-hardware.md](SDD-hardware.md)
-- Control loops → [SDD-control.md](SDD-control.md)
 
 ## 3. Module Decomposition
 
@@ -43,74 +41,61 @@ modes that gate sensor reads:
 
 | Mode | Behavior |
 | ---- | -------- |
-| `SENSORED_AUTO` | Normal operation — sensors read automatically each cycle |
-| `SENSORED_MANUAL` | Sensors read only on explicit caller request (calibration) |
-| `SENSORLESS` | Sensors disabled — open-loop control only |
+| `SENSORED_AUTO` | Sensors enabled; subsystem runs in closed-loop mode, driving toward the desired state |
+| `SENSORED_MANUAL` | Sensors enabled (used for limits, safety interlocks); subsystem runs in open-loop mode |
+| `SENSORLESS` | Sensors disabled; open-loop control only |
 | `SYSID` | System identification mode — sensor reads still active, control routed through SysID logger |
 
-**Homing contract** — subsystems that require zeroing implement
-`sensorsZero()` (set hardware position to zero) and `onSensorsZero()`
-(callback on successful zeroing). The `isZeroed` flag gates
-closed-loop operation so a subsystem cannot run position control
-before homing completes. Per coding standard 4.9c and ADR-011, any
-waiting homing sequence must have a named timeout constant, a
-fail-safe action (stop motors, restore default current limits,
-transition to IDLE), and an Elastic notification on timeout.
+**Homing contract** — subsystems that require zeroing implement a
+zero-to-hardware action plus a post-zero callback. A persisted
+zeroed flag gates closed-loop operation so a subsystem cannot run
+position control before homing completes. Per coding standard
+§4.9c and ADR-011, any waiting homing sequence must have a named
+timeout constant, a fail-safe action (stop motors, restore default
+current limits, transition to IDLE), and an Elastic notification on
+timeout.
 
-**Lifecycle override points** — subsystems override
-`robotInit`, `robotPeriodicBefore` (read sensors, update actual
-state), `robotPeriodicAfter` (apply desired state to hardware), and
-`outputTelemetry` (publish NT values, run `checkTuning()`).
+**Lifecycle override points** — subsystems override the robot-init,
+pre-periodic (read sensors, update actual state), post-periodic
+(apply desired state to hardware), and telemetry-output hooks.
+Telemetry output also runs the tuning-check pass that applies
+dashboard changes.
 
 ### 3.2 `SubsystemManager`
 
 Singleton registry. The robot project's main class registers each
-subsystem via `addSubsystem()` during construction; registration
-order is load-bearing and determines execution order per cycle.
+subsystem during construction; registration order is load-bearing
+and determines execution order per cycle.
 
 **Lifecycle orchestration** — the manager broadcasts every lifecycle
 phase to every registered subsystem, in order, under a single
-`forEachSafe(Consumer<Subsystem>)` pass per phase:
+exception-isolated iteration pass per phase. The canonical per-cycle
+order is documented in §4 Data Flow.
 
-```text
-Robot.robotPeriodic()
-  → HardwareManager.refreshAll()              — bulk CAN signal refresh
-  → SubsystemManager.robotPeriodicBefore()    — read sensors
-  → SubsystemManager.<mode>Periodic()         — state machine logic
-  → SubsystemManager.robotPeriodicAfter()     — apply outputs
-  → SubsystemManager.outputTelemetry()        — publish NT + run checkTuning()
-```
-
-**Exception isolation (`forEachSafe`)** — every subsystem call is
-wrapped in a try/catch. On exception, the manager logs the error,
-sends a throttled Elastic notification (throttle interval defined
-in `ConstantsLib`, keyed per subsystem via
-`lastErrorNotificationTime`), and continues iterating. One broken
-subsystem does not stall the others. The
-`robotInit()` phase is explicitly **not** isolated — an init failure
-is fatal because the robot cannot safely operate with a partially
-initialized subsystem.
+**Exception isolation** — every subsystem call is wrapped in a
+try/catch. On exception, the manager logs the error, sends a
+throttled Elastic notification (throttle interval defined in
+`ConstantsLib`, keyed per subsystem via a per-subsystem
+last-notification timestamp), and continues iterating. One broken
+subsystem does not stall the others. The robot-init phase is
+explicitly **not** isolated — an init failure is fatal because the
+robot cannot safely operate with a partially initialized subsystem.
 
 ### 3.3 `StateMachine`
 
 Generic composition-based helper for the desired-to-actual pattern.
 Subsystems use it as a field, not a base class — the subsystem
 still extends `Subsystem`. `StateMachine<S extends Enum<S>>` stores
-`currentState` and `desiredState`, publishes both to NT via
-`outputTelemetry()`, and offers `isTransitioning()` for gating logic.
+current state and desired state, publishes both to NT during
+telemetry output, and exposes a transitioning predicate for gating
+logic.
 
-Optional transition callbacks via a fluent builder:
-
-```java
-sm = new StateMachine<>(table, ArmState.STOWED)
-    .withOnExit((from, to) -> stopMotors())
-    .withOnEnter((from, to) -> initializeState(to));
-```
-
-Callbacks fire only when the state actually changes. `onExit` runs
-before `currentState` is updated; `onEnter` runs after. Simple
-subsystems can continue to use manual enum fields and switch
-statements — the helper is optional.
+Transition callbacks (optional) are attached via a fluent builder:
+one callback fires on exit from the previous state, one on entry to
+the new state. Callbacks fire only when the state actually changes;
+the exit callback runs before the current state is updated, the
+entry callback runs after. Simple subsystems can continue to use
+manual enum fields and switch statements — the helper is optional.
 
 ## 4. Data Flow
 
@@ -243,6 +228,6 @@ project configures its own subsystems via:
 | `StateMachine` transitions | No | No | Pure state math; verify callbacks fire only on change |
 | `StateMachine` telemetry | Yes (NT) | No | Verify NT publishing of current and desired state |
 
-Test IDs: TEST-SUB-NNN. Existing tests live under
+Test IDs: `[TEST-SUB-NNN]`. Existing tests live under
 `src/test/java/com/team271/lib/subsystem/` (2 classes) — see
 [SVP.md §Test Levels](../SVP.md#3-test-levels-library-specific-notes).

@@ -94,16 +94,30 @@ companion files.
 
 | Rule Group | Prefix | Rule Count | Enforced By | Gate |
 | ---------- | ------ | ---------: | ----------- | ---- |
-| General (keywords, annotations, type safety, exceptions, GC) | CODE-GEN | 16 | Manual review + `check-java-compiles.sh`, `check-spotless.sh` | Compile + PR review |
-| Formatting (braces, parens, blank lines, line endings, imports) | CODE-FMT | 6 | Spotless (AOSP Google Java Format) + `.gitattributes` | `./gradlew spotlessCheck` |
+| General (keywords, annotations, type safety, exceptions, GC) | CODE-GEN | 16 | Error Prone + SpotBugs + manual review + `check-java-compiles.sh`, `check-spotless.sh` | Compile + CI + PR review |
+| Formatting (braces, parens, blank lines, line endings, imports) | CODE-FMT | 6 | Spotless (AOSP Google Java Format) + Checkstyle (`NeedBraces` → CODE-FMT-002) + `.gitattributes` | `./gradlew spotlessCheck` + `checkstyleMain` |
 | Modules and Files (naming, packages, constants, generated code) | CODE-MAF | 4 | Compiler + manual review | Compile + PR review |
-| Methods (naming, lifecycle, state machines) | CODE-FUN | 6 | Compiler warnings + manual review | Compile + PR review |
-| Variables (naming, init, types, magic numbers) | CODE-VAR | 10 | Compiler + manual review | Compile + PR review |
-| Control Structures (if/switch/loops) | CODE-CTL | 6 | Compiler (switch exhaustiveness) + manual review | Compile + PR review |
-| Comments (JavaDoc, block, inline) | CODE-COM | 2 | Manual review | PR review |
+| Methods (naming, lifecycle, state machines) | CODE-FUN | 6 | Error Prone (`MissingOverride`, `DefaultCharset`, etc.) + compiler warnings + manual review | Compile + PR review |
+| Variables (naming, init, types, magic numbers) | CODE-VAR | 10 | Error Prone (`UnusedVariable`) + SpotBugs (null-deref) + manual review | Compile + CI + PR review |
+| Control Structures (if/switch/loops) | CODE-CTL | 6 | Checkstyle (`MissingSwitchDefault` → CODE-CTL-002) + compiler + manual review | `./gradlew checkstyleMain` + PR review |
+| Comments (JavaDoc, block, inline) | CODE-COM | 2 | Javadoc task + manual review | `./gradlew javadoc` + PR review |
 | Debugging and Telemetry (LoggedNTInput, Elastic, reports) | CODE-BUG | 4 | Manual review + `check-doc-tunables.sh`, `check-design-drift.sh` | PR review + hooks |
-| Safety Practices (timeouts, fail-safe, CAN, vision, brownout) | CODE-SAF | 11 | Manual review + `/lib-review` agent | PR review |
+| Safety Practices (timeouts, fail-safe, CAN, vision, brownout) | CODE-SAF | 11 | SpotBugs (thread-safety, resource leaks) + manual review + `/lib-review` agent | CI + PR review |
 
 Counts reflect the current rule set (see individual `-*.md`
 companion files for rule IDs). Adding or removing rules requires
 updating the count in this matrix.
+
+### Static Analysis Tooling
+
+The table above references three Java static analysers, configured in
+[`build.gradle`](../../build.gradle):
+
+| Tool | Scope | Config | Rollout status |
+| ---- | ----- | ------ | -------------- |
+| Error Prone | Compile-time bug patterns (null checks, `==` on Strings, unused vars) | Plugin `net.ltgt.errorprone:4.0.1` | Fail-soft (`allErrorsAsWarnings = true`) |
+| SpotBugs | Bytecode analysis (null deref, concurrency, resource leaks) | Plugin `com.github.spotbugs:6.0.21`; exclusions in [`config/spotbugs/exclude.xml`](../../config/spotbugs/exclude.xml) | Fail-soft (`ignoreFailures = true`); reports uploaded as CI artifact |
+| Checkstyle | Mechanizable SCS rules (currently `NeedBraces`, `MissingSwitchDefault`) | Built-in `checkstyle` plugin; config at [`config/checkstyle/checkstyle.xml`](../../config/checkstyle/checkstyle.xml) | Strict (`maxWarnings = 0`); config grows incrementally |
+
+Tighten rollout (remove `allErrorsAsWarnings`, `ignoreFailures`) as
+historical findings are triaged. See [SVP §7](planning/SVP.md#7-ci-pipeline-gates).

@@ -41,14 +41,35 @@ applied at offseason start; the next-season MINOR=0 tag (e.g.,
 
 ## 4. Vendordep Management
 
+### Automated freshness tracking
+
+The [`.github/workflows/vendordep-freshness.yml`](../../../.github/workflows/vendordep-freshness.yml)
+workflow runs weekly (Mondays 13:00 UTC) and on manual dispatch. It
+fetches each vendordep `jsonUrl`, compares the upstream `version` to
+the local value, and opens (or updates) a single "Vendordep freshness
+check" issue when any vendordep is behind. Use that issue to trigger
+the upgrade procedure below.
+
+### Upgrade procedure
+
 Upgrading a vendordep requires:
 
-1. Update `vendordeps/*.json` to new version.
+1. Update `vendordeps/*.json` to the new version (from the upstream
+   `jsonUrl`).
 2. Run `./gradlew compileJava` — fix any API breaks.
 3. Run `./gradlew test` — fix any test failures.
 4. If the vendor changes fundamentally (new CTRE release, new WPILib
-   major), write a new ADR (see [ADR-006](adr/ADR-006-ctre-phoenix6-primary-vendor.md)).
-5. Merge via normal PR process.
+   major), write a new ADR (see
+   [ADR-006](adr/ADR-006-ctre-phoenix6-primary-vendor.md)).
+5. Merge via normal PR process; close the freshness-check issue when
+   the upgrade lands on `main`.
+
+### Supply-chain visibility
+
+The [`.github/workflows/dependency-submission.yml`](../../../.github/workflows/dependency-submission.yml)
+workflow runs on every push to `main` and submits the Gradle dependency
+graph to GitHub. This populates the repo's Dependency graph view and
+enables Dependabot alerts on vendordep transitive dependencies.
 
 ## 5. Baseline Control
 

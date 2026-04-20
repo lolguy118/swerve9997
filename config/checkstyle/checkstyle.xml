@@ -6,11 +6,11 @@
 <!--
     Team271-Lib Checkstyle configuration.
 
-    Initial scope (mechanizable subset of .claude/rules/coding-standard.md):
+    Initial scope (mechanizable subset of the coding standard):
       * NeedBraces         — mandatory braces on every if/else/for/while/do
-                             even for single-statement bodies (CODE-CTL).
+                             even for single-statement bodies (CODE-FMT-002).
       * MissingSwitchDefault — every switch must have a default branch
-                               (CODE-CTL).
+                               (CODE-CTL-002).
 
     Grow this config incrementally as other CODE-* rules are ready to be
     mechanized. See docs/team-lib/Team271-Software-Coding-Standard-Compliance.md
@@ -33,14 +33,14 @@
     </module>
 
     <module name="TreeWalker">
-        <!-- CODE-CTL: braces mandatory on every control-flow construct -->
+        <!-- CODE-FMT-002: braces mandatory on every control-flow construct -->
         <module name="NeedBraces">
             <property name="tokens"
                       value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
             <property name="allowSingleLineStatement" value="false"/>
         </module>
 
-        <!-- CODE-CTL: every switch must have a default branch -->
+        <!-- CODE-CTL-002: every switch must have a default branch -->
         <module name="MissingSwitchDefault"/>
     </module>
 </module>

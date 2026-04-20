@@ -31,6 +31,7 @@ Which part of Team271-Lib does this touch? Check all that apply:
 - hardware/controllers/ — motor controller wrappers
 - hardware/transmissions/ — multi-motor aggregation + shifters
 - hardware/sensors/ — encoders, IMUs, range, switches
+- hardware/motors/ — MotorBase (physics model lookup)
 - hardware/Input/ — gamepad abstraction
 - control/ — PID variants, Balance, HardwarePIDController
 - auto/ — AutoMode, AutoMove composition
@@ -39,13 +40,14 @@ Which part of Team271-Lib does this touch? Check all that apply:
 - sysid/ — System identification
 - util/ — Alert, Elastic, DriveSignal, math
 - wpilib/ — WPILib framework extensions
-- docs/ — documentation / design docs only
+- docs/team-lib/ — documentation / design docs only
 -->
 
 ## Design doc impact
 
 <!-- Which design docs under docs/team-lib/ will need updating?
-     (architecture, control, quality, guides, reference) -->
+     (planning/sdd/, planning/adr/, guides/, or a coding-standard
+     companion). See docs/team-lib/planning/README.md for the map. -->
 
 ## Additional context
 

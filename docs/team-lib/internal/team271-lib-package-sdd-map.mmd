@@ -1,0 +1,58 @@
+%% Team271-Lib — Package-to-SDD Map
+%% Each Java source package maps to exactly one Software Design Description.
+%% Source of truth: docs/team-lib/planning/README.md "Package-to-SDD Map"
+
+graph LR
+    subgraph PKG["Java Source Packages"]
+        p_root["com.team271.lib<br/>(TObj, Lifecycle, Named,<br/>TRobot, ConstantsLib)"]
+        p_wpilib["com.team271.lib.wpilib.*<br/>(IterativeRobotBase,<br/>TimedRobot extensions)"]
+        p_api["com.team271.lib.api.*"]
+        p_api_vision["com.team271.lib.api.vision.*"]
+        p_vendor_ctre["com.team271.lib.vendor.ctre.*"]
+        p_vendor_lime["com.team271.lib.vendor.limelight.*"]
+        p_vendor_photon["com.team271.lib.vendor.photonvision.*"]
+        p_bridge["com.team271.lib.bridge.*"]
+        p_hw["com.team271.lib.hardware.*"]
+        p_ctrl["com.team271.lib.control.*"]
+        p_sub["com.team271.lib.subsystem.*"]
+        p_auto["com.team271.lib.auto.*"]
+        p_sysid["com.team271.lib.sysid.*"]
+        p_nt["com.team271.lib.nt.*"]
+        p_util["com.team271.lib.util.*"]
+    end
+
+    subgraph SDD["Software Design Descriptions"]
+        s_root["SDD-team271-lib.md"]
+        s_api["SDD-api.md"]
+        s_vendor["SDD-vendor-ctre.md"]
+        s_hw["SDD-hardware.md"]
+        s_ctrl["SDD-control.md"]
+        s_sub["SDD-subsystem.md"]
+        s_auto["SDD-auto.md"]
+        s_vision["SDD-vision.md"]
+        s_sysid["SDD-sysid.md"]
+        s_nt["SDD-nt.md"]
+        s_util["SDD-util.md"]
+    end
+
+    p_root --> s_root
+    p_wpilib --> s_root
+    p_api --> s_api
+    p_vendor_ctre --> s_vendor
+    p_bridge --> s_vendor
+    p_hw --> s_hw
+    p_ctrl --> s_ctrl
+    p_sub --> s_sub
+    p_auto --> s_auto
+    p_api_vision --> s_vision
+    p_vendor_lime --> s_vision
+    p_vendor_photon --> s_vision
+    p_sysid --> s_sysid
+    p_nt --> s_nt
+    p_util --> s_util
+
+    classDef pkg fill:#eef5ff,stroke:#4a6fa5
+    classDef sdd fill:#fff3cd,stroke:#856404
+
+    class p_root,p_wpilib,p_api,p_api_vision,p_vendor_ctre,p_vendor_lime,p_vendor_photon,p_bridge,p_hw,p_ctrl,p_sub,p_auto,p_sysid,p_nt,p_util pkg
+    class s_root,s_api,s_vendor,s_hw,s_ctrl,s_sub,s_auto,s_vision,s_sysid,s_nt,s_util sdd

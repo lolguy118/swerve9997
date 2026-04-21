@@ -1,0 +1,39 @@
+%% Team271-Lib — Periodic Loop Data Flow (one robot cycle)
+%% Shows how the library sequences each TimedRobot cycle and where the
+%% desired-to-actual state reconciliation happens.
+%% Source of truth: ADR-007 (centralized CAN refresh), ADR-010 (forEachSafe
+%%                  exception isolation), ADR-014 (desired-to-actual pattern)
+
+sequenceDiagram
+    participant TRobot
+    participant HWMgr as HardwareManager
+    participant CTREMgr as CTREManager
+    participant SubMgr as SubsystemManager
+    participant Sub as Subsystem
+    participant NT as Telemetry
+
+    Note over TRobot: one periodic cycle begins
+    TRobot->>HWMgr: refreshAll
+    HWMgr->>CTREMgr: refreshAll
+    CTREMgr-->>HWMgr: one bulk CAN read
+    Note right of CTREMgr: consistent timestamps per ADR-007
+
+    TRobot->>SubMgr: forEachSafe robotPeriodicBefore
+    loop each subsystem
+        SubMgr->>Sub: robotPeriodicBefore
+        Note right of Sub: read sensors and update ACTUAL state (ADR-014)
+    end
+
+    Note over TRobot: operator input or scheduled AutoMove updates DESIRED state
+    TRobot->>SubMgr: forEachSafe robotPeriodicAfter
+    loop each subsystem
+        SubMgr->>Sub: robotPeriodicAfter
+        Note right of Sub: reconcile DESIRED vs ACTUAL and command motors with timeouts (ADR-011, ADR-014)
+    end
+
+    TRobot->>SubMgr: forEachSafe outputTelemetry
+    loop each subsystem
+        SubMgr->>Sub: outputTelemetry
+        Sub->>NT: publish outputs
+    end
+    Note right of SubMgr: forEachSafe catches exceptions and throttles Elastic alerts (ADR-010)

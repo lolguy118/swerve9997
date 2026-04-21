@@ -1,0 +1,67 @@
+%% Team271-Lib — AutoMove Composition / Class Hierarchy
+%% Shows the autonomous-move type system: one abstract base, four concrete
+%% subclasses, and the CommandBridge that adapts WPILib Commands (including
+%% PathPlanner-generated commands) into the AutoMove world.
+%% Arrow direction for classDiagram: child "--|>" parent (extends)
+%% Source of truth: ADR-005 (composition over commands),
+%%                  ADR-011 (mandatory timeouts),
+%%                  ADR-013 (PathPlanner via CommandBridge)
+
+classDiagram
+    class AutoMove {
+        <<abstract>>
+        +String name
+        +boolean isFinished()
+        +void start()
+        +void periodic()
+        +void stop()
+    }
+
+    class AutoMoveTimed {
+        +double length
+        +double delay
+        +double timeoutSec
+    }
+
+    class AutoMoveConditional {
+        +BooleanSupplier condition
+        +double timeoutSec
+        +boolean canRun()
+    }
+
+    class AutoMoveSequence {
+        +List~AutoMove~ moves
+        +int index
+    }
+
+    class AutoMoveParallel {
+        +List~AutoMove~ moves
+    }
+
+    class WaitMove
+
+    class AutoMode {
+        +String name
+        +AutoMove rootMove
+        +void addMove(AutoMove)
+        +void run()
+    }
+
+    class CommandBridge {
+        +AutoMove fromCommand(Command)
+    }
+
+    class PathPlannerCommand
+
+    AutoMoveTimed --|> AutoMove
+    AutoMoveConditional --|> AutoMove
+    AutoMoveSequence --|> AutoMove
+    AutoMoveParallel --|> AutoMove
+    WaitMove --|> AutoMoveTimed
+
+    AutoMoveSequence o-- AutoMove : contains
+    AutoMoveParallel o-- AutoMove : contains
+    AutoMode o-- AutoMove : rootMove
+
+    CommandBridge ..> AutoMove : produces
+    CommandBridge ..> PathPlannerCommand : adapts

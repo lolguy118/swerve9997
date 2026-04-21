@@ -1,0 +1,67 @@
+%% Team271-Lib — api/ Interface to vendor/ Implementation Map
+%% Shows which vendor-neutral interfaces are implemented by which vendor
+%% classes. Most interfaces currently have a single CTRE implementation;
+%% Camera (api/vision) is the one abstraction with two vendor impls today.
+%% Arrow direction: vendor impl ..|> api interface (implements)
+%% Source of truth: ADR-003 (passthrough), ADR-006 (CTRE primary),
+%%                  ADR-016 (vision), ADR-017 (CAN-bus abstraction)
+
+graph LR
+    subgraph API["com.team271.lib.api"]
+        Motor["Motor"]
+        ClosedLoop["ClosedLoopMotor"]
+        Encoder["Encoder"]
+        AbsEncoder["AbsoluteEncoder"]
+        Gyro["Gyro"]
+        LimitSwitch["LimitSwitch"]
+        RangeSensor["RangeSensor"]
+        CANBus["CANBus"]
+        Camera["vision/Camera"]
+        PoseEstimate["vision/PoseEstimate"]
+        TargetDetection["vision/TargetDetection"]
+    end
+
+    subgraph CTRE["com.team271.lib.vendor.ctre"]
+        CTREMotor["CTREMotor<br/>(wraps TalonFX)"]
+        CTREEncoder["CTREEncoder<br/>(wraps CANcoder)"]
+        CTREAbsEnc["CTREAbsoluteEncoder<br/>(wraps CANcoder)"]
+        CTREGyro["CTREGyro<br/>(wraps Pigeon 2)"]
+        CTRELimit["CTRELimitSwitch"]
+        CTRERange["CTRERangeSensor<br/>(wraps CANrange)"]
+        CANBusCTRE["CANBusCTRE<br/>(wraps CTRE CANBus)"]
+    end
+
+    subgraph LIME["com.team271.lib.vendor.limelight"]
+        LimelightCamera["LimelightCamera"]
+    end
+
+    subgraph PHOTON["com.team271.lib.vendor.photonvision"]
+        PhotonCamera["PhotonCamera"]
+    end
+
+    CTREMotor -.->|implements| Motor
+    CTREMotor -.->|implements| ClosedLoop
+    CTREEncoder -.->|implements| Encoder
+    CTREAbsEnc -.->|implements| AbsEncoder
+    CTREGyro -.->|implements| Gyro
+    CTRELimit -.->|implements| LimitSwitch
+    CTRERange -.->|implements| RangeSensor
+    CANBusCTRE -.->|implements| CANBus
+
+    LimelightCamera -.->|implements| Camera
+    LimelightCamera -.->|produces| PoseEstimate
+    LimelightCamera -.->|produces| TargetDetection
+
+    PhotonCamera -.->|implements| Camera
+    PhotonCamera -.->|produces| PoseEstimate
+    PhotonCamera -.->|produces| TargetDetection
+
+    classDef api fill:#d4edda,stroke:#28a745
+    classDef ctre fill:#cce5ff,stroke:#004085
+    classDef limelight fill:#ffe0cc,stroke:#b45309
+    classDef photon fill:#e3d4ff,stroke:#5a2b91
+
+    class Motor,ClosedLoop,Encoder,AbsEncoder,Gyro,LimitSwitch,RangeSensor,CANBus,Camera,PoseEstimate,TargetDetection api
+    class CTREMotor,CTREEncoder,CTREAbsEnc,CTREGyro,CTRELimit,CTRERange,CANBusCTRE ctre
+    class LimelightCamera limelight
+    class PhotonCamera photon

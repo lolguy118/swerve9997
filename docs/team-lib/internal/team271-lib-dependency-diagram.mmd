@@ -1,16 +1,21 @@
-%% Team271-Lib — 6-Layer Architecture Dependency Diagram
+%% Team271-Lib — Six-Layer Architecture Dependency Diagram
 %% Each layer may depend only on layers below it.
 %% Arrow direction: "depends on"
+%% Source of truth: ADR-004 (layered architecture), ADR-006 (CTRE primary),
+%%                  ADR-016 (vision abstraction), ADR-017 (CAN-bus abstraction)
 
 graph TD
-    auto["<b>auto/</b><br/>AutoMode · AutoMove · Containers"]
+    auto["<b>auto/</b><br/>AutoMode · AutoMove<br/>Sequence · Parallel · Conditional · Timed · Wait"]
     subsystem["<b>subsystem/</b><br/>Subsystem · SubsystemManager · StateMachine"]
-    control["<b>control/</b><br/>PIDBase · PIDSimple · PIDTrap · PIDWPI<br/>PIDWPI_Trap · PIDFX · Balance · Feedforward"]
-    hardware["<b>hardware/</b><br/>Controllers · Transmissions · Sensors<br/>Input · HardwareManager · CTREManager"]
-    vendor_ctre["<b>vendor/ctre/</b><br/>CTREMotor · CTREEncoder · CTREAbsoluteEncoder<br/>CTREGyro · CTRELimitSwitch · CTRERangeSensor"]
-    api["<b>api/</b><br/>Motor · ClosedLoopMotor · Encoder<br/>AbsoluteEncoder · Gyro · LimitSwitch · RangeSensor"]
-    crosscut["<b>nt/ · sysid/ · util/</b><br/>Telemetry · SysID logging · Alert · Elastic · DriveSignal"]
-    bridge["<b>bridge/</b><br/>CommandBridge (WPILib interop)"]
+    control["<b>control/</b><br/>PIDSimple · PIDTrap · PIDWPI · PIDWPITrap · PIDFX<br/>Balance · Feedforward · ArmFeedforward"]
+    hardware["<b>hardware/</b><br/>Controllers · Transmissions · Sensors · Input<br/>HardwareManager · CTREManager · CANDeviceID"]
+    vendor_ctre["<b>vendor/ctre/</b><br/>CTREMotor · CTREEncoder · CTREAbsoluteEncoder<br/>CTREGyro · CTRELimitSwitch · CTRERangeSensor · CANBusCTRE"]
+    vendor_limelight["<b>vendor/limelight/</b><br/>LimelightCamera"]
+    vendor_photon["<b>vendor/photonvision/</b><br/>PhotonCamera"]
+    api["<b>api/</b><br/>Motor · ClosedLoopMotor · Encoder · AbsoluteEncoder<br/>Gyro · LimitSwitch · RangeSensor · CANBus<br/>vision/: Camera · PoseEstimate · TargetDetection"]
+    root["<b>com.team271.lib</b> (root)<br/>TObj · Lifecycle · Named · TRobot · ConstantsLib<br/>wpilib/: IterativeRobotBase · TimedRobot extensions"]
+    crosscut["<b>nt/ · sysid/ · util/</b><br/>NTTable · NTEntry · LoggedNTInput<br/>SysID logging · Alert · Elastic · DriveSignal"]
+    bridge["<b>bridge/</b><br/>CommandBridge (WPILib Command interop, ADR-013)"]
 
     auto --> subsystem
     subsystem --> control
@@ -18,18 +23,29 @@ graph TD
     control --> hardware
     hardware --> vendor_ctre
     vendor_ctre --> api
-    bridge --> vendor_ctre
-    bridge --> api
+    vendor_limelight --> api
+    vendor_photon --> api
+    bridge --> auto
+    bridge --> subsystem
 
     subsystem --> crosscut
     hardware --> crosscut
     control --> crosscut
+    auto --> crosscut
+
+    auto --> root
+    subsystem --> root
+    hardware --> root
+    control --> root
 
     style api fill:#d4edda,stroke:#28a745
     style vendor_ctre fill:#cce5ff,stroke:#004085
+    style vendor_limelight fill:#cce5ff,stroke:#004085
+    style vendor_photon fill:#cce5ff,stroke:#004085
     style hardware fill:#fff3cd,stroke:#856404
     style control fill:#f8d7da,stroke:#721c24
     style subsystem fill:#e2e3e5,stroke:#383d41
     style auto fill:#d1ecf1,stroke:#0c5460
+    style root fill:#e7d4ff,stroke:#5a2b91
     style crosscut fill:#f5f5f5,stroke:#aaa,stroke-dasharray: 5 5
     style bridge fill:#f5f5f5,stroke:#aaa,stroke-dasharray: 5 5

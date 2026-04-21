@@ -6,7 +6,7 @@
 | Revision | 0.1 |
 | Date | 2026-04-20 |
 | Status | Draft |
-| Requirements Traced | `[AUT-001]`..`[AUT-008]` (SRS §4.6) |
+| Requirements Traced | `[AUT-001]`..`[AUT-011]` (SRS §4.6) |
 
 The normative keywords SHALL, SHOULD, and MAY follow the convention
 defined in

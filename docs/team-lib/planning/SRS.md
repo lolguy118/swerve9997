@@ -200,6 +200,17 @@ It excludes anything that is robot-specific.
   `ChassisSpeeds` to the consumer, fire an Elastic WARNING
   notification, and call `setCompleted()` so the parent container
   advances.
+- **[AUT-009]** `Trajectory.sample(timestampSec)` shall return
+  `Optional<TrajectorySample>`; an empty `Optional` shall indicate
+  the sample timestamp is past `totalTimeSeconds()` or that the
+  trajectory failed to load.
+- **[AUT-010]** `TrajectorySample` shall carry pose (`Pose2d`),
+  chassis speeds (`ChassisSpeeds`), and sample timestamp; optional
+  vendor-extensible module-force fields may be present.
+- **[AUT-011]** Each trajectory vendor follower shall expose its
+  raw vendor surface via a passthrough getter (ADR-003) — e.g.,
+  `PathPlannerFollower.getRawController()`,
+  `ChoreoFollower.getRawTrajectory()`.
 
 ### 4.7 SysID Layer (`[SID-NNN]`)
 
@@ -321,7 +332,7 @@ and CI reports; update the test-case column as tests are added.
 | `[HW-001..007]` | SDD-hardware §3 | `[TEST-HW-*]` |
 | `[CTL-001..006]` | SDD-control §3 | `[TEST-CTL-*]` |
 | `[SUB-001..006]` | SDD-subsystem §3 | `[TEST-SUB-*]` |
-| `[AUT-001..008]` | SDD-auto §3 | `[TEST-AUT-*]` |
+| `[AUT-001..011]` | SDD-auto §3 | `[TEST-AUT-*]` |
 | `[SID-001..004]` | SDD-sysid §3 | `[TEST-SID-*]` |
 | `[NT-001..003]` | SDD-nt §3 | `[TEST-NT-*]` |
 | `[UTL-001..005]` | SDD-util §3 | `[TEST-UTL-*]` |

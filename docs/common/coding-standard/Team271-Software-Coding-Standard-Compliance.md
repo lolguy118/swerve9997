@@ -111,13 +111,13 @@ updating the count in this matrix.
 ### Static Analysis Tooling
 
 The table above references three Java static analysers, configured in
-[`build.gradle`](../../build.gradle):
+[`build.gradle`](../../../build.gradle):
 
 | Tool | Scope | Config | Rollout status |
 | ---- | ----- | ------ | -------------- |
 | Error Prone | Compile-time bug patterns (null checks, `==` on Strings, unused vars) | Plugin `net.ltgt.errorprone:4.0.1` | Fail-soft (`allErrorsAsWarnings = true`) |
-| SpotBugs | Bytecode analysis (null deref, concurrency, resource leaks) | Plugin `com.github.spotbugs:6.0.21`; exclusions in [`config/spotbugs/exclude.xml`](../../config/spotbugs/exclude.xml) | Fail-soft (`ignoreFailures = true`); reports uploaded as CI artifact |
-| Checkstyle | Mechanizable SCS rules (currently `NeedBraces`, `MissingSwitchDefault`) | Built-in `checkstyle` plugin; config at [`config/checkstyle/checkstyle.xml`](../../config/checkstyle/checkstyle.xml) | Strict (`maxWarnings = 0`); config grows incrementally |
+| SpotBugs | Bytecode analysis (null deref, concurrency, resource leaks) | Plugin `com.github.spotbugs:6.0.21`; exclusions in [`config/spotbugs/exclude.xml`](../../../config/spotbugs/exclude.xml) | Fail-soft (`ignoreFailures = true`); reports uploaded as CI artifact |
+| Checkstyle | Mechanizable SCS rules (currently `NeedBraces`, `MissingSwitchDefault`) | Built-in `checkstyle` plugin; config at [`config/checkstyle/checkstyle.xml`](../../../config/checkstyle/checkstyle.xml) | Strict (`maxWarnings = 0`); config grows incrementally |
 
 Tighten rollout (remove `allErrorsAsWarnings`, `ignoreFailures`) as
 historical findings are triaged. See SVP §7.

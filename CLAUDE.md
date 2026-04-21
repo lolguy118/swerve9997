@@ -57,9 +57,9 @@ for the six-layer graph. The layering decision is
   [start-here.md](docs/team-lib/guides/start-here.md) as the first
   read for new library contributors.
 - **Library conventions:** [CONTRIBUTING.md](CONTRIBUTING.md).
-- **AI guardrails:** `.claude/rules/` — rules loaded by this root
-  `CLAUDE.md` (code-side) and by
-  [`docs/CLAUDE.md`](docs/CLAUDE.md) (doc-side).
+- **AI guardrails:** [`.claude/rules/`](.claude/rules/) — rules
+  auto-discovered by Claude Code, each self-scoped via `paths:`
+  frontmatter (see [Claude Rules](#claude-rules) below).
 - **AI-assisted tooling:**
   - [`/lib-review`](.claude/commands/lib-review.md) — slash command.
     Runs a branch-level library code review, delegating to the

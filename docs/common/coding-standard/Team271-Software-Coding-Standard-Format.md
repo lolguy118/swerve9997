@@ -37,7 +37,7 @@ b. When manually wrapping, continuation lines **should** be indented
 a. Braces **shall** surround all blocks following `if`, `else`,
    `while`, `do`, `for`, and `switch` statements, even when the
    block contains a single statement. Enforced by Checkstyle's
-   `NeedBraces` rule ([`config/checkstyle/checkstyle.xml`](../../config/checkstyle/checkstyle.xml));
+   `NeedBraces` rule ([`config/checkstyle/checkstyle.xml`](../../../config/checkstyle/checkstyle.xml));
    Spotless formats existing braces but does not add missing ones.
 
 b. Brace style follows Google Java Format AOSP: opening brace on

@@ -2,7 +2,7 @@
 # Coding Standard — Library Applications
 
 Concrete Team271-Lib API mappings for the framework-agnostic rules in
-[`../common/coding-standard/Team271-Software-Coding-Standard*.md`](../common/). The
+[`../../common/coding-standard/Team271-Software-Coding-Standard*.md`](../../common/). The
 common rules describe *what* to do ("use the project's tuning
 mechanism"); this document describes *how* to do it with library
 classes ("`LoggedNTInput` + `checkTuning()`").
@@ -23,8 +23,8 @@ notes file in its own `docs/<project>/`.
 | Telemetry key helper | `NTEntry` wraps `Logger.recordOutput` for cached publishing |
 
 Implementation lives in
-[SDD-nt.md](planning/sdd/SDD-nt.md) (`NTEntry`) and
-[SDD-subsystem.md](planning/sdd/SDD-subsystem.md)
+[SDD-nt.md](../planning/sdd/SDD-nt.md) (`NTEntry`) and
+[SDD-subsystem.md](../planning/sdd/SDD-subsystem.md)
 (`SubsystemManager.outputTelemetry()` driving the per-cycle call).
 
 ---
@@ -36,7 +36,7 @@ Implementation lives in
 | "driver-notification facility" | `Elastic.sendNotification(level, title, text)` |
 | "display-time argument" | `withDisplayMilliseconds(int)` on the `Notification` builder, or the `displayTimeMillis` constructor parameter |
 
-See [SDD-util.md](planning/sdd/SDD-util.md) for the `Elastic`
+See [SDD-util.md](../planning/sdd/SDD-util.md) for the `Elastic`
 wrapper's API.
 
 ---
@@ -52,11 +52,11 @@ wrapper's API.
 
 Anchor decisions and pipeline:
 
-- [ADR-008](planning/adr/ADR-008-logged-nt-input-backed-tuning.md)
+- [ADR-008](../planning/adr/ADR-008-logged-nt-input-backed-tuning.md)
   — `LoggedNTInput`-backed tuning decision
-- [SDD-nt.md](planning/sdd/SDD-nt.md)
+- [SDD-nt.md](../planning/sdd/SDD-nt.md)
   — `NTTable`, `NTEntry`, `LoggedNTInput` implementation
-- [SDD-team271-lib.md §Tuning Infrastructure](planning/sdd/SDD-team271-lib.md)
+- [SDD-team271-lib.md §Tuning Infrastructure](../planning/sdd/SDD-team271-lib.md)
   — lifecycle integration point
 
 Minimum `checkTuning()` shape:
@@ -82,12 +82,12 @@ protected void checkTuning() {
 ## CODE-SAF-* — Safety Practices
 
 Library bindings for safety rules live alongside their definitions — see
-[`../common/coding-standard/Team271-Software-Coding-Standard-Safety.md`](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md)
+[`../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md`](../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md)
 and its cross-references to:
 
-- [ADR-011 — Mandatory Timeouts with Fail-Safe + Driver Alert](planning/adr/ADR-011-mandatory-timeouts-fail-safe.md)
-- [SDD-subsystem.md §Fault Tolerance](planning/sdd/SDD-subsystem.md)
-- [SDD-hardware.md §CAN Fault Handling](planning/sdd/SDD-hardware.md)
+- [ADR-011 — Mandatory Timeouts with Fail-Safe + Driver Alert](../planning/adr/ADR-011-mandatory-timeouts-fail-safe.md)
+- [SDD-subsystem.md §Fault Tolerance](../planning/sdd/SDD-subsystem.md)
+- [SDD-hardware.md §CAN Fault Handling](../planning/sdd/SDD-hardware.md)
 
 Key bindings:
 

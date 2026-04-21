@@ -8,15 +8,15 @@
 
 > **Scope:** These templates are for **robot-project code** that consumes
 > Team271-Lib. Library subsystems themselves follow the pattern in
-> [SDD-subsystem.md](planning/sdd/SDD-subsystem.md) and do **not** use
+> [SDD-subsystem.md](../planning/sdd/SDD-subsystem.md) and do **not** use
 > singletons (see
-> [ADR-015](planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
+> [ADR-015](../planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
 > Library-level constants live in `ConstantsLib.java`, not in the
 > `Constants.java` shown in Appendix G.
 
 ## Appendix F: Subsystem Template
 
-See [§3.1 in the core standard](../common/coding-standard/Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
+See [§3.1 in the core standard](../../common/coding-standard/Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
 subsystem template. Key elements:
 
 1. Singleton with dual `getInstance()` (CODE-GEN-013)

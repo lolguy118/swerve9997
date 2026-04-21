@@ -1,4 +1,4 @@
-# ADR-015: Explicit Object Instantiation, No Singletons in Library Code
+# ADR-004: Explicit Object Instantiation, No Singletons in Library Code
 
 ## Status
 

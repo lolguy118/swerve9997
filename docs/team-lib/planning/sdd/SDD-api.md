@@ -49,7 +49,7 @@ This SDD covers:
 | `api/sensor/` | `Gyro` | Yaw / pitch / roll angle and rate |
 | `api/sensor/` | `LimitSwitch` | Binary triggered state with configurable NO/NC |
 | `api/sensor/` | `RangeSensor` | Time-of-flight / ultrasonic distance reading |
-| `api/trajectory/` | `Trajectory`, `TrajectorySample`, `TrajectoryFollower` | Vendor-neutral trajectory sampling and following. Design detail lives in [SDD-auto.md](SDD-auto.md); vendor implementations under `vendor/pathplanner/` and `vendor/choreo/` per [ADR-013](../adr/ADR-013-trajectory-following-vendors.md) |
+| `api/trajectory/` | `Trajectory`, `TrajectorySample`, `TrajectoryFollower` | Vendor-neutral trajectory sampling and following. Design detail lives in [SDD-auto.md](SDD-auto.md); vendor implementations under `vendor/pathplanner/` and `vendor/choreo/` per [ADR-014](../adr/ADR-014-trajectory-following-vendors.md) |
 
 The `api/` package has **zero vendor imports**. A class in `api/` that
 imports `com.ctre.phoenix6.*` or `edu.wpi.first.hal.*` is a layering
@@ -83,8 +83,8 @@ queries inside periodic code.
 
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
-| CTRE-focused — interfaces scoped to CTRE feature set | See ADR-006 | [ADR-006](../adr/ADR-006-ctre-phoenix6-primary-vendor.md) |
-| Passthrough getters on implementations, not on interfaces | See ADR-003 | [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md) |
+| CTRE-focused — interfaces scoped to CTRE feature set | See ADR-008 | [ADR-008](../adr/ADR-008-ctre-phoenix6-primary-vendor.md) |
+| Passthrough getters on implementations, not on interfaces | See ADR-005 | [ADR-005](../adr/ADR-005-passthrough-wrapper-not-wall.md) |
 | CTRE-only features (Motion Magic, FOC, torque current) excluded from api/ | Keeps api/ portable; CTRE-only features live on `CTREMotor` passthrough | [SDD-vendor-ctre.md](SDD-vendor-ctre.md) |
 
 ## 6. Error Handling

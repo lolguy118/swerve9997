@@ -16,7 +16,7 @@ defined in
 
 Provides the base class for all robot subsystems, the `SubsystemManager`
 lifecycle coordinator, and the `StateMachine` utility. Defines exception
-isolation (ADR-010) and the desired-to-actual state pattern (ADR-014).
+isolation (ADR-011) and the desired-to-actual state pattern (ADR-010).
 
 ## 2. Scope and Boundaries
 
@@ -50,7 +50,7 @@ modes that gate sensor reads:
 zero-to-hardware action plus a post-zero callback. A persisted
 zeroed flag gates closed-loop operation so a subsystem cannot run
 position control before homing completes. Per coding standard
-§4.9c and ADR-011, any waiting homing sequence must have a named
+§4.9c and ADR-012, any waiting homing sequence must have a named
 timeout constant, a fail-safe action (stop motors, restore default
 current limits, transition to IDLE), and an Elastic notification on
 timeout.
@@ -128,12 +128,12 @@ SubsystemManager.outputTelemetry()
 
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
-| Exception isolation in `forEachSafe()` | One broken subsystem must not crash the robot loop | [ADR-010](../adr/ADR-010-subsystem-exception-isolation.md) |
-| Desired-to-actual separation | Decouples operator input from hardware; all reads finish before writes | [ADR-014](../adr/ADR-014-desired-to-actual-state-pattern.md) |
+| Exception isolation in `forEachSafe()` | One broken subsystem must not crash the robot loop | [ADR-011](../adr/ADR-011-subsystem-exception-isolation.md) |
+| Desired-to-actual separation | Decouples operator input from hardware; all reads finish before writes | [ADR-010](../adr/ADR-010-desired-to-actual-state-pattern.md) |
 | Registration order is execution order | Load-bearing ordering documented in robot project | See §3.2 (`SubsystemManager`) above |
-| Homing must have timeout + fail-safe + Elastic | Physical safety — robot must stop if homing hangs | [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md) |
+| Homing must have timeout + fail-safe + Elastic | Physical safety — robot must stop if homing hangs | [ADR-012](../adr/ADR-012-mandatory-timeouts-fail-safe.md) |
 | `StateMachine` is a helper, not a base class | Keeps subsystem inheritance single-axis; simple subsystems skip it | See §3.3 above |
-| `SubsystemManager` is a singleton | There is exactly one subsystem registry per robot | [ADR-015](../adr/ADR-015-explicit-instantiation-no-singletons.md) |
+| `SubsystemManager` is a singleton | There is exactly one subsystem registry per robot | [ADR-004](../adr/ADR-004-explicit-instantiation-no-singletons.md) |
 | `robotInit()` is not exception-isolated | Init failure is fatal; partial init is unsafe | See §6.1 |
 
 ## 6. Error Handling
@@ -148,7 +148,7 @@ not modified — a subsystem that throws will be retried next cycle.
 `robotInit` failure is the one phase that is **not** isolated.
 Exceptions propagate to `Robot.robotInit()` and crash early, which is
 the intended behavior — a partially initialized subsystem is worse
-than a crashed robot (see [ADR-010](../adr/ADR-010-subsystem-exception-isolation.md)).
+than a crashed robot (see [ADR-011](../adr/ADR-011-subsystem-exception-isolation.md)).
 
 ### 6.2 Error Notification Throttling
 
@@ -175,7 +175,7 @@ Library-level safe defaults that subsystems inherit:
 Each subsystem that homes must implement its own timeout
 (`kHomingTimeoutSec` in that subsystem's `Constants`), fail-safe
 action, and Elastic notification (per
-[ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md)). The
+[ADR-012](../adr/ADR-012-mandatory-timeouts-fail-safe.md)). The
 library does not generic this pattern because the fail-safe action
 is subsystem-specific.
 

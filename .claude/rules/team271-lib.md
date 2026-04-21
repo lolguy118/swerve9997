@@ -13,7 +13,7 @@ rules into one library-scoped file.
 ## Layering
 
 Team271-Lib has six layers. Each layer may depend only on layers
-below it ([ADR-004](../../docs/team-lib/planning/adr/ADR-004-layered-architecture.md)):
+below it ([ADR-003](../../docs/team-lib/planning/adr/ADR-003-layered-architecture.md)):
 
 1. `api/` — vendor-neutral interfaces (Motor, Encoder, Gyro, Camera, etc.)
 2. `vendor/ctre/`, `vendor/limelight/`, `vendor/photonvision/` — vendor implementations
@@ -31,11 +31,11 @@ layer but depends on none above itself.
   are CTRE Phoenix 6 devices. No WPILib PWM motors; no REV. Do not
   speculate alternative vendor implementations — build them only when
   a concrete need exists
-  ([ADR-006](../../docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md)).
+  ([ADR-008](../../docs/team-lib/planning/adr/ADR-008-ctre-phoenix6-primary-vendor.md)).
 - **`CTREMotor` is the api/ bridge, not the `Controller*` classes.**
   Do not add `api/` interface implementations to `ControllerBase`,
   `ControllerSmart`, `ControllerTalonFX`, or `ControllerTalonFXS`.
-- **Passthrough — wrapper, not wall** ([ADR-003](../../docs/team-lib/planning/adr/ADR-003-passthrough-wrapper-not-wall.md)).
+- **Passthrough — wrapper, not wall** ([ADR-005](../../docs/team-lib/planning/adr/ADR-005-passthrough-wrapper-not-wall.md)).
   Every hardware wrapper exposes its underlying vendor object via a
   public getter returning the raw CTRE type (`TalonFX`, `CANcoder`,
   `Pigeon2`, `CANrange`). Never hide the raw object behind private
@@ -44,13 +44,13 @@ layer but depends on none above itself.
   `CTREManager.refreshAll()` in robot startup code — it is the
   forward-compatible entry point.
 - **Bulk CAN refresh**
-  ([ADR-007](../../docs/team-lib/planning/adr/ADR-007-centralized-can-refresh.md)).
+  ([ADR-009](../../docs/team-lib/planning/adr/ADR-009-centralized-can-refresh.md)).
   Register StatusSignals with `CTREManager` at `robotInit()` and let
   `HardwareManager.refreshAll()` do one bulk refresh per cycle. Do
   not call `signal.refresh()` inside periodic loops.
 - **No duplicate CTRE device objects on the same CAN ID.** Construct
   each device once and pass the reference.
-- **Desired-to-actual pattern** ([ADR-014](../../docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md)).
+- **Desired-to-actual pattern** ([ADR-010](../../docs/team-lib/planning/adr/ADR-010-desired-to-actual-state-pattern.md)).
   Read sensors in `robotPeriodicBefore()`; act on desired state in
   `robotPeriodicAfter()`. Never apply operator input directly to
   hardware.
@@ -62,7 +62,7 @@ layer but depends on none above itself.
   (gains, current limits, continuous wrap, basic closed loop) go on
   `api/ClosedLoopMotor`. CTRE-only (Motion Magic, FOC, torque
   current, timesync) go on `CTREMotor` directly or via passthrough.
-- **Vision is a separate vendor family** ([ADR-016](../../docs/team-lib/planning/adr/ADR-016-vendor-neutral-vision-abstraction.md)).
+- **Vision is a separate vendor family** ([ADR-007](../../docs/team-lib/planning/adr/ADR-007-vendor-neutral-vision-abstraction.md)).
   Portable vision features (pose, target tx/ty, connection, stddev)
   go on `api/vision/Camera` / `PoseEstimate` / `TargetDetection`.
   Vendor-only features (Limelight pipeline switch, Photon
@@ -86,9 +86,9 @@ layer but depends on none above itself.
 - [SDD-hardware.md](../../docs/team-lib/planning/sdd/SDD-hardware.md)
 - [SDD-vision.md](../../docs/team-lib/planning/sdd/SDD-vision.md)
 - ADRs
-  [003](../../docs/team-lib/planning/adr/ADR-003-passthrough-wrapper-not-wall.md),
-  [004](../../docs/team-lib/planning/adr/ADR-004-layered-architecture.md),
-  [006](../../docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md),
-  [007](../../docs/team-lib/planning/adr/ADR-007-centralized-can-refresh.md),
-  [014](../../docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md),
-  [016](../../docs/team-lib/planning/adr/ADR-016-vendor-neutral-vision-abstraction.md)
+  [005](../../docs/team-lib/planning/adr/ADR-005-passthrough-wrapper-not-wall.md),
+  [003](../../docs/team-lib/planning/adr/ADR-003-layered-architecture.md),
+  [008](../../docs/team-lib/planning/adr/ADR-008-ctre-phoenix6-primary-vendor.md),
+  [009](../../docs/team-lib/planning/adr/ADR-009-centralized-can-refresh.md),
+  [010](../../docs/team-lib/planning/adr/ADR-010-desired-to-actual-state-pattern.md),
+  [007](../../docs/team-lib/planning/adr/ADR-007-vendor-neutral-vision-abstraction.md)

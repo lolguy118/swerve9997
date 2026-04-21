@@ -15,7 +15,7 @@ defined in
 > **Status: Planned — Not Yet Implemented.** The vision packages
 > described here do not yet exist in `src/main/java/`. This SDD
 > documents the contract authored by
-> [ADR-016](../adr/ADR-016-vendor-neutral-vision-abstraction.md);
+> [ADR-007](../adr/ADR-007-vendor-neutral-vision-abstraction.md);
 > it is binding on the first change that introduces a
 > `com.team271.lib.api.vision` class.
 
@@ -73,7 +73,7 @@ Immutable record carrying a single pose estimate.
 | `recommendedStdDevs` | `Vector<N3>` | Vendor-computed default standard deviations `(x, y, theta)` |
 
 Raw confidence signals and the recommended standard-deviation
-vector are both present by design (ADR-016: S3): simple robots
+vector are both present by design (ADR-007: S3): simple robots
 use the recommended default; sophisticated robots derive their
 own trust model from the raw signals.
 
@@ -157,7 +157,7 @@ produced the cached estimate.
 ## 4. Data Flow
 
 ```text
-// Cycle ingest — robotPeriodicBefore (ADR-014 desired-to-actual)
+// Cycle ingest — robotPeriodicBefore (ADR-010 desired-to-actual)
 subsystem.robotPeriodicBefore()
   → camera.robotPeriodicBefore()
     // LimelightCamera
@@ -171,7 +171,7 @@ subsystem.robotPeriodicBefore()
     → apply PhotonCameraConfig filter → cache Optional<PoseEstimate>
                                       + Optional<TargetDetection>
 
-// Consumption — robot project pulls and forwards (ADR-016: P1)
+// Consumption — robot project pulls and forwards (ADR-007: P1)
 subsystem.robotPeriodicBefore()
   → camera.getLatestPoseEstimate().ifPresent(est ->
       poseEstimator.addVisionMeasurement(
@@ -191,19 +191,19 @@ autoAlign.execute()
 
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
-| `Camera` extends `Named`, not `TObj` | Matches `Motor`/`Encoder`/`Gyro`; keeps `api/` lifecycle-free | [ADR-016](../adr/ADR-016-vendor-neutral-vision-abstraction.md) |
-| Two-vendor V1 (Limelight + PhotonVision) | A one-vendor abstraction is not a real test of the contract | [ADR-016](../adr/ADR-016-vendor-neutral-vision-abstraction.md) |
-| Pull via `Optional`, not pushed `Consumer` | Keeps library narrow; not every caller uses `SwerveDrivePoseEstimator` | [ADR-016](../adr/ADR-016-vendor-neutral-vision-abstraction.md) |
-| Both raw signals and recommended stddev on `PoseEstimate` | Default for simple robots; escape hatch for tuned ones | [ADR-016](../adr/ADR-016-vendor-neutral-vision-abstraction.md) |
-| Passthrough per vendor (ADR-003) | Preserves access to vendor-specific features not on `Camera` | [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md) |
+| `Camera` extends `Named`, not `TObj` | Matches `Motor`/`Encoder`/`Gyro`; keeps `api/` lifecycle-free | [ADR-007](../adr/ADR-007-vendor-neutral-vision-abstraction.md) |
+| Two-vendor V1 (Limelight + PhotonVision) | A one-vendor abstraction is not a real test of the contract | [ADR-007](../adr/ADR-007-vendor-neutral-vision-abstraction.md) |
+| Pull via `Optional`, not pushed `Consumer` | Keeps library narrow; not every caller uses `SwerveDrivePoseEstimator` | [ADR-007](../adr/ADR-007-vendor-neutral-vision-abstraction.md) |
+| Both raw signals and recommended stddev on `PoseEstimate` | Default for simple robots; escape hatch for tuned ones | [ADR-007](../adr/ADR-007-vendor-neutral-vision-abstraction.md) |
+| Passthrough per vendor (ADR-005) | Preserves access to vendor-specific features not on `Camera` | [ADR-005](../adr/ADR-005-passthrough-wrapper-not-wall.md) |
 | Limelight passthrough is NT-name + helper records | Limelight has no "raw object" like `TalonFX` | See §6 |
-| Per-camera pre-periodic read | Matches desired-to-actual + bulk-refresh discipline | [ADR-014](../adr/ADR-014-desired-to-actual-state-pattern.md), [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
+| Per-camera pre-periodic read | Matches desired-to-actual + bulk-refresh discipline | [ADR-010](../adr/ADR-010-desired-to-actual-state-pattern.md), [ADR-009](../adr/ADR-009-centralized-can-refresh.md) |
 | Record allocation per cycle is acceptable | ~48 bytes × cameras × 50 Hz; CODE-GEN-004 targets unbounded allocation in hot loops, not small value records returned from cached state | [CODE-GEN-004](../../../common/coding-standard/Team271-Software-Coding-Standard-General.md) |
 
 ## 6. Passthrough Getter Reference
 
 Every vision wrapper provides passthrough access to its vendor
-surface per [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md).
+surface per [ADR-005](../adr/ADR-005-passthrough-wrapper-not-wall.md).
 Because Limelight has no "raw device object" comparable to a CTRE
 `TalonFX`, its passthrough is the NT table name plus the
 `LimelightHelpers` record types — direct `LimelightHelpers.*(name,
@@ -227,7 +227,7 @@ defeats the purpose.
 
 ## 7. Error Handling
 
-Vision does not perform blocking waits, so the ADR-011 timeout
+Vision does not perform blocking waits, so the ADR-012 timeout
 contract does not apply directly. The fail-safe equivalent is
 **always return `Optional.empty()` rather than a stale or
 out-of-policy estimate** — consumers fall back to odometry
@@ -235,7 +235,7 @@ without the library making the decision for them.
 
 | Failure | Detection | Response |
 | ------- | --------- | -------- |
-| Camera disconnected (no NT update within staleness window) | Timestamp-delta check in `robotPeriodicBefore()` | `isConnected()` → false; persistent `Alert(ERROR, "Camera {name} disconnected")` in the "Cameras" group (ADR-012 logged via AdvantageKit) |
+| Camera disconnected (no NT update within staleness window) | Timestamp-delta check in `robotPeriodicBefore()` | `isConnected()` → false; persistent `Alert(ERROR, "Camera {name} disconnected")` in the "Cameras" group (ADR-016 logged via AdvantageKit) |
 | Stale reading this cycle | No new timestamp since last read | `getLatestPoseEstimate()` returns `Optional.empty()`; no `Alert` (normal at rest) |
 | Too few tags | `tagCount < config.minTagCount` | Rejected inside the camera; returns `Optional.empty()`; no `Alert` (policy filter, not fault) |
 | Too far / too ambiguous | Distance or ambiguity exceeds configured threshold | Same as above |
@@ -243,7 +243,7 @@ without the library making the decision for them.
 | PhotonPoseEstimator throws | Same pattern | Same response |
 
 All error paths record a telemetry key so the match log retains
-evidence of rejection reasons (ADR-012). Input validation on
+evidence of rejection reasons (ADR-016). Input validation on
 config constructors rejects negative thresholds, `NaN` values,
 and missing field layouts with `IllegalArgumentException` —
 fail-fast at construction rather than mid-match.
@@ -262,7 +262,7 @@ Both cameras work in simulation:
   inside a sim test's per-tick callback.
 - Neither path requires the RoboRIO HAL beyond NT initialization
   — tests run under `HAL.initialize(500, 0)` per
-  [ADR-009](../adr/ADR-009-junit5-hal-simulation-tests.md).
+  [ADR-017](../adr/ADR-017-junit5-hal-simulation-tests.md).
 
 ## 9. Test Coverage Requirements
 
@@ -291,7 +291,7 @@ be introduced via their own ADRs when a concrete need arises:
   Luma API stabilization.
 - **Neural / ML-based object detection.** Would add
   `api/vision/ObjectDetection` and a parallel `getLatestObject()`
-  surface; requires a distinct ADR per ADR-016's "one decision
+  surface; requires a distinct ADR per ADR-007's "one decision
   per ADR" constraint.
 - **`VisionSubsystem` with pushed `Consumer<PoseEstimate>`
   aggregation (P3).** Useful once multi-camera fusion becomes

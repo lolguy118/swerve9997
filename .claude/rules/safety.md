@@ -16,7 +16,7 @@ blocking operation in the code must fail safe.
   launcher spin-up waits, PathPlanner follow-to-waypoint, sensor-gated
   state transitions — all of them. No unbounded `while` loops on a
   sensor condition. See
-  [ADR-011](../../docs/team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md).
+  [ADR-012](../../docs/team-lib/planning/adr/ADR-012-mandatory-timeouts-fail-safe.md).
 - **Timeout constants must be named.** Not magic numbers. Put them in
   the subsystem's `Constants` class.
 - **On timeout, fail safe:** stop motors, restore default current
@@ -49,9 +49,9 @@ When reviewing library changes, flag:
 
 ## Authoritative docs
 
-- [ADR-010](../../docs/team-lib/planning/adr/ADR-010-subsystem-exception-isolation.md)
+- [ADR-011](../../docs/team-lib/planning/adr/ADR-011-subsystem-exception-isolation.md)
   — exception isolation
-- [ADR-011](../../docs/team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md)
+- [ADR-012](../../docs/team-lib/planning/adr/ADR-012-mandatory-timeouts-fail-safe.md)
   — mandatory timeouts
 - [Team271-Software-Coding-Standard-Safety.md](../../docs/common/coding-standard/Team271-Software-Coding-Standard-Safety.md)
   — CODE-SAF-* rules

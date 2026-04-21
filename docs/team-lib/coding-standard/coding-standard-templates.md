@@ -10,7 +10,7 @@
 > Team271-Lib. Library subsystems themselves follow the pattern in
 > [SDD-subsystem.md](../planning/sdd/SDD-subsystem.md) and do **not** use
 > singletons (see
-> [ADR-015](../planning/adr/ADR-015-explicit-instantiation-no-singletons.md)).
+> [ADR-004](../planning/adr/ADR-004-explicit-instantiation-no-singletons.md)).
 > Library-level constants live in `ConstantsLib.java`, not in the
 > `Constants.java` shown in Appendix G.
 

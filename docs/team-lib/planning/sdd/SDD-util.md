@@ -77,7 +77,7 @@ When the camera is disconnected, the helpers return safe defaults
 `LimelightHelpers` is the raw vendor surface consumed by
 `vendor/limelight/LimelightCamera` — see
 [SDD-vision.md](SDD-vision.md). It plays the same role for
-Limelight that `TalonFX` plays for CTRE (ADR-003 passthrough).
+Limelight that `TalonFX` plays for CTRE (ADR-005 passthrough).
 Robot projects may call it directly when they need a Limelight
 feature `Camera` does not express.
 
@@ -123,7 +123,7 @@ joystick.getRawAxis() → Util.handleDeadzone() → Util.limit() → motor outpu
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
 | Alert separate from Elastic | Persistent vs. transient; different dashboard roles | SRS §4.9 |
-| Alert groups output to AdvantageKit | Alerts appear in match log for post-match review | [ADR-012](../adr/ADR-012-advantagekit-logging.md) |
+| Alert groups output to AdvantageKit | Alerts appear in match log for post-match review | [ADR-016](../adr/ADR-016-advantagekit-logging.md) |
 | DriveSignal immutable | Prevents accidental mutation between read and apply | SRS §4.9 |
 | Util as static-only | Pure functions with no state — safe to call from any thread | SRS §4.9 |
 

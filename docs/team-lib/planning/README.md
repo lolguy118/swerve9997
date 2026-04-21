@@ -27,7 +27,7 @@ If you're new to the library, read in this order:
 1. [`../README.md`](../README.md) — the `docs/team-lib/` overview.
 2. [`../guides/start-here.md`](../guides/start-here.md) — the
    onboarding guide for contributors.
-3. [ADR-004 Layered Architecture](adr/ADR-004-layered-architecture.md)
+3. [ADR-003 Layered Architecture](adr/ADR-003-layered-architecture.md)
    — the six-layer picture that everything else depends on.
 4. The Software Design Description (SDD) for whatever you're
    working on:
@@ -102,21 +102,21 @@ Statuses an ADR can have:
 | --- | ----- | ------ |
 | [ADR-001](adr/ADR-001-team271-lib-standalone-library.md) | Team271-Lib as a Standalone Library | Accepted |
 | [ADR-002](adr/ADR-002-java17-wpilib-gradlerio-toolchain.md) | Java 17 + WPILib + GradleRIO Toolchain | Accepted |
-| [ADR-003](adr/ADR-003-passthrough-wrapper-not-wall.md) | Passthrough — Wrapper, Not Wall | Accepted |
-| [ADR-004](adr/ADR-004-layered-architecture.md) | Layered Architecture | Accepted |
-| [ADR-005](adr/ADR-005-composition-over-commands.md) | Composition over Commands | Accepted |
-| [ADR-006](adr/ADR-006-ctre-phoenix6-primary-vendor.md) | CTRE Phoenix 6 as Primary Vendor | Accepted |
-| [ADR-007](adr/ADR-007-centralized-can-refresh.md) | Centralized Bulk CAN Refresh | Accepted |
-| [ADR-008](adr/ADR-008-logged-nt-input-backed-tuning.md) | LoggedNTInput-Backed Tuning | Accepted |
-| [ADR-009](adr/ADR-009-junit5-hal-simulation-tests.md) | JUnit 5 + JaCoCo + HAL Simulation for Library Tests | Accepted |
-| [ADR-010](adr/ADR-010-subsystem-exception-isolation.md) | Per-Subsystem Exception Isolation in SubsystemManager | Accepted |
-| [ADR-011](adr/ADR-011-mandatory-timeouts-fail-safe.md) | Mandatory Timeouts with Fail-Safe + Driver Alert | Accepted |
-| [ADR-012](adr/ADR-012-advantagekit-logging.md) | AdvantageKit for Telemetry and Replay Logging | Accepted |
-| [ADR-013](adr/ADR-013-trajectory-following-vendors.md) | Trajectory-Following Vendors — PathPlanner and Choreo | Accepted |
-| [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | Desired-to-Actual State Pattern in Subsystems | Accepted |
-| [ADR-015](adr/ADR-015-explicit-instantiation-no-singletons.md) | Explicit Object Instantiation, No Singletons in Library Code | Accepted |
-| [ADR-016](adr/ADR-016-vendor-neutral-vision-abstraction.md) | Vendor-Neutral Vision Abstraction in `api/vision/` | Accepted |
-| [ADR-017](adr/ADR-017-can-bus-abstraction.md) | Vendor-Neutral CAN Bus Abstraction | Accepted |
+| [ADR-003](adr/ADR-003-layered-architecture.md) | Layered Architecture | Accepted |
+| [ADR-004](adr/ADR-004-explicit-instantiation-no-singletons.md) | Explicit Object Instantiation, No Singletons in Library Code | Accepted |
+| [ADR-005](adr/ADR-005-passthrough-wrapper-not-wall.md) | Passthrough — Wrapper, Not Wall | Accepted |
+| [ADR-006](adr/ADR-006-can-bus-abstraction.md) | Vendor-Neutral CAN Bus Abstraction | Accepted |
+| [ADR-007](adr/ADR-007-vendor-neutral-vision-abstraction.md) | Vendor-Neutral Vision Abstraction in `api/vision/` | Accepted |
+| [ADR-008](adr/ADR-008-ctre-phoenix6-primary-vendor.md) | CTRE Phoenix 6 as Primary Vendor | Accepted |
+| [ADR-009](adr/ADR-009-centralized-can-refresh.md) | Centralized Bulk CAN Refresh | Accepted |
+| [ADR-010](adr/ADR-010-desired-to-actual-state-pattern.md) | Desired-to-Actual State Pattern in Subsystems | Accepted |
+| [ADR-011](adr/ADR-011-subsystem-exception-isolation.md) | Per-Subsystem Exception Isolation in SubsystemManager | Accepted |
+| [ADR-012](adr/ADR-012-mandatory-timeouts-fail-safe.md) | Mandatory Timeouts with Fail-Safe + Driver Alert | Accepted |
+| [ADR-013](adr/ADR-013-composition-over-commands.md) | Composition over Commands | Accepted |
+| [ADR-014](adr/ADR-014-trajectory-following-vendors.md) | Trajectory-Following Vendors — PathPlanner and Choreo | Accepted |
+| [ADR-015](adr/ADR-015-logged-nt-input-backed-tuning.md) | LoggedNTInput-Backed Tuning | Accepted |
+| [ADR-016](adr/ADR-016-advantagekit-logging.md) | AdvantageKit for Telemetry and Replay Logging | Accepted |
+| [ADR-017](adr/ADR-017-junit5-hal-simulation-tests.md) | JUnit 5 + JaCoCo + HAL Simulation for Library Tests | Accepted |
 
 ## Planned ADRs
 

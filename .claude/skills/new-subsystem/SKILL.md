@@ -1,6 +1,6 @@
 ---
 name: new-subsystem
-description: Walk a contributor through creating a new Team271-Lib Subsystem that follows every library invariant — desired-to-actual state pattern (ADR-014), lifecycle hooks, homing with mandatory timeout + fail-safe + driver alert (ADR-011), telemetry, and unit-test scaffolding. Use ONLY when working inside a downstream robot project that depends on Team271-Lib, not when editing Team271-Lib itself. The skill writes subsystem code under `<RobotProject>/src/main/java/frc/robot/subsystems/`, a path that only exists in robot repos.
+description: Walk a contributor through creating a new Team271-Lib Subsystem that follows every library invariant — desired-to-actual state pattern (ADR-010), lifecycle hooks, homing with mandatory timeout + fail-safe + driver alert (ADR-012), telemetry, and unit-test scaffolding. Use ONLY when working inside a downstream robot project that depends on Team271-Lib, not when editing Team271-Lib itself. The skill writes subsystem code under `<RobotProject>/src/main/java/frc/robot/subsystems/`, a path that only exists in robot repos.
 disable-model-invocation: true
 argument-hint: "<SubsystemName> (PascalCase, e.g. Arm, Elevator, Shooter)"
 ---
@@ -38,9 +38,9 @@ scaffold is compliant:
 - [`docs/team-lib/planning/sdd/SDD-subsystem.md`](../../../docs/team-lib/planning/sdd/SDD-subsystem.md)
   for the base class contract, lifecycle order, and sensor-mode
   enum.
-- [`docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md`](../../../docs/team-lib/planning/adr/ADR-014-desired-to-actual-state-pattern.md)
+- [`docs/team-lib/planning/adr/ADR-010-desired-to-actual-state-pattern.md`](../../../docs/team-lib/planning/adr/ADR-010-desired-to-actual-state-pattern.md)
   for desired-vs-actual separation.
-- [`docs/team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md`](../../../docs/team-lib/planning/adr/ADR-011-mandatory-timeouts-fail-safe.md)
+- [`docs/team-lib/planning/adr/ADR-012-mandatory-timeouts-fail-safe.md`](../../../docs/team-lib/planning/adr/ADR-012-mandatory-timeouts-fail-safe.md)
   for homing-timeout requirements.
 - [`docs/team-lib/coding-standard/coding-standard-templates.md`](../../../docs/team-lib/coding-standard/coding-standard-templates.md)
   for any robot-project subsystem templates.
@@ -52,7 +52,7 @@ and includes all of the following, in this order:
 
 1. **Desired-state and actual-state enums.** Separate. Enum for
    desired (operator intent) and enum for actual (sensor-derived).
-   Per ADR-014, they are different types so callers can't confuse
+   Per ADR-010, they are different types so callers can't confuse
    them.
 
 2. **`Constants` inner class** with named constants for:
@@ -60,7 +60,7 @@ and includes all of the following, in this order:
     - Current limits (stator + supply)
     - PID gains (or leave as tunables via `LoggedNTInput`)
     - Homing timeout seconds (`kHomingTimeoutSec`) — required if
-      the subsystem homes (per ADR-011)
+      the subsystem homes (per ADR-012)
     - Setpoint-tolerance thresholds
 
 3. **Lifecycle method overrides**, in order:
@@ -73,7 +73,7 @@ and includes all of the following, in this order:
     - `robotPeriodicAfter(double t)` — switch on `desiredState`,
       issue motor commands via
       `transmission.setOutputPosition(...)` or equivalent. **Do
-      not apply operator input directly to hardware** (ADR-014).
+      not apply operator input directly to hardware** (ADR-010).
     - `outputTelemetry()` — publish current/desired/actual state
       via `NTEntry`, call `checkTuning()` from `Subsystem`.
 

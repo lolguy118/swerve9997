@@ -28,7 +28,7 @@ cross-cutting utilities). Higher layers depend only on layers below them.
 > CTRE `vendor/ctre/` implementations into "Foundation." The rigorous
 > six-layer model (api ← vendor/ctre ← hardware ← control ← subsystem
 > ← auto) is defined in
-> [ADR-004](../planning/adr/ADR-004-layered-architecture.md).
+> [ADR-003](../planning/adr/ADR-003-layered-architecture.md).
 
 ```text
 ┌─────────────────────────────────────────────────────┐
@@ -94,10 +94,10 @@ These rules exist because robots run in 20 ms real-time loops at competition. Vi
 | # | Rule | Why | Reference |
 |---|------|-----|-----------|
 | 1 | All waiting operations must have timeouts | A missing timeout locks the robot if the expected condition never arrives (motor stall, sensor failure, unreachable waypoint) | [CODE-SAF-008](../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md), [SDD-subsystem §6.4](../planning/sdd/SDD-subsystem.md) |
-| 2 | Set desired state in `<mode>Periodic()`, apply outputs in `robotPeriodicAfter()` | Mixing decision and actuation in the same phase causes cross-subsystem race conditions | [ADR-014](../planning/adr/ADR-014-desired-to-actual-state-pattern.md), [SDD-subsystem §3.1](../planning/sdd/SDD-subsystem.md) |
+| 2 | Set desired state in `<mode>Periodic()`, apply outputs in `robotPeriodicAfter()` | Mixing decision and actuation in the same phase causes cross-subsystem race conditions | [ADR-010](../planning/adr/ADR-010-desired-to-actual-state-pattern.md), [SDD-subsystem §3.1](../planning/sdd/SDD-subsystem.md) |
 | 3 | Every `switch` on an enum must handle all cases including `default` | An unhandled state silently does nothing — dangerous on a 150 lb robot | [CODE-CTL rules](../../common/coding-standard/Team271-Software-Coding-Standard-Control.md) |
 | 4 | Register all CTRE signals before `CTREManager.init()` | Signals added after init are never included in the bulk refresh | [SDD-hardware §3.5 CTREManager](../planning/sdd/SDD-hardware.md) |
-| 5 | No tunable values in docs or CLAUDE.md | Constants in code are the single source of truth; docs reference constant names, not numbers | [ADR-008](../planning/adr/ADR-008-logged-nt-input-backed-tuning.md), [`.claude/rules/docs.md`](../../../.claude/rules/docs.md) |
+| 5 | No tunable values in docs or CLAUDE.md | Constants in code are the single source of truth; docs reference constant names, not numbers | [ADR-015](../planning/adr/ADR-015-logged-nt-input-backed-tuning.md), [`.claude/rules/docs.md`](../../../.claude/rules/docs.md) |
 | 6 | All configurable values must be dashboard-tunable via `LoggedNTInput` | Enables field-side tuning without redeploying code | [CODE-BUG-004](../../common/coding-standard/Team271-Software-Coding-Standard-Debug.md), [SDD-nt.md](../planning/sdd/SDD-nt.md) |
 | 7 | Every hardware wrapper must expose its underlying vendor object via a getter | The library is additive — it wraps but never blocks access to CTRE/WPILib features | [Passthrough Design](../planning/sdd/SDD-vendor-ctre.md) |
 

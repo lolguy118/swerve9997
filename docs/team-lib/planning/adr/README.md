@@ -25,9 +25,9 @@ If you're new:
   [`../README.md`](../README.md#architecture-decision-records).
 - Good first ADRs to read, in this order:
   1. [ADR-001: Team271-Lib as a Standalone Library](ADR-001-team271-lib-standalone-library.md)
-  2. [ADR-004: Layered Architecture](ADR-004-layered-architecture.md)
-  3. [ADR-003: Passthrough — Wrapper, Not Wall](ADR-003-passthrough-wrapper-not-wall.md)
-  4. [ADR-006: CTRE Phoenix 6 as the Primary Motor/Sensor Vendor](ADR-006-ctre-phoenix6-primary-vendor.md)
+  2. [ADR-003: Layered Architecture](ADR-003-layered-architecture.md)
+  3. [ADR-005: Passthrough — Wrapper, Not Wall](ADR-005-passthrough-wrapper-not-wall.md)
+  4. [ADR-008: CTRE Phoenix 6 as the Primary Motor/Sensor Vendor](ADR-008-ctre-phoenix6-primary-vendor.md)
 
 ## Permanence
 

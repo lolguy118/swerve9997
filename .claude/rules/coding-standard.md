@@ -17,7 +17,7 @@ and its companions.
   unreachable (CODE-CTL).
 - **No magic numbers.** Tunable values go in the subsystem's
   `Constants` class and are surfaced via `LoggedNTInput`
-  (see [ADR-008](../../docs/team-lib/planning/adr/ADR-008-logged-nt-input-backed-tuning.md)).
+  (see [ADR-015](../../docs/team-lib/planning/adr/ADR-015-logged-nt-input-backed-tuning.md)).
 - **No object allocation in periodic methods** (CODE-GEN-004). Pre-allocate
   at `robotInit()` and reuse.
 - **No `Thread.sleep()`, no unbounded `while` loops** on a sensor

@@ -1,4 +1,4 @@
-# ADR-008: LoggedNTInput-Backed Tuning — No Magic Numbers in Docs
+# ADR-015: LoggedNTInput-Backed Tuning — No Magic Numbers in Docs
 
 ## Status
 
@@ -77,4 +77,4 @@ automatically on every doc edit.
 - [SDD-nt.md §3.4 LoggedNTInput](../sdd/SDD-nt.md#34-loggedntinput)
 - [SDD-team271-lib.md §3.5 Tuning Infrastructure](../sdd/SDD-team271-lib.md#35-tuning-infrastructure)
 - [.claude/hooks/check-doc-tunables.sh](../../../../.claude/hooks/check-doc-tunables.sh)
-- [ADR-012](ADR-012-advantagekit-logging.md)
+- [ADR-016](ADR-016-advantagekit-logging.md)

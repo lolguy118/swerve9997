@@ -34,7 +34,7 @@ the same PR. Robot-project-specific docs live under `docs/<robot>/`
   subsystem behavior, state machines, control flow, controller
   bindings, homing, timeouts, or cross-subsystem coordination.
 - **Cross-references use file-relative paths** (e.g.,
-  `[ADR-007](../adr/ADR-007-centralized-can-refresh.md)`), not
+  `[ADR-009](../adr/ADR-009-centralized-can-refresh.md)`), not
   absolute repo paths.
 - **Max line length: 140 characters** (enforced by
   [`.claude/hooks/lint-markdown.sh`](../hooks/lint-markdown.sh));

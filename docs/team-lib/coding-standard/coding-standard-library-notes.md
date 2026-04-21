@@ -52,7 +52,7 @@ wrapper's API.
 
 Anchor decisions and pipeline:
 
-- [ADR-008](../planning/adr/ADR-008-logged-nt-input-backed-tuning.md)
+- [ADR-015](../planning/adr/ADR-015-logged-nt-input-backed-tuning.md)
   — `LoggedNTInput`-backed tuning decision
 - [SDD-nt.md](../planning/sdd/SDD-nt.md)
   — `NTTable`, `NTEntry`, `LoggedNTInput` implementation
@@ -85,7 +85,7 @@ Library bindings for safety rules live alongside their definitions — see
 [`../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md`](../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md)
 and its cross-references to:
 
-- [ADR-011 — Mandatory Timeouts with Fail-Safe + Driver Alert](../planning/adr/ADR-011-mandatory-timeouts-fail-safe.md)
+- [ADR-012 — Mandatory Timeouts with Fail-Safe + Driver Alert](../planning/adr/ADR-012-mandatory-timeouts-fail-safe.md)
 - [SDD-subsystem.md §Fault Tolerance](../planning/sdd/SDD-subsystem.md)
 - [SDD-hardware.md §CAN Fault Handling](../planning/sdd/SDD-hardware.md)
 

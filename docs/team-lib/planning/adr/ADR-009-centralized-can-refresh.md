@@ -1,4 +1,4 @@
-# ADR-007: Centralized Bulk CAN Refresh via CTREManager / HardwareManager
+# ADR-009: Centralized Bulk CAN Refresh via CTREManager / HardwareManager
 
 ## Status
 
@@ -70,7 +70,7 @@ non-CTRE `SignalRefreshable` sources (e.g., a WPILib sensor bridge).
 - Adding a new signal requires touching `CTREManager` signal lists in
   addition to the device wrapper.
 - Tests that create CTRE devices must reset `CTREManager` static state
-  between runs (see [ADR-009](ADR-009-junit5-hal-simulation-tests.md)).
+  between runs (see [ADR-017](ADR-017-junit5-hal-simulation-tests.md)).
 
 ## Alternatives Considered
 
@@ -85,4 +85,4 @@ non-CTRE `SignalRefreshable` sources (e.g., a WPILib sensor bridge).
 - [SDD-hardware.md §3.5 CTREManager](../sdd/SDD-hardware.md#35-ctremanager--centralized-can-refresh)
 - [SDD-team271-lib.md §4 Data Flow](../sdd/SDD-team271-lib.md#4-data-flow)
 - [SDD-hardware.md §6 Error Handling](../sdd/SDD-hardware.md#6-error-handling)
-- [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md)
+- [ADR-008](ADR-008-ctre-phoenix6-primary-vendor.md)

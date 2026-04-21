@@ -1,4 +1,4 @@
-# ADR-014: Desired-to-Actual State Pattern in Subsystems
+# ADR-010: Desired-to-Actual State Pattern in Subsystems
 
 ## Status
 
@@ -83,11 +83,11 @@ axes update `desiredState`; hardware is commanded in
 - **Act on input directly.** Rejected — coupling is the problem this
   ADR solves.
 - **Command-Based subsystems with default commands.**
-  Rejected — see [ADR-005](ADR-005-composition-over-commands.md).
+  Rejected — see [ADR-013](ADR-013-composition-over-commands.md).
 
 ## References
 
 - [SDD-subsystem.md §3.1 Subsystem](../sdd/SDD-subsystem.md#31-subsystem)
-- [ADR-005](ADR-005-composition-over-commands.md)
-- [ADR-010](ADR-010-subsystem-exception-isolation.md)
-- [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md)
+- [ADR-013](ADR-013-composition-over-commands.md)
+- [ADR-011](ADR-011-subsystem-exception-isolation.md)
+- [ADR-012](ADR-012-mandatory-timeouts-fail-safe.md)

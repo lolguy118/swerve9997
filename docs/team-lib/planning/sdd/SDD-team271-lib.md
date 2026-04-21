@@ -148,12 +148,12 @@ hardware is commanded — eliminating single-cycle race conditions.
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
 | Standalone library separate from robot projects | See ADR-001 | [ADR-001](../adr/ADR-001-team271-lib-standalone-library.md) |
-| 6-layer architecture | See ADR-004 | [ADR-004](../adr/ADR-004-layered-architecture.md) |
-| AdvantageKit for telemetry | See ADR-012 | [ADR-012](../adr/ADR-012-advantagekit-logging.md) |
-| LoggedNTInput-backed tuning | See ADR-008 | [ADR-008](../adr/ADR-008-logged-nt-input-backed-tuning.md) |
+| 6-layer architecture | See ADR-003 | [ADR-003](../adr/ADR-003-layered-architecture.md) |
+| AdvantageKit for telemetry | See ADR-016 | [ADR-016](../adr/ADR-016-advantagekit-logging.md) |
+| LoggedNTInput-backed tuning | See ADR-015 | [ADR-015](../adr/ADR-015-logged-nt-input-backed-tuning.md) |
 | `TObj` instead of WPILib `SubsystemBase` | Finer-grained lifecycle hooks, exception isolation, sim hooks | See §3.2 above |
-| Singletons for managers (`SubsystemManager`, `CTREManager`) | Approved exception to ADR-015 — exactly one robot, one CAN system, one registry | [ADR-015](../adr/ADR-015-explicit-instantiation-no-singletons.md) |
-| Centralized bulk CAN refresh | Consistent timestamps, lower bus utilization | [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
+| Singletons for managers (`SubsystemManager`, `CTREManager`) | Approved exception to ADR-004 — exactly one robot, one CAN system, one registry | [ADR-004](../adr/ADR-004-explicit-instantiation-no-singletons.md) |
+| Centralized bulk CAN refresh | Consistent timestamps, lower bus utilization | [ADR-009](../adr/ADR-009-centralized-can-refresh.md) |
 
 ## 6. Error Handling
 
@@ -215,7 +215,7 @@ own. Configuration enters the system through:
   subsystems and call `SubsystemManager.addSubsystem()` in
   deterministic order.
 - **Dashboard tunables** — adjustable at runtime via
-  `LoggedNTInput`. Per [ADR-008](../adr/ADR-008-logged-nt-input-backed-tuning.md),
+  `LoggedNTInput`. Per [ADR-015](../adr/ADR-015-logged-nt-input-backed-tuning.md),
   every tunable has a safe default so the robot runs correctly
   without a dashboard connected.
 - **Library constants (`ConstantsLib`)** — CAN retry counts, config

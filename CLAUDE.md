@@ -33,7 +33,7 @@ See [docs/team-lib/planning/README.md](docs/team-lib/planning/README.md)
 for the planning-doc map and
 [docs/team-lib/internal/team271-lib-dependency-diagram.mmd](docs/team-lib/internal/team271-lib-dependency-diagram.mmd)
 for the six-layer graph. The layering decision is
-[ADR-004](docs/team-lib/planning/adr/ADR-004-layered-architecture.md).
+[ADR-003](docs/team-lib/planning/adr/ADR-003-layered-architecture.md).
 
 ## Authoritative References
 
@@ -103,7 +103,7 @@ for the six-layer graph. The layering decision is
   PathPlanner. Process in
   [SCMP §4](docs/team-lib/planning/SCMP.md#4-vendordep-management-team271-lib-specifics);
   vendor decision in
-  [ADR-006](docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md).
+  [ADR-008](docs/team-lib/planning/adr/ADR-008-ctre-phoenix6-primary-vendor.md).
   `vendordeps/*.json` is authoritative.
 
 ## Reference URLs

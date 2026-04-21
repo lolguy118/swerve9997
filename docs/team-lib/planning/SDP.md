@@ -39,9 +39,9 @@ and milestones. Does not cover:
 | [SCMP.md](SCMP.md) | Configuration management |
 | [ADR-001](adr/ADR-001-team271-lib-standalone-library.md) | Library packaging and consumption model |
 | [ADR-002](adr/ADR-002-java17-wpilib-gradlerio-toolchain.md) | Toolchain decision |
-| [ADR-004](adr/ADR-004-layered-architecture.md) | Layer order |
-| [ADR-006](adr/ADR-006-ctre-phoenix6-primary-vendor.md) | CTRE Phoenix 6 as primary vendor |
-| [ADR-009](adr/ADR-009-junit5-hal-simulation-tests.md) | JUnit 5 + HAL simulation test framework |
+| [ADR-003](adr/ADR-003-layered-architecture.md) | Layer order |
+| [ADR-008](adr/ADR-008-ctre-phoenix6-primary-vendor.md) | CTRE Phoenix 6 as primary vendor |
+| [ADR-017](adr/ADR-017-junit5-hal-simulation-tests.md) | JUnit 5 + HAL simulation test framework |
 
 ## 3. Project Overview
 
@@ -52,7 +52,7 @@ a versioned dependency by each year's robot project
 (see [ADR-001](adr/ADR-001-team271-lib-standalone-library.md)).
 
 The code is organized into six layers with strict dependency rules
-([ADR-004](adr/ADR-004-layered-architecture.md)). The dependency
+([ADR-003](adr/ADR-003-layered-architecture.md)). The dependency
 graph is drawn in
 [team271-lib-dependency-diagram.mmd](../internal/team271-lib-dependency-diagram.mmd).
 
@@ -96,7 +96,7 @@ Library-specific facts:
 
 When building from scratch, each layer must be present and tested
 before the next layer above it begins. Layers may depend only on
-layers below them ([ADR-004](adr/ADR-004-layered-architecture.md)).
+layers below them ([ADR-003](adr/ADR-003-layered-architecture.md)).
 
 | Priority | Layer | Depends On | Why First |
 | -------- | ----- | ---------- | --------- |

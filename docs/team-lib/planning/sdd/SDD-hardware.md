@@ -298,7 +298,7 @@ Robot.robotPeriodic() @ 50 Hz
 
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
-| Centralized bulk refresh | Consistent timestamps, lower bus utilization, simpler latency compensation | [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
+| Centralized bulk refresh | Consistent timestamps, lower bus utilization, simpler latency compensation | [ADR-009](../adr/ADR-009-centralized-can-refresh.md) |
 | `Controller*` classes do not implement api/ | Keeps controller hierarchy CTRE-focused; `CTREMotor` is the api/ bridge | [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md) |
 | No duplicate CAN IDs | Construct each device once, pass reference | [.claude/rules/safety.md](../../../../.claude/rules/safety.md) |
 | `HardwareManager` forward-compatible | Single entry point even if vendors expand | [SDD-vendor-ctre.md](SDD-vendor-ctre.md) |

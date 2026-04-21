@@ -3,8 +3,8 @@
 %% classes. Most interfaces currently have a single CTRE implementation;
 %% Camera (api/vision) is the one abstraction with two vendor impls today.
 %% Arrow direction: vendor impl ..|> api interface (implements)
-%% Source of truth: ADR-003 (passthrough), ADR-006 (CTRE primary),
-%%                  ADR-016 (vision), ADR-017 (CAN-bus abstraction)
+%% Source of truth: ADR-005 (passthrough), ADR-008 (CTRE primary),
+%%                  ADR-007 (vision), ADR-006 (CAN-bus abstraction)
 
 graph LR
     subgraph API["com.team271.lib.api"]

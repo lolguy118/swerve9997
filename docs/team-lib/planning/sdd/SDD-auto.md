@@ -18,7 +18,7 @@ Provides the autonomous move composition model: `AutoMode`, `AutoMove`,
 and container types. Robot projects use this model to compose autonomous
 routines from reusable moves. Trajectory-follower integration for
 PathPlanner and Choreo is also described here
-([ADR-013](../adr/ADR-013-trajectory-following-vendors.md)).
+([ADR-014](../adr/ADR-014-trajectory-following-vendors.md)).
 
 ## 2. Scope and Boundaries
 
@@ -28,16 +28,16 @@ This SDD covers:
 - `AutoMove` — abstract base for a single step in an autonomous routine
 - `AutoMoveTimed` — move with a fixed time limit
 - `AutoMoveConditional` — move that ends when a condition is met; **must have
-  a timeout** (ADR-011)
+  a timeout** (ADR-012)
 - `AutoMoveSequence` — container: runs moves in sequence
 - `AutoMoveParallel` — container: runs moves concurrently
 - `WaitMove` — delay move
 - Trajectory-follower integration — `TrajectoryFollower.follow(...)`
   produces an `AutoMove` that samples a `Trajectory` (PathPlanner or
-  Choreo) each cycle ([ADR-013](../adr/ADR-013-trajectory-following-vendors.md))
+  Choreo) each cycle ([ADR-014](../adr/ADR-014-trajectory-following-vendors.md))
 - `CommandBridge.asAutoMove` — command-based escape hatch for
   PathPlanner AutoBuilder / event-marker entry points
-  ([ADR-013](../adr/ADR-013-trajectory-following-vendors.md))
+  ([ADR-014](../adr/ADR-014-trajectory-following-vendors.md))
 
 ## 3. Module Decomposition
 
@@ -60,7 +60,7 @@ AutoMode
 | `AutoMoveSequence` | Container that runs children in declaration order. Each child must complete before the next starts. Advances during the post-periodic hook. |
 | `AutoMoveParallel` | Container that starts all children simultaneously. Completes only when every child reports completion. Children keep independent timers and completion state. |
 | `WaitMove` | Explicit delay move — thin specialization of `AutoMoveTimed` with no subsystem commands. Used inside `AutoMoveSequence` / `AutoMoveParallel` for timing offsets. |
-| Trajectory follower | `api/trajectory/TrajectoryFollower.follow(Trajectory, poseSupplier, chassisSpeedsConsumer, timeoutSec)` returns an `AutoMove` that samples the trajectory each cycle and pushes `ChassisSpeeds` to the drivetrain consumer. Two vendor implementations ship: `vendor/pathplanner/PathPlannerFollower` and `vendor/choreo/ChoreoFollower`. The returned `AutoMove` enforces the mandatory-timeout rule via the `timeoutSec` argument (ADR-011). |
+| Trajectory follower | `api/trajectory/TrajectoryFollower.follow(Trajectory, poseSupplier, chassisSpeedsConsumer, timeoutSec)` returns an `AutoMove` that samples the trajectory each cycle and pushes `ChassisSpeeds` to the drivetrain consumer. Two vendor implementations ship: `vendor/pathplanner/PathPlannerFollower` and `vendor/choreo/ChoreoFollower`. The returned `AutoMove` enforces the mandatory-timeout rule via the `timeoutSec` argument (ADR-012). |
 | `CommandBridge.asAutoMove` | Command-based escape hatch. Robot projects wrap PathPlanner `Command` objects (AutoBuilder output, `PathPlannerAuto` with event markers) via `CommandBridge` (see [SDD-vendor-ctre.md §3.3](SDD-vendor-ctre.md)). Retained alongside `TrajectoryFollower` because PathPlanner's command-based entry points have no direct equivalent in the follower contract. |
 
 ## 4. Data Flow
@@ -106,11 +106,11 @@ but only `autonomousPeriodic` is gated by `canRun()`.
 
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
-| Composition over WPILib Commands | See ADR-005 | [ADR-005](../adr/ADR-005-composition-over-commands.md) |
+| Composition over WPILib Commands | See ADR-013 | [ADR-013](../adr/ADR-013-composition-over-commands.md) |
 | No shared state between moves | Moves are independent; avoid coupling bugs | SRS §4.6 |
-| Mandatory timeout on conditional moves | Physical safety — path must end | [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md) |
-| Vendor-neutral trajectory abstraction (`api/trajectory/`) with PathPlanner + Choreo implementations | Two-vendor launch validates the abstraction; swap is a construction change, not a rewrite | [ADR-013](../adr/ADR-013-trajectory-following-vendors.md) |
-| `CommandBridge.asAutoMove` retained alongside `TrajectoryFollower` | PathPlanner's AutoBuilder and event-marker entry points are command-shaped; bridge gives them a lifecycle-native wrapping without forcing them through the follower contract | [ADR-013](../adr/ADR-013-trajectory-following-vendors.md) |
+| Mandatory timeout on conditional moves | Physical safety — path must end | [ADR-012](../adr/ADR-012-mandatory-timeouts-fail-safe.md) |
+| Vendor-neutral trajectory abstraction (`api/trajectory/`) with PathPlanner + Choreo implementations | Two-vendor launch validates the abstraction; swap is a construction change, not a rewrite | [ADR-014](../adr/ADR-014-trajectory-following-vendors.md) |
+| `CommandBridge.asAutoMove` retained alongside `TrajectoryFollower` | PathPlanner's AutoBuilder and event-marker entry points are command-shaped; bridge gives them a lifecycle-native wrapping without forcing them through the follower contract | [ADR-014](../adr/ADR-014-trajectory-following-vendors.md) |
 | Independent timers per move | Makes nested composition work without cross-coupling | See §3 (AutoMove row) |
 | Move author owns `onEnd()` cleanup | Library cannot know which subsystem commands a move issued | See §3 (AutoMove row) and §6 |
 

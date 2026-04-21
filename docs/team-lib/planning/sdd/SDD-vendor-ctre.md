@@ -17,7 +17,7 @@ defined in
 Implements the `api/` vendor-neutral interfaces using CTRE Phoenix 6
 devices. Provides `CTREMotor` (the primary CTRE motor wrapper) and
 corresponding sensor wrappers. Exposes raw CTRE types via passthrough
-getters (ADR-003). Also covers `bridge/CommandBridge` for WPILib interop.
+getters (ADR-005). Also covers `bridge/CommandBridge` for WPILib interop.
 
 ## 2. Scope and Boundaries
 
@@ -77,7 +77,7 @@ command-based framework. Provides three narrow adapters:
   `Command`.
 - Wrap a WPILib `Command` (e.g., a PathPlanner follow command) as a
   Team271 `AutoMove` with a mandatory timeout argument per
-  [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md).
+  [ADR-012](../adr/ADR-012-mandatory-timeouts-fail-safe.md).
 - Wrap a Team271 `AutoMode` as a WPILib `Command` for integration
   with existing command-based tooling.
 
@@ -112,17 +112,17 @@ robot project
 
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
-| CTRE as sole vendor | See ADR-006 | [ADR-006](../adr/ADR-006-ctre-phoenix6-primary-vendor.md) |
-| Passthrough getters | See ADR-003 | [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md) |
+| CTRE as sole vendor | See ADR-008 | [ADR-008](../adr/ADR-008-ctre-phoenix6-primary-vendor.md) |
+| Passthrough getters | See ADR-005 | [ADR-005](../adr/ADR-005-passthrough-wrapper-not-wall.md) |
 | `CTREMotor` is the api/ bridge (not `Controller*`) | Keeps controller hierarchy free of vendor-neutral obligations | [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md) |
 | CommandBridge for WPILib interop | Allows PathPlanner + other WPILib APIs without exposing CTRE types | [SDD-auto.md](SDD-auto.md) |
-| Mandatory timeout on `asAutoMove` | Physical safety for wrapped WPILib commands | [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md) |
+| Mandatory timeout on `asAutoMove` | Physical safety for wrapped WPILib commands | [ADR-012](../adr/ADR-012-mandatory-timeouts-fail-safe.md) |
 
 ## 6. Passthrough Getter Reference
 
 The table below is the authoritative passthrough getter inventory
 for the `vendor/ctre/` layer. Each wrapper exposes at least one
-`getUnderlying*()`-style getter per [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md).
+`getUnderlying*()`-style getter per [ADR-005](../adr/ADR-005-passthrough-wrapper-not-wall.md).
 
 | Class | Method | Returns | Notes |
 | ----- | ------ | ------- | ----- |
@@ -176,7 +176,7 @@ the vendor-neutral `api/ClosedLoopMotor` interface, the
 
 `CTREMotor` does not yet expose a method for kG gravity
 feedforward. The Phoenix 6 `Slot0Configs.kG` field is reachable via
-`getConfig()` passthrough (per [ADR-003](../adr/ADR-003-passthrough-wrapper-not-wall.md)).
+`getConfig()` passthrough (per [ADR-005](../adr/ADR-005-passthrough-wrapper-not-wall.md)).
 Adding a first-class method to `CTREMotor` is deferred until
 multiple callers need it.
 

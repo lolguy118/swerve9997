@@ -1,4 +1,4 @@
-# ADR-004: Layered Architecture — api ← vendor/* ← hardware ← control ← subsystem ← auto
+# ADR-003: Layered Architecture — api ← vendor/* ← hardware ← control ← subsystem ← auto
 
 ## Status
 
@@ -50,8 +50,8 @@ See [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-li
    This maps directly to how the library is evolved.
 4. **Vendor pluggability.** The api/ ← vendor/* split supports
    multiple vendor implementations per `api/` interface. CTRE was
-   V1 (ADR-006); Limelight + PhotonVision under `api/vision/`
-   (ADR-016) demonstrate that the same seam accommodates a
+   V1 (ADR-008); Limelight + PhotonVision under `api/vision/`
+   (ADR-007) demonstrate that the same seam accommodates a
    second, independent domain.
 
 ## Consequences
@@ -85,5 +85,5 @@ See [docs/internal/team271-lib-dependency-diagram.mmd](../../internal/team271-li
 - [SDD-team271-lib.md §2 Scope and Boundaries](../sdd/SDD-team271-lib.md#2-scope-and-boundaries)
 - [team271-lib dependency diagram](../../internal/team271-lib-dependency-diagram.mmd)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
-- [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md) — CTRE vendor
-- [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) — Vision vendor(s)
+- [ADR-008](ADR-008-ctre-phoenix6-primary-vendor.md) — CTRE vendor
+- [ADR-007](ADR-007-vendor-neutral-vision-abstraction.md) — Vision vendor(s)

@@ -1,4 +1,4 @@
-# ADR-011: Mandatory Timeouts with Fail-Safe + Driver Alert on All Waiting Operations
+# ADR-012: Mandatory Timeouts with Fail-Safe + Driver Alert on All Waiting Operations
 
 ## Status
 
@@ -91,4 +91,4 @@ and fail-safe behavior.
 - [SDD-auto.md §3 Module Decomposition](../sdd/SDD-auto.md#3-module-decomposition) (see AutoMoveConditional)
 - [SDD-subsystem.md §6.4 Homing Timeout](../sdd/SDD-subsystem.md#64-homing-timeout)
 - [.claude/rules/safety.md](../../../../.claude/rules/safety.md)
-- [ADR-010](ADR-010-subsystem-exception-isolation.md)
+- [ADR-011](ADR-011-subsystem-exception-isolation.md)

@@ -17,7 +17,7 @@ defined in
 Provides the `LoggedNTInput` pattern that backs all live-tunable parameters
 (PID gains, motion constraints, thresholds) with NetworkTables entries that
 are simultaneously logged to AdvantageKit for replay. This is the
-implementation of ADR-008.
+implementation of ADR-015.
 
 ## 2. Scope and Boundaries
 
@@ -144,10 +144,10 @@ for the canonical implementation template.
 
 | Decision | Rationale | Reference |
 | -------- | --------- | --------- |
-| Log every tunable read | Replay requires knowing tunable values at time of use | [ADR-012](../adr/ADR-012-advantagekit-logging.md) |
-| Default values required | Robot runs safely without dashboard connected | [ADR-011](../adr/ADR-011-mandatory-timeouts-fail-safe.md) |
-| Dashboard tunables are inputs, not outputs | Separating input/output enables replay faithfulness | [ADR-008](../adr/ADR-008-logged-nt-input-backed-tuning.md) |
-| No numeric values in docs | Tunable names in docs, values in code | [ADR-008](../adr/ADR-008-logged-nt-input-backed-tuning.md) |
+| Log every tunable read | Replay requires knowing tunable values at time of use | [ADR-016](../adr/ADR-016-advantagekit-logging.md) |
+| Default values required | Robot runs safely without dashboard connected | [ADR-012](../adr/ADR-012-mandatory-timeouts-fail-safe.md) |
+| Dashboard tunables are inputs, not outputs | Separating input/output enables replay faithfulness | [ADR-015](../adr/ADR-015-logged-nt-input-backed-tuning.md) |
+| No numeric values in docs | Tunable names in docs, values in code | [ADR-015](../adr/ADR-015-logged-nt-input-backed-tuning.md) |
 
 ## 6. Error Handling
 

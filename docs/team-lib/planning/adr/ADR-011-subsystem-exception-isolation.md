@@ -1,4 +1,4 @@
-# ADR-010: Per-Subsystem Exception Isolation in SubsystemManager.forEachSafe()
+# ADR-011: Per-Subsystem Exception Isolation in SubsystemManager.forEachSafe()
 
 ## Status
 
@@ -79,4 +79,4 @@ initialized subsystem.
 ## References
 
 - [SDD-subsystem.md §6.1 Exception Isolation](../sdd/SDD-subsystem.md#61-exception-isolation)
-- [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md)
+- [ADR-012](ADR-012-mandatory-timeouts-fail-safe.md)

@@ -1,4 +1,4 @@
-# ADR-005: Composition over Commands — State-Machine + AutoMove Instead of WPILib Command-Based
+# ADR-013: Composition over Commands — State-Machine + AutoMove Instead of WPILib Command-Based
 
 ## Status
 
@@ -31,7 +31,7 @@ routines and a state-machine pattern for subsystems:
 
 - **Subsystems** are built around a `Subsystem` base class that
   separates **desired state** from **actual state**
-  (see [ADR-014](ADR-014-desired-to-actual-state-pattern.md)), with
+  (see [ADR-010](ADR-010-desired-to-actual-state-pattern.md)), with
   `robotPeriodicBefore()`/`robotPeriodicAfter()` as lifecycle hooks.
   They are not WPILib `SubsystemBase`s.
 - **Autonomous routines** compose from `AutoMove` (the atomic unit),
@@ -50,13 +50,13 @@ routines and a state-machine pattern for subsystems:
 2. **Mandatory timeout on conditional moves.** Every
    `AutoMoveConditional` takes a timeout in its constructor; there is
    no way to construct one without it
-   (see [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md)).
+   (see [ADR-012](ADR-012-mandatory-timeouts-fail-safe.md)).
 3. **State-machine friendliness.** Subsystems with discrete states
    (idle, homing, running, error) are naturally expressed as enum
    transitions; forcing them into `Command`s adds ceremony without
    clarity.
 4. **Simpler exception isolation.** The library's per-subsystem
-   exception-isolated iteration ([ADR-010](ADR-010-subsystem-exception-isolation.md))
+   exception-isolated iteration ([ADR-011](ADR-011-subsystem-exception-isolation.md))
    wraps every subsystem's periodic call. Command-Based's scheduler
    has its own exception semantics that interact unpredictably with
    this.
@@ -94,5 +94,5 @@ routines and a state-machine pattern for subsystems:
 
 - [SDD-auto.md](../sdd/SDD-auto.md)
 - [SDD-subsystem.md](../sdd/SDD-subsystem.md)
-- [ADR-014](ADR-014-desired-to-actual-state-pattern.md)
-- [ADR-013](ADR-013-trajectory-following-vendors.md)
+- [ADR-010](ADR-010-desired-to-actual-state-pattern.md)
+- [ADR-014](ADR-014-trajectory-following-vendors.md)

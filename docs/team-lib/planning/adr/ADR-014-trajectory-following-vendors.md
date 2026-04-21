@@ -1,4 +1,4 @@
-# ADR-013: Trajectory-Following Vendors — PathPlanner and Choreo
+# ADR-014: Trajectory-Following Vendors — PathPlanner and Choreo
 
 ## Status
 
@@ -27,7 +27,7 @@ vendors dominate the FRC ecosystem:
   teams that want offline-optimized paths.
 
 Team271-Lib chose composition over WPILib Commands
-([ADR-005](ADR-005-composition-over-commands.md)); PathPlanner's runtime
+([ADR-013](ADR-013-composition-over-commands.md)); PathPlanner's runtime
 API is command-based and Choreo's is follower-based. Both must fit into
 the library's lifecycle-based
 [`AutoMove`](../sdd/SDD-auto.md)
@@ -43,8 +43,8 @@ Team271-Lib introduces a vendor-neutral trajectory-following abstraction
 at `com.team271.lib.api.trajectory` with two vendor implementations under
 `com.team271.lib.vendor.pathplanner` and `com.team271.lib.vendor.choreo`,
 mirroring the
-[ADR-016 Vision](ADR-016-vendor-neutral-vision-abstraction.md) and
-[ADR-017 CAN Bus](ADR-017-can-bus-abstraction.md) patterns:
+[ADR-007 Vision](ADR-007-vendor-neutral-vision-abstraction.md) and
+[ADR-006 CAN Bus](ADR-006-can-bus-abstraction.md) patterns:
 
 - `api/trajectory/Trajectory` — interface describing a sampleable
   trajectory: `Optional<TrajectorySample> sample(double timestampSec)`,
@@ -70,7 +70,7 @@ Three integration rules govern both vendors:
 
 1. **Trajectory followers are wrapped as `AutoMove`s.** The factory
    method returns an `AutoMove` with a mandatory timeout per
-   [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md). On timeout the
+   [ADR-012](ADR-012-mandatory-timeouts-fail-safe.md). On timeout the
    follower stops the drivetrain and emits an `Elastic` WARNING
    notification, consistent with `AutoMoveConditional`.
 2. **Path / trajectory definitions are robot-project responsibility.**
@@ -93,7 +93,7 @@ lifecycle-native integration for straight trajectory following.
    (follower-based, pre-optimized trajectories) differ enough that
    anything `TrajectoryFollower` can express cleanly across both has a
    realistic chance of holding. This is the same reasoning applied in
-   [ADR-016 §Rationale #1](ADR-016-vendor-neutral-vision-abstraction.md).
+   [ADR-007 §Rationale #1](ADR-007-vendor-neutral-vision-abstraction.md).
 2. **Community-proven trajectory math.** Both PathPlanner and Choreo
    are maintained by teams larger than 271; bugs are found and fixed
    quickly. Writing our own trajectory generator and follower would
@@ -133,7 +133,7 @@ lifecycle-native integration for straight trajectory following.
   `TrajectoryFollower` contract. When one vendor adds a feature, the
   library must either expose it through the shared contract, through
   the vendor wrapper's own methods, or through the raw passthrough
-  (per [ADR-003](ADR-003-passthrough-wrapper-not-wall.md)).
+  (per [ADR-005](ADR-005-passthrough-wrapper-not-wall.md)).
 - Two vendordeps now appear in [SCMP §4](../SCMP.md#4-vendordep-management-team271-lib-specifics)
   vendordep-freshness tracking — PathplannerLib and ChoreoLib.
 - Vendor API breaking changes (rare, but real) require library updates
@@ -155,7 +155,7 @@ lifecycle-native integration for straight trajectory following.
   ecosystem (AutoBuilder, event markers, GUI authoring) is more
   mature, and robot-project muscle memory is built around it.
 - **Hide both vendors behind a walled abstraction (no passthrough).**
-  Rejected per [ADR-003](ADR-003-passthrough-wrapper-not-wall.md).
+  Rejected per [ADR-005](ADR-005-passthrough-wrapper-not-wall.md).
   Walled abstractions force the library to re-expose every vendor
   feature as library API; passthrough lets advanced users reach
   vendor-specific APIs (`PPHolonomicDriveController` tuning, Choreo's
@@ -170,7 +170,7 @@ lifecycle-native integration for straight trajectory following.
 - **Open-loop path following.** Rejected — too imprecise for modern
   FRC autonomous scoring.
 - **Ship the interface with a single vendor in V1 (PathPlanner),
-  add Choreo later.** Rejected for the same reason ADR-016 rejected
+  add Choreo later.** Rejected for the same reason ADR-007 rejected
   single-vendor-launch for vision: a one-vendor abstraction is not a
   real test, and the interface would almost certainly need breaking
   changes the first time Choreo landed.
@@ -184,13 +184,13 @@ lifecycle-native integration for straight trajectory following.
   — command-based escape hatch.
 - [SCMP.md §4 Vendordep Management](../SCMP.md#4-vendordep-management-team271-lib-specifics)
   — PathplannerLib + ChoreoLib freshness policy.
-- [ADR-003](ADR-003-passthrough-wrapper-not-wall.md) — passthrough contract.
-- [ADR-004](ADR-004-layered-architecture.md) — layered architecture.
-- [ADR-005](ADR-005-composition-over-commands.md) — composition over Commands.
-- [ADR-011](ADR-011-mandatory-timeouts-fail-safe.md) — mandatory timeouts.
-- [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) — two-vendor
+- [ADR-005](ADR-005-passthrough-wrapper-not-wall.md) — passthrough contract.
+- [ADR-003](ADR-003-layered-architecture.md) — layered architecture.
+- [ADR-013](ADR-013-composition-over-commands.md) — composition over Commands.
+- [ADR-012](ADR-012-mandatory-timeouts-fail-safe.md) — mandatory timeouts.
+- [ADR-007](ADR-007-vendor-neutral-vision-abstraction.md) — two-vendor
   launch precedent (Vision).
-- [ADR-017](ADR-017-can-bus-abstraction.md) — bounded-vendor-set
+- [ADR-006](ADR-006-can-bus-abstraction.md) — bounded-vendor-set
   abstraction precedent (CAN Bus).
 - PathPlanner docs: <https://pathplanner.dev/home.html>
 - Choreo docs: <https://choreo.autos/>

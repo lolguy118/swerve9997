@@ -37,7 +37,7 @@ any specific robot's geometry, subsystems, or autonomous routines.
    library version during competition season and upgrade on their own
    schedule.
 3. **Testability.** Library code is unit-tested independently
-   (see [ADR-009](ADR-009-junit5-hal-simulation-tests.md)). A robot
+   (see [ADR-017](ADR-017-junit5-hal-simulation-tests.md)). A robot
    project that consumes the library as a published artifact does
    not pay the cost of running library tests (source-included
    consumption is an exception).
@@ -73,5 +73,5 @@ any specific robot's geometry, subsystems, or autonomous routines.
 ## References
 
 - [SDD-team271-lib.md](../sdd/SDD-team271-lib.md)
-- [ADR-004](ADR-004-layered-architecture.md)
+- [ADR-003](ADR-003-layered-architecture.md)
 - [SCMP.md §3 Library Versioning](../SCMP.md#3-library-versioning)

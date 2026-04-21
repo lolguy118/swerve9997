@@ -81,7 +81,7 @@ AdvantageScope: open .wpilog
 | -------- | --------- | --------- |
 | Pre-allocated vectors | Avoid GC pressure during multi-second characterization | SRS §4.7 |
 | Elevated thread priority (below HAL) | Consistent sample timing without starving HAL | [docs/guides/sysid-workflow.md](../../guides/sysid-workflow.md) |
-| AdvantageKit output format | Compatible with post-match log replay and SysID tool | [ADR-012](../adr/ADR-012-advantagekit-logging.md) |
+| AdvantageKit output format | Compatible with post-match log replay and SysID tool | [ADR-016](../adr/ADR-016-advantagekit-logging.md) |
 
 ## 6. Error Handling
 

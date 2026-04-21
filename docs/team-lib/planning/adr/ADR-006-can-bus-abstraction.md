@@ -1,4 +1,4 @@
-# ADR-017: Vendor-Neutral CAN Bus Abstraction
+# ADR-006: Vendor-Neutral CAN Bus Abstraction
 
 ## Status
 
@@ -37,10 +37,10 @@ gap:
   consistently.
 
 The library is CTRE-focused per
-[ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md), and
+[ADR-008](ADR-008-ctre-phoenix6-primary-vendor.md), and
 [`.claude/rules/team271-lib.md`](../../../../.claude/rules/team271-lib.md)
 forbids speculating alternative vendor implementations. However,
-[ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) already
+[ADR-007](ADR-007-vendor-neutral-vision-abstraction.md) already
 established a precedent: `api/` interfaces are introduced when an
 abstraction buys testability, layering cleanness, or symmetry — even
 when the concrete vendor set is narrow.
@@ -57,12 +57,12 @@ implementation, and route all library-internal references through it.
    `RIO | CANIVORE`; adding vendors or bus types is an ADR-superseding
    change.
 2. **Implementation:** the existing wrapper moves to the CTRE vendor
-   package per [ADR-004](ADR-004-layered-architecture.md) layering
+   package per [ADR-003](ADR-003-layered-architecture.md) layering
    (canonical location: `com.team271.lib.vendor.ctre.CANBusCTRE`,
    matching the `IMUCTRE` / `RangeCTRE` naming pattern already in use
    under `hardware/sensors/`). It implements `api/CANBus` and provides
    a passthrough getter returning the raw `com.ctre.phoenix6.CANBus`
-   per [ADR-003](ADR-003-passthrough-wrapper-not-wall.md).
+   per [ADR-005](ADR-005-passthrough-wrapper-not-wall.md).
 3. **CANDeviceID:** holds an `api/CANBus` reference as its
    authoritative bus field. A passthrough getter exposes the raw
    CTRE `CANBus` for device constructors that require it. The raw
@@ -70,7 +70,7 @@ implementation, and route all library-internal references through it.
    `CANDeviceID`.
 4. **Refresh ownership:** `CANBus.refresh()` is driven by
    `HardwareManager` (see
-   [ADR-007](ADR-007-centralized-can-refresh.md)), not by individual
+   [ADR-009](ADR-009-centralized-can-refresh.md)), not by individual
    subsystems. Utilization is a low-cadence signal (coarser than the
    periodic loop); refresh co-scheduling is left to `HardwareManager`
    design.
@@ -84,12 +84,12 @@ implementation, and route all library-internal references through it.
 1. **CANDeviceID stops leaking CTRE types.** Today the composite key
    at layer 3 (`hardware/`) imports a layer-2 vendor type. Moving
    `CANDeviceID` onto the `api/` interface aligns with the six-layer
-   graph in [ADR-004](ADR-004-layered-architecture.md).
+   graph in [ADR-003](ADR-003-layered-architecture.md).
 2. **Testability.** Mocking `api/CANBus` lets bus-utilization alert
    logic and follower-bus validation be tested without HAL sim or
    vendor stubs.
 3. **Precedent.** `api/vision` in
-   [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) already
+   [ADR-007](ADR-007-vendor-neutral-vision-abstraction.md) already
    introduced an `api/` boundary for a narrow vendor set. The CAN-bus
    case is even narrower (one vendor, expected to stay one), but the
    same rationale — interface-driven testability and layering
@@ -118,7 +118,7 @@ implementation, and route all library-internal references through it.
 
 - Callers that need the raw CTRE `CANBus` must go through the
   passthrough getter (consistent with
-  [ADR-003](ADR-003-passthrough-wrapper-not-wall.md) but adds one
+  [ADR-005](ADR-005-passthrough-wrapper-not-wall.md) but adds one
   hop).
 - Two types share the name `CANBus`. Within the CTRE impl, the
   vendor type **shall** be referenced fully qualified, matching the
@@ -135,7 +135,7 @@ implementation, and route all library-internal references through it.
   to isolate.
 - **Move to `api/` without hedge (vendor-neutral, multi-vendor
   expected).** Rejected — conflicts with
-  [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md) and the
+  [ADR-008](ADR-008-ctre-phoenix6-primary-vendor.md) and the
   "no speculative vendor implementations" rule in
   [`.claude/rules/team271-lib.md`](../../../../.claude/rules/team271-lib.md).
 - **Leave `CANDeviceID` holding the raw CTRE type; add utility
@@ -144,10 +144,10 @@ implementation, and route all library-internal references through it.
 
 ## References
 
-- [ADR-003 — Passthrough: Wrapper, Not Wall](ADR-003-passthrough-wrapper-not-wall.md)
-- [ADR-004 — Layered Architecture](ADR-004-layered-architecture.md)
-- [ADR-006 — CTRE Phoenix 6 as Primary Vendor](ADR-006-ctre-phoenix6-primary-vendor.md)
-- [ADR-007 — Centralized Bulk CAN Refresh](ADR-007-centralized-can-refresh.md)
-- [ADR-016 — Vendor-Neutral Vision Abstraction](ADR-016-vendor-neutral-vision-abstraction.md)
+- [ADR-005 — Passthrough: Wrapper, Not Wall](ADR-005-passthrough-wrapper-not-wall.md)
+- [ADR-003 — Layered Architecture](ADR-003-layered-architecture.md)
+- [ADR-008 — CTRE Phoenix 6 as Primary Vendor](ADR-008-ctre-phoenix6-primary-vendor.md)
+- [ADR-009 — Centralized Bulk CAN Refresh](ADR-009-centralized-can-refresh.md)
+- [ADR-007 — Vendor-Neutral Vision Abstraction](ADR-007-vendor-neutral-vision-abstraction.md)
 - [SDD-hardware.md](../sdd/SDD-hardware.md)
 - [SDD-vendor-ctre.md](../sdd/SDD-vendor-ctre.md)

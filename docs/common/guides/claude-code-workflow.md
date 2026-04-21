@@ -165,7 +165,7 @@ conventions.
 | [`/doc-sync-check`](../../../.claude/commands/doc-sync-check.md) | Verify code changes have matching design-doc updates |
 | `/new-adr` | Scaffold a new Architecture Decision Record with the correct next number |
 | `/new-sdd` | Scaffold a new Software Design Description with the nine-section template |
-| `/new-subsystem` | Scaffold a robot-project subsystem following ADR-014 + ADR-011 |
+| `/new-subsystem` | Scaffold a robot-project subsystem following ADR-010 + ADR-012 |
 
 Run `/help` inside Claude Code to see the full list, including
 the commands the Claude Code CLI itself provides (`/clear`,
@@ -197,7 +197,7 @@ The root [`CLAUDE.md`](../../../CLAUDE.md) is a **routing index**
 - **Be specific.** *"Fix the Arm subsystem so it homes correctly
   when the limit switch is wired active-low"* beats *"fix the arm."*
 - **Name the rule.** If you want Claude to enforce a rule, cite it:
-  *"Apply ADR-011 — every wait needs a named timeout, a fail-safe
+  *"Apply ADR-012 — every wait needs a named timeout, a fail-safe
   action, and a driver alert."*
 - **Ask for the diff first.** *"Show me the diff you would make
   before writing the file."* catches a lot of drift cheaply.

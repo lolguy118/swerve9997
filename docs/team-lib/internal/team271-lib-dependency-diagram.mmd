@@ -1,9 +1,9 @@
 %% Team271-Lib — Six-Layer Architecture Dependency Diagram
 %% Each layer may depend only on layers below it.
 %% Arrow direction: "depends on"
-%% Source of truth: ADR-004 (layered architecture), ADR-006 (CTRE primary),
-%%                  ADR-013 (PathPlanner + Choreo trajectory abstraction),
-%%                  ADR-016 (vision abstraction), ADR-017 (CAN-bus abstraction)
+%% Source of truth: ADR-003 (layered architecture), ADR-008 (CTRE primary),
+%%                  ADR-014 (PathPlanner + Choreo trajectory abstraction),
+%%                  ADR-007 (vision abstraction), ADR-006 (CAN-bus abstraction)
 
 graph TD
     auto["<b>auto/</b><br/>AutoMode · AutoMove<br/>Sequence · Parallel · Conditional · Timed · Wait"]
@@ -18,7 +18,7 @@ graph TD
     api["<b>api/</b><br/>Motor · ClosedLoopMotor · Encoder · AbsoluteEncoder<br/>Gyro · LimitSwitch · RangeSensor · CANBus<br/>vision/: Camera · PoseEstimate · TargetDetection<br/>trajectory/: Trajectory · TrajectorySample · TrajectoryFollower"]
     root["<b>com.team271.lib</b> (root)<br/>TObj · Lifecycle · Named · TRobot · ConstantsLib<br/>wpilib/: IterativeRobotBase · TimedRobot extensions"]
     crosscut["<b>nt/ · sysid/ · util/</b><br/>NTTable · NTEntry · LoggedNTInput<br/>SysID logging · Alert · Elastic · DriveSignal"]
-    bridge["<b>bridge/</b><br/>CommandBridge (WPILib Command interop, ADR-013)"]
+    bridge["<b>bridge/</b><br/>CommandBridge (WPILib Command interop, ADR-014)"]
 
     auto --> subsystem
     subsystem --> control

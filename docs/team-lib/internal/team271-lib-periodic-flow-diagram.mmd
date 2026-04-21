@@ -1,8 +1,8 @@
 %% Team271-Lib — Periodic Loop Data Flow (one robot cycle)
 %% Shows how the library sequences each TimedRobot cycle and where the
 %% desired-to-actual state reconciliation happens.
-%% Source of truth: ADR-007 (centralized CAN refresh), ADR-010 (forEachSafe
-%%                  exception isolation), ADR-014 (desired-to-actual pattern)
+%% Source of truth: ADR-009 (centralized CAN refresh), ADR-011 (forEachSafe
+%%                  exception isolation), ADR-010 (desired-to-actual pattern)
 
 sequenceDiagram
     participant TRobot
@@ -16,19 +16,19 @@ sequenceDiagram
     TRobot->>HWMgr: refreshAll
     HWMgr->>CTREMgr: refreshAll
     CTREMgr-->>HWMgr: one bulk CAN read
-    Note right of CTREMgr: consistent timestamps per ADR-007
+    Note right of CTREMgr: consistent timestamps per ADR-009
 
     TRobot->>SubMgr: forEachSafe robotPeriodicBefore
     loop each subsystem
         SubMgr->>Sub: robotPeriodicBefore
-        Note right of Sub: read sensors and update ACTUAL state (ADR-014)
+        Note right of Sub: read sensors and update ACTUAL state (ADR-010)
     end
 
     Note over TRobot: operator input or scheduled AutoMove updates DESIRED state
     TRobot->>SubMgr: forEachSafe robotPeriodicAfter
     loop each subsystem
         SubMgr->>Sub: robotPeriodicAfter
-        Note right of Sub: reconcile DESIRED vs ACTUAL and command motors with timeouts (ADR-011, ADR-014)
+        Note right of Sub: reconcile DESIRED vs ACTUAL and command motors with timeouts (ADR-012, ADR-010)
     end
 
     TRobot->>SubMgr: forEachSafe outputTelemetry
@@ -36,4 +36,4 @@ sequenceDiagram
         SubMgr->>Sub: outputTelemetry
         Sub->>NT: publish outputs
     end
-    Note right of SubMgr: forEachSafe catches exceptions and throttles Elastic alerts (ADR-010)
+    Note right of SubMgr: forEachSafe catches exceptions and throttles Elastic alerts (ADR-011)

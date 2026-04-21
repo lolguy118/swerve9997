@@ -1,4 +1,4 @@
-# ADR-012: AdvantageKit for Telemetry and Replay Logging
+# ADR-016: AdvantageKit for Telemetry and Replay Logging
 
 ## Status
 
@@ -32,7 +32,7 @@ framework:
 1. Every subsystem calls `Logger.recordOutput()` in its
    `outputTelemetry()` lifecycle hook.
 2. All tunables use `LoggedNTInput`
-   (see [ADR-008](ADR-008-logged-nt-input-backed-tuning.md)), which
+   (see [ADR-015](ADR-015-logged-nt-input-backed-tuning.md)), which
    captures tunable reads in the log.
 3. Match logs are captured as `.wpilog` files and loaded in
    AdvantageScope for post-match review.
@@ -60,7 +60,7 @@ framework:
 
 - Post-match analysis is first-class.
 - Tunable values are captured alongside everything else — replay is
-  faithful (ADR-008 dovetail).
+  faithful (ADR-015 dovetail).
 - Mechanism visualization via AdvantageScope aids driver debriefs.
 
 **Harder:**
@@ -84,5 +84,5 @@ framework:
 
 - [SDD-nt.md §3.1 Telemetry, Logging, and Dashboard Landscape](../sdd/SDD-nt.md#31-telemetry-logging-and-dashboard-landscape)
 - [SDD-sysid.md](../sdd/SDD-sysid.md)
-- [ADR-008](ADR-008-logged-nt-input-backed-tuning.md)
+- [ADR-015](ADR-015-logged-nt-input-backed-tuning.md)
 - AdvantageKit docs: <https://docs.advantagekit.org/>

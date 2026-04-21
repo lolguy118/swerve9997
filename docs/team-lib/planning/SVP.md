@@ -38,7 +38,7 @@ specific to each season's mechanisms.
 | [SRS.md](SRS.md) | Requirements being verified |
 | [SDP.md](SDP.md) | Development phases and toolchain |
 | [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md) | Coding rules |
-| [ADR-009](adr/ADR-009-junit5-hal-simulation-tests.md) | Test framework decision |
+| [ADR-017](adr/ADR-017-junit5-hal-simulation-tests.md) | Test framework decision |
 
 ## 3. Test Levels (library-specific notes)
 

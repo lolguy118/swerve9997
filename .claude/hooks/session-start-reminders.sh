@@ -12,16 +12,16 @@ cat <<'EOF'
 Project reminders (re-injected after compact or /clear):
 
 - Team271-Lib is CTRE-focused. Only CTRE Phoenix 6 motors and
-  sensors are supported (ADR-006).
+  sensors are supported (ADR-008).
 - Every waiting operation (homing, launcher spin-up, etc.) must
   have a named timeout constant, a fail-safe action on timeout,
-  and an Elastic driver alert (ADR-011).
+  and an Elastic driver alert (ADR-012).
 - Subsystems separate desired state from actual state. Read
   sensors in robotPeriodicBefore(); act on desired state in
-  robotPeriodicAfter() (ADR-014).
+  robotPeriodicAfter() (ADR-010).
 - All StatusSignals register with CTREManager at robotInit();
   HardwareManager.refreshAll() is the per-cycle entry point
-  (ADR-007).
+  (ADR-009).
 - No numeric tunables in docs; reference named constants (e.g.
   kArmStatorLimit), never values (.claude/rules/docs.md).
 - Telemetry keys added/removed in outputTelemetry() must have a

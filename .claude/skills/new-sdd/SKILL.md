@@ -77,7 +77,7 @@ reference in the header.
     ## 6. Error Handling
 
     <How does this module fail? What are the fail-safe behaviors?
-    Apply ADR-011 timeout + fail-safe + alert rule wherever
+    Apply ADR-012 timeout + fail-safe + alert rule wherever
     waits occur.>
 
     ## 7. Platform Portability Notes

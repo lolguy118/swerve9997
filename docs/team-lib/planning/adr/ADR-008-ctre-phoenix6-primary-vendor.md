@@ -1,4 +1,4 @@
-# ADR-006: CTRE Phoenix 6 as the Primary Motor/Sensor Vendor
+# ADR-008: CTRE Phoenix 6 as the Primary Motor/Sensor Vendor
 
 ## Status
 
@@ -45,9 +45,9 @@ that need them; the library does not abstract them.
 2. **Phoenix 6 feature breadth.** FOC, MotionMagic, timesync, status
    signal registration, and bulk refresh are CTRE-specific features
    the library leans on heavily (see
-   [ADR-007](ADR-007-centralized-can-refresh.md)).
+   [ADR-009](ADR-009-centralized-can-refresh.md)).
 3. **Passthrough coverage.** Every CTRE device has a passthrough
-   getter (ADR-003), so unusual features work without library
+   getter (ADR-005), so unusual features work without library
    extension.
 4. **api/ still present.** The vendor-neutral `api/` layer exists so a
    future REV or WPILib implementation could slot in without rewriting
@@ -87,6 +87,6 @@ that need them; the library does not abstract them.
 - [SDD-api.md](../sdd/SDD-api.md)
 - [SCMP.md §4 Vendordep Management](../SCMP.md#4-vendordep-management-team271-lib-specifics)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
-- [ADR-003](ADR-003-passthrough-wrapper-not-wall.md)
-- [ADR-016](ADR-016-vendor-neutral-vision-abstraction.md) — cameras
-  are a separate vendor ecosystem outside ADR-006's scope
+- [ADR-005](ADR-005-passthrough-wrapper-not-wall.md)
+- [ADR-007](ADR-007-vendor-neutral-vision-abstraction.md) — cameras
+  are a separate vendor ecosystem outside ADR-008's scope

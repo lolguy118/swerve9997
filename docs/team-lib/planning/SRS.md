@@ -42,14 +42,14 @@ It excludes anything that is robot-specific.
 | [Team271-Software-Coding-Standard.md](../../common/coding-standard/Team271-Software-Coding-Standard.md) | Normative coding rules |
 | [SDP.md](SDP.md) | Development phases and toolchain |
 | [SVP.md](SVP.md) | Verification strategy |
-| [ADR-003](adr/ADR-003-passthrough-wrapper-not-wall.md) | Passthrough contract |
-| [ADR-004](adr/ADR-004-layered-architecture.md) | Layering rules |
-| [ADR-007](adr/ADR-007-centralized-can-refresh.md) | CAN refresh contract |
-| [ADR-010](adr/ADR-010-subsystem-exception-isolation.md) | Exception isolation |
-| [ADR-011](adr/ADR-011-mandatory-timeouts-fail-safe.md) | Timeout contract |
-| [ADR-013](adr/ADR-013-trajectory-following-vendors.md) | Trajectory-following vendors (PathPlanner + Choreo) |
-| [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | State pattern |
-| [ADR-016](adr/ADR-016-vendor-neutral-vision-abstraction.md) | Vision abstraction |
+| [ADR-005](adr/ADR-005-passthrough-wrapper-not-wall.md) | Passthrough contract |
+| [ADR-003](adr/ADR-003-layered-architecture.md) | Layering rules |
+| [ADR-009](adr/ADR-009-centralized-can-refresh.md) | CAN refresh contract |
+| [ADR-011](adr/ADR-011-subsystem-exception-isolation.md) | Exception isolation |
+| [ADR-012](adr/ADR-012-mandatory-timeouts-fail-safe.md) | Timeout contract |
+| [ADR-014](adr/ADR-014-trajectory-following-vendors.md) | Trajectory-following vendors (PathPlanner + Choreo) |
+| [ADR-010](adr/ADR-010-desired-to-actual-state-pattern.md) | State pattern |
+| [ADR-007](adr/ADR-007-vendor-neutral-vision-abstraction.md) | Vision abstraction |
 
 ## 3. Library-Level Requirements (`[LIB-NNN]`)
 
@@ -59,11 +59,11 @@ It excludes anything that is robot-specific.
 - **[LIB-002]** `SubsystemManager.forEachSafe()` shall wrap each
   registered subsystem's periodic call in a try-catch such that an
   exception in one subsystem does not propagate to others
-  (ADR-010).
+  (ADR-011).
 - **[LIB-003]** `HardwareManager.refreshAll()` shall be called exactly
   once per robot periodic cycle (in `robotPeriodicBefore()`) and
   shall perform a single bulk refresh of all registered signals
-  (ADR-007).
+  (ADR-009).
 - **[LIB-004]** Library code shall not allocate objects in periodic
   methods (per CODE-GEN-004).
 - **[LIB-005]** Library code shall not require robot-project classes
@@ -100,7 +100,7 @@ It excludes anything that is robot-specific.
 
 - **[CTRE-001]** `CTREMotor` shall implement `ClosedLoopMotor`.
 - **[CTRE-002]** Every CTRE wrapper shall expose its underlying
-  vendor object via a public getter (ADR-003).
+  vendor object via a public getter (ADR-005).
 - **[CTRE-003]** Passthrough getters shall return raw CTRE types
   (`TalonFX`, `CANcoder`, `Pigeon2`, `CANrange`), not wrapped types.
 - **[CTRE-004]** All CTRE StatusSignals used by the library shall be
@@ -109,7 +109,7 @@ It excludes anything that is robot-specific.
   timestamp-consistent signal values to all callers within a single
   robot cycle.
 - **[CTRE-006]** `CommandBridge.asAutoMove()` shall require an
-  explicit timeout argument (ADR-011); callers cannot construct one
+  explicit timeout argument (ADR-012); callers cannot construct one
   without it.
 
 ### 4.3 Hardware Layer (`[HW-NNN]`)
@@ -159,7 +159,7 @@ It excludes anything that is robot-specific.
 ### 4.5 Subsystem Layer (`[SUB-NNN]`)
 
 - **[SUB-001]** Every `Subsystem` shall separate desired state from
-  actual state (ADR-014).
+  actual state (ADR-010).
 - **[SUB-002]** Sensors shall be read in `robotPeriodicBefore()`;
   actuation shall occur in `robotPeriodicAfter()`.
 - **[SUB-003]** `SubsystemManager.forEachSafe()` shall log caught
@@ -170,7 +170,7 @@ It excludes anything that is robot-specific.
   exceptions — an init failure shall be fatal.
 - **[SUB-005]** Homing sequences shall have a named timeout constant,
   a fail-safe action on timeout, and an Elastic alert on timeout
-  (ADR-011).
+  (ADR-012).
 
 ### 4.6 Auto Layer (`[AUT-NNN]`)
 
@@ -196,7 +196,7 @@ It excludes anything that is robot-specific.
   (`vendor/choreo/ChoreoFollower`).
 - **[AUT-008]** Trajectory followers produced via
   `TrajectoryFollower.follow(...)` shall honor the mandatory-timeout
-  contract (ADR-011): on timeout they shall push a zero
+  contract (ADR-012): on timeout they shall push a zero
   `ChassisSpeeds` to the consumer, fire an Elastic WARNING
   notification, and call `setCompleted()` so the parent container
   advances.
@@ -208,7 +208,7 @@ It excludes anything that is robot-specific.
   chassis speeds (`ChassisSpeeds`), and sample timestamp; optional
   vendor-extensible module-force fields may be present.
 - **[AUT-011]** Each trajectory vendor follower shall expose its
-  raw vendor surface via a passthrough getter (ADR-003) — e.g.,
+  raw vendor surface via a passthrough getter (ADR-005) — e.g.,
   `PathPlannerFollower.getRawController()`,
   `ChoreoFollower.getRawTrajectory()`.
 
@@ -229,7 +229,7 @@ It excludes anything that is robot-specific.
 
 - **[NT-001]** `LoggedNTInput` shall read from NetworkTables and
   simultaneously write to the AdvantageKit log on every `get()`
-  (ADR-008).
+  (ADR-015).
 - **[NT-002]** `LoggedNTInput` shall return the configured default
   when NetworkTables is disconnected.
 - **[NT-003]** `NTTable` shall scope all entries under a configurable
@@ -263,7 +263,7 @@ It excludes anything that is robot-specific.
   tag distance, single-tag ambiguity (or `NaN` when multi-tag),
   and a vendor-computed recommended standard-deviation vector.
 - **[VIS-005]** Each vendor camera wrapper shall expose its raw
-  vendor surface via passthrough getters (ADR-003); for vendors
+  vendor surface via passthrough getters (ADR-005); for vendors
   without a raw device object (e.g., Limelight), the passthrough
   shall return the vendor-specific handle needed to call the
   vendor's helper API directly.

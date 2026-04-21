@@ -1,4 +1,4 @@
-# ADR-003: Passthrough — Wrapper, Not Wall
+# ADR-005: Passthrough — Wrapper, Not Wall
 
 ## Status
 
@@ -79,4 +79,4 @@ Concretely:
 
 - [SDD-vendor-ctre.md §6 Passthrough Getter Reference](../sdd/SDD-vendor-ctre.md#6-passthrough-getter-reference)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)
-- [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md)
+- [ADR-008](ADR-008-ctre-phoenix6-primary-vendor.md)

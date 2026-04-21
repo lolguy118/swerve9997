@@ -1,4 +1,4 @@
-# ADR-016: Vendor-Neutral Vision Abstraction in `api/vision/`
+# ADR-007: Vendor-Neutral Vision Abstraction in `api/vision/`
 
 ## Status
 
@@ -30,10 +30,10 @@ it is Limelight-specific: swapping to PhotonVision requires rewriting
 every call site. The lack of a shared contract also blocks sharing
 test doubles across vendors.
 
-ADR-006 established CTRE Phoenix 6 as the primary motor and
+ADR-008 established CTRE Phoenix 6 as the primary motor and
 CAN-sensor vendor. Cameras are a separate vendor ecosystem that CTRE
 does not address at all — no Phoenix 6 device produces a vision
-pose estimate — so ADR-006's "CTRE is primary" rule does not apply
+pose estimate — so ADR-008's "CTRE is primary" rule does not apply
 and does not need to be revised. This ADR scopes vision as a
 separate `api/` family that sits alongside (not inside) the CTRE
 abstractions.
@@ -97,7 +97,7 @@ derive their own trust model from the raw signals.
    — and `Optional`-return semantics already model "no valid
    reading this cycle" cleanly.
 3. **S3 (raw signals + recommended stddev) matches the library's
-   passthrough philosophy (ADR-003).** Simple robots use the
+   passthrough philosophy (ADR-005).** Simple robots use the
    recommended default; sophisticated robots read the raw signals
    and build their own trust model. Carrying both fields costs a
    few bytes per record and avoids a breaking change when the
@@ -124,7 +124,7 @@ derive their own trust model from the raw signals.
 - Test doubles (`FakeCamera`) can stand in for either vendor and
   live in `libtest`.
 - PhotonVision enters the library under the same passthrough
-  rule as CTRE (ADR-003): `getRawCamera()` / `getRawEstimator()`
+  rule as CTRE (ADR-005): `getRawCamera()` / `getRawEstimator()`
   exposes the vendor surface when callers need features the
   `Camera` interface does not express.
 
@@ -152,7 +152,7 @@ derive their own trust model from the raw signals.
 
 - **New top-level `vision/` layer parallel to `hardware/`.**
   Rejected — it would add a second layering style alongside the
-  existing `api/`+`vendor/` split (ADR-004), fragmenting the
+  existing `api/`+`vendor/` split (ADR-003), fragmenting the
   architecture for no gain.
 - **Cross-cutting `vision/` module at the `sysid/`/`nt/` tier.**
   Rejected — mixes abstraction and implementation in one
@@ -183,9 +183,9 @@ derive their own trust model from the raw signals.
 - [SDD-vision.md](../sdd/SDD-vision.md)
 - [SDD-api.md](../sdd/SDD-api.md)
 - [SDD-util.md §3.4 LimelightHelpers](../sdd/SDD-util.md#34-limelighthelpers)
-- [ADR-003](ADR-003-passthrough-wrapper-not-wall.md) — passthrough contract
-- [ADR-004](ADR-004-layered-architecture.md) — layered architecture
-- [ADR-006](ADR-006-ctre-phoenix6-primary-vendor.md) — motor/sensor
-  vendor scope (cameras are out of scope for ADR-006)
+- [ADR-005](ADR-005-passthrough-wrapper-not-wall.md) — passthrough contract
+- [ADR-003](ADR-003-layered-architecture.md) — layered architecture
+- [ADR-008](ADR-008-ctre-phoenix6-primary-vendor.md) — motor/sensor
+  vendor scope (cameras are out of scope for ADR-008)
 - [SCMP.md §4 Vendordep Management](../SCMP.md#4-vendordep-management-team271-lib-specifics)
 - [.claude/rules/team271-lib.md](../../../../.claude/rules/team271-lib.md)

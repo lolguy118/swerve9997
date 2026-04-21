@@ -123,7 +123,7 @@ pid.checkTuning():
 | -------- | --------- | --------- |
 | 5 PID variants + swap-by-constructor | Match mechanism needs without API changes | SRS §4.4 |
 | Continuous mode for wrapping axes | Prevents wrap-around error spike on swerve / turret | See §8.3 below |
-| `PIDFX` uses on-motor closed-loop | Deterministic 1 kHz timing, no CAN round-trip per cycle | [ADR-007](../adr/ADR-007-centralized-can-refresh.md) |
+| `PIDFX` uses on-motor closed-loop | Deterministic 1 kHz timing, no CAN round-trip per cycle | [ADR-009](../adr/ADR-009-centralized-can-refresh.md) |
 | `HardwarePIDController` interface | Portable abstraction for future non-CTRE hardware PID | [SDD-vendor-ctre.md](SDD-vendor-ctre.md) |
 | `Balance` is stateful, not PID | Physical behavior better modeled as discrete speed states with debounce | See §3.1 (Balance row) and §8.4 |
 | Telemetry levels (FULL / MINIMAL / OFF) | Reduce NT overhead when many PIDs are active in competition | See §3.1 (PIDBase row) |

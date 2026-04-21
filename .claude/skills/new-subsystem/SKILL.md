@@ -1,6 +1,6 @@
 ---
 name: new-subsystem
-description: Walk a contributor through creating a new Team271-Lib Subsystem that follows every library invariant — desired-to-actual state pattern (ADR-014), lifecycle hooks, homing with mandatory timeout + fail-safe + driver alert (ADR-011), telemetry, and unit-test scaffolding. Use when adding a new mechanism-level subsystem to a robot project.
+description: Walk a contributor through creating a new Team271-Lib Subsystem that follows every library invariant — desired-to-actual state pattern (ADR-014), lifecycle hooks, homing with mandatory timeout + fail-safe + driver alert (ADR-011), telemetry, and unit-test scaffolding. Use ONLY when working inside a downstream robot project that depends on Team271-Lib, not when editing Team271-Lib itself. The skill writes subsystem code under `<RobotProject>/src/main/java/frc/robot/subsystems/`, a path that only exists in robot repos.
 disable-model-invocation: true
 argument-hint: "<SubsystemName> (PascalCase, e.g. Arm, Elevator, Shooter)"
 ---

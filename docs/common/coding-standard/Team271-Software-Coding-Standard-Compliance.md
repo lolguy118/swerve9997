@@ -94,7 +94,7 @@ companion files.
 
 | Rule Group | Prefix | Rule Count | Enforced By | Gate |
 | ---------- | ------ | ---------: | ----------- | ---- |
-| General (keywords, annotations, type safety, exceptions, GC) | CODE-GEN | 16 | Error Prone + SpotBugs + manual review + `check-java-compiles.sh`, `check-spotless.sh` | Compile + CI + PR review |
+| General (keywords, annotations, type safety, exceptions, GC) | CODE-GEN | 16 | Error Prone + SpotBugs + manual review + `check-java-postedit.sh` (batched compile+spotless+checkstyle) | Compile + CI + PR review |
 | Formatting (braces, parens, blank lines, line endings, imports) | CODE-FMT | 6 | Spotless (AOSP Google Java Format) + Checkstyle (`NeedBraces` → CODE-FMT-002) + `.gitattributes` | `./gradlew spotlessCheck` + `checkstyleMain` |
 | Modules and Files (naming, packages, constants, generated code) | CODE-MAF | 4 | Compiler + manual review | Compile + PR review |
 | Methods (naming, lifecycle, state machines) | CODE-FUN | 6 | Error Prone (`MissingOverride`, `DefaultCharset`, etc.) + compiler warnings + manual review | Compile + PR review |

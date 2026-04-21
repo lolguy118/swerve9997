@@ -3,13 +3,14 @@
 # Advisory only (always exits 0).
 # Rule: CLAUDE.md "No Tunable Values in Docs".
 
-FILE_PATH=$(echo "$TOOL_INPUT" \
-  | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')
+source "$(dirname "$0")/_helpers.sh"
+
+FILE_PATH=$(parse_file_path)
 [ -z "$FILE_PATH" ] && exit 0
 
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
-REL_PATH="${FILE_PATH#"$REPO_ROOT"/}"
-[ "$REL_PATH" = "$FILE_PATH" ] && exit 0
+REPO_ROOT=$(repo_root)
+REL_PATH=$(relative_path "$FILE_PATH" "$REPO_ROOT")
+[ -z "$REL_PATH" ] && exit 0
 
 case "$REL_PATH" in
   docs/common/*.md|docs/team-lib/*.md) ;;

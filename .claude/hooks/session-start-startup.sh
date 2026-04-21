@@ -48,5 +48,8 @@ Scaffolding skills (user-invocable):
 - /new-sdd <package>       — 9-section SDD template
 - /new-subsystem <Name>    — subsystem with lifecycle hooks
 
-Opt-in: export TEAM271_RUN_JACOCO_HOOK=1 to run coverage after Java edits.
+Opt-in post-edit hooks (export =1 in your shell profile):
+- TEAM271_RUN_SPOTBUGS_HOOK — run spotbugsMain after Java edits (~30–60s cold)
+- TEAM271_RUN_JAVADOC_HOOK  — run javadoc after Java edits (~15–30s cold)
+- TEAM271_RUN_JACOCO_HOOK   — run jacocoTestReport after Java edits (1–3 min)
 EOF

@@ -70,6 +70,14 @@ layer but depends on none above itself.
   passthrough. Cameras pull — the library does not push estimates
   into a pose estimator. Empty `Optional` is the fail-safe; do not
   return stale or out-of-policy readings.
+- **Deprecation lifecycle.** When deprecating a public symbol (class,
+  method, field) in `api/`, add its simple name to
+  [`../rules/deprecated-symbols.txt`](deprecated-symbols.txt) in the
+  same commit. The
+  [`check-deleted-class-refs.sh`](../hooks/check-deleted-class-refs.sh)
+  hook then flags lingering doc references so they get cleaned up
+  before the symbol is removed. Do the same *before* deletion: add to
+  the list, wait one release, then remove the code.
 
 ## Authoritative docs
 

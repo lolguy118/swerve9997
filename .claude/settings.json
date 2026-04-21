@@ -11,6 +11,16 @@
       "Bash(bash -n*)",
       "Bash(markdownlint-cli2*)",
       "Bash(yamllint*)",
+      "Bash(./gradlew compileJava*)",
+      "Bash(./gradlew compileTestJava*)",
+      "Bash(./gradlew test*)",
+      "Bash(./gradlew build*)",
+      "Bash(./gradlew check*)",
+      "Bash(./gradlew javadoc*)",
+      "Bash(./gradlew checkstyle*)",
+      "Bash(./gradlew spotbugs*)",
+      "Bash(./gradlew spotless*)",
+      "Bash(./gradlew jacoco*)",
       "WebFetch(domain:v6.docs.ctr-electronics.com)",
       "WebFetch(domain:api.ctr-electronics.com)",
       "WebFetch(domain:docs.wpilib.org)",
@@ -27,21 +37,7 @@
       "WebFetch(domain:github.com)",
       "WebSearch",
       "mcp__plugin_context7_context7__query-docs",
-      "mcp__plugin_context7_context7__resolve-library-id",
-      "Bash(./gradlew compileJava)",
-      "Bash(./gradlew compileJava -q)",
-      "Bash(./gradlew compileTestJava)",
-      "Bash(./gradlew spotlessApply compileTestJava)",
-      "Bash(./gradlew test)",
-      "Bash(./gradlew test *)",
-      "Bash(./gradlew jacocoTestReport)",
-      "Bash(./gradlew check)",
-      "Bash(./gradlew build)",
-      "Bash(./gradlew build *)",
-      "Bash(./gradlew javadoc)",
-      "Bash(./gradlew checkstyleMain)",
-      "Bash(./gradlew checkstyleTest)",
-      "Bash(./gradlew spotbugsMain)"
+      "mcp__plugin_context7_context7__resolve-library-id"
     ],
     "deny": [
       "Bash(rm -rf*)",
@@ -71,22 +67,12 @@
         ]
       },
       {
-        "matcher": "clear",
+        "matcher": "clear|compact",
         "hooks": [
           {
             "type": "command",
             "command": ".claude/hooks/session-start-reminders.sh",
-            "description": "re-inject project conventions after /clear"
-          }
-        ]
-      },
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/session-start-reminders.sh",
-            "description": "re-inject project conventions after context compaction"
+            "description": "re-inject project conventions after /clear or context compaction"
           }
         ]
       }
@@ -129,28 +115,18 @@
           },
           {
             "type": "command",
-            "command": ".claude/hooks/check-java-compiles.sh",
-            "description": "compileJava after Java edit"
-          },
-          {
-            "type": "command",
-            "command": ".claude/hooks/check-spotless.sh",
-            "description": "spotlessCheck after Java edit"
-          },
-          {
-            "type": "command",
-            "command": ".claude/hooks/check-checkstyle.sh",
-            "description": "checkstyleMain/Test after Java edit"
+            "command": ".claude/hooks/check-java-postedit.sh",
+            "description": "batched compileJava + spotlessCheck + checkstyle after Java edit (one JVM)"
           },
           {
             "type": "command",
             "command": ".claude/hooks/check-spotbugs.sh",
-            "description": "spotbugsMain after Java edit (fail-soft)"
+            "description": "spotbugsMain after Java edit (opt-in via TEAM271_RUN_SPOTBUGS_HOOK=1)"
           },
           {
             "type": "command",
             "command": ".claude/hooks/check-javadoc.sh",
-            "description": "javadoc after Java edit"
+            "description": "javadoc after Java edit (opt-in via TEAM271_RUN_JAVADOC_HOOK=1)"
           },
           {
             "type": "command",

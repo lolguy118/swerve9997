@@ -19,7 +19,7 @@ If you're new, open these in order:
 
 1. [`guides/start-here.md`](guides/start-here.md) — five-minute
    orientation for first-season contributors.
-2. [`guides/development-setup.md`](guides/development-setup.md) —
+2. [`../common/guides/development-setup.md`](../common/guides/development-setup.md) —
    get Java 17, WPILib, and Gradle installed so you can run the
    library's tests locally.
 3. [`planning/README.md`](planning/README.md) — the planning and
@@ -34,5 +34,4 @@ If you're new, open these in order:
 | [`guides/`](guides/) | Step-by-step tutorials for contributors (setup, simulation, system identification, input shaping) |
 | [`internal/`](internal/) | Reference artifacts that support the planning docs (for example, the architecture dependency diagram) |
 | [`prompts/`](prompts/) | AI-assisted review prompts used during code review |
-| [`coding-standard-library-notes.md`](coding-standard-library-notes.md) | Library-specific notes that bind the generic coding-standard rules to concrete library classes |
-| [`coding-standard-templates.md`](coding-standard-templates.md) | Copy-paste templates used by robot projects that follow the library's patterns |
+| [`coding-standard/`](coding-standard/) | Library-specific notes and templates that bind the generic Team271 coding standard to concrete library classes and robot-project patterns |

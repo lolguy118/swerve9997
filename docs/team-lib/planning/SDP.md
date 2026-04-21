@@ -22,7 +22,7 @@ Defines when Team271-Lib code is written, in what order, and against
 what toolchain pin. Captures the library-specific layer build priority
 and milestones. Does not cover:
 
-- Coding rules → [coding-standard core](../../common/Team271-Software-Coding-Standard.md)
+- Coding rules → [coding-standard core](../../common/coding-standard/Team271-Software-Coding-Standard.md)
 - Test strategy → [SVP.md](SVP.md)
 - API contracts → [SRS.md](SRS.md)
 - Vendordep / versioning policy → [SCMP.md](SCMP.md)
@@ -33,7 +33,7 @@ and milestones. Does not cover:
 | -------- | ------- |
 | [`../../common/planning/development-plan.md`](../../common/planning/development-plan.md) | Shared toolchain, platform matrix, phase model, milestones, deviations table format source |
 | [`../../common/planning/configuration-management.md`](../../common/planning/configuration-management.md) | Versioning, vendordep upgrade, deviation-tracking row format |
-| [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) + companions | Normative coding rules |
+| [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md) + companions | Normative coding rules |
 | [SRS.md](SRS.md) | Library requirements |
 | [SVP.md](SVP.md) | Verification plan |
 | [SCMP.md](SCMP.md) | Configuration management |

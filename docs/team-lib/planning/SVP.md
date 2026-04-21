@@ -37,7 +37,7 @@ specific to each season's mechanisms.
 | [`../../common/planning/verification-plan.md`](../../common/planning/verification-plan.md) | Shared test framework, coverage structure, CI gate pattern |
 | [SRS.md](SRS.md) | Requirements being verified |
 | [SDP.md](SDP.md) | Development phases and toolchain |
-| [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) | Coding rules |
+| [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md) | Coding rules |
 | [ADR-009](adr/ADR-009-junit5-hal-simulation-tests.md) | Test framework decision |
 
 ## 3. Test Levels (library-specific notes)

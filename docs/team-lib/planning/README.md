@@ -147,7 +147,7 @@ Deliberately excluded to prevent duplication with authoritative sources:
 
 | Topic | Authoritative Source |
 | ----- | -------------------- |
-| Coding rules, naming, formatting | [`../../common/Team271-Software-Coding-Standard.md`](../../common/Team271-Software-Coding-Standard.md) |
+| Coding rules, naming, formatting | [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md) |
 | Shared planning policy (SemVer, phase model, CI framework) | [`../../common/planning/`](../../common/planning/) |
 | AI-behavior guardrails (planning, safety, docs, coding-standard, team271-lib scopes) | [`../../../.claude/rules/`](../../../.claude/rules/) |
 | Git workflow, PR process, commit rules | `../../../CONTRIBUTING.md` (repository root) |

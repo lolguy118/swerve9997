@@ -44,7 +44,7 @@ constants), use `// spotless:off` / `// spotless:on` markers sparingly.
 
 The coding standard is split across a core document and topical
 companions. The core
-[`docs/common/Team271-Software-Coding-Standard.md`](docs/common/Team271-Software-Coding-Standard.md)
+[`docs/common/coding-standard/Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
 indexes the rest:
 
 - Core — §1 Introduction, §2 Programming Language, §3 Source Code
@@ -52,11 +52,11 @@ indexes the rest:
 - `-General.md`, `-Format.md`, `-Modules.md`, `-Methods.md`,
   `-Variables.md`, `-Control.md`, `-Comments.md`, `-Debug.md`,
   `-Safety.md` — the `CODE-*` rules by category
-- [`team-lib/coding-standard-templates.md`](docs/team-lib/coding-standard-templates.md)
+- [`team-lib/coding-standard/coding-standard-templates.md`](docs/team-lib/coding-standard/coding-standard-templates.md)
   — file and class templates for robot-project code that consumes the library
-- [`-Appendices.md`](docs/common/Team271-Software-Coding-Standard-Appendices.md)
+- [`-Appendices.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Appendices.md)
   — reference tables (final-keyword guide, unit conventions, GC, etc.)
-- [`-Compliance.md`](docs/common/Team271-Software-Coding-Standard-Compliance.md)
+- [`-Compliance.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Compliance.md)
   — §5 static analysis + tooling + §5.4 review checklist
 
 Read at least the core doc and `-Safety.md` before your first
@@ -65,7 +65,7 @@ contribution.
 ## Code Review Checklist
 
 Before opening a PR, verify the items in
-[`-Compliance.md` §5.4 Code Review Checklist](docs/common/Team271-Software-Coding-Standard-Compliance.md#54-code-review-checklist).
+[`-Compliance.md` §5.4 Code Review Checklist](docs/common/coding-standard/Team271-Software-Coding-Standard-Compliance.md#54-code-review-checklist).
 These include state machine completeness, motor safety, subsystem
 lifecycle ordering, naming conventions, and timeout protection.
 

@@ -1,133 +1,169 @@
 <!-- markdownlint-disable MD013 MD060 -->
 # Development Setup
 
-> **Scope:** Setup for contributing to Team271-Lib itself. Robot projects
-> that depend on this library follow the same prerequisites but have
-> their own build and deploy instructions.
+This guide gets your computer ready to build, test, and simulate
+any Team 271 Java project — the library, a season robot, or a
+standalone tool. Follow it once per computer; you only need to
+redo parts when the toolchain versions change.
+
+> **Industry bridge.** Every software project starts with a
+> *"getting started"* or *"installation"* guide that lists the
+> toolchain and walks a new contributor through their first build.
+> Keeping this setup consistent across projects (same Java version,
+> same build tool, same dashboard) means you don't relearn the
+> environment for every season.
 
 ---
 
-## Prerequisites
+## What you'll install
 
 | Tool | Version | Purpose |
 |------|---------|---------|
-| Java JDK | 17 | Required by GradleRIO 2026 |
-| WPILib VS Code | 2026 | IDE with FRC extensions, Gradle wrapper, toolchain |
-| Git | 2.x+ | Version control |
+| **Java JDK** (Java Development Kit) | 17 | The language runtime the code is written in |
+| **WPILib installer** | 2026 | Bundles an FRC-tuned VS Code, the Gradle build system, and FRC-specific tooling (simulator, Driver Station, etc.) |
+| **Git** | 2.x or newer | Version control — lets you clone repositories and track changes |
 
 ### Installing WPILib
 
-Download and install the WPILib installer for your platform from
-<https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html>.
-This installs VS Code with FRC extensions, Java 17, and the Gradle
-wrapper.
+The WPILib installer is the one-stop setup for FRC (FIRST Robotics
+Competition) Java development. It installs VS Code with the FRC
+extensions, Java 17, and the Gradle wrapper automatically — you
+don't need to download those separately.
+
+Download the installer for your platform from
+<https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html>
+and follow the on-screen instructions.
+
+### Installing Git
+
+If you don't already have Git, install it from
+<https://git-scm.com/downloads>. Git is what lets you download
+(clone) a project repository and later commit changes back to it.
 
 ---
 
 ## Clone and Build
 
 ```bash
-git clone <repo-url>
-cd Team271-Lib
+git clone <project-repo-url>
+cd <project-folder>
 
 # Verify the build works
 ./gradlew build
 ```
 
-The first build downloads all dependencies (this may take a few
-minutes). Subsequent builds are cached.
+The first build downloads every dependency — this can take a few
+minutes on a fresh checkout. Subsequent builds reuse the cache
+and are much faster.
+
+> **About `./gradlew`.** `./gradlew` (or `gradlew.bat` on Windows)
+> is the **Gradle wrapper**. Use it instead of any separately
+> installed `gradle` command — the wrapper automatically uses the
+> version of Gradle the project was tested with, so every
+> contributor builds with the same toolchain.
 
 ---
 
 ## IDE Setup
 
-### VS Code (Recommended)
+### VS Code (recommended for FRC)
 
-1. Open the project folder in WPILib VS Code
-2. The WPILib extension auto-detects the GradleRIO project
-3. Use the WPILib command palette (`Ctrl+Shift+P` → "WPILib:") for:
-   - Build Robot Code
-   - Deploy Robot Code
-   - Simulate Robot Code
+1. Open the project folder in **WPILib VS Code** (the FRC-tuned
+   VS Code installed by the WPILib installer).
+2. The WPILib extension auto-detects the Gradle project.
+3. Use the WPILib command palette (`Ctrl+Shift+P` → type `WPILib:`)
+   for common tasks:
+    - **Build Robot Code** — compile the project.
+    - **Deploy Robot Code** — push the build to a robot (robot
+      projects only).
+    - **Simulate Robot Code** — run the project on your laptop
+      without hardware.
 
 ### IntelliJ IDEA
 
-1. Open the project as a Gradle project
-2. Set Project SDK to Java 17
-3. Import Gradle project settings
-4. Run `./gradlew build` from the terminal to verify
+1. Open the project as a Gradle project.
+2. Set the project SDK to Java 17.
+3. Let IntelliJ import the Gradle project settings.
+4. Run `./gradlew build` from the terminal to verify.
 
 ---
 
 ## Running Tests
 
 ```bash
-# Run all tests with coverage
+# Run every test with coverage measurement
 ./gradlew test
 
-# View coverage report
-# Open build/reports/jacoco/test/html/index.html
+# View the coverage report in your browser:
+#   build/reports/jacoco/test/html/index.html
 ```
 
-Tests use the WPILib HAL in simulation mode — no robot hardware needed.
+Tests run against the WPILib HAL (Hardware Abstraction Layer) in
+**simulation mode** — you don't need a physical robot. This lets
+you run the full test suite on any laptop.
 
 ---
 
 ## Code Formatting
 
-Spotless auto-formats code on build:
+Every Team 271 Java project uses **Spotless** with **Google Java
+Format (AOSP style)** to keep formatting identical across files
+and contributors. The continuous-integration (CI) build checks
+formatting automatically; a helper Gradle task applies it.
 
 ```bash
-# Auto-format all source files
+# Auto-format every source file
 ./gradlew spotlessApply
 
-# Verify formatting (CI check)
+# Verify formatting without modifying files (CI runs this)
 ./gradlew spotlessCheck
 ```
 
-Format: Google Java Format with AOSP 4-space indent. See
-[CONTRIBUTING.md](../../../CONTRIBUTING.md) for details.
+If `spotlessCheck` fails, run `spotlessApply` and commit the
+resulting reformatting. See
+[`../../../CONTRIBUTING.md`](../../../CONTRIBUTING.md) for the
+full contribution workflow.
 
 ---
 
 ## Simulation
 
-### Desktop Simulation
-
 ```bash
 ./gradlew simulateJava
 ```
 
-This launches the WPILib simulation GUI with:
-
-- Simulated motor controllers (TalonFX sim state)
-- Simulated sensors (encoders, IMU, range sensors)
-- NetworkTables connection for dashboard testing
+This launches the WPILib simulation GUI, which provides simulated
+motor controllers, sensors, and a NetworkTables connection. You
+can exercise robot code without any hardware connected.
 
 ### Connecting a Dashboard
 
-While simulation is running, connect Elastic Dashboard or
-Shuffleboard to `localhost` to see telemetry and tunable values.
+While simulation is running, connect **Elastic Dashboard** or
+**Shuffleboard** to `localhost` to see live telemetry values and
+interact with tunable parameters.
 
 ---
 
-## Project Structure
+## Project Structure (typical)
+
+Every Team 271 Java project shares roughly this shape:
 
 ```text
-Team271-Lib/
+<project-root>/
 ├── src/
-│   ├── main/java/com/team271/lib/    Library source
-│   └── test/java/com/team271/lib/    JUnit 5 tests
-├── docs/                              Design documentation
-├── vendordeps/                        Vendor dependency JSONs
-├── build.gradle                       Build configuration
-├── CLAUDE.md                          Project overview
-├── CONTRIBUTING.md                    Contribution guide
-└── .editorconfig                      Editor formatting hints
+│   ├── main/java/...        Main source (shipping code)
+│   └── test/java/...        JUnit 5 tests
+├── docs/                     Design documentation
+├── vendordeps/               Vendor dependency JSON files (CTRE, WPILib, etc.)
+├── build.gradle              Build configuration
+├── CLAUDE.md                 Project overview (AI / LLM routing index)
+├── CONTRIBUTING.md           Contribution workflow
+└── .editorconfig             Editor formatting hints
 ```
 
-See [Library Architecture](../planning/sdd/SDD-team271-lib.md) for the full
-package map and class hierarchy.
+Each project adds its own package layout on top of this common
+shape. For the Team271-Lib library's layered architecture, see
+[`../../team-lib/planning/sdd/SDD-team271-lib.md`](../../team-lib/planning/sdd/SDD-team271-lib.md).
 
 ---
 
@@ -135,14 +171,15 @@ package map and class hierarchy.
 
 | Task | Purpose |
 |------|---------|
-| `./gradlew build` | Full build (format + compile + test) |
-| `./gradlew compileJava` | Compile main source only |
-| `./gradlew compileTestJava` | Compile main + test source |
-| `./gradlew test` | Run tests with JaCoCo |
-| `./gradlew spotlessApply` | Auto-format all code |
-| `./gradlew spotlessCheck` | Verify formatting |
-| `./gradlew simulateJava` | Run desktop simulation |
-| `./gradlew deploy` | Deploy to RoboRIO |
+| `./gradlew build` | Full build — formats, compiles, runs tests |
+| `./gradlew compileJava` | Compile main source only (fast check) |
+| `./gradlew compileTestJava` | Compile main source + test source |
+| `./gradlew test` | Run tests with JaCoCo coverage |
+| `./gradlew spotlessApply` | Auto-format every source file |
+| `./gradlew spotlessCheck` | Verify formatting (no changes made) |
+| `./gradlew simulateJava` | Launch desktop simulation |
+| `./gradlew deploy` | Deploy to a RoboRIO (robot projects only) |
+| `./gradlew javadoc` | Generate API documentation |
 
 ---
 
@@ -150,15 +187,44 @@ package map and class hierarchy.
 
 ### "Could not find tools.jar"
 
-Ensure JAVA_HOME points to a JDK 17 installation, not a JRE.
+Your `JAVA_HOME` environment variable points at a JRE (Java
+Runtime Environment) instead of a JDK (Java Development Kit).
+Reinstall Java 17 using the WPILib installer — it bundles the
+correct JDK — and make sure `JAVA_HOME` points to the JDK folder.
 
-### Vendor dependency errors
+### Vendor-dependency errors
 
-Run `./gradlew build --refresh-dependencies` to re-download.
-See [Vendor Dependencies](../planning/SCMP.md) for upgrade
-instructions.
+A vendor dependency failed to download or is out of date. Force a
+refresh:
 
-### Tests fail with native library errors
+```bash
+./gradlew build --refresh-dependencies
+```
 
-Ensure `HAL.initialize(500, 0)` is called in `@BeforeAll`.
-See [Testing Strategy](../planning/SVP.md).
+For the Team271-Lib library's vendor-dependency upgrade
+procedure, see
+[`../../team-lib/planning/SCMP.md`](../../team-lib/planning/SCMP.md).
+
+### Tests fail with native-library errors
+
+Tests that create vendor devices need the WPILib HAL initialized
+first. Make sure your test class calls `HAL.initialize(500, 0)`
+in a `@BeforeAll` method. For the library's testing conventions,
+see [`../../team-lib/planning/SVP.md`](../../team-lib/planning/SVP.md).
+
+### `./gradlew` command not found (Windows)
+
+On Windows, use `gradlew.bat` instead of `./gradlew`, or use Git
+Bash / WSL which understands the Unix-style invocation.
+
+### Build fails immediately with a Java version error
+
+Check your Java version:
+
+```bash
+java -version
+```
+
+It must report Java 17. If it reports a different version, either
+install the WPILib installer (which bundles Java 17) or adjust
+`JAVA_HOME` to point at a Java 17 JDK.

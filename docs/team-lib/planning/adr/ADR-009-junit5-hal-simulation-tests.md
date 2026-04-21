@@ -91,4 +91,4 @@ coverage metrics.
 
 - [SVP.md §3 Test Levels](../SVP.md#3-test-levels-library-specific-notes)
 - [SDD-hardware.md §9 Test Coverage Requirements](../sdd/SDD-hardware.md#9-test-coverage-requirements)
-- [development-setup.md](../../guides/development-setup.md)
+- [development-setup.md](../../../common/guides/development-setup.md)

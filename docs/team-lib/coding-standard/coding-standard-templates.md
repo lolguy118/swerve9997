@@ -1,7 +1,7 @@
 <!-- Library-specific companion to the Team 271 Software Coding Standard.
      Templates here are for robot-project code that consumes Team271-Lib
      (TObj, Subsystem, LoggedNTInput, etc.). For the framework-agnostic
-     standard itself, see ../common/Team271-Software-Coding-Standard.md. -->
+     standard itself, see ../common/coding-standard/Team271-Software-Coding-Standard.md. -->
 <!-- markdownlint-disable-file MD041 -->
 
 # Coding Standard — Library Templates
@@ -16,7 +16,7 @@
 
 ## Appendix F: Subsystem Template
 
-See [§3.1 in the core standard](../common/Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
+See [§3.1 in the core standard](../common/coding-standard/Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
 subsystem template. Key elements:
 
 1. Singleton with dual `getInstance()` (CODE-GEN-013)

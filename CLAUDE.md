@@ -7,12 +7,12 @@
 > Do NOT duplicate content from:
 >
 > - `CONTRIBUTING.md` (root) — workflow, PRs, commits, linting
-> - `docs/common/Team271-Software-Coding-Standard*.md` — coding rules
+> - `docs/common/coding-standard/Team271-Software-Coding-Standard*.md` — coding rules
 > - `docs/common/planning/` — shared planning framework
 > - `docs/team-lib/planning/` — library SDP, SRS, SVP, SCMP, SDDs, ADRs
 > - `docs/team-lib/guides/` — contributor tutorials
-> - `docs/team-lib/coding-standard-templates.md` — robot-project templates
-> - `docs/team-lib/coding-standard-library-notes.md` — library bindings for common rules
+> - `docs/team-lib/coding-standard/coding-standard-templates.md` — robot-project templates
+> - `docs/team-lib/coding-standard/coding-standard-library-notes.md` — library bindings for common rules
 > - `.claude/rules/` — path-scoped AI guardrails
 >
 > If new information needs a home, add it to the appropriate
@@ -37,13 +37,13 @@ for the six-layer graph. The layering decision is
 
 ## Authoritative References
 
-- **Coding standard:** [`docs/common/Team271-Software-Coding-Standard.md`](docs/common/Team271-Software-Coding-Standard.md)
+- **Coding standard:** [`docs/common/coding-standard/Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
   — normative rules (§1–§3 inline). §4 Coding Guidelines is split into
   eight companion files (General, Format, Modules, Methods, Variables,
   Control, Comments, Debug). Also: `-Safety`, `-Compliance`,
   `-Appendices`. See the "Companion Documents" section of the core
   file for the full index. Library-specific templates live at
-  [docs/team-lib/coding-standard-templates.md](docs/team-lib/coding-standard-templates.md).
+  [docs/team-lib/coding-standard/coding-standard-templates.md](docs/team-lib/coding-standard/coding-standard-templates.md).
 - **Planning framework (common):** [docs/common/planning/README.md](docs/common/planning/README.md)
   — shared SemVer / phase-model / verification-framework policy.
 - **Planning (library-specific):** [docs/team-lib/planning/README.md](docs/team-lib/planning/README.md)
@@ -60,7 +60,7 @@ for the six-layer graph. The layering decision is
   full docs sweep on doc edits). Full table in
   [SVP §6](docs/team-lib/planning/SVP.md).
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
-  [SCS §2](docs/common/Team271-Software-Coding-Standard.md) and
+  [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md) and
   [SDP §4](docs/team-lib/planning/SDP.md). Decision:
   [ADR-002](docs/team-lib/planning/adr/ADR-002-java17-wpilib-gradlerio-toolchain.md).
 - **Build system:** Gradle + GradleRIO. See `build.gradle`; version

@@ -72,14 +72,12 @@ for the six-layer graph. The layering decision is
     Applies the full review checklist from
     [`docs/team-lib/prompts/code-review-prompt-teamlib.md`](docs/team-lib/prompts/code-review-prompt-teamlib.md)
     against a file list or branch diff.
-- **Pre-merge enforcement:** `.claude/hooks/` — markdownlint, yamllint,
-  ShellCheck, doc-tunable check, deleted-class refs, design-drift,
-  batched Java compile+Spotless+Checkstyle (`check-java-postedit.sh`,
-  one JVM cold-start), SpotBugs (opt-in via
-  `TEAM271_RUN_SPOTBUGS_HOOK=1`), Javadoc (opt-in via
-  `TEAM271_RUN_JAVADOC_HOOK=1`), JaCoCo (opt-in via
-  `TEAM271_RUN_JACOCO_HOOK=1`), and `verify-docs-hook.sh` (wraps the
-  full docs sweep on doc edits). Full table in
+- **Pre-merge enforcement:** `.claude/hooks/` runs markdown / YAML /
+  shell linters, a batched Java compile + Spotless + Checkstyle step,
+  and a docs-sweep wrapper; opt-in Java hooks (SpotBugs, Javadoc,
+  JaCoCo) activate with `TEAM271_RUN_SPOTBUGS_HOOK=1`,
+  `TEAM271_RUN_JAVADOC_HOOK=1`, `TEAM271_RUN_JACOCO_HOOK=1`.
+  Authoritative roster with triggers and cold-start costs in
   [SVP §6](docs/team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
   [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md#2-programming-language) and

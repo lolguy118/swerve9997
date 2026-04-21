@@ -23,14 +23,17 @@ look up vendor API details without inlining them in this repo.
 
 - PathPlanner: <https://pathplanner.dev/home.html>
 - PathPlannerLib Java API: <https://pathplanner.dev/api/java/>
+- PathPlanner source: <https://github.com/mjansen4857/pathplanner>
 - Choreo: <https://choreo.autos/>
 - ChoreoLib source: <https://github.com/SleipnirGroup/Choreo>
 
 ## Logging & Telemetry
 
 - AdvantageKit: <https://docs.advantagekit.org/>
+- AdvantageKit source: <https://github.com/Mechanical-Advantage/AdvantageKit>
 - AdvantageScope: <https://docs.advantagescope.org/>
 - Elastic: <https://frc-elastic.gitbook.io/docs>
+- Elastic source: <https://github.com/Gold872/elastic_dashboard>
 
 ## Vision
 

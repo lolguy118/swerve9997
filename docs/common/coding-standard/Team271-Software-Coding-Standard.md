@@ -52,7 +52,13 @@ pattern shown in §3.1.
   (CTRE Tuner X), `LimelightHelpers.java`
 - Third-party vendordep source code
 
-### 1.3 Acronyms and Abbreviations
+### 1.3 Terminology (Acronyms Used in This Document)
+
+This glossary defines proper-name acronyms used throughout the coding
+standard and its companion documents. For the separate allowlist of
+short-form tokens permitted in *code identifiers* (e.g., `cfg`, `idx`,
+`msg`), see
+[Appendix A](Team271-Software-Coding-Standard-Appendices.md#appendix-a-approved-identifier-abbreviations).
 
 | Abbreviation | Meaning |
 | ------------ | ------- |
@@ -84,39 +90,25 @@ pattern shown in §3.1.
 
 ### 1.4 Applicable Documents
 
-- [WPILib Documentation][wpilib-docs] -- Java API and robot programming guide
-- [WPILib Java API][wpilib-api]
-- [CTRE Phoenix 6 Documentation][phoenix6-docs] -- Motor controller and sensor API
-- [CTRE Phoenix 6 Java API][phoenix6-api]
-- [AdvantageKit Documentation][akit-docs] -- Logging and replay framework
-- [PathPlanner Documentation][pathplanner-docs] -- Autonomous path following
-- [Choreo Documentation][choreo-docs] -- Autonomous trajectory editor, alternative/companion to PathPlanner
-- [Limelight Documentation][limelight-docs] -- Vision pipeline and AprilTag localization
-- [Limelight Java (LimelightHelpers) Reference][limelight-java] -- Vendored helper class API
-- [PhotonVision Documentation][photonvision-docs] -- Vision pipeline and AprilTag localization
-- [PhotonVision Java (PhotonLib) Reference][photonvision-java] -- Java client library API
-- [Google Java Style Guide][google-java] -- Basis for Spotless formatter configuration
-- [Elastic Dashboard Documentation][elastic-docs] -- FRC dashboard
-- [MISRA C:2023][misra] -- Safety-critical C coding guidelines (concepts adapted to Java)
+For vendor and tool documentation (WPILib, CTRE Phoenix 6, PathPlanner,
+Choreo, AdvantageKit, Limelight, PhotonVision, Elastic, Spotless, etc.),
+see [`docs/reference-urls.md`](../../reference-urls.md). That file is the
+single authoritative index for external vendor/tool URLs.
+
+The following industry coding standards are normative references for
+this document. §1.5 below explains how each one shapes specific rules:
+
+- [MISRA C:2025][misra-c] -- Safety-critical C coding guidelines (concepts adapted to Java). Local [PDF][misra-c-pdf]
+- [MISRA C++:2023][misra-cpp] -- Safety-critical C++ coding guidelines (concepts adapted to Java). Local [PDF][misra-cpp-pdf]
 - [SEI CERT Java Coding Standard][cert-java] -- Secure Java coding rules
 - [JPL "Power of 10" Rules][jpl-power10] -- NASA/JPL rules for safety-critical code
 - [DO-178C][do178c] -- Avionics software certification standard (process philosophy)
 - [Barr Group Embedded C Coding Standard][barr] -- Embedded coding conventions
 
-[wpilib-docs]: https://docs.wpilib.org/en/stable/
-[wpilib-api]: https://github.wpilib.org/allwpilib/docs/release/java/index.html
-[phoenix6-docs]: https://v6.docs.ctr-electronics.com/en/stable/index.html
-[phoenix6-api]: https://api.ctr-electronics.com/phoenix6/stable/java/
-[akit-docs]: https://docs.advantagekit.org/
-[pathplanner-docs]: https://pathplanner.dev/home.html
-[choreo-docs]: https://choreo.autos/
-[limelight-docs]: https://docs.limelightvision.io/
-[limelight-java]: https://limelightlib-wpijava-reference.limelightvision.io/
-[photonvision-docs]: https://docs.photonvision.org/en/latest/
-[photonvision-java]: https://javadocs.photonvision.org/
-[google-java]: https://google.github.io/styleguide/javaguide.html
-[elastic-docs]: https://frc-elastic.gitbook.io/docs
-[misra]: https://misra.org.uk/misra-c/
+[misra-c]: https://misra.org.uk/misra-c/
+[misra-c-pdf]: ../../third-party/MISRA-C-2025.pdf
+[misra-cpp]: https://misra.org.uk/misra-cpp/
+[misra-cpp-pdf]: ../../third-party/MISRA-CPP-2023.pdf
 [cert-java]: https://wiki.sei.cmu.edu/confluence/display/java/
 [jpl-power10]: https://en.wikipedia.org/wiki/The_Power_of_10:_Rules_for_Developing_Safety-Critical_Code
 [do178c]: https://en.wikipedia.org/wiki/DO-178C
@@ -133,12 +125,18 @@ mechanisms, and must not crash during a match. Where our rules align
 with an industry standard, we call it out so you know *why* the rule
 exists and that it is not just our opinion.
 
-**MISRA C:2023** -- Originally written for automotive software (think
-anti-lock brakes and airbag controllers). MISRA defines rules for
-writing C code that is predictable and safe. Many of its rules about
-control flow, switch statements, and side effects apply equally to
-Java. When we cite MISRA, the concept transfers even though the
-language does not.
+**MISRA C:2025 and MISRA C++:2023** -- Originally written for
+automotive software (think anti-lock brakes and airbag controllers).
+MISRA defines rules for writing C and C++ code that is predictable and
+safe. MISRA C:2025 is the current edition of the C guidelines
+(superseding MISRA C:2023); MISRA C++:2023 is the current edition of
+the C++ guidelines (targeting C++17 and superseding MISRA C++:2008).
+Many of their rules about control flow, switch statements, and side
+effects apply equally to Java. When we cite MISRA, the concept
+transfers even though the language does not -- the rule numbers are
+edition-agnostic by convention, so citations like "MISRA Rule 13.4" or
+"MISRA Directive 4.4" in the companion documents refer to the same
+guidance regardless of which edition originated the rule.
 
 **SEI CERT Java Coding Standard** -- Published by Carnegie Mellon's
 Software Engineering Institute. These are Java-specific rules for

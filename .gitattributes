@@ -13,8 +13,39 @@
 *.gitignore text eol=lf
 *.gitattributes text eol=lf
 
+# Shell scripts -- must be LF everywhere (hooks run on Linux CI / roboRIO)
+*.sh text eol=lf
+gradlew text eol=lf
+
+# Windows batch -- must be CRLF or cmd.exe fails
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Other text files tracked in this repo
+*.mmd text eol=lf
+*.mjs text eol=lf
+*.txt text eol=lf
+*.editorconfig text eol=lf
+*.yamllint text eol=lf
+
 # Binary files
 *.jar binary
 *.png binary
 *.jpg binary
 *.gif binary
+*.pdf binary
+*.ico binary
+*.webp binary
+*.zip binary
+*.wpilog binary
+*.hoot binary
+
+# Exempt generated files from GitHub language stats (see SCS §1.2)
+**/BuildConstants.java linguist-generated=true
+**/TunerConstants.java linguist-generated=true
+**/LimelightHelpers.java linguist-generated=true
+
+# Keep git-archive tarballs lean -- drop tooling and docs from release archives
+.github/ export-ignore
+.claude/ export-ignore
+docs/ export-ignore

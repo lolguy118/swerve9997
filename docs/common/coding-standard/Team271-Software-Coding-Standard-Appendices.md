@@ -2,7 +2,13 @@
      See Team271-Software-Coding-Standard.md for the index. -->
 <!-- markdownlint-disable-file MD041 -->
 
-## Appendix A: Standard Abbreviations
+## Appendix A: Approved Identifier Abbreviations
+
+Short-form tokens permitted in code identifiers (variable, method, and
+field names). This is an *allowlist for naming*, not a glossary — for
+proper-name acronyms used in the standard's prose (ADR, CTRE, HAL,
+WPILib, etc.), see
+[§1.3 Terminology](Team271-Software-Coding-Standard.md#13-terminology-acronyms-used-in-this-document).
 
 | Abbreviation | Meaning |
 | ------------ | ------- |

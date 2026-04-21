@@ -63,9 +63,14 @@ matching files. The rules scoped to doc work:
 
 ## Pre-Merge Doc Enforcement
 
-Doc edits trigger these hooks (see
-[`../.claude/settings.json`](../.claude/settings.json) and
-[SVP §6](team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster)):
+> **Doc-side subset.** The full hook roster — including the Java and
+> opt-in hooks that don't fire on doc edits — is authoritative in
+> [SVP §6](team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
+> The entries below are the hooks that trigger on `docs/**` edits,
+> listed here for doc-session onboarding.
+
+Doc edits trigger these hooks (see also
+[`../.claude/settings.json`](../.claude/settings.json)):
 
 - [`lint-markdown.sh`](../.claude/hooks/lint-markdown.sh) —
   markdownlint.

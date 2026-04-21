@@ -655,6 +655,12 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 
 Use these references to verify API usage and look up correct patterns. Fetch documentation as needed using available tools.
 
+> **Canonical index:** [`docs/reference-urls.md`](../../reference-urls.md)
+> is the single source of truth for vendor and tool URLs. The curated
+> subset below is inlined here for review-agent convenience. If you need
+> to add a new vendor URL, add it to `reference-urls.md` first — do not
+> extend this list in isolation.
+
 - Phoenix 6 Docs: <https://v6.docs.ctr-electronics.com/en/stable/index.html>
 - Phoenix 6 Java API: <https://api.ctr-electronics.com/phoenix6/stable/java/>
 - Phoenix 6 Examples: <https://github.com/CrossTheRoadElec/Phoenix6-Examples/tree/main/java>

@@ -1,3 +1,8 @@
+---
+paths:
+  - "docs/**"
+---
+
 # Rule: Documentation
 
 Team271-Lib's design docs live under `docs/team-lib/` and are part of

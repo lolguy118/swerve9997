@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/**/*.java"
+---
+
 # Rule: Java Coding Standard (Quick-Recall)
 
 Global guardrails for Java library and robot-project code. Full rules

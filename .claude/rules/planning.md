@@ -1,3 +1,9 @@
+---
+paths:
+  - "docs/team-lib/planning/**"
+  - "docs/common/planning/**"
+---
+
 # Rule: Planning Documents
 
 Applies to planning docs in two tiers:

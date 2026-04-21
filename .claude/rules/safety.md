@@ -1,3 +1,10 @@
+---
+paths:
+  - "src/**/*.java"
+  - "docs/team-lib/planning/sdd/**"
+  - "docs/team-lib/planning/adr/**"
+---
+
 # Rule: Safety and Fault Tolerance
 
 The robot is a real machine with real consequences. Every waiting or

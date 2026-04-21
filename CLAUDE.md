@@ -103,53 +103,16 @@ for the six-layer graph. The layering decision is
   [ADR-006](docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md).
   `vendordeps/*.json` is authoritative.
 
-## Reference URLs (External)
+## Reference URLs
 
-### CTRE Phoenix 6
-
-- Docs: <https://v6.docs.ctr-electronics.com/en/stable/index.html>
-- Java API: <https://api.ctr-electronics.com/phoenix6/stable/java/>
-- Examples: <https://github.com/CrossTheRoadElec/Phoenix6-Examples/tree/main/java>
-- Tuner X: <https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/index.html>
-
-### WPILib
-
-- Docs: <https://docs.wpilib.org/en/stable/>
-- Java API: <https://github.wpilib.org/allwpilib/docs/release/java/index.html>
-- Source: <https://github.com/wpilibsuite/allwpilib>
-- GradleRIO: <https://github.com/wpilibsuite/GradleRIO>
-
-### Auto / Path Following
-
-- PathPlanner: <https://pathplanner.dev/home.html>
-
-### Logging & Telemetry
-
-- AdvantageKit: <https://docs.advantagekit.org/>
-- AdvantageScope: <https://docs.advantagescope.org/>
-- Elastic: <https://frc-elastic.gitbook.io/docs>
-
-### Vision
-
-- Limelight: <https://limelightlib-wpijava-reference.limelightvision.io/>
-- PhotonVision: <https://docs.photonvision.org/en/latest/>
-- Luma P1: <https://docs.luma.vision/p1/>
-
-### Testing & Tooling
-
-- JUnit 5: <https://junit.org/junit5/docs/current/user-guide/>
-- Google Java Format: <https://github.com/google/google-java-format>
-- Spotless: <https://github.com/diffplug/spotless/tree/main/plugin-gradle>
+External vendor and tool documentation links live in
+[`docs/reference-urls.md`](docs/reference-urls.md) — keeps this
+file focused on project routing and pushes the URL list one click
+away.
 
 ## Claude Rules
 
-Code-side rules (always loaded):
-
-@.claude/rules/coding-standard.md
-@.claude/rules/team271-lib.md
-@.claude/rules/safety.md
-
-Documentation-scoped rules live in [`docs/CLAUDE.md`](docs/CLAUDE.md)
-and auto-load only when a session's working directory is under
-`docs/`. That keeps doc-writing guardrails (`docs.md`,
-`planning.md`) out of code-only sessions and vice versa.
+Rules live in [`.claude/rules/`](.claude/rules/) and are
+auto-discovered by Claude Code. Each rule declares its own
+`paths:` frontmatter, so Claude loads each rule only when reading
+files inside its declared scope.

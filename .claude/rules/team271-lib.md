@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/main/java/com/team271/lib/**"
+  - "src/test/java/com/team271/lib/**"
+---
+
 # Rule: Team271-Lib Library Code
 
 Applies to library source under `src/main/java/com/team271/lib/**`.

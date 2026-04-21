@@ -9,7 +9,7 @@
 # Keep this short — every line costs tokens.
 
 cat <<'EOF'
-Project reminders (re-injected after compact):
+Project reminders (re-injected after compact or /clear):
 
 - Team271-Lib is CTRE-focused. Only CTRE Phoenix 6 motors and
   sensors are supported (ADR-006).
@@ -24,6 +24,12 @@ Project reminders (re-injected after compact):
   (ADR-007).
 - No numeric tunables in docs; reference named constants (e.g.
   kArmStatorLimit), never values (.claude/rules/docs.md).
+- Telemetry keys added/removed in outputTelemetry() must have a
+  matching update in the owning subsystem's design-doc
+  telemetry table, same PR (.claude/rules/docs.md).
+- ADR statuses: Proposed -> Accepted -> Superseded by ADR-XXX.
+  "Deprecated" is not a status; reversed decisions become
+  Superseded (.claude/rules/planning.md).
 - Normative keywords: SHALL = required, SHOULD = recommended,
   MAY = optional
   (docs/common/planning/README.md#normative-keywords).

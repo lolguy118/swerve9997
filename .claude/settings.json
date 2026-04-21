@@ -61,6 +61,26 @@
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-start-startup.sh",
+            "description": "dynamic branch/ADR/docs state + skill discovery on fresh session"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-start-reminders.sh",
+            "description": "re-inject project conventions after /clear"
+          }
+        ]
+      },
+      {
         "matcher": "compact",
         "hooks": [
           {

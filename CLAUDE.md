@@ -37,34 +37,53 @@ for the six-layer graph. The layering decision is
 
 ## Authoritative References
 
-- **Coding standard:** [`docs/common/coding-standard/Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
-  — normative rules (§1–§3 inline). §4 Coding Guidelines is split into
-  eight companion files (General, Format, Modules, Methods, Variables,
-  Control, Comments, Debug). Also: `-Safety`, `-Compliance`,
-  `-Appendices`. See the "Companion Documents" section of the core
-  file for the full index. Library-specific templates live at
-  [docs/team-lib/coding-standard/coding-standard-templates.md](docs/team-lib/coding-standard/coding-standard-templates.md).
+- **Coding standard:** [`docs/common/coding-standard/README.md`](docs/common/coding-standard/README.md)
+  indexes the core document
+  [`Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
+  and eleven topical companions (General, Format, Modules, Methods,
+  Variables, Control, Comments, Debug, Safety, Compliance,
+  Appendices). Library-specific templates and notes live in
+  [`docs/team-lib/coding-standard/`](docs/team-lib/coding-standard/).
 - **Planning framework (common):** [docs/common/planning/README.md](docs/common/planning/README.md)
   — shared SemVer / phase-model / verification-framework policy.
 - **Planning (library-specific):** [docs/team-lib/planning/README.md](docs/team-lib/planning/README.md)
-  — SDP, SRS, SVP, SCMP, ADRs, SDDs.
-- **Guides:** [docs/team-lib/guides/start-here.md](docs/team-lib/guides/start-here.md)
-  is the first read for new contributors.
+  — SDP, SRS, SVP, SCMP, plus subfolder indexes for
+  [ADRs](docs/team-lib/planning/adr/README.md) and
+  [SDDs](docs/team-lib/planning/sdd/README.md).
+- **Guides:** common developer setup lives in
+  [docs/common/guides/development-setup.md](docs/common/guides/development-setup.md);
+  library-contributor guides in
+  [docs/team-lib/guides/](docs/team-lib/guides/), with
+  [start-here.md](docs/team-lib/guides/start-here.md) as the first
+  read for new library contributors.
 - **Library conventions:** [CONTRIBUTING.md](CONTRIBUTING.md).
-- **AI guardrails:** `.claude/rules/` — path-scoped rules auto-loaded
-  when working in each subdirectory.
+- **AI guardrails:** `.claude/rules/` — rules loaded by this root
+  `CLAUDE.md` (code-side) and by
+  [`docs/CLAUDE.md`](docs/CLAUDE.md) (doc-side).
+- **AI-assisted tooling:**
+  - [`/lib-review`](.claude/commands/lib-review.md) — slash command.
+    Runs a branch-level library code review, delegating to the
+    `lib-reviewer` agent for a Blocker / Should-fix / Nits punch list.
+  - [`/doc-sync-check`](.claude/commands/doc-sync-check.md) — slash
+    command. Checks that code changes on the current branch have
+    matching design-doc updates and flags stale references to
+    deleted symbols.
+  - [`lib-reviewer`](.claude/agents/lib-reviewer.md) — subagent.
+    Applies the full review checklist from
+    [`docs/team-lib/prompts/code-review-prompt-teamlib.md`](docs/team-lib/prompts/code-review-prompt-teamlib.md)
+    against a file list or branch diff.
 - **Pre-merge enforcement:** `.claude/hooks/` — markdownlint, yamllint,
   ShellCheck, doc-tunable check, deleted-class refs, design-drift, Java
   compile, Spotless, Checkstyle, SpotBugs, Javadoc, JaCoCo (opt-in via
   `TEAM271_RUN_JACOCO_HOOK=1`), and `verify-docs-hook.sh` (wraps the
   full docs sweep on doc edits). Full table in
-  [SVP §6](docs/team-lib/planning/SVP.md).
+  [SVP §6](docs/team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
-  [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md) and
-  [SDP §4](docs/team-lib/planning/SDP.md). Decision:
+  [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md#2-programming-language) and
+  [SDP §4](docs/team-lib/planning/SDP.md#4-development-environment-library-pins). Decision:
   [ADR-002](docs/team-lib/planning/adr/ADR-002-java17-wpilib-gradlerio-toolchain.md).
 - **Build system:** Gradle + GradleRIO. See `build.gradle`; version
-  policy in [SCMP §3](docs/team-lib/planning/SCMP.md).
+  policy in [SCMP §3](docs/team-lib/planning/SCMP.md#3-library-versioning).
 - **CI:** GitHub Actions live. `.github/workflows/ci.yml` gates PRs on
   Spotless, compile + Error Prone, test, Javadoc, Checkstyle, SpotBugs
   (fail-soft during rollout), JaCoCo coverage (with PR comment), build,
@@ -74,12 +93,13 @@ for the six-layer graph. The layering decision is
   `dependency-submission.yml` (supply-chain graph on push to `main`),
   `vendordep-freshness.yml` (weekly upstream version check). Local
   pre-edit gates additionally run through `.claude/hooks/`.
-  See [SVP §7](docs/team-lib/planning/SVP.md).
+  See [SVP §7](docs/team-lib/planning/SVP.md#7-ci-pipeline-gates-library-specific).
 - **Platform support:** RoboRIO 2 + desktop sim on Windows/macOS/Linux.
-  Matrix in [SDP §5](docs/team-lib/planning/SDP.md).
+  Matrix in [SDP §5](docs/team-lib/planning/SDP.md#5-platform-matrix-library-specific-deltas).
 - **Vendor dependencies:** CTRE Phoenix 6, WPILib, AdvantageKit,
   PathPlanner. Process in
-  [SCMP §4](docs/team-lib/planning/SCMP.md); vendor decision in
+  [SCMP §4](docs/team-lib/planning/SCMP.md#4-vendordep-management-team271-lib-specifics);
+  vendor decision in
   [ADR-006](docs/team-lib/planning/adr/ADR-006-ctre-phoenix6-primary-vendor.md).
   `vendordeps/*.json` is authoritative.
 
@@ -123,8 +143,13 @@ for the six-layer graph. The layering decision is
 
 ## Claude Rules
 
+Code-side rules (always loaded):
+
 @.claude/rules/coding-standard.md
-@.claude/rules/docs.md
-@.claude/rules/planning.md
 @.claude/rules/team271-lib.md
 @.claude/rules/safety.md
+
+Documentation-scoped rules live in [`docs/CLAUDE.md`](docs/CLAUDE.md)
+and auto-load only when a session's working directory is under
+`docs/`. That keeps doc-writing guardrails (`docs.md`,
+`planning.md`) out of code-only sessions and vice versa.

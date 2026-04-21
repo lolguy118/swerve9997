@@ -106,35 +106,24 @@ path does not throw.
 ## 6. Hooks as Pre-Merge Gates (library roster)
 
 Team271-Lib installs the following hooks under `.claude/hooks/`.
+All are wired to `PostToolUse` in `.claude/settings.json`.
 
 | Hook | What It Enforces | Local Run |
 | ---- | ---------------- | --------- |
 | `lint-markdown.sh` | markdownlint-cli2 rules on `.md` files | `markdownlint-cli2 docs/` |
+| `lint-yaml.sh` | yamllint on `*.yml` / `*.yaml` files | `yamllint <file>` |
+| `lint-shell.sh` | ShellCheck (severity=warning) on `*.sh` / `*.bash` files | `shellcheck --severity=warning <file>` |
 | `check-doc-tunables.sh` | No numeric tunables in `docs/**` | (runs on Edit/Write) |
 | `check-deleted-class-refs.sh` | No references to deprecated symbols | (runs on Edit/Write) |
 | `check-design-drift.sh` | Code changes paired with doc updates | (runs on Edit/Write) |
 | `check-java-compiles.sh` | Java compiles after each edit | `./gradlew compileJava` |
 | `check-spotless.sh` | Spotless format check after Java edit (advisory) | `./gradlew spotlessCheck` |
-| `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint (CI-authoritative, not wired to PostToolUse directly) | `bash .claude/hooks/verify-docs.sh` |
-
-### 6.1 Planned Hooks
-
-> **Status: Planned — Not Yet Implemented.**
-
-The following hooks are foreseen but not yet scripted. Each **shall**
-be authored when its corresponding static-analysis tool (see §7.1)
-graduates from Planned to Adopted, or when a concrete local need
-arises.
-
-| Planned Hook | Intended Scope |
-| ------------ | -------------- |
-| `lint-yaml.sh` | yamllint on `*.yml` / `*.yaml` files |
-| `lint-shell.sh` | ShellCheck (severity=warning) on `*.sh` / `*.bash` files |
-| `check-checkstyle.sh` | Checkstyle violations after Java edit (advisory) |
-| `check-spotbugs.sh` | SpotBugs findings after Java edit (advisory; fail-soft during rollout) |
-| `check-javadoc.sh` | Javadoc doclint issues after Java edit (advisory) |
-| `check-jacoco.sh` | Coverage report after Java edit — opt-in via env var because a full test run per edit is expensive |
-| `verify-docs-hook.sh` | Wrapper that invokes `verify-docs.sh` when a doc is edited (advisory; CI is the gate) |
+| `check-checkstyle.sh` | Checkstyle violations after Java edit (advisory) | `./gradlew checkstyleMain` |
+| `check-spotbugs.sh` | SpotBugs findings after Java edit (advisory; fail-soft during rollout) | `./gradlew spotbugsMain` |
+| `check-javadoc.sh` | Javadoc doclint issues after Java edit (advisory) | `./gradlew javadoc` |
+| `check-jacoco.sh` | Coverage report after Java edit — opt-in via `TEAM271_RUN_JACOCO_HOOK=1` because a full test run per edit is expensive | `./gradlew jacocoTestReport` |
+| `verify-docs-hook.sh` | Wrapper that invokes `verify-docs.sh` when a doc is edited (advisory; CI is the authoritative gate) | `bash .claude/hooks/verify-docs.sh` |
+| `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint | `bash .claude/hooks/verify-docs.sh` |
 
 ## 7. CI Pipeline Gates (library-specific)
 

@@ -81,6 +81,7 @@ Description (SDD):
 | `com.team271.lib.nt.*` | [SDD-nt.md](sdd/SDD-nt.md) |
 | `com.team271.lib.util.*` | [SDD-util.md](sdd/SDD-util.md) |
 | `com.team271.lib.api.vision.*`, `com.team271.lib.vendor.limelight.*`, `com.team271.lib.vendor.photonvision.*` | [SDD-vision.md](sdd/SDD-vision.md) |
+| `com.team271.lib.api.trajectory.*`, `com.team271.lib.vendor.pathplanner.*`, `com.team271.lib.vendor.choreo.*` | [SDD-auto.md](sdd/SDD-auto.md) |
 
 ## Architecture Decision Records
 
@@ -111,7 +112,7 @@ Statuses an ADR can have:
 | [ADR-010](adr/ADR-010-subsystem-exception-isolation.md) | Per-Subsystem Exception Isolation in SubsystemManager | Accepted |
 | [ADR-011](adr/ADR-011-mandatory-timeouts-fail-safe.md) | Mandatory Timeouts with Fail-Safe + Driver Alert | Accepted |
 | [ADR-012](adr/ADR-012-advantagekit-logging.md) | AdvantageKit for Telemetry and Replay Logging | Accepted |
-| [ADR-013](adr/ADR-013-pathplanner-autonomous.md) | PathPlanner for Autonomous Path Following | Accepted |
+| [ADR-013](adr/ADR-013-trajectory-following-vendors.md) | Trajectory-Following Vendors — PathPlanner and Choreo | Accepted |
 | [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | Desired-to-Actual State Pattern in Subsystems | Accepted |
 | [ADR-015](adr/ADR-015-explicit-instantiation-no-singletons.md) | Explicit Object Instantiation, No Singletons in Library Code | Accepted |
 | [ADR-016](adr/ADR-016-vendor-neutral-vision-abstraction.md) | Vendor-Neutral Vision Abstraction in `api/vision/` | Accepted |

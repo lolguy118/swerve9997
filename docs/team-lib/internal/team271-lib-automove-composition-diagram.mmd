@@ -1,57 +1,23 @@
 %% Team271-Lib — AutoMove Composition / Class Hierarchy
-%% Shows the autonomous-move type system: one abstract base, four concrete
-%% subclasses, and the CommandBridge that adapts WPILib Commands (including
-%% PathPlanner-generated commands) into the AutoMove world.
-%% Arrow direction for classDiagram: child "--|>" parent (extends)
 %% Source of truth: ADR-005 (composition over commands),
 %%                  ADR-011 (mandatory timeouts),
-%%                  ADR-013 (PathPlanner via CommandBridge)
+%%                  ADR-013 (PathPlanner + Choreo trajectory abstraction)
 
 classDiagram
-    class AutoMove {
-        <<abstract>>
-        +String name
-        +boolean isFinished()
-        +void start()
-        +void periodic()
-        +void stop()
-    }
-
-    class AutoMoveTimed {
-        +double length
-        +double delay
-        +double timeoutSec
-    }
-
-    class AutoMoveConditional {
-        +BooleanSupplier condition
-        +double timeoutSec
-        +boolean canRun()
-    }
-
-    class AutoMoveSequence {
-        +List~AutoMove~ moves
-        +int index
-    }
-
-    class AutoMoveParallel {
-        +List~AutoMove~ moves
-    }
-
+    class AutoMove
+    class AutoMoveTimed
+    class AutoMoveConditional
+    class AutoMoveSequence
+    class AutoMoveParallel
     class WaitMove
-
-    class AutoMode {
-        +String name
-        +AutoMove rootMove
-        +void addMove(AutoMove)
-        +void run()
-    }
-
-    class CommandBridge {
-        +AutoMove fromCommand(Command)
-    }
-
+    class AutoMode
+    class CommandBridge
     class PathPlannerCommand
+    class Trajectory
+    class TrajectorySample
+    class TrajectoryFollower
+    class PathPlannerFollower
+    class ChoreoFollower
 
     AutoMoveTimed --|> AutoMove
     AutoMoveConditional --|> AutoMove
@@ -59,9 +25,14 @@ classDiagram
     AutoMoveParallel --|> AutoMove
     WaitMove --|> AutoMoveTimed
 
-    AutoMoveSequence o-- AutoMove : contains
-    AutoMoveParallel o-- AutoMove : contains
-    AutoMode o-- AutoMove : rootMove
+    AutoMoveSequence o-- AutoMove
+    AutoMoveParallel o-- AutoMove
+    AutoMode o-- AutoMove
+    CommandBridge ..> AutoMove
+    CommandBridge ..> PathPlannerCommand
 
-    CommandBridge ..> AutoMove : produces
-    CommandBridge ..> PathPlannerCommand : adapts
+    PathPlannerFollower ..|> TrajectoryFollower
+    ChoreoFollower ..|> TrajectoryFollower
+    TrajectoryFollower ..> AutoMove : produces
+    TrajectoryFollower ..> Trajectory : samples
+    Trajectory ..> TrajectorySample : yields

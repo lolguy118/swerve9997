@@ -11,6 +11,9 @@ graph LR
         p_vendor_ctre["com.team271.lib.vendor.ctre.*"]
         p_vendor_lime["com.team271.lib.vendor.limelight.*"]
         p_vendor_photon["com.team271.lib.vendor.photonvision.*"]
+        p_api_trajectory["com.team271.lib.api.trajectory.*"]
+        p_vendor_pathplanner["com.team271.lib.vendor.pathplanner.*"]
+        p_vendor_choreo["com.team271.lib.vendor.choreo.*"]
         p_bridge["com.team271.lib.bridge.*"]
         p_hw["com.team271.lib.hardware.*"]
         p_ctrl["com.team271.lib.control.*"]
@@ -47,6 +50,9 @@ graph LR
     p_api_vision --> s_vision
     p_vendor_lime --> s_vision
     p_vendor_photon --> s_vision
+    p_api_trajectory --> s_auto
+    p_vendor_pathplanner --> s_auto
+    p_vendor_choreo --> s_auto
     p_sysid --> s_sysid
     p_nt --> s_nt
     p_util --> s_util
@@ -54,5 +60,5 @@ graph LR
     classDef pkg fill:#eef5ff,stroke:#4a6fa5
     classDef sdd fill:#fff3cd,stroke:#856404
 
-    class p_root,p_wpilib,p_api,p_api_vision,p_vendor_ctre,p_vendor_lime,p_vendor_photon,p_bridge,p_hw,p_ctrl,p_sub,p_auto,p_sysid,p_nt,p_util pkg
+    class p_root,p_wpilib,p_api,p_api_vision,p_api_trajectory,p_vendor_ctre,p_vendor_lime,p_vendor_photon,p_vendor_pathplanner,p_vendor_choreo,p_bridge,p_hw,p_ctrl,p_sub,p_auto,p_sysid,p_nt,p_util pkg
     class s_root,s_api,s_vendor,s_hw,s_ctrl,s_sub,s_auto,s_vision,s_sysid,s_nt,s_util sdd

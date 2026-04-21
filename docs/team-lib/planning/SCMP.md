@@ -27,7 +27,7 @@ authoritative sources, vendordep list, and deviations.
 | [`../../common/planning/configuration-management.md`](../../common/planning/configuration-management.md) | Shared policy: SemVer, branch model, vendordep upgrade process, baseline control, change control, deviation-tracking row format |
 | `../../../CONTRIBUTING.md` (repository root) | Branch naming, PR process, commit rules, linting workflow |
 | `../../../build.gradle` | Library version, Gradle toolchain version |
-| `../../../vendordeps/*.json` | Vendordep versions (Phoenix 6, WPILib, AdvantageKit, PathPlanner) |
+| `../../../vendordeps/*.json` | Vendordep versions (Phoenix 6, WPILib, AdvantageKit, PathPlanner, Choreo) |
 
 ## 3. Library Versioning
 
@@ -54,7 +54,8 @@ Currently tracked vendordeps:
 
 - `Phoenix6-frc<year>-latest.json` (CTRE Phoenix 6)
 - `AdvantageKit.json` (AdvantageKit)
-- `PathplannerLib.json` (PathPlanner)
+- `PathplannerLib.json` (PathPlanner — command-based trajectory follower)
+- `ChoreoLib<year>.json` (Choreo — optimizer-based trajectory follower)
 - `WPILibNewCommands.json` (WPILib commands)
 
 The [`.github/workflows/dependency-submission.yml`](../../../.github/workflows/dependency-submission.yml)

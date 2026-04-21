@@ -95,4 +95,4 @@ routines and a state-machine pattern for subsystems:
 - [SDD-auto.md](../sdd/SDD-auto.md)
 - [SDD-subsystem.md](../sdd/SDD-subsystem.md)
 - [ADR-014](ADR-014-desired-to-actual-state-pattern.md)
-- [ADR-013](ADR-013-pathplanner-autonomous.md)
+- [ADR-013](ADR-013-trajectory-following-vendors.md)

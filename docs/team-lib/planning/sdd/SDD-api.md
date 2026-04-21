@@ -49,6 +49,7 @@ This SDD covers:
 | `api/sensor/` | `Gyro` | Yaw / pitch / roll angle and rate |
 | `api/sensor/` | `LimitSwitch` | Binary triggered state with configurable NO/NC |
 | `api/sensor/` | `RangeSensor` | Time-of-flight / ultrasonic distance reading |
+| `api/trajectory/` | `Trajectory`, `TrajectorySample`, `TrajectoryFollower` | Vendor-neutral trajectory sampling and following. Design detail lives in [SDD-auto.md](SDD-auto.md); vendor implementations under `vendor/pathplanner/` and `vendor/choreo/` per [ADR-013](../adr/ADR-013-trajectory-following-vendors.md) |
 
 The `api/` package has **zero vendor imports**. A class in `api/` that
 imports `com.ctre.phoenix6.*` or `edu.wpi.first.hal.*` is a layering

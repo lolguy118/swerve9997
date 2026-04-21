@@ -4,7 +4,7 @@
 | ----- | ----- |
 | Document No. | TBD-SRS |
 | Revision | 0.1 |
-| Date | 2026-04-20 |
+| Date | 2026-04-21 |
 | Status | Draft |
 
 > **Scope note:** This SRS captures API contracts and non-functional
@@ -47,6 +47,7 @@ It excludes anything that is robot-specific.
 | [ADR-007](adr/ADR-007-centralized-can-refresh.md) | CAN refresh contract |
 | [ADR-010](adr/ADR-010-subsystem-exception-isolation.md) | Exception isolation |
 | [ADR-011](adr/ADR-011-mandatory-timeouts-fail-safe.md) | Timeout contract |
+| [ADR-013](adr/ADR-013-trajectory-following-vendors.md) | Trajectory-following vendors (PathPlanner + Choreo) |
 | [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | State pattern |
 | [ADR-016](adr/ADR-016-vendor-neutral-vision-abstraction.md) | Vision abstraction |
 
@@ -182,9 +183,23 @@ It excludes anything that is robot-specific.
 - **[AUT-004]** `AutoMode.init()` shall initialize the first move;
   `AutoMode.periodic()` shall delegate to the currently executing
   move.
-- **[AUT-005]** PathPlanner integration shall occur via
+- **[AUT-005]** Command-based trajectory entry points (PathPlanner
+  `AutoBuilder`, `PathPlannerAuto`) shall reach `AutoMode` via
   `CommandBridge.asAutoMove()` (not by direct `CommandScheduler`
   invocation).
+- **[AUT-006]** The library shall expose a vendor-neutral trajectory
+  interface at `api/trajectory/` (`Trajectory`, `TrajectorySample`,
+  `TrajectoryFollower`) independent of any specific vendor's types.
+- **[AUT-007]** The library shall ship at least two trajectory vendor
+  implementations at the `api/trajectory/` release: PathPlanner
+  (`vendor/pathplanner/PathPlannerFollower`) and Choreo
+  (`vendor/choreo/ChoreoFollower`).
+- **[AUT-008]** Trajectory followers produced via
+  `TrajectoryFollower.follow(...)` shall honor the mandatory-timeout
+  contract (ADR-011): on timeout they shall push a zero
+  `ChassisSpeeds` to the consumer, fire an Elastic WARNING
+  notification, and call `setCompleted()` so the parent container
+  advances.
 
 ### 4.7 SysID Layer (`[SID-NNN]`)
 
@@ -266,6 +281,17 @@ It excludes anything that is robot-specific.
   `api/vision/`, WPILib types, and the `photonlib` vendordep; it
   shall not depend on `hardware/`, `control/`, `subsystem/`, or
   `auto/`.
+- **[INT-010]** `api/trajectory/` shall depend only on WPILib
+  geometry / kinematics types (`Pose2d`, `ChassisSpeeds`) and
+  `java.util`; it shall not depend on any vendor package.
+- **[INT-011]** `vendor/pathplanner/` shall depend only on
+  `api/trajectory/`, WPILib types, and the `PathplannerLib`
+  vendordep; it shall not depend on `hardware/`, `control/`,
+  `subsystem/`, or `auto/`.
+- **[INT-012]** `vendor/choreo/` shall depend only on
+  `api/trajectory/`, WPILib types, and the `ChoreoLib` vendordep;
+  it shall not depend on `hardware/`, `control/`, `subsystem/`, or
+  `auto/`.
 
 ## 6. Non-Functional Constraints
 
@@ -295,9 +321,9 @@ and CI reports; update the test-case column as tests are added.
 | `[HW-001..007]` | SDD-hardware §3 | `[TEST-HW-*]` |
 | `[CTL-001..006]` | SDD-control §3 | `[TEST-CTL-*]` |
 | `[SUB-001..006]` | SDD-subsystem §3 | `[TEST-SUB-*]` |
-| `[AUT-001..005]` | SDD-auto §3 | `[TEST-AUT-*]` |
+| `[AUT-001..008]` | SDD-auto §3 | `[TEST-AUT-*]` |
 | `[SID-001..004]` | SDD-sysid §3 | `[TEST-SID-*]` |
 | `[NT-001..003]` | SDD-nt §3 | `[TEST-NT-*]` |
 | `[UTL-001..005]` | SDD-util §3 | `[TEST-UTL-*]` |
 | `[VIS-001..005]` | SDD-vision §3 | `[TEST-VIS-*]` |
-| `[INT-001..009]` | (package-info.java imports) | (static check) |
+| `[INT-001..012]` | (package-info.java imports) | (static check) |

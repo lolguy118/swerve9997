@@ -22,6 +22,9 @@ look up vendor API details without inlining them in this repo.
 ## Auto / Path Following
 
 - PathPlanner: <https://pathplanner.dev/home.html>
+- PathPlannerLib Java API: <https://pathplanner.dev/api/java/>
+- Choreo: <https://choreo.autos/>
+- ChoreoLib source: <https://github.com/SleipnirGroup/Choreo>
 
 ## Logging & Telemetry
 

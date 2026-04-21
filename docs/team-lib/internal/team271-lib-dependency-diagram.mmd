@@ -2,6 +2,7 @@
 %% Each layer may depend only on layers below it.
 %% Arrow direction: "depends on"
 %% Source of truth: ADR-004 (layered architecture), ADR-006 (CTRE primary),
+%%                  ADR-013 (PathPlanner + Choreo trajectory abstraction),
 %%                  ADR-016 (vision abstraction), ADR-017 (CAN-bus abstraction)
 
 graph TD
@@ -12,7 +13,9 @@ graph TD
     vendor_ctre["<b>vendor/ctre/</b><br/>CTREMotor · CTREEncoder · CTREAbsoluteEncoder<br/>CTREGyro · CTRELimitSwitch · CTRERangeSensor · CANBusCTRE"]
     vendor_limelight["<b>vendor/limelight/</b><br/>LimelightCamera"]
     vendor_photon["<b>vendor/photonvision/</b><br/>PhotonCamera"]
-    api["<b>api/</b><br/>Motor · ClosedLoopMotor · Encoder · AbsoluteEncoder<br/>Gyro · LimitSwitch · RangeSensor · CANBus<br/>vision/: Camera · PoseEstimate · TargetDetection"]
+    vendor_pathplanner["<b>vendor/pathplanner/</b><br/>PathPlannerTrajectoryLoader · PathPlannerFollower"]
+    vendor_choreo["<b>vendor/choreo/</b><br/>ChoreoTrajectoryLoader · ChoreoFollower"]
+    api["<b>api/</b><br/>Motor · ClosedLoopMotor · Encoder · AbsoluteEncoder<br/>Gyro · LimitSwitch · RangeSensor · CANBus<br/>vision/: Camera · PoseEstimate · TargetDetection<br/>trajectory/: Trajectory · TrajectorySample · TrajectoryFollower"]
     root["<b>com.team271.lib</b> (root)<br/>TObj · Lifecycle · Named · TRobot · ConstantsLib<br/>wpilib/: IterativeRobotBase · TimedRobot extensions"]
     crosscut["<b>nt/ · sysid/ · util/</b><br/>NTTable · NTEntry · LoggedNTInput<br/>SysID logging · Alert · Elastic · DriveSignal"]
     bridge["<b>bridge/</b><br/>CommandBridge (WPILib Command interop, ADR-013)"]
@@ -25,6 +28,8 @@ graph TD
     vendor_ctre --> api
     vendor_limelight --> api
     vendor_photon --> api
+    vendor_pathplanner --> api
+    vendor_choreo --> api
     bridge --> auto
     bridge --> subsystem
 
@@ -42,6 +47,8 @@ graph TD
     style vendor_ctre fill:#cce5ff,stroke:#004085
     style vendor_limelight fill:#cce5ff,stroke:#004085
     style vendor_photon fill:#cce5ff,stroke:#004085
+    style vendor_pathplanner fill:#cce5ff,stroke:#004085
+    style vendor_choreo fill:#cce5ff,stroke:#004085
     style hardware fill:#fff3cd,stroke:#856404
     style control fill:#f8d7da,stroke:#721c24
     style subsystem fill:#e2e3e5,stroke:#383d41

@@ -24,8 +24,8 @@ If you're new:
 - The full ADR list (with status legend) is in
   [`../README.md`](../README.md#architecture-decision-records).
 - Good first ADRs to read, in this order:
-  1. [ADR-001: Team271-Lib as a Standalone Library](ADR-001-team271-lib-standalone-library.md)
-  2. [ADR-003: Layered Architecture](ADR-003-layered-architecture.md)
+  1. [ADR-001: Team271-Lib as a Standalone Library, Separate from Robot Projects](ADR-001-team271-lib-standalone-library.md)
+  2. [ADR-003: Layered Architecture — api ← vendor/* ← hardware ← control ← subsystem ← auto](ADR-003-layered-architecture.md)
   3. [ADR-005: Passthrough — Wrapper, Not Wall](ADR-005-passthrough-wrapper-not-wall.md)
   4. [ADR-008: CTRE Phoenix 6 as the Primary Motor/Sensor Vendor](ADR-008-ctre-phoenix6-primary-vendor.md)
 

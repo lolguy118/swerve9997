@@ -79,7 +79,7 @@ existing controller reference instead of constructing a new one.
 
 ```text
 TObj
-└── TransmissionBase        multi-motor (1 leader + up to 3 followers),
+└── TransmissionBase        multi-motor (1 leader + followers),
     │                       encoder selection, shifter support, gear ratios,
     │                       DCMotor model, unit conversion, input validation
     └── TransmissionFX      TalonFX-specific control mode matrix:

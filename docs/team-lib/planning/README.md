@@ -115,6 +115,7 @@ Statuses an ADR can have:
 | [ADR-014](adr/ADR-014-desired-to-actual-state-pattern.md) | Desired-to-Actual State Pattern in Subsystems | Accepted |
 | [ADR-015](adr/ADR-015-explicit-instantiation-no-singletons.md) | Explicit Object Instantiation, No Singletons in Library Code | Accepted |
 | [ADR-016](adr/ADR-016-vendor-neutral-vision-abstraction.md) | Vendor-Neutral Vision Abstraction in `api/vision/` | Accepted |
+| [ADR-017](adr/ADR-017-can-bus-abstraction.md) | Vendor-Neutral CAN Bus Abstraction | Accepted |
 
 ## Planned ADRs
 
@@ -128,8 +129,7 @@ that depends on it — not speculatively.
 | ----------- | ----- |
 | Null-safety annotation policy | Choice of annotation set (JSpecify, JetBrains, JSR-305) and rollout plan before NullAway becomes a CI gate |
 | Supply-chain / CVE response | How the library triages OWASP / GitHub dependency-review findings and which severities trigger an out-of-phase hotfix |
-| CAN-bus abstraction in `api/` | Whether to introduce a vendor-neutral `CANBus` interface (and update `DeviceID` to hold a reference) once a concrete consumer emerges — e.g., bus utilization alerts, follower-bus validation refactor, or multi-bus routing |
-| Unlimited followers in `TransmissionBase` | Whether to lift the current 4-motor cap (1 leader + 3 followers). Phoenix 6 itself imposes no limit; the cap is design-imposed and tied to pre-allocated control-request arrays. Change when a concrete mechanism (e.g., 6-wheel tank, exotic climber) needs it |
+| Unlimited followers in `TransmissionBase` | Whether to lift the current 4-motor cap (1 leader + followers). Phoenix 6 itself imposes no limit; the cap is design-imposed and tied to pre-allocated control-request arrays. Change when a concrete mechanism (e.g., 6-wheel tank, exotic climber) needs it |
 
 ## Planned SDDs
 

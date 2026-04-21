@@ -20,3 +20,4 @@ input shaping, library onboarding) live under
 | File | Scope |
 | ---- | ----- |
 | [`development-setup.md`](development-setup.md) | Install Java 17, WPILib, and Gradle so you can build and test any Team 271 Java project locally |
+| [`claude-code-workflow.md`](claude-code-workflow.md) | How to collaborate with Claude Code productively in this repository — Explore → Plan → Code → Verify, slash commands, pitfalls |

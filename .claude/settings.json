@@ -31,7 +31,17 @@
       "Bash(./gradlew compileJava)",
       "Bash(./gradlew compileJava -q)",
       "Bash(./gradlew compileTestJava)",
-      "Bash(./gradlew spotlessApply compileTestJava)"
+      "Bash(./gradlew spotlessApply compileTestJava)",
+      "Bash(./gradlew test)",
+      "Bash(./gradlew test *)",
+      "Bash(./gradlew jacocoTestReport)",
+      "Bash(./gradlew check)",
+      "Bash(./gradlew build)",
+      "Bash(./gradlew build *)",
+      "Bash(./gradlew javadoc)",
+      "Bash(./gradlew checkstyleMain)",
+      "Bash(./gradlew checkstyleTest)",
+      "Bash(./gradlew spotbugsMain)"
     ],
     "deny": [
       "Bash(rm -rf*)",
@@ -49,6 +59,30 @@
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-start-reminders.sh",
+            "description": "re-inject project conventions after context compaction"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/protect-files.sh",
+            "description": "block edits to vendordeps/, CI workflows; prompt on Accepted ADR edits"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",

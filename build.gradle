@@ -7,7 +7,6 @@ plugins {
     id "checkstyle"
     id "com.github.spotbugs" version "6.0.21"
     id "net.ltgt.errorprone" version "4.0.1"
-    id "org.gradle.test-retry" version "1.5.10"
 }
 
 java {
@@ -109,14 +108,6 @@ test {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
     finalizedBy jacocoTestReport
-
-    // Phoenix 6 sim occasionally SIGSEGVs in native code on Linux CI —
-    // retry in a fresh JVM so transient crashes don't block merges.
-    retry {
-        maxRetries = 2
-        maxFailures = 5
-        failOnPassedAfterRetry = false
-    }
 }
 
 jacoco {

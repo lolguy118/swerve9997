@@ -96,6 +96,22 @@ public class CTREManager {
      * start with a clean CTREManager. Replaces the reflection-based cleanup pattern.
      */
     public static void resetForTesting() {
+        /*
+         * Close every tracked device so the Phoenix 6 sim unregisters its native
+         * state (sim motor/rotor/limit handles). Leaking these caused SIGSEGVs
+         * in libCTRE_SimProTalonFX when a subsequent test triggered a bus-wide
+         * iteration that dereferenced freed sim handles.
+         */
+        for (ParentDevice device : devices) {
+            if (device instanceof AutoCloseable closeable) {
+                try {
+                    closeable.close();
+                } catch (Exception ignored) {
+                    /* Test-only cleanup — continue closing the rest. */
+                }
+            }
+        }
+
         buses.clear();
         devicesByBus.clear();
         devices.clear();

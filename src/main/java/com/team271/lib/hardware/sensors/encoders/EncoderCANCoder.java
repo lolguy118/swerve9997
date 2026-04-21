@@ -79,6 +79,7 @@ public class EncoderCANCoder extends EncoderCTRE {
          * Create CANCoder
          */
         enc = new CANcoder(encDeviceID.getDeviceNumber(), encDeviceID.getCANBus());
+        CTREManager.addDevice(enc);
 
         simState = enc.getSimState();
 

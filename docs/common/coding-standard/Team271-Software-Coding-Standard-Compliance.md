@@ -81,7 +81,8 @@ cannot be caught by automated tools):
 - [ ] Motor direction: `configDirection()` matches physical mechanism intent
 - [ ] Telemetry keys: pre-defined string constants, not computed or concatenated per-cycle
 - [ ] Resource cleanup: timers and sensor subscriptions cleaned up in mode exit methods
-- [ ] Timeout protection: all waiting operations have named timeout constants with fail-safe behavior (implemented in CODE-SAF-002c, CODE-SAF-008, CODE-SAF-010)
+- [ ] Timeout protection: waiting operations have named timeout constants with fail-safe behavior (CODE-SAF-002c)
+- [ ] Fault tolerance and continuous monitoring: motor-reset detection, brownout recovery, mid-match `robotInit` / FMS-data handling, vision-staleness checks, and sustained over-current detection all trigger fail-safe transitions (CODE-SAF-008, CODE-SAF-009, CODE-SAF-010)
 - [ ] Runtime tunability: configurable values use `TunableInput` + `applyTuning()` pattern (CODE-BUG-004)
 
 ---

@@ -63,6 +63,7 @@ For each issue found, briefly explain the bug category (referencing the Known Bu
 
 - [ ] StatusSignals checked for null AND `.getStatus().isOK()` before reading
 - [ ] Optional values from WPILib (e.g., `DriverStation.getAlliance()`) have fallbacks
+- [ ] FMS / Driver Station data (alliance, location, match time) is not cached at `robotInit()` time; read fresh per use or via DS event listener (CODE-SAF-008e)
 - [ ] Singleton access throws clear error if not initialized
 - [ ] Controller disconnect handled gracefully (check `isConnected()`)
 

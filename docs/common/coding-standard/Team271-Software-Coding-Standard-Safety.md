@@ -1,6 +1,6 @@
+<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
-<!-- markdownlint-disable-file MD041 -->
 
 ## Safety Practices
 
@@ -178,6 +178,44 @@ d. `teleopInit()` **shall** preserve homing state (`isZeroed`) from a
    (detected per rule a), to avoid unnecessary re-homing after a
    transient comms loss.
 
+e. Code **shall not** assume FMS / Driver Station data is available
+   at `robotInit()` or during any one-shot initialization. The
+   alliance color, driver station position, event name, and match
+   time may be:
+
+   - Absent at `robotInit()` — typical in simulation, bench
+     testing, or early at a competition before the FMS attaches.
+   - Arriving mid-cycle — the Driver Station can attach after the
+     robot boots.
+   - Changing after first read — alliance station assignment can
+     change during practice / qualification rounds.
+
+   Any logic that depends on these values **shall** either:
+
+   - Read the value fresh on each use (e.g., per periodic cycle
+     for alliance-dependent targeting), **or**
+   - Cache only inside a Driver Station event listener (or an
+     equivalent "DS attached" gated callback) and re-read when the
+     attachment state changes.
+
+   Alliance-dependent configuration (path mirroring, target pose
+   selection, field-oriented drive heading offset) **shall** handle
+   the "alliance not yet known" case — WPILib returns
+   `Optional.empty()` from `DriverStation.getAlliance()` — with a
+   defined safe behavior, not an unchecked `.get()`.
+
+   Match-time logic **shall** treat
+   `DriverStation.getMatchTime() <= 0` as "no match in progress"
+   and **shall not** drive actuator commands from a negative or
+   zero match time.
+
+   > *Industry note: FMS data arrival is an asynchronous event
+   > with no guaranteed timing relative to robot code startup. The
+   > WPILib API shift to `Optional<Alliance>` / `OptionalInt` in
+   > 2024 made the "not yet known" state explicit in the type
+   > system; `getMatchTime()`'s sentinel-return (-1) is the one
+   > remaining place where a runtime check is still required.*
+
 ### CODE-SAF-009 -- Vision Data Validation
 
 a. Pose estimates from vision systems (Limelight, PhotonVision) **shall**
@@ -195,14 +233,25 @@ c. Vision-dependent state transitions (e.g., ALIGNING_WITH_HUB)
 
 ### CODE-SAF-010 -- Sustained Over-Current Protection
 
-a. If a motor's torque current exceeds its configured supply current
-   limit for a sustained period (defined by a named constant), the
-   subsystem **should** transition to IDLE and notify the driver via
-   the driver-notification facility. This protects against motor jam scenarios where the hardware
-   current limit alone may not prevent mechanism damage.
+a. If a motor's torque current exceeds the named sustained-current
+   threshold (see (b)) for the named sustained duration (also
+   (b)), the subsystem **should** transition to a safe/idle state
+   per the project's state-machine convention and notify the
+   driver via the driver-notification facility.
+
+   This software-level check is **not** redundant with the CTRE
+   firmware's `StatorCurrentLimit` / `SupplyCurrentLimit` configs:
+   the firmware limits cap peaks and short-term averages at the
+   motor controller, but a mechanism jammed or overloaded just
+   below the configured peak can still sustain damage over
+   seconds. The sustained-current threshold is a **separate**,
+   typically-lower value chosen per-subsystem based on its duty
+   cycle and mechanical limits.
 
 b. The sustained-current threshold and duration **shall** be named
-   constants in the subsystem's Constants class, not magic numbers.
+   constants in the project's shared constants artifact (see
+   [CODE-MAF-003](Team271-Software-Coding-Standard-Modules.md#code-maf-003----constants-organization)),
+   not magic numbers.
 
 ### CODE-SAF-011 -- CAN Bus Partition Resilience
 

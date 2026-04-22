@@ -20,7 +20,9 @@ esac
 
 # Cross-tier Markdown links: (...team-lib/...) or (...<project>/...).
 # Matches both file-relative (../../team-lib/) and absolute (docs/team-lib/).
-LINK_HITS=$(grep -n -E '\]\([^)]*(team-lib|<project>|<robot>|<robot-name>)/' \
+# Also catches placeholder paths like robot-<year>-reference.md that point
+# at consuming-project content (the placeholder reveals tier-boundary intent).
+LINK_HITS=$(grep -n -E '\]\([^)]*((team-lib|<project>|<robot>|<robot-name>)/|<year>)' \
   "$FILE_PATH" 2>/dev/null || true)
 
 # Bare artifact references by ID (ADR-NNN, SDD-<name>). Code fences and

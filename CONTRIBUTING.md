@@ -102,4 +102,6 @@ manually formatted:
 - `BuildConstants.java` (gversion plugin)
 - `LimelightHelpers.java` (vendor library, vendored under `util/`)
 
-These are exempt from formatting rules but not from safety rules.
+These are exempt from all `CODE-*` rules except `CODE-SAF-*`
+(safety) — the full exemption is documented in
+[the coding standard's §1.2 Scope](docs/common/coding-standard/Team271-Software-Coding-Standard.md#12-scope).

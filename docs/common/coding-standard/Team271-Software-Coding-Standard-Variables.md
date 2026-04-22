@@ -42,24 +42,24 @@ e. Static final constants **shall** use one of two naming
    conventions based on their purpose:
 
    - **UPPER_SNAKE_CASE** for operational and fixed constants
-     (speeds, RPS targets, bus names, physical measurements,
-     duty cycles):
+     (bus names, physical measurements, periods, duty-cycle
+     limits):
 
      ```java
-     public static final double SHOOT_RPS = 38.0;
      public static final String CAN_BUS_CANIVORE_A = "BusA";
+     public static final double WHEEL_DIAMETER_M = 0.0762;
      private static final int TELEMETRY_PERIOD = 5;
      ```
 
    - **`k` prefix + camelCase** (`kCamelCase`) for tunable
      hardware-configuration constants (PID gains, current limits,
-     timing thresholds, homing parameters, path names):
+     timing thresholds, homing parameters, target speeds/RPS):
 
      ```java
      public static final double kTranslationKp = 2.0;
      public static final int kExampleCurrentStatorLimit = 120;
      public static final double kHomingTimeoutSec = 4.0;
-     public static final String kPathNameStation1 = "<year>PathName1";
+     public static final double kShooterRpsTarget = 38.0;
      ```
 
    The `k` prefix signals "this value is likely to be tuned during
@@ -192,7 +192,10 @@ a. Identifiers **shall** not differ only by:
 
 a. Numeric constants other than `0`, `1`, `-1`, `0.0`, `1.0`, and
    `2.0` **shall** be replaced by named constants when used in
-   executable code.
+   executable code. `2.0` is permitted to support bisection and
+   midpoint formulas (e.g., `(a + b) / 2.0`, `diameter / 2.0`)
+   where naming the divisor would reduce rather than add
+   readability; all other literals require a named constant.
 
 b. All tunable values (voltages, speeds, PID gains, current limits,
    timing windows) **shall** be defined as named constants — either

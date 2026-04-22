@@ -251,8 +251,8 @@ if (!status.isOK()) {
 | Interfaces | PascalCase | (none) | `Interpolable` |
 | Methods | camelCase | (none) | `robotInit()`, `isZeroed()` |
 | Instance fields | camelCase | `m` | `mInstance`, `mControlState` |
-| Operational constants | UPPER_SNAKE_CASE | (none) | `SHOOT_RPS`, `EXAMPLE_SPEED` |
-| Tunable constants | camelCase | `k` | `kTranslationKp`, `kHomingVoltage` |
+| Operational constants | UPPER_SNAKE_CASE | (none) | `CAN_BUS_RIO`, `WHEEL_DIAMETER_M` |
+| Tunable constants | camelCase | `k` | `kTranslationKp`, `kShooterRpsTarget` |
 | Static mutable fields | camelCase | `m` | `mInstance` (singleton) |
 | Method parameters | camelCase | `arg` | `argParent`, `argVoltage` |
 | Local variables | camelCase | (none) | `speed`, `voltage` |

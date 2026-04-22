@@ -39,11 +39,23 @@ instantiation — reusable library code uses explicit instantiation and
 no singletons; robot-project subsystems commonly use the singleton
 pattern documented in the consuming project's own templates.
 
-**Exempt from formatting rules** (but not safety rules):
+**Exempt from all `CODE-*` rules except `CODE-SAF-*`** (safety
+concerns in vendor-owned code are addressed by wrapping at the
+library layer rather than editing the vendor source):
 
-- Generated code: `BuildConstants.java` (gversion), `TunerConstants.java`
-  (CTRE Tuner X), `LimelightHelpers.java`
-- Third-party vendordep source code
+- Generated code: `BuildConstants.java` (gversion),
+  `TunerConstants.java` (CTRE Tuner X)
+- Vendored third-party source: `LimelightHelpers.java`
+  (vendor-maintained per upstream releases), plus any
+  `vendordeps/**` source imported unchanged
+
+Tooling enforces this exemption at the Spotless, Checkstyle,
+SpotBugs, and ErrorProne layers — see
+[`.gitattributes`](../../../.gitattributes),
+[`config/checkstyle/checkstyle.xml`](../../../config/checkstyle/checkstyle.xml),
+[`config/spotbugs/exclude.xml`](../../../config/spotbugs/exclude.xml),
+and the `excludedPaths` / `exclude` blocks in
+[`build.gradle`](../../../build.gradle).
 
 ### 1.3 Terminology (Acronyms Used in This Document)
 

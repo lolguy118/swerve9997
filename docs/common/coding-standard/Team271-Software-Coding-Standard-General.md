@@ -70,7 +70,7 @@ b. The `final` keyword **shall** be used:
 > makes bugs harder to find and easier to introduce.*
 
 c. The `static` keyword **shall** be used for:
-   - Constants: `public static final double SHOOT_RPS = 38.0;`
+   - Constants: `public static final double WHEEL_DIAMETER_M = 0.0762;`
    - Single-instance references held at class level (if the
      project's coding standard defines such a pattern).
    - Utility methods that do not depend on instance state.

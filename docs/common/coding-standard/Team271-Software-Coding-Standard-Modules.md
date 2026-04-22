@@ -55,8 +55,10 @@ a. Generated files (`BuildConstants.java`, `TunerConstants.java`)
    `frc.robot` package (not `com.example.app`) as configured
    in `build.gradle`.
 
-b. Generated files are exempt from formatting rules in this standard
-   but are still subject to safety rules (e.g., current limits in
-   `TunerConstants.java` should be reviewed).
+b. Generated files are exempt from all `CODE-*` rules except
+   `CODE-SAF-*` (safety) — e.g., current limits in
+   `TunerConstants.java` should still be reviewed. The full
+   exemption is documented in
+   [the coding standard's §1.2 Scope](Team271-Software-Coding-Standard.md#12-scope).
 
 ---

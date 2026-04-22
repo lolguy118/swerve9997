@@ -24,9 +24,41 @@ b. Any `if` statement with an `else if` clause **should** end with
 c. Nested if-else statements **should** not be deeper than 4 levels.
    Use method extraction or switch statements to reduce complexity.
 
-d. The ternary operator (`? :`) is acceptable for simple value
-   selection but **should** be avoided for complex expressions or
-   when either branch has side effects.
+d. The ternary operator (`? :`) **shall not** be used. Conditional
+   value selection **shall** use an explicit `if`/`else` statement
+   with a result variable (consistent with the single-return
+   discipline in
+   [CODE-FUN-002(a)](Team271-Software-Coding-Standard-Methods.md#code-fun-002----method-discipline)).
+   For null-default selection, `Optional.ofNullable(x).orElse(default)`
+   is permitted as a library-call alternative; it is not the
+   `? :` operator.
+
+   > *Industry note: MISRA-C 2012 Rule 14.1 says "the conditional
+   > operator `?:` should not be used." The Barr Group Embedded C
+   > Standard discourages it for the same reason: a ternary
+   > compresses a decision into a single expression, making the
+   > conditional harder to see at review and harder to set a
+   > breakpoint on one branch. Explicit `if`/`else` keeps the
+   > control-flow graph linear and debuggable.*
+
+   ```java
+   /* WRONG: ternary operator */
+   final double nativePos =
+       mEncoder != null ? mEncoder.mechanismToNative(argPosition) : argPosition;
+
+   /* CORRECT: explicit if/else with result variable */
+   final double nativePos;
+   if (mEncoder != null) {
+       nativePos = mEncoder.mechanismToNative(argPosition);
+   } else {
+       nativePos = argPosition;
+   }
+
+   /* CORRECT: library-call alternative for null-default */
+   final double nativePos = Optional.ofNullable(mEncoder)
+       .map(e -> e.mechanismToNative(argPosition))
+       .orElse(argPosition);
+   ```
 
 ### CODE-CTL-002 -- Switch Statements
 

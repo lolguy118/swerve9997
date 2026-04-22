@@ -140,8 +140,36 @@ and the safety guardrails in
 
 ---
 
+## CODE-LIB-006 -- Subsystem Lifecycle Contract
+
+a. Subsystem lifecycle methods **shall** be called in this order by
+   `SubsystemManager`:
+
+   ```text
+   robotInit(argTimestamp)
+   → robotPeriodicBefore(argTimestamp)    [read sensors]
+   → <mode>Periodic(argTimestamp)         [state machine logic]
+   → robotPeriodicAfter(argTimestamp)     [apply motor outputs]
+   → outputTelemetry()                   [publish to NT/logs — no parameter]
+   ```
+
+b. Motor outputs **shall** only be commanded in `robotPeriodicAfter()`,
+   never in `teleopPeriodic()` or `autonomousPeriodic()`. The mode-
+   specific periodic methods set *desired* state; `robotPeriodicAfter()`
+   *applies* it.
+
+c. Sensor reading **shall** be done in `robotPeriodicBefore()`, not in
+   the mode-specific periodic methods, so that all periodic logic
+   within a cycle sees a consistent sensor snapshot.
+
+**Anchor:** [ADR-010](../planning/adr/ADR-010-desired-to-actual-state-pattern.md)
+and [SDD-subsystem.md](../planning/sdd/SDD-subsystem.md).
+
+---
+
 ## Revision History
 
 | Revision | Date | Author | Description |
 | -------- | ---- | ------ | ----------- |
 | Draft | (initial) | Team 271 | Initial `CODE-LIB-*` rules extracted from ADRs during the common-tier isolation refactor |
+| Draft | 2026-04-21 | Team 271 | Added CODE-LIB-006 (Subsystem Lifecycle Contract) migrated from common CODE-FUN-004 during the common-tier isolation refactor |

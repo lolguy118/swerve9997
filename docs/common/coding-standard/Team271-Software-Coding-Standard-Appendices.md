@@ -110,17 +110,6 @@ Also avoid: `var` (reserved type name), `record`, `sealed`,
 
 ## Appendix D: FRC Robot Lifecycle Reference
 
-### Team 271 Execution Flow
-
-```text
-Robot.robotPeriodic()
-  → hardwareMgr.refreshAll()             // bulk CAN signal refresh
-  → SubsystemManager.robotPeriodicBefore() // read sensors (all subsystems)
-  → <mode>Periodic()                     // state machine logic
-  → SubsystemManager.robotPeriodicAfter() // apply motor outputs (all subsystems)
-  → SubsystemManager.outputTelemetry()   // publish NT/logs (all subsystems)
-```
-
 ### Mode Transitions
 
 ```text
@@ -261,7 +250,7 @@ if (!status.isOK()) {
 | Operational constants | UPPER_SNAKE_CASE | (none) | `SHOOT_RPS`, `EXAMPLE_SPEED` |
 | Tunable constants | camelCase | `k` | `kTranslationKp`, `kHomingVoltage` |
 | Static mutable fields | camelCase | `m` | `mInstance` (singleton) |
-| Method parameters | camelCase | `arg` | `argParent`, `argTimestamp` |
+| Method parameters | camelCase | `arg` | `argParent`, `argVoltage` |
 | Local variables | camelCase | (none) | `speed`, `voltage` |
 | Temporary locals | camelCase | `tmp` | `tmpStatusReturn` |
 | NetworkTables fields | camelCase | `nt` | `ntRobot`, `ntMMCruiseVel` |

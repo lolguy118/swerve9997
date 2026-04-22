@@ -70,7 +70,7 @@ and determines execution order per cycle.
 **Lifecycle orchestration** — the manager broadcasts every lifecycle
 phase to every registered subsystem, in order, under a single
 exception-isolated iteration pass per phase. The canonical per-cycle
-order is documented in §4 Data Flow.
+order is documented in §4.1 Robot-Level Execution Flow.
 
 **Exception isolation** — every subsystem call is wrapped in a
 try/catch. On exception, the manager logs the error, sends a
@@ -98,6 +98,34 @@ entry callback runs after. Simple subsystems can continue to use
 manual enum fields and switch statements — the helper is optional.
 
 ## 4. Data Flow
+
+### 4.1 Robot-Level Execution Flow
+
+`Robot.robotPeriodic()` runs once per main loop iteration. The
+`SubsystemManager` drives every registered subsystem through the
+same ordered sequence of phases, so all sensor reads complete before
+any state-machine logic runs, and all state-machine logic completes
+before any motor output is applied. This is the
+desired-to-actual separation from
+[ADR-010](../adr/ADR-010-desired-to-actual-state-pattern.md); the
+leading `hardwareMgr.refreshAll()` call implements the centralized
+bulk CAN refresh from
+[ADR-009](../adr/ADR-009-centralized-can-refresh.md).
+
+```text
+Robot.robotPeriodic()
+  → hardwareMgr.refreshAll()             // bulk CAN signal refresh
+  → SubsystemManager.robotPeriodicBefore() // read sensors (all subsystems)
+  → <mode>Periodic()                     // state machine logic
+  → SubsystemManager.robotPeriodicAfter() // apply motor outputs (all subsystems)
+  → SubsystemManager.outputTelemetry()   // publish NT/logs (all subsystems)
+```
+
+Each `SubsystemManager.*` broadcast fans out across every registered
+subsystem under a single exception-isolated iteration pass (§3.2).
+The subsystem-level view of that fan-out is §4.2.
+
+### 4.2 Per-Subsystem Flow
 
 ```text
 // Per-cycle flow through a subsystem

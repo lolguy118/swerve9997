@@ -34,7 +34,7 @@ a. A single return point at the end of a method is preferred but not
    mandatory. Early returns are acceptable for guard clauses:
 
    ```java
-   public void teleopPeriodic(final double argTimestamp) {
+   public void teleopPeriodic() {
        if (!isZeroed()) {
            return; // Guard clause: acceptable early return
        }
@@ -84,30 +84,6 @@ a. Shared logic **shall** be extracted into utility methods rather
 
 b. Utility classes **shall** be declared `final` with a `private`
    constructor to prevent instantiation.
-
-### CODE-FUN-004 -- Robot Lifecycle Contract
-
-> **Anchor:** This rule codifies the lifecycle ordering underpinning
-> the desired-to-actual state pattern. Projects typically record this
-> choice in their own architecture decision record.
-
-a. Subsystem lifecycle methods **shall** be called in this order by
-   the `SubsystemManager`:
-
-   ```text
-   robotInit(argTimestamp)
-   → robotPeriodicBefore(argTimestamp)    [read sensors]
-   → <mode>Periodic(argTimestamp)         [state machine logic]
-   → robotPeriodicAfter(argTimestamp)     [apply motor outputs]
-   → outputTelemetry()                   [publish to NT/logs — no parameter]
-   ```
-
-b. Motor outputs **shall** only be commanded in `robotPeriodicAfter()`,
-   never in `teleopPeriodic()` or `autonomousPeriodic()`. The periodic
-   methods set *desired* state; `robotPeriodicAfter()` *applies* it.
-
-c. Sensor reading **shall** be done in `robotPeriodicBefore()`, not
-   in the mode-specific periodic methods.
 
 ### CODE-FUN-005 -- State Machine Pattern
 
@@ -171,5 +147,13 @@ b. Public methods that accept object parameters **should** validate
 
 c. Array and list accesses with variable indices **shall** include
    bounds checks when the index comes from external input.
+
+d. Method parameters **shall** use the `arg` prefix (per
+   [CODE-VAR-001b](Team271-Software-Coding-Standard-Variables.md#code-var-001----variable-naming-convention))
+   as a defensive naming discipline. The prefix prevents accidental
+   shadowing of instance fields and makes caller-provided values
+   visibly distinct in the method body, reducing the risk of silent
+   bugs where a typo refers to `fieldName` instead of
+   `argFieldName`.
 
 ---

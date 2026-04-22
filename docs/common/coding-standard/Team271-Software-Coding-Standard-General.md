@@ -50,7 +50,7 @@ b. The `final` keyword **shall** be used:
 
    - On all method parameters:
      ```java
-     public void robotInit(final double argTimestamp)
+     public void setVoltage(final double argVoltage)
      ```
    - On all fields that are set once (at declaration or in constructor):
      ```java

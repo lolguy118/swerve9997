@@ -19,15 +19,9 @@ b. Method parameters **shall** use the `arg` prefix followed by
    camelCase:
 
    ```java
-   public void robotInit(final double argTimestamp) { ... }
-   public static ExampleSubsystem getInstance(final LifecycleBase argParent) { ... }
+   public void setVoltage(final double argVoltage) { ... }
+   public void configure(final MotorConfig argConfig) { ... }
    ```
-
-   **Note:** The team's `LifecycleBase` base class defines lifecycle methods
-   with `argTimestamp` parameters. WPILib's own lifecycle methods
-   (e.g., `robotPeriodic()`, `teleopPeriodic()`) take no parameters;
-   the `argTimestamp` is a Team 271 convention passed through
-   `SubsystemManager`.
 
 c. Local variables **shall** use camelCase without prefix. Short-lived
    temporary variables **may** use the `tmp` prefix:

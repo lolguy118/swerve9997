@@ -8,7 +8,7 @@ so nothing has to be copy-pasted or forked between repositories.
 
 ```text
 docs/
-├── common/       ← rules that apply to any Team 271 Java / FRC project
+├── common/       ← rules that apply to every Team 271 FRC Java project
 ├── team-lib/     ← specific to this library
 └── <project>/    ← specific to the robot project using the library
                     (lives only in that robot's repo, not here)
@@ -29,9 +29,8 @@ If you're new, open these in order:
 
 ## common/
 
-Framework-agnostic policy. Anything here applies verbatim to every 271
-project — the library, a season robot, a dev-tool, anything else we write
-in Java.
+FRC Java policy. Anything here applies verbatim to every 271 FRC
+project — the library and any season's robot code.
 
 Currently:
 

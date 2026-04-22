@@ -2,10 +2,9 @@
 # Common Docs
 
 This folder holds the **shared policy** that applies to every
-Team 271 Java / FRC (FIRST Robotics Competition) project — the
-library, any season's robot code, and any standalone tool the team
-writes. Anything in here is portable: it should apply unchanged to
-every project.
+Team 271 FRC (FIRST Robotics Competition) Java project — the
+library and any season's robot code. Anything in here is portable:
+it should apply unchanged to every FRC project the team ships.
 
 > **Industry bridge.** Professional software teams ship a *coding
 > standard* (how code must be written) separately from *design docs*
@@ -27,7 +26,7 @@ every project.
 
 | Path | Scope |
 | ---- | ----- |
-| [`coding-standard/`](coding-standard/) | Normative rules for all Java code — core standard + topical companions, split so you can read only the parts you need |
+| [`coding-standard/`](coding-standard/) | Normative rules for all FRC Java code — core standard + topical companions, split so you can read only the parts you need |
 | [`planning/`](planning/) | Shared planning framework — Software Development Plan, Software Verification Plan, Software Configuration Management Plan frameworks |
 | [`guides/`](guides/) | Cross-project developer guides (development setup, etc.) |
 
@@ -51,9 +50,8 @@ every project.
 
 Common docs **shall** be self-contained. They do not link to — or
 name specific artifacts in — the `team-lib/` or `<project>/` tiers.
-This keeps `common/` usable verbatim in any consuming project,
-including projects that don't vendor `team-lib/` (standalone tools,
-robot projects that don't depend on Team271-Lib, etc.).
+This keeps `common/` usable verbatim in any consuming FRC project,
+including robot projects that don't vendor `team-lib/`.
 
 Applied in practice:
 

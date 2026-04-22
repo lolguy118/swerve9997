@@ -195,8 +195,10 @@ a. Numeric constants other than `0`, `1`, `-1`, `0.0`, `1.0`, and
    executable code.
 
 b. All tunable values (voltages, speeds, PID gains, current limits,
-   timing windows) **shall** be defined as named constants, either
-   in `Constants.java` or as `private static final` fields.
+   timing windows) **shall** be defined as named constants — either
+   in the project's shared constants artifact (see
+   [CODE-MAF-003](Team271-Software-Coding-Standard-Modules.md#code-maf-003----constants-organization))
+   or as `private static final` fields on the class that uses them.
 
    ```java
    /* WRONG: magic numbers */

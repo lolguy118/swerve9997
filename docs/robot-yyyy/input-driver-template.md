@@ -31,18 +31,20 @@ public class InputDriver extends InputXBox {
      */
     @Override
     public boolean getDisableSensors() {
+        boolean result = false;
         if (mController.isConnected()) {
-            return buttons[XboxController.Button.kBack.value - 1];
+            result = buttons[XboxController.Button.kBack.value - 1];
         }
-        return false;
+        return result;
     }
 
     @Override
     public boolean getEnableSensors() {
+        boolean result = false;
         if (mController.isConnected()) {
-            return buttons[XboxController.Button.kStart.value - 1];
+            result = buttons[XboxController.Button.kStart.value - 1];
         }
-        return false;
+        return result;
     }
 
     /*

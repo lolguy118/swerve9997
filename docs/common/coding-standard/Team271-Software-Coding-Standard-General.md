@@ -71,7 +71,8 @@ b. The `final` keyword **shall** be used:
 
 c. The `static` keyword **shall** be used for:
    - Constants: `public static final double SHOOT_RPS = 38.0;`
-   - Singleton instances: `private static ExampleSubsystem mInstance;`
+   - Single-instance references held at class level (if the
+     project's coding standard defines such a pattern).
    - Utility methods that do not depend on instance state.
 
 d. The `@Override` annotation **shall** be used on every method that
@@ -290,7 +291,7 @@ b. When null is a valid state (e.g., "no path loaded"), prefer
    `Optional<T>` over nullable references for return values.
 
 c. When null indicates an error, prefer throwing
-   `IllegalStateException` (as done in `getInstance()`) over
+   `IllegalStateException` with a descriptive message over
    returning null.
 
 ### CODE-GEN-014 -- Object Equality

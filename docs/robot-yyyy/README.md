@@ -1,11 +1,12 @@
 <!-- markdownlint-disable MD013 -->
 
-# Project Template
+# Robot Project Template (`robot-yyyy/`)
 
 Scaffolding for a consuming robot project's `docs/<project>/` tier.
 A robot project that depends on Team271-Lib copies the files in this
-folder into `docs/<project>/` in its own repository and fills in the
-placeholders.
+folder into `docs/<project>/` in its own repository — typically
+`docs/robot-2026/`, `docs/robot-2027/`, etc., replacing `yyyy` with
+the season year — and fills in the placeholders.
 
 > This folder is a template, not a doc tier. Files here are not
 > loaded, vendored, or linked from the library's own docs outside of

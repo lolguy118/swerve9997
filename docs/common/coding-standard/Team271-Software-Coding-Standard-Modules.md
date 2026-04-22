@@ -19,45 +19,32 @@ d. Test classes **shall** be named `<ClassName>Test.java`.
 
 ### CODE-MAF-002 -- Package Structure
 
-a. Year-specific robot code **shall** be in
-   `com.example.app` (e.g., `com.example.app`).
+a. All Java code **shall** reside under a top-level package fixed
+   by the project's coding standard (e.g., `frc.robot`,
+   `com.example.app`). Consuming projects and any vendored
+   libraries each name their own top-level package.
 
-b. Reusable library code **shall** be in `com.example.lib` and its
-   subpackages.
+b. Package names **shall** be all lowercase with no underscores.
 
-c. **(Robot-project code.)** Robot-project subsystems **shall** be
-   in the `subsystems` subpackage. Input handling **shall** be in
-   `subsystems.Input`. Library subsystems live in
-   `com.example.lib*` and are out of scope for this item.
-
-   **Exception:** the swerve drivetrain class implements the WPILib
-   `edu.wpi.first.wpilibj2.command.Subsystem` interface (not the
-   team271 `com.example.lib` base class) because
-   it extends the CTRE-generated drivetrain class. It is owned by
-   the drive subsystem and does not participate in the
-   `SubsystemManager` lifecycle directly.
-
-d. Package names **shall** be all lowercase with no underscores.
+Subpackage conventions — for example, where subsystems, input
+handling, or any vendored-library code must live — belong in the
+project's coding standard and in any library-specific coding
+standard it inherits.
 
 ### CODE-MAF-003 -- Constants Organization
 
-a. Robot-wide constants **shall** be organized in `Constants.java`
-   using nested `public static final class` inner classes grouped
-   by subsystem or function:
+a. Constants referenced by more than one class **shall** be defined
+   in a shared location rather than duplicated. The project's
+   coding standard fixes the concrete artifact (e.g., a project
+   `Constants` class) and any subsystem-grouping convention.
 
-   ```java
-   public static final class ExampleASubsystemConstants { ... }
-   public static final class ExampleBSubsystemConstants { ... }
-   public static final class AutoConstants { ... }
-   ```
+b. Utility classes whose sole purpose is to hold `static` members
+   **shall** declare a `private` constructor to prevent
+   instantiation.
 
-b. Each inner constants class **shall** have a `private` constructor
-   to prevent instantiation.
-
-c. Constants specific to a single subsystem **may** alternatively be
-   defined as `private static final` fields within that subsystem
-   class, but **should** be placed in `Constants.java` when they are
-   referenced by multiple classes.
+c. Constants used only inside a single class **may** be declared as
+   `private static final` fields on that class instead of in the
+   shared constants artifact.
 
 ### CODE-MAF-004 -- Generated Code
 

@@ -30,13 +30,48 @@ f. Method names **shall** be descriptive of their purpose. Use verbs
 
 ### CODE-FUN-002 -- Method Discipline
 
-a. A single return point at the end of a method is preferred but not
-   mandatory. Early returns are acceptable for guard clauses:
+a. Every method **shall** have exactly one `return` statement,
+   placed at the end of the method body. Early returns (including
+   guard clauses) **shall not** be used. For methods that compute a
+   value, assign to a local result variable and return it once at
+   the bottom.
+
+   **Permitted exits besides the tail `return`:**
+
+   - `throw` statements for argument validation or error
+     propagation (see
+     [CODE-GEN-011](Team271-Software-Coding-Standard-General.md#code-gen-011----exception-handling)).
+   - The implicit exit at the closing brace of a `void` method
+     whose logic is structured so every path falls through.
+
+   > *Industry note: MISRA Rule 15.5 says "A function should have a
+   > single point of exit at the end." Single-exit methods are 
+   > easier to read (one control-flow graph instead of branching
+   > returns), easier to test (one breakpoint covers all paths),
+   > and easier to extend with cleanup or logging later without
+   > revisiting every return site.*
 
    ```java
+   /* CORRECT: value-returning method, single return at end */
+   public double computeDutyCycle(final double argInput) {
+       double result = 0.0;
+       if (isReady() && isWithinBounds(argInput)) {
+           result = clamp(argInput * kScale);
+       }
+       return result;
+   }
+
+   /* CORRECT: void method, main logic inside the guard */
+   public void teleopPeriodic() {
+       if (isZeroed()) {
+           // ... main logic
+       }
+   }
+
+   /* WRONG: early return as guard clause */
    public void teleopPeriodic() {
        if (!isZeroed()) {
-           return; // Guard clause: acceptable early return
+           return;
        }
        // ... main logic
    }
@@ -84,46 +119,6 @@ a. Shared logic **shall** be extracted into utility methods rather
 
 b. Utility classes **shall** be declared `final` with a `private`
    constructor to prevent instantiation.
-
-### CODE-FUN-005 -- State Machine Pattern
-
-> **Anchor:** The desired-to-actual state pattern is the canonical way
-> to make every transition explicit and auditable. Projects typically
-> record this choice in their own ADR and implement it in their
-> subsystem base class.
->
-> *Industry note: DO-178C (the avionics software certification standard)
-> emphasizes deterministic, traceable state management. The
-> desired-state/actual-state pattern makes every transition explicit and
-> auditable -- you can always answer "what state is the robot in and why
-> did it get there?" This is the same pattern used in flight control
-> software.*
-
-a. **(Robot-project code.)** Subsystems that use state machines
-   **shall** maintain two state variables: `mControlState` (current)
-   and `mDesiredControlState` (desired). The desired state is set in
-   `teleopPeriodic()` or `autonomousPeriodic()`; the actual state is
-   applied in `robotPeriodicAfter()`. Library subsystems follow the
-   same pattern with non-`m`-prefixed field names.
-
-   ```java
-   /* Set in teleopPeriodic */
-   mDesiredControlState = ExampleControlState.INDEX;
-
-   /* Applied in robotPeriodicAfter */
-   mControlState = mDesiredControlState;
-   switch (mControlState) {
-       case INDEX:
-           setValue(ExampleSubsystemConstants.EXAMPLE_SPEED);
-           break;
-       // ...
-   }
-   ```
-
-b. State enums **shall** include all possible states including `IDLE`.
-
-c. All state transitions **shall** be explicit. No state shall be
-   unreachable.
 
 ### CODE-FUN-006 -- Defensive Checks
 

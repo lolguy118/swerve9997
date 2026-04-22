@@ -2,14 +2,7 @@
 # Team 271 Java Coding Standard
 
 Document No: 271-JCS\
-Revision: Draft\
-Date of Release: (see revision history)
-
-## Revision History
-
-| Revision | Date | Author | Description |
-| -------- | ---- | ------ | ----------- |
-| Draft | (initial) | Team 271 | Initial draft |
+Revision: Draft
 
 ---
 

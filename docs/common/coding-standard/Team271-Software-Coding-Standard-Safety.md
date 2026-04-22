@@ -14,13 +14,17 @@ b. Auto chooser values **shall** be validated. The `default` case
    in auto selection **shall** select a safe "do nothing" mode:
 
    ```java
+   AutoPaths result = AutoPaths.NOTHING;
    switch (mAutoChooser.getSelected()) {
-       case 1: return AutoPaths.PATH_NAME;
+       case 1:
+           result = AutoPaths.PATH_NAME;
+           break;
        // ...
        default:
            DriverStation.reportWarning("Unknown auto: " + selected, false);
-           return AutoPaths.NOTHING;
+           break;
    }
+   return result;
    ```
 
 c. CAN bus signal values **shall** be validated by checking the
@@ -55,7 +59,9 @@ c. Homing sequences **shall** have timeout protection to prevent
        mTransmission.stop();
        mTransmission.setCurrentLimitStator(
            true, ExampleSubsystemConstants.kDefaultStatorLimit);
-       mDesiredControlState = ExampleControlState.IDLE;
+       /* transition to the project's safe/idle state per its
+          state-machine convention */
+       transitionToSafeState();
        notify.send(new Notification(
            NotifyLevel.WARNING,
            "Homing Timeout", getName() + " homing timed out"));
@@ -131,8 +137,10 @@ c. CAN refresh status codes **shall** be checked and error conditions
    **shall** be reported, but rate-limited to avoid console spam
    (CODE-BUG-003c).
 
-d. CANivore bus names **shall** be defined as constants in
-   `Constants.java`, not hard-coded in subsystem files.
+d. CANivore bus names **shall** be defined as named constants in
+   the project's shared constants artifact (see
+   [CODE-MAF-003](Team271-Software-Coding-Standard-Modules.md#code-maf-003----constants-organization)),
+   not hard-coded in subsystem files.
 
 ### CODE-SAF-007 -- Disabled Mode Safety
 

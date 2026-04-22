@@ -13,7 +13,7 @@
 > - `docs/team-lib/guides/` — contributor tutorials
 > - `docs/team-lib/coding-standard/coding-standard-teamlib-rules.md` — library-specific `CODE-LIB-*` rules
 > - `docs/team-lib/coding-standard/coding-standard-library-notes.md` — library bindings for common rules
-> - `docs/project-template/` — scaffolding for consuming robot projects (code templates + project coding-standard)
+> - `docs/robot-yyyy/` — scaffolding for consuming robot projects (code templates + project coding-standard; copy to `docs/robot-2026/`, `docs/robot-2027/`, etc.)
 > - `.claude/rules/` — path-scoped AI guardrails
 >
 > If new information needs a home, add it to the appropriate

@@ -52,7 +52,7 @@ indexes the rest:
 - `-General.md`, `-Format.md`, `-Modules.md`, `-Methods.md`,
   `-Variables.md`, `-Control.md`, `-Comments.md`, `-Debug.md`,
   `-Safety.md` — the `CODE-*` rules by category
-- [`project-template/`](docs/project-template/)
+- [`robot-yyyy/`](docs/robot-yyyy/)
   — scaffolding for consuming robot projects (subsystem, constants, and
   input-driver code templates plus a project-level coding-standard template)
 - [`-Appendices.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Appendices.md)

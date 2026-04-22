@@ -60,12 +60,31 @@ a. Parentheses **shall** be used to clarify operator precedence when
    if ((a + b) > (c * d)) { ... }
    ```
 
-b. Parentheses are **not required** for simple boolean chains using
-   `&&` or `||` with comparison operators. Java's comparison-before-logical
-   precedence is standard:
+b. Parentheses **shall** also be used:
+
+   - around each comparison sub-expression that appears inside a
+     boolean chain (`&&` / `||`), even when the chain uses only one
+     logical operator, and
+   - around each sub-group when `&&` and `||` are mixed in the same
+     expression.
+
+   Parentheses around a bare boolean variable or boolean-returning
+   method call inside a chain are **not required** — the precedence
+   concern only arises when comparisons or mixed logical operators
+   are involved.
 
    ```java
-   /* CORRECT: no unnecessary parens */
+   /* CORRECT: comparisons parenthesized inside chains */
+   if ((depth > 0) && (depth < MAX_DEPTH)) { ... }
+   if ((state == State.IDLE) || (state == State.HOMED)) { ... }
+
+   /* CORRECT: mixed && / || disambiguated */
+   if ((isReady && (depth > 0)) || overrideEnabled) { ... }
+
+   /* CORRECT: pure-boolean chain — no extra parens needed */
+   if (signals.contains(A) || signals.contains(B)) { ... }
+
+   /* WRONG: relies on implicit comparison-vs-logical precedence */
    if (depth > 0 && depth < MAX_DEPTH) { ... }
    ```
 

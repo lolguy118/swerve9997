@@ -186,7 +186,7 @@ by a block comment:
 ## Key elements demonstrated
 
 1. Singleton with dual `getInstance()` — see the **Rule** blockquote above
-2. State enum with all states including IDLE (CODE-FUN-005)
+2. State enum with all states including IDLE (CODE-&lt;PROJECT&gt;-009 in `coding-standard.md`)
 3. `m` prefix on all instance fields (CODE-VAR-001a)
 4. `arg` prefix on all parameters (CODE-VAR-001b)
 5. `final` on all parameters and single-assignment fields (CODE-GEN-003b)

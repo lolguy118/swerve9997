@@ -8,8 +8,7 @@
 # <Project> Coding Standard
 
 Document No: <project>-JCS\
-Revision: Draft\
-Date of Release: (see revision history)
+Revision: Draft
 
 ---
 
@@ -130,6 +129,102 @@ b. The registration order for this project is:
 
    Replace the table above with the project's actual ordering.
 
+### CODE-<PROJECT>-007 -- Subsystem Package Layout (example)
+
+Binds the common [CODE-MAF-002](../common/coding-standard/Team271-Software-Coding-Standard-Modules.md#code-maf-002----package-structure)
+"project's coding standard fixes subpackage conventions" clause.
+
+a. Robot-project subsystems **shall** live in the `subsystems`
+   subpackage under the project's top-level package. Input-handling
+   classes **shall** live in `subsystems.Input`.
+
+b. **Exception — swerve drivetrain.** The swerve drivetrain class
+   implements the WPILib
+   `edu.wpi.first.wpilibj2.command.Subsystem` interface (rather
+   than extending the Team271-Lib
+   `com.team271.lib.subsystem.Subsystem` base class) because it
+   extends the CTRE-generated drivetrain class. It is owned by the
+   drive subsystem and does not participate in the
+   `SubsystemManager` lifecycle directly. See
+   [`subsystem-template.md`](subsystem-template.md) for the
+   canonical subsystem pattern this exception deviates from.
+
+### CODE-<PROJECT>-008 -- Constants Organization (example)
+
+Binds the common [CODE-MAF-003](../common/coding-standard/Team271-Software-Coding-Standard-Modules.md#code-maf-003----constants-organization)
+"project fixes the concrete shared-constants artifact" clause.
+
+a. Robot-wide constants **shall** be organized in `Constants.java`
+   using nested `public static final class` inner classes grouped
+   by subsystem or function:
+
+   ```java
+   public static final class ExampleASubsystemConstants { ... }
+   public static final class ExampleBSubsystemConstants { ... }
+   public static final class AutoConstants { ... }
+   ```
+
+b. Each inner constants class **shall** have a `private`
+   constructor to prevent instantiation (already required by
+   CODE-MAF-003(b); restated here for the nested-class form).
+
+c. Constants specific to a single subsystem **may** be declared as
+   `private static final` fields on the subsystem class, but
+   **should** be moved to `Constants.java` once they are referenced
+   by more than one class.
+
+See [`constants-template.md`](constants-template.md) for the
+canonical scaffold.
+
+### CODE-<PROJECT>-009 -- State Machine Pattern (example)
+
+Governs subsystem-level state machines in robot-project code. The
+library-side equivalent for subsystems written inside Team271-Lib is
+[CODE-LIB-003](../team-lib/coding-standard/coding-standard-teamlib-rules.md#code-lib-003----desired-to-actual-state-pattern).
+
+> *Industry note: DO-178C (the avionics software certification
+> standard) emphasizes deterministic, traceable state management.
+> The desired-state / actual-state pattern makes every transition
+> explicit and auditable -- you can always answer "what state is the
+> robot in and why did it get there?" This is the same pattern used
+> in flight control software.*
+
+a. Subsystems that use state machines **shall** maintain two state
+   variables: `mControlState` (current) and `mDesiredControlState`
+   (desired). The desired state **shall** be set in
+   `teleopPeriodic()` or `autonomousPeriodic()`; the actual state
+   **shall** be applied in `robotPeriodicAfter()`.
+
+   ```java
+   /* Set in teleopPeriodic */
+   mDesiredControlState = ExampleControlState.INDEX;
+
+   /* Applied in robotPeriodicAfter */
+   mControlState = mDesiredControlState;
+   switch (mControlState) {
+       case INDEX:
+           setValue(ExampleSubsystemConstants.EXAMPLE_SPEED);
+           break;
+       // ...
+   }
+   ```
+
+b. State enums **shall** include an `IDLE` value. `IDLE` **shall**
+   be the safe default state and the target of timeout fail-safe
+   transitions (per
+   [CODE-SAF-002](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-002----motor-safety)
+   and
+   [CODE-SAF-003](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-003----state-machine-completeness)).
+
+c. Reachability and default-case requirements for enum `switch`
+   blocks are inherited from
+   [CODE-SAF-003](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-003----state-machine-completeness)
+   and [CODE-FUN-006(a)](../common/coding-standard/Team271-Software-Coding-Standard-Methods.md#code-fun-006----defensive-checks);
+   no additional project-level rule is needed.
+
+See [`subsystem-template.md`](subsystem-template.md) for the
+canonical scaffold.
+
 ---
 
 ## 3. Deviations from Inherited Standards
@@ -141,11 +236,3 @@ Deviations require an approved PR that updates this table.
 | Inherited rule | Project deviation | Reason |
 | -------------- | ----------------- | ------ |
 | (none yet)     |                   |        |
-
----
-
-## 4. Revision History
-
-| Revision | Date | Author | Description |
-| -------- | ---- | ------ | ----------- |
-| Draft | (initial) | (team) | Initial project coding standard |

@@ -11,7 +11,7 @@ enforced rather than recommended.
 
 > **Consumers of Team271-Lib (robot projects):** these rules apply
 > to library code only. For library-consumer guidance, see
-> [`../../project-template/`](../../project-template/)
+> [`../../robot-yyyy/`](../../robot-yyyy/)
 > (robot-project code templates and project-level coding standard) and
 > [`coding-standard-library-notes.md`](coding-standard-library-notes.md)
 > (common-rule → library-API bindings).
@@ -25,7 +25,7 @@ specificity (most specific wins):
 2. **Common** — `CODE-GEN-*`, `CODE-VAR-*`, `CODE-FMT-*`, etc.
 
 Library code does **not** inherit from the robot-project templates
-in [`../../project-template/`](../../project-template/) — those
+in [`../../robot-yyyy/`](../../robot-yyyy/) — those
 patterns (singleton, Globals, etc.) are explicitly for consuming
 projects. Library code uses the inverse patterns described below.
 
@@ -48,7 +48,7 @@ b. Library classes **shall not** expose a `getInstance()` accessor.
 **Why this is here:** the inverse rule — "robot-project subsystems
 **shall** use the singleton pattern" — used to live in common as
 CODE-GEN-013. It moved to
-[`../../project-template/subsystem-template.md`](../../project-template/subsystem-template.md);
+[`../../robot-yyyy/subsystem-template.md`](../../robot-yyyy/subsystem-template.md);
 the library-side inversion belongs here.
 
 ---
@@ -167,9 +167,22 @@ and [SDD-subsystem.md](../planning/sdd/SDD-subsystem.md).
 
 ---
 
-## Revision History
+## CODE-LIB-007 -- Library Package and Constants Layout
 
-| Revision | Date | Author | Description |
-| -------- | ---- | ------ | ----------- |
-| Draft | (initial) | Team 271 | Initial `CODE-LIB-*` rules extracted from ADRs during the common-tier isolation refactor |
-| Draft | 2026-04-21 | Team 271 | Added CODE-LIB-006 (Subsystem Lifecycle Contract) migrated from common CODE-FUN-004 during the common-tier isolation refactor |
+a. Library source **shall** reside under `com.team271.lib` and its
+   subpackages. Robot-project code **shall not** be placed in
+   `com.team271.lib*`.
+
+b. Library-wide constants **shall** be defined in
+   [`ConstantsLib.java`](../../../src/main/java/com/team271/lib/ConstantsLib.java)
+   at the root of `com.team271.lib` and **shall** follow the common
+   [CODE-MAF-003](../../common/coding-standard/Team271-Software-Coding-Standard-Modules.md#code-maf-003----constants-organization)
+   discipline (shared location for cross-class constants,
+   `private` constructors on static-only holders).
+
+c. Library code **shall not** import the consuming project's
+   `Constants` class. Values needed at construction time are
+   supplied by the robot project through constructor parameters or
+   setter calls.
+
+**Related binding:** [library-notes CODE-BUG-004 "the project's `Constants` class"](coding-standard-library-notes.md#code-bug-004--runtime-tunability).

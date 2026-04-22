@@ -90,6 +90,18 @@ project — `libtest`'s `InputDriver` is a reference example.
 
 ---
 
+## CODE-GEN-011 — Exception Handling
+
+| Common concept | Library binding |
+| -------------- | --------------- |
+| "error-reporting facility" | `DriverStation.reportError()` for log-and-DS reporting; `Elastic.sendNotification(WARNING, ...)` for driver-visible alerts |
+
+Per-subsystem exception isolation is handled by
+`SubsystemManager.forEachSafe()` (see the CODE-SAF-* section below
+and [ADR-011](../planning/adr/ADR-011-subsystem-exception-isolation.md)).
+
+---
+
 ## CODE-SAF-* — Safety Practices
 
 Library bindings for safety rules live alongside their definitions — see

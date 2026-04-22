@@ -264,10 +264,9 @@ a. Code **shall** be written to minimize runtime exceptions. The
 > the motor might not be configured, the path might not have loaded,
 > and you will not know until the match starts.*
 
-a. Periodic methods (`robotPeriodic`, `teleopPeriodic`,
-   `autonomousPeriodic`, etc.) **shall not** throw exceptions. All
-   exceptions **shall** be caught and reported via
-   `DriverStation.reportError()`.
+a. Periodic methods **shall not** throw exceptions. All exceptions
+   **shall** be caught and reported through the project's
+   error-reporting facility.
 
 b. `catch (Throwable t)` and `catch (Exception e)` **shall** not be
    used broadly. Catch the most specific exception type possible.

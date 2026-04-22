@@ -32,6 +32,7 @@ why we made a decision), go to
 | ----- | -------- | -------- |
 | [start-here.md](start-here.md) | New contributors | All planning docs |
 | [development-setup.md](../../common/guides/development-setup.md) | All contributors | `build.gradle`, continuous-integration (CI) workflow |
+| [claude-code-workflow.md](claude-code-workflow.md) | AI-assisted contributors | Explore → Plan → Code → Verify loop, slash commands, library-specific prompts |
 | [input-shaping-guide.md](input-shaping-guide.md) | Operator-control developers | [SDD-hardware.md](../planning/sdd/SDD-hardware.md) §Input |
 | [simulation-guide.md](simulation-guide.md) | Robot-project developers | [SDD-team271-lib.md](../planning/sdd/SDD-team271-lib.md) §Simulation |
 | [sysid-workflow.md](sysid-workflow.md) | Characterization engineers | [SDD-sysid.md](../planning/sdd/SDD-sysid.md) |

@@ -105,6 +105,11 @@
           },
           {
             "type": "command",
+            "command": ".claude/hooks/check-common-tier-isolation.sh",
+            "description": "flag team-lib/project refs in docs/common/** (tier-boundary leak)"
+          },
+          {
+            "type": "command",
             "command": ".claude/hooks/check-deleted-class-refs.sh",
             "description": "flag references to deleted classes in docs"
           },

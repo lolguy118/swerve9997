@@ -10,8 +10,8 @@ every project.
 > **Industry bridge.** Professional software teams ship a *coding
 > standard* (how code must be written) separately from *design docs*
 > (what's being built). This folder holds the coding standard and
-> the shared planning framework; library-specific design lives in
-> [`../team-lib/`](../team-lib/).
+> the shared planning framework; product-specific design lives in
+> the consuming project's own doc tier.
 
 ## Start here
 
@@ -46,6 +46,25 @@ every project.
 - **Project overrides.** A consuming project that needs to deviate
   writes its own `overrides.md` listing the deviation and rationale.
   The rule here is still authoritative everywhere else.
+
+## Portability
+
+Common docs **shall** be self-contained. They do not link to — or
+name specific artifacts in — the `team-lib/` or `<project>/` tiers.
+This keeps `common/` usable verbatim in any consuming project,
+including projects that don't vendor `team-lib/` (standalone tools,
+robot projects that don't depend on Team271-Lib, etc.).
+
+Applied in practice:
+
+- **No cross-tier hyperlinks.** Links must resolve within `common/`
+  or out to sibling top-level paths (`../CLAUDE.md`,
+  `../CONTRIBUTING.md`).
+- **No bare artifact references** such as "per ADR-012" or "see
+  SDD-manipulator." Those names are library- or project-specific.
+- **Abstract phrasing.** Say "per the project's safety-shutdown
+  policy" and let the consuming project bind that term to its own
+  ADR / SDD / code in its own doc tier.
 
 ## What does *not* live here
 

@@ -29,7 +29,7 @@ Claude Code is **not**:
 - A replacement for understanding what the code does. If you can't
   explain your own PR, don't open it.
 - A substitute for the coding standard. Everything in
-  [`../coding-standard/Team271-Software-Coding-Standard.md`](../coding-standard/Team271-Software-Coding-Standard.md)
+  [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md)
   still applies to AI-generated code.
 - An oracle. It can be wrong, especially about recent API changes
   or about code it hasn't read yet.
@@ -240,5 +240,5 @@ Repository-specific configuration:
 
 - [`CLAUDE.md`](../../../CLAUDE.md) — routing index.
 - [`.claude/rules/`](../../../.claude/rules/) — AI guardrails.
-- [`../../team-lib/planning/README.md`](../../team-lib/planning/README.md)
+- [`../planning/README.md`](../planning/README.md)
   — library planning docs the AI is expected to honor.

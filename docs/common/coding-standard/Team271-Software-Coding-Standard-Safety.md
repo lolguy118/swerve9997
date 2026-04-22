@@ -51,7 +51,7 @@ c. Homing sequences **shall** have timeout protection to prevent
 
    ```java
    if (mHomingTimer.hasElapsed(ExampleSubsystemConstants.kHomingTimeoutSec)) {
-       /* Homing timed out -- fail safe per ADR-012 */
+       /* Homing timed out -- fail safe per project safety policy */
        mTransmission.stop();
        mTransmission.setCurrentLimitStator(
            true, ExampleSubsystemConstants.kDefaultStatorLimit);

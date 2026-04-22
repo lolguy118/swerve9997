@@ -163,47 +163,14 @@ formatting and naming choices.
 
 ---
 
-## 2. Programming Language
+## 2. Language and Build
 
-### 2.1 Java
-
-The primary language shall be Java 17, as configured in `build.gradle`:
-
-```groovy
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-```
-
-Java feature and API guidance lives in the General companion:
-
-- [CODE-GEN-002](Team271-Software-Coding-Standard-General.md#code-gen-002----apis-and-methods-to-avoid)
-  — banned APIs and patterns (`Thread.sleep`, `System.exit`,
-  reflection in periodic methods, etc.).
-- [CODE-GEN-004](Team271-Software-Coding-Standard-General.md#code-gen-004----garbage-collection-pressure-minimization)
-  — allocation and GC-pressure rules (streams, autoboxing, string
-  concatenation, and similar patterns to avoid in the 20 ms loop).
-- [CODE-GEN-017](Team271-Software-Coding-Standard-General.md#code-gen-017----concurrency-keywords)
-  — concurrency keywords (`volatile`, `synchronized`,
-  `java.util.concurrent.atomic`).
-
-### 2.2 Build System
-
-The project uses Gradle with GradleRIO and the following plugins:
-
-- `edu.wpi.first.GradleRIO` -- FRC build toolchain
-- `com.diffplug.spotless` -- Automatic code formatting
-- `com.peterabeles.gversion` -- Build version metadata
-- `jacoco` -- Code coverage
-
-The build also defines an `eventDeploy` task that automatically
-commits all changes when deploying from an `event*` branch. This
-ensures every competition deploy is captured in version control.
-
-Spotless runs automatically before compilation
-(`project.compileJava.dependsOn(spotlessApply)`). All code shall pass
-`spotlessCheck` without manual intervention.
+This standard targets Java 17. Build-system specifics (Gradle
+plugins, WPILib toolchain, continuous-integration pipeline) are
+configured in each consuming project's own build files. The
+coding-standard index in [README.md](README.md) organizes the rule
+companions by topic (General, Format, Control, Methods, Variables,
+Comments, Debug, Safety, Compliance, Appendices).
 
 ---
 

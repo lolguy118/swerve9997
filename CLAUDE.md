@@ -80,7 +80,7 @@ for the six-layer graph. The layering decision is
   Authoritative roster with triggers and cold-start costs in
   [SVP §6](docs/team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
-  [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md#2-programming-language) and
+  [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md#2-language-and-build) and
   [SDP §4](docs/team-lib/planning/SDP.md#4-development-environment-library-pins). Decision:
   [ADR-002](docs/team-lib/planning/adr/ADR-002-java17-wpilib-gradlerio-toolchain.md).
 - **Build system:** Gradle + GradleRIO. See `build.gradle`; version

@@ -162,8 +162,7 @@ Every Team 271 Java project shares roughly this shape:
 ```
 
 Each project adds its own package layout on top of this common
-shape. For the Team271-Lib library's layered architecture, see
-[`../../team-lib/planning/sdd/SDD-team271-lib.md`](../../team-lib/planning/sdd/SDD-team271-lib.md).
+shape, documented in that project's own design docs.
 
 ---
 
@@ -201,16 +200,15 @@ refresh:
 ./gradlew build --refresh-dependencies
 ```
 
-For the Team271-Lib library's vendor-dependency upgrade
-procedure, see
-[`../../team-lib/planning/SCMP.md`](../../team-lib/planning/SCMP.md).
+Project-specific vendor-dependency upgrade procedures live in each
+project's own configuration-management plan.
 
 ### Tests fail with native-library errors
 
 Tests that create vendor devices need the WPILib HAL initialized
 first. Make sure your test class calls `HAL.initialize(500, 0)`
-in a `@BeforeAll` method. For the library's testing conventions,
-see [`../../team-lib/planning/SVP.md`](../../team-lib/planning/SVP.md).
+in a `@BeforeAll` method. Project-specific testing conventions
+live in each project's own verification plan.
 
 ### `./gradlew` command not found (Windows)
 

@@ -36,6 +36,16 @@ the same PR. Robot-project-specific docs live under `docs/<robot>/`
 - **Cross-references use file-relative paths** (e.g.,
   `[ADR-009](../adr/ADR-009-centralized-can-refresh.md)`), not
   absolute repo paths.
+- **Common docs must stay self-contained.** Files under
+  `docs/common/` **shall not** link to, or name specific artifacts
+  in, `docs/team-lib/` or any `docs/<project>/` tier. `common/` is
+  designed to vendor unchanged into any 271 Java project, including
+  projects that don't ship `team-lib/`. Use abstract phrasing ("the
+  project's safety policy") and let consumers bind concrete names
+  in their own doc tier. See
+  [`docs/common/README.md`](../../docs/common/README.md#portability)
+  for rationale and examples. Enforced by
+  [`.claude/hooks/check-common-tier-isolation.sh`](../hooks/check-common-tier-isolation.sh).
 - **Max line length: 140 characters** (enforced by
   [`.claude/hooks/lint-markdown.sh`](../hooks/lint-markdown.sh));
   tables and URLs are exempt but keep them as short as possible.

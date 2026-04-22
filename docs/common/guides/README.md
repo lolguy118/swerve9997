@@ -6,9 +6,9 @@ project** — the library, a season robot, or any standalone tool.
 These are the guides you'd read regardless of which specific
 project you're contributing to.
 
-Library-specific guides (simulation, System Identification workflow,
-input shaping, library onboarding) live under
-[`../../team-lib/guides/`](../../team-lib/guides/).
+Project-specific guides (simulation, System Identification workflow,
+input shaping, onboarding) live under the consuming project's own
+`guides/` folder.
 
 > **Industry bridge.** Most software teams separate *project-
 > specific* how-to docs from *generic developer-setup* docs,
@@ -20,4 +20,3 @@ input shaping, library onboarding) live under
 | File | Scope |
 | ---- | ----- |
 | [`development-setup.md`](development-setup.md) | Install Java 17, WPILib, and Gradle so you can build and test any Team 271 Java project locally |
-| [`claude-code-workflow.md`](claude-code-workflow.md) | How to collaborate with Claude Code productively in this repository — Explore → Plan → Code → Verify, slash commands, pitfalls |

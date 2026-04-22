@@ -75,9 +75,10 @@ belong:
 ## `robot-yyyy/`
 
 Scaffolding that a consuming robot project copies into its own
-`docs/<project>/` tier to bootstrap project-level documentation
-(currently: the project-level coding standard; additional stubs
-will land here as they are needed).
+`docs/<project>/` tier to bootstrap project-level documentation:
+a project coding standard, Java code templates (subsystem,
+constants, input driver), and planning/guides/prompts scaffolds
+(SDP, SRS, SVP, SCMP, plus ADR and SDD indexes).
 
 See [`robot-yyyy/README.md`](robot-yyyy/README.md) for
 contents and usage.

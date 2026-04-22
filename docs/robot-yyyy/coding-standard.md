@@ -4,7 +4,7 @@
      year, robot nickname, etc.). Delete any example rules that do
      not apply and add your own. -->
 <!-- markdownlint-disable-file MD033 -->
-<!-- reason: <PROJECT>/<project> are template placeholders, not HTML tags. -->
+<!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
 # <Project> Coding Standard
 
@@ -224,7 +224,7 @@ b. State enums **shall** include an `IDLE` value. `IDLE` **shall**
 c. Reachability and default-case requirements for enum `switch`
    blocks are inherited from
    [CODE-SAF-003](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-003----state-machine-completeness)
-   and [CODE-FUN-006(a)](../common/coding-standard/Team271-Software-Coding-Standard-Methods.md#code-fun-006----defensive-checks);
+   and [CODE-FUN-004(a)](../common/coding-standard/Team271-Software-Coding-Standard-Methods.md#code-fun-004----defensive-checks);
    no additional project-level rule is needed.
 
 See [`subsystem-template.md`](subsystem-template.md) for the

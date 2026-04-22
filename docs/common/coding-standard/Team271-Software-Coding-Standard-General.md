@@ -297,7 +297,7 @@ c. When null indicates an error, prefer throwing
    `IllegalStateException` with a descriptive message over
    returning null.
 
-### CODE-GEN-014 -- Object Equality
+### CODE-GEN-013 -- Object Equality
 
 a. Object comparison **shall** use `.equals()`, not `==`, unless
    checking for null or intentional reference identity:
@@ -324,7 +324,7 @@ c. If a class overrides `equals()`, it **shall** also override
    causes broken behavior in `HashMap`, `HashSet`, and other
    hash-based collections.
 
-### CODE-GEN-015 -- Resource Management
+### CODE-GEN-014 -- Resource Management
 
 a. Code that opens resources (files, streams, connections) **shall**
    use try-with-resources to guarantee cleanup:
@@ -340,7 +340,7 @@ a. Code that opens resources (files, streams, connections) **shall**
    This is particularly relevant for auto path loading from the
    filesystem.
 
-### CODE-GEN-016 -- Mutable Static Fields
+### CODE-GEN-015 -- Mutable Static Fields
 
 a. Mutable `static` fields **shall** be avoided. Shared mutable
    state **should** be passed explicitly through constructors or
@@ -348,7 +348,7 @@ a. Mutable `static` fields **shall** be avoided. Shared mutable
    instance references in consuming projects) are documented in
    that project's own coding standard.
 
-### CODE-GEN-017 -- Concurrency Keywords
+### CODE-GEN-016 -- Concurrency Keywords
 
 > *Industry note: CERT Java rule LCK00-J says "use private final lock
 > objects to synchronize classes that may interact with untrusted

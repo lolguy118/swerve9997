@@ -3,6 +3,8 @@
      treat as a live reference). The Java layout below is what each
      subsystem file under src/main/java/<your-package>/subsystems/
      should follow. -->
+<!-- markdownlint-disable-file MD033 -->
+<!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
 # Subsystem Template
 
@@ -185,7 +187,7 @@ by a block comment:
 ## Key elements demonstrated
 
 1. Singleton with dual `getInstance()` — see the **Rule** blockquote above
-2. State enum with all states including IDLE (CODE-&lt;PROJECT&gt;-009 in `coding-standard.md`)
+2. State enum with all states including IDLE (CODE-<PROJECT>-009 in `coding-standard.md`)
 3. `m` prefix on all instance fields (CODE-VAR-001a)
 4. `arg` prefix on all parameters (CODE-VAR-001b)
 5. `final` on all parameters and single-assignment fields (CODE-GEN-003b)
@@ -193,5 +195,5 @@ by a block comment:
 7. Desired state set in `teleopPeriodic()` (CODE-LIB-006b)
 8. Outputs applied in `robotPeriodicAfter()` (CODE-LIB-006b)
 9. Telemetry in `outputTelemetry()` — no parameters (CODE-BUG-001)
-10. `default` case in all enum switches (CODE-FUN-006a)
+10. `default` case in all enum switches (CODE-FUN-004a)
 11. Runtime tuning via `LoggedNTInput` + `checkTuning()` in `outputTelemetry()` (CODE-BUG-004)

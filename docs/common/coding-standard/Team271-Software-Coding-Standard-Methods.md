@@ -121,7 +121,7 @@ a. Shared logic **shall** be extracted into utility methods rather
 b. Utility classes **shall** be declared `final` with a `private`
    constructor to prevent instantiation.
 
-### CODE-FUN-006 -- Defensive Checks
+### CODE-FUN-004 -- Defensive Checks
 
 **See also:**
 [CODE-GEN-005](Team271-Software-Coding-Standard-General.md#code-gen-005----return-value-checking)

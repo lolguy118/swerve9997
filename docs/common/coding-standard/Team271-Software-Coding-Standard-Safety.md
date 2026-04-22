@@ -81,7 +81,7 @@ e. Motor neutral modes (brake vs coast) **shall** be explicitly
 ### CODE-SAF-003 -- State Machine Completeness
 
 a. Every enum `switch` **shall** handle all values including a
-   `default` case (CODE-FUN-006a).
+   `default` case (CODE-FUN-004a).
 
 b. No state **shall** be unreachable. If a state exists in the enum,
    there **shall** be a transition path to it.

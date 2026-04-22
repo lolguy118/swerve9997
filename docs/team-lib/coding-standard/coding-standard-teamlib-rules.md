@@ -44,10 +44,10 @@ b. Library classes **shall not** expose a `getInstance()` accessor.
 **Anchor:** [ADR-004](../planning/adr/ADR-004-explicit-instantiation-no-singletons.md).
 
 **Why this is here:** the inverse rule — "robot-project subsystems
-**shall** use the singleton pattern" — used to live in common as
-CODE-GEN-013. It moved to
-[`../../robot-yyyy/subsystem-template.md`](../../robot-yyyy/subsystem-template.md);
-the library-side inversion belongs here.
+**shall** use the singleton pattern" — lives in
+[`../../robot-yyyy/subsystem-template.md`](../../robot-yyyy/subsystem-template.md)
+(not in common, which stays framework-neutral); the library-side
+inversion belongs here.
 
 ---
 

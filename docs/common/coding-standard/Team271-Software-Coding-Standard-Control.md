@@ -62,7 +62,7 @@ d. The ternary operator (`? :`) **shall not** be used. Conditional
 ### CODE-CTL-002 -- Switch Statements
 
 a. All `switch` statements **shall** contain a `default` case
-   (CODE-FUN-006a).
+   (CODE-FUN-004a).
 
 b. Fall-through between `case` labels **shall** not occur without
    an explicit `// fall through` comment.

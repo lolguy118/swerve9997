@@ -186,42 +186,26 @@ documentation, etc.) are in §4.
 
 ## 4. Coding Guidelines
 
-§4 is split across eight companion documents, each covering one
-subsection of the coding guidelines:
+Rules are organized by topic into companion documents. Each companion
+owns its own rule prefix; cite rules by ID (e.g., `CODE-GEN-004` or
+`CODE-VAR-001a`) in review comments and commits.
 
-| Section | Companion | Former |
-| ------- | --------- | ------ |
-| General | [`-General.md`](Team271-Software-Coding-Standard-General.md) | §4.1 |
-| Format | [`-Format.md`](Team271-Software-Coding-Standard-Format.md) | §4.2 |
-| Modules and Files | [`-Modules.md`](Team271-Software-Coding-Standard-Modules.md) | §4.3 |
-| Methods | [`-Methods.md`](Team271-Software-Coding-Standard-Methods.md) | §4.4 |
-| Variables | [`-Variables.md`](Team271-Software-Coding-Standard-Variables.md) | §4.5 |
-| Control Structures | [`-Control.md`](Team271-Software-Coding-Standard-Control.md) | §4.6 |
-| Comments | [`-Comments.md`](Team271-Software-Coding-Standard-Comments.md) | §4.7 |
-| Debugging and Telemetry | [`-Debug.md`](Team271-Software-Coding-Standard-Debug.md) | §4.8 |
+| Topic | Companion | Rule prefix |
+| ----- | --------- | ----------- |
+| General | [`-General.md`](Team271-Software-Coding-Standard-General.md) | `CODE-GEN-*` |
+| Formatting | [`-Format.md`](Team271-Software-Coding-Standard-Format.md) | `CODE-FMT-*` |
+| Modules and Files | [`-Modules.md`](Team271-Software-Coding-Standard-Modules.md) | `CODE-MAF-*` |
+| Methods | [`-Methods.md`](Team271-Software-Coding-Standard-Methods.md) | `CODE-FUN-*` |
+| Variables | [`-Variables.md`](Team271-Software-Coding-Standard-Variables.md) | `CODE-VAR-*` |
+| Control Structures | [`-Control.md`](Team271-Software-Coding-Standard-Control.md) | `CODE-CTL-*` |
+| Comments | [`-Comments.md`](Team271-Software-Coding-Standard-Comments.md) | `CODE-COM-*` |
+| Debugging and Telemetry | [`-Debug.md`](Team271-Software-Coding-Standard-Debug.md) | `CODE-BUG-*` |
+| Safety Practices | [`-Safety.md`](Team271-Software-Coding-Standard-Safety.md) | `CODE-SAF-*` |
 
-Safety Practices (formerly §4.9) now lives standalone in
-[`-Safety.md`](Team271-Software-Coding-Standard-Safety.md).
+Supporting companions:
 
----
-
-## Companion Documents
-
-The following companion documents are part of this standard:
-
-| Document | Contents |
-| -------- | -------- |
-| [`-General.md`](Team271-Software-Coding-Standard-General.md) | §4.1 General coding guidelines |
-| [`-Format.md`](Team271-Software-Coding-Standard-Format.md) | §4.2 Formatting rules |
-| [`-Modules.md`](Team271-Software-Coding-Standard-Modules.md) | §4.3 Modules and files |
-| [`-Methods.md`](Team271-Software-Coding-Standard-Methods.md) | §4.4 Methods |
-| [`-Variables.md`](Team271-Software-Coding-Standard-Variables.md) | §4.5 Variables |
-| [`-Control.md`](Team271-Software-Coding-Standard-Control.md) | §4.6 Control structures |
-| [`-Comments.md`](Team271-Software-Coding-Standard-Comments.md) | §4.7 Comments |
-| [`-Debug.md`](Team271-Software-Coding-Standard-Debug.md) | §4.8 Debugging and telemetry |
-| [`-Safety.md`](Team271-Software-Coding-Standard-Safety.md) | Safety Practices (CODE-SAF-*) |
-| [`-Compliance.md`](Team271-Software-Coding-Standard-Compliance.md) | §5 Static Analysis and enforcement matrix |
-| [`-Appendices.md`](Team271-Software-Coding-Standard-Appendices.md) | Appendices A–E, H, I |
-
-Concrete project-specific applications of these rules (file templates,
-API bindings) live alongside the consuming project's source, not here.
+- [`-Compliance.md`](Team271-Software-Coding-Standard-Compliance.md)
+  — §5 Static Analysis and enforcement matrix.
+- [`-Appendices.md`](Team271-Software-Coding-Standard-Appendices.md)
+  — Appendices A–E, H, I (approved abbreviations, Java keyword list,
+  rule-deviation process, etc.).

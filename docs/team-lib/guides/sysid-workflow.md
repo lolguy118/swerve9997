@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 MD060 -->
 # System Identification Workflow
 
 > **Scope:** This document covers the library's SysID logging
@@ -69,7 +68,7 @@ that corrupts the voltage-vs-velocity relationship SysID needs.
 ### Thread Priority
 
 | Thread | Priority | Real-Time | Purpose |
-|--------|----------|-----------|---------|
+| -------- | ---------- | ----------- | --------- |
 | SysID data collection | 15 | Yes (non-sim) | Consistent sampling timing |
 | HAL thread | 40 | Yes | Robot loop timing |
 | Default Java threads | 5 | No | General application logic |
@@ -86,7 +85,7 @@ collecting bad data with inconsistent timing.
 The SysID tool communicates with the Logger via SmartDashboard keys:
 
 | NT Key | Type | Direction | Purpose |
-|--------|------|-----------|---------|
+| -------- | ------ | ----------- | --------- |
 | `SysIdTest` | String | Tool → Robot | Mechanism name (empty = default) |
 | `SysIdTestType` | String | Tool → Robot | `"Quasistatic"` or `"Dynamic"` |
 | `SysIdRotate` | Boolean | Tool → Robot | Spin test for drivetrains |
@@ -193,7 +192,7 @@ transmission.configPIDFSlot(0, kP, kI, kD, kV, kS);
 `LoggerGeneral.isWrongMechanism()` accepts:
 
 | Mechanism | Use For |
-|-----------|---------|
+| ----------- | --------- |
 | `""` (empty) | Default / generic |
 | `"Arm"` | Rotational arm mechanisms |
 | `"Elevator"` | Linear elevator mechanisms |

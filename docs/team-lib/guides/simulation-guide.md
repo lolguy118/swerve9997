@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 MD060 -->
 # Simulation Guide for Robot Projects
 
 > **Scope:** This guide explains how robot projects implement physics

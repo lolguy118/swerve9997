@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD007 MD013 MD031 MD032 -->
 # Team 271 Java Coding Standard
 
 Document No: 271-JCS\

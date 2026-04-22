@@ -1,5 +1,3 @@
-<!-- markdownlint-disable MD013 -->
-
 # Robot Project Template (`robot-yyyy/`)
 
 Scaffolding for a consuming robot project's `docs/<project>/` tier.

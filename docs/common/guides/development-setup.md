@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 MD060 -->
 # Development Setup
 
 This guide gets your computer ready to build, test, and simulate
@@ -18,7 +17,7 @@ redo parts when the toolchain versions change.
 ## What you'll install
 
 | Tool | Version | Purpose |
-|------|---------|---------|
+| ------ | --------- | --------- |
 | **Java JDK** (Java Development Kit) | 17 | The language runtime the code is written in |
 | **WPILib installer** | 2026 | Bundles an FRC-tuned VS Code, the Gradle build system, and FRC-specific tooling (simulator, Driver Station, etc.) |
 | **Git** | 2.x or newer | Version control — lets you clone repositories and track changes |
@@ -169,7 +168,7 @@ shape, documented in that project's own design docs.
 ## Useful Gradle Tasks
 
 | Task | Purpose |
-|------|---------|
+| ------ | --------- |
 | `./gradlew build` | Full build — formats, compiles, runs tests |
 | `./gradlew compileJava` | Compile main source only (fast check) |
 | `./gradlew compileTestJava` | Compile main source + test source |

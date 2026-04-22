@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # External Reference URLs
 
 Quick-reference links to vendor and tool documentation. Organized

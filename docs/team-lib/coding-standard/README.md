@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Library-Specific Coding-Standard Notes
 
 This folder holds **library-specific extensions** to the shared
@@ -22,5 +21,8 @@ and supply ready-to-copy templates for robot projects.
 | [`coding-standard-teamlib-rules.md`](coding-standard-teamlib-rules.md) | Team271-Lib-specific coding rules (`CODE-LIB-NNN`) for library source code — architectural patterns from ADRs expressed as enforceable rules |
 | [`coding-standard-library-notes.md`](coding-standard-library-notes.md) | How the generic Team 271 coding-standard rules bind to specific library classes (`TObj`, `SubsystemManager`, `CTREManager`, etc.) |
 
-Robot-project code templates (subsystem layout, constants organization, input-driver pattern) live in
-[`../../robot-yyyy/`](../../robot-yyyy/) alongside the project-level coding-standard template — they are consumer-facing scaffolding, not library content.
+Robot-project code templates (subsystem layout, constants organization,
+input-driver pattern) live in
+[`../../robot-yyyy/`](../../robot-yyyy/) alongside the project-level
+coding-standard template — they are consumer-facing scaffolding, not
+library content.

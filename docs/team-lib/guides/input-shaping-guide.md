@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 MD060 -->
 # Input Shaping Guide
 
 > **Scope:** This guide explains when to use each input shaping mode.
@@ -26,7 +25,7 @@ value.
 ## Mode Comparison
 
 | Mode | Formula (applied to `|v|`) | Center Feel | Edge Feel | Curve Shape |
-|------|---------------------------|-------------|-----------|-------------|
+| ------ | --------------------------- | ------------- | ----------- | ------------- |
 | `NONE` / `LINEAR` | `v` | Normal | Normal | Straight line |
 | `SOFT` | `v^1.48` | Slightly reduced | Slightly increased | Gentle power curve |
 | `SQUARED` | `v^2` | Moderately reduced | Moderately increased | Parabolic |
@@ -85,7 +84,7 @@ default. Tune from there based on driver feedback.
 ### 5. Is this a drivetrain?
 
 | Driver Preference | Mode |
-|-------------------|------|
+| ------------------- | ------ |
 | Smooth, easy to control | `SQUARED` |
 | Fast robot, hard to control | `CUBED` |
 | Experienced, wants speed | `SOFT` or `LINEAR` |
@@ -93,7 +92,7 @@ default. Tune from there based on driver feedback.
 ### Quick Reference
 
 | Mechanism | Recommended Mode | Why |
-|-----------|-----------------|-----|
+| ----------- | ----------------- | ----- |
 | Drivetrain (new driver) | `SQUARED` | Forgiving center, full range available |
 | Drivetrain (fast robot) | `CUBED` | Strong center damping prevents jerky driving |
 | Drivetrain (experienced) | `SOFT` or `LINEAR` | Minimal interference with driver intent |

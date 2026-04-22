@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 MD060 -->
 # Claude Code Workflow
 
 This guide teaches you how to get the most out of **Claude Code** —
@@ -160,7 +159,7 @@ Our `.claude/` folder ships a small toolbox. Treat these as the
 conventions.
 
 | Command / Skill | Purpose |
-|-----------------|---------|
+| ----------------- | --------- |
 | [`/lib-review`](../../../.claude/commands/lib-review.md) | Branch-level code review with the library checklist |
 | [`/doc-sync-check`](../../../.claude/commands/doc-sync-check.md) | Verify code changes have matching design-doc updates |
 | `/new-adr` | Scaffold a new Architecture Decision Record with the correct next number |
@@ -179,7 +178,7 @@ You don't need to memorize this — just know where to look when
 something surprises you.
 
 | Path | What it does |
-|------|-------------|
+| ------ | ------------- |
 | `.claude/rules/*.md` | Path-scoped AI guardrails. Loaded when editing files under a matching path. |
 | `.claude/commands/*.md` | Slash commands. Invoked as `/command-name`. |
 | `.claude/agents/*.md` | Subagent definitions. |

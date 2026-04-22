@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Software Design Descriptions (SDDs)
 
 A **Software Design Description (SDD)** explains how one piece of

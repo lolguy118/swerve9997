@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Review Prompts
 
 This folder holds **prompts** — structured instructions to an AI

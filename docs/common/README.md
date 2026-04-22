@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Common Docs
 
 This folder holds the **shared policy** that applies to every

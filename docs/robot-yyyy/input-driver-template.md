@@ -3,7 +3,6 @@
      Swap the extended base class (InputXBox, InputPS4, etc.) to
      match the controller hardware. Add one semantic getter per
      input per subsystem. -->
-<!-- markdownlint-disable MD013 -->
 
 # Input-Driver Template
 

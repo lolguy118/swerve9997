@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Internal Reference Artifacts
 
 This folder holds **supporting artifacts** for the library's

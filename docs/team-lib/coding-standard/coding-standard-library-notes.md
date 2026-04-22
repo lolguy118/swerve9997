@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Coding Standard — Library Applications
 
 Concrete Team271-Lib API mappings for the framework-agnostic rules in

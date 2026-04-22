@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Common Planning Framework
 
 This folder holds the **shared planning rules** used by every

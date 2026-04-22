@@ -1,6 +1,7 @@
-<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD007 -->
+<!-- reason: nested-list indentation in method-rule examples (MD007). -->
 
 ## Methods
 
@@ -45,7 +46,7 @@ a. Every method **shall** have exactly one `return` statement,
      whose logic is structured so every path falls through.
 
    > *Industry note: MISRA Rule 15.5 says "A function should have a
-   > single point of exit at the end." Single-exit methods are 
+   > single point of exit at the end." Single-exit methods are
    > easier to read (one control-flow graph instead of branching
    > returns), easier to test (one breakpoint covers all paths),
    > and easier to extend with cleanup or logging later without

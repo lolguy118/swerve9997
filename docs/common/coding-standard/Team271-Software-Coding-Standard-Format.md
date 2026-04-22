@@ -1,6 +1,7 @@
-<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD007 -->
+<!-- reason: nested-list indentation in formatting examples (MD007). -->
 
 ## Format
 

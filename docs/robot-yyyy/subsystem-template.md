@@ -3,7 +3,6 @@
      treat as a live reference). The Java layout below is what each
      subsystem file under src/main/java/<your-package>/subsystems/
      should follow. -->
-<!-- markdownlint-disable MD013 -->
 
 # Subsystem Template
 

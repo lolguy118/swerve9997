@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Development Plan Framework
 
 Framework-agnostic development-lifecycle policy for Team 271 Java

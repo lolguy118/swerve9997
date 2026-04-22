@@ -1,7 +1,6 @@
 <!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to the robot's
      own src/main/java/<your-package>/Constants.java and fill in the
      real CAN IDs, bus names, and constant values for this robot. -->
-<!-- markdownlint-disable MD013 -->
 
 # Constants Template
 

@@ -3,7 +3,8 @@
      Replace <PROJECT> placeholders with the project name (season
      year, robot nickname, etc.). Delete any example rules that do
      not apply and add your own. -->
-<!-- markdownlint-disable MD013 -->
+<!-- markdownlint-disable-file MD033 -->
+<!-- reason: <PROJECT>/<project> are template placeholders, not HTML tags. -->
 
 # <Project> Coding Standard
 
@@ -62,8 +63,8 @@ a. Motor-controller CAN IDs **shall** be assigned by subsystem
 
    | Range | Subsystem |
    | ----- | --------- |
-   | 1-5   | Drivetrain |
-   | 6-10  | Shooter |
+   | 1-5 | Drivetrain |
+   | 6-10 | Shooter |
    | 11-15 | Elevator |
    | 16-20 | Intake |
 
@@ -239,4 +240,4 @@ Deviations require an approved PR that updates this table.
 
 | Inherited rule | Project deviation | Reason |
 | -------------- | ----------------- | ------ |
-| (none yet)     |                   |        |
+| (none yet) | | |

@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Configuration Management Policy
 
 Framework-agnostic configuration management for Team 271 Java projects.

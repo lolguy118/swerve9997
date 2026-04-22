@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Documentation Layout
 
 This folder contains **all the documentation** for Team271-Lib.

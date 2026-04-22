@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Verification Plan Framework
 
 Framework-agnostic test strategy for Team 271 Java projects. A concrete

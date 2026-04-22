@@ -1,5 +1,3 @@
-<!-- markdownlint-disable MD013 -->
-
 # Team271-Lib Coding Rules (`CODE-LIB-*`)
 
 Rules that apply to **library source code** under

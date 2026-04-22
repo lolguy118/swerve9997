@@ -1,6 +1,9 @@
-<!-- markdownlint-disable MD007 MD013 MD031 MD032 MD041 -->
 <!-- Part of the Team 271 Software Coding Standard.
      See Team271-Software-Coding-Standard.md for the index. -->
+<!-- markdownlint-disable-file MD007 MD031 MD032 -->
+<!-- reason: nested-list indentation (MD007); tight code-block spacing
+     against surrounding rule prose (MD031); tight list spacing inside
+     numbered rules (MD032). -->
 
 ## General
 

@@ -1,8 +1,10 @@
-<!-- markdownlint-disable MD013 MD024 MD060 -->
-
 # Team 271 Library Code Review Prompt
 
-Please comprehensively review our FRC robot library codebase. The codebase uses the latest version of WPILib and CTRE Phoenix 6. AdvantageKit and PathPlanner are available as dependencies for future integration. The `com.team271.libtest` package contains a test robot for validating the library in simulation and on real hardware.
+Please comprehensively review our FRC robot library codebase. The
+codebase uses the latest version of WPILib and CTRE Phoenix 6.
+AdvantageKit and PathPlanner are available as dependencies for future
+integration. The `com.team271.libtest` package contains a test robot
+for validating the library in simulation and on real hardware.
 
 ---
 
@@ -10,7 +12,9 @@ Please comprehensively review our FRC robot library codebase. The codebase uses 
 
 When reviewing this codebase, you should:
 
-1. **Review all Java source files** in `com.team271.lib` and `com.team271.libtest` for bugs, correctness, and adherence to the patterns documented below.
+1. **Review all Java source files** in `com.team271.lib` and
+   `com.team271.libtest` for bugs, correctness, and adherence to the
+   patterns documented below.
 2. **Fix issues directly** — do not just report problems, apply corrections to the code.
 3. **Verify dependency versions** — check that vendordep JSONs in `vendordeps/` are up to date with their `jsonUrl` sources.
 4. **Run validation** after changes:
@@ -63,7 +67,9 @@ For each issue found, briefly explain the bug category (referencing the Known Bu
 
 - [ ] StatusSignals checked for null AND `.getStatus().isOK()` before reading
 - [ ] Optional values from WPILib (e.g., `DriverStation.getAlliance()`) have fallbacks
-- [ ] FMS / Driver Station data (alliance, location, match time) is not cached at `robotInit()` time; read fresh per use or via DS event listener (CODE-SAF-008e)
+- [ ] FMS / Driver Station data (alliance, location, match time) is not
+      cached at `robotInit()` time; read fresh per use or via DS event
+      listener (CODE-SAF-008e)
 - [ ] Singleton access throws clear error if not initialized
 - [ ] Controller disconnect handled gracefully (check `isConnected()`)
 
@@ -130,21 +136,33 @@ For each issue found, briefly explain the bug category (referencing the Known Bu
 - [ ] High-frequency error notifications are rate-limited (2s minimum interval)
 - [ ] Control requests use timesync pattern (`withUseTimesync(true).withUpdateFreqHz(0)`)
 - [ ] Latency-compensated encoder variants (`Comp`) used where position accuracy matters
-- [ ] No `System.out.println` / `System.err.println` — blocking I/O that steals cycle time; use `Logger.recordOutput()` or `DriverStation.reportWarning()`
+- [ ] No `System.out.println` / `System.err.println` — blocking I/O that
+      steals cycle time; use `Logger.recordOutput()` or
+      `DriverStation.reportWarning()`
 - [ ] New StatusSignals registered at 250 Hz unless a different rate is justified
 
 ---
 
 ## Stack
 
-All dependencies must always use the **latest available version**. Versions are managed via vendordep JSON files in `vendordeps/` and `build.gradle`. When reviewing, verify vendordeps are up to date with their `jsonUrl` sources.
+All dependencies must always use the **latest available version**.
+Versions are managed via vendordep JSON files in `vendordeps/` and
+`build.gradle`. When reviewing, verify vendordeps are up to date with
+their `jsonUrl` sources.
 
 - **WPILib** — core FRC framework (GradleRIO, Java 17)
-- **CTRE Phoenix 6** — motor controllers, sensors, CANivore + RIO CAN buses (vendordep: `Phoenix6-frc2026-latest.json`)
-- **AdvantageKit** — integrated for all logging and telemetry (vendordep: `AdvantageKit.json`; all output goes through `Logger.recordOutput()`)
-- **PathPlanner** — dependency available, integration pending (vendordep: `PathplannerLib.json`; new autonomous code should adopt PathPlanner paths)
-- **WPILib New Commands** — dependency available for command-based patterns (vendordep: `WPILibNewCommands.json`)
-- **Elastic Dashboard** — integrated for live driver notifications (vendored source file; uses `com.team271.lib.util.Elastic` with Jackson JSON serialization)
+- **CTRE Phoenix 6** — motor controllers, sensors, CANivore + RIO CAN
+  buses (vendordep: `Phoenix6-frc2026-latest.json`)
+- **AdvantageKit** — integrated for all logging and telemetry (vendordep:
+  `AdvantageKit.json`; all output goes through `Logger.recordOutput()`)
+- **PathPlanner** — dependency available, integration pending (vendordep:
+  `PathplannerLib.json`; new autonomous code should adopt PathPlanner
+  paths)
+- **WPILib New Commands** — dependency available for command-based
+  patterns (vendordep: `WPILibNewCommands.json`)
+- **Elastic Dashboard** — integrated for live driver notifications
+  (vendored source file; uses `com.team271.lib.util.Elastic` with
+  Jackson JSON serialization)
 
 ---
 
@@ -192,23 +210,47 @@ TObj (base class — name, NTTable, lifecycle hooks)
 
 ### Key Design Patterns
 
-1. **TObj Lifecycle**: Every component extends `TObj` and receives lifecycle callbacks: `robotInit()`, `robotPeriodicBefore()`, `robotPeriodicAfter()`, `autonomousInit/Periodic/Exit()`, `teleopInit/Periodic/Exit()`, `simulationInit/Periodic()`, etc.
+1. **TObj Lifecycle**: Every component extends `TObj` and receives
+   lifecycle callbacks: `robotInit()`, `robotPeriodicBefore()`,
+   `robotPeriodicAfter()`, `autonomousInit/Periodic/Exit()`,
+   `teleopInit/Periodic/Exit()`, `simulationInit/Periodic()`, etc.
 
-2. **Subsystem State Machines**: Subsystems use a desired-state/actual-state pattern. Desired state is set in `teleopPeriodic()`/`autonomousPeriodic()`, then applied in `robotPeriodicAfter()`. State transitions (timer resets, etc.) happen at the boundary in `robotPeriodicAfter()`.
+2. **Subsystem State Machines**: Subsystems use a
+   desired-state/actual-state pattern. Desired state is set in
+   `teleopPeriodic()`/`autonomousPeriodic()`, then applied in
+   `robotPeriodicAfter()`. State transitions (timer resets, etc.)
+   happen at the boundary in `robotPeriodicAfter()`.
 
-3. **SubsystemManager Singleton**: `SubsystemManager` uses a lazy-initialized singleton with `getInstance()` and a private constructor. Individual subsystems are NOT singletons — they are instantiated normally in `Robot.robotInit()` and registered with `SubsystemManager.addSubsystem()`.
+3. **SubsystemManager Singleton**: `SubsystemManager` uses a
+   lazy-initialized singleton with `getInstance()` and a private
+   constructor. Individual subsystems are NOT singletons — they are
+   instantiated normally in `Robot.robotInit()` and registered with
+   `SubsystemManager.addSubsystem()`.
 
-4. **SubsystemManager Ordering**: Subsystems are added in a specific order in `Robot.robotInit()`. The iteration order determines which subsystem's `robotPeriodicBefore()` runs first. This matters for cross-subsystem data dependencies (producers must be added before consumers).
+4. **SubsystemManager Ordering**: Subsystems are added in a specific
+   order in `Robot.robotInit()`. The iteration order determines which
+   subsystem's `robotPeriodicBefore()` runs first. This matters for
+   cross-subsystem data dependencies (producers must be added before
+   consumers).
 
-5. **TransmissionFX Wraps TalonFX**: Motor commands go through TransmissionFX, which handles encoder integration, gear ratios, unit conversions, and timesync control requests. Do not create raw TalonFX objects for subsystem motors.
+5. **TransmissionFX Wraps TalonFX**: Motor commands go through
+   TransmissionFX, which handles encoder integration, gear ratios, unit
+   conversions, and timesync control requests. Do not create raw
+   TalonFX objects for subsystem motors.
 
-6. **Exception Isolation**: `SubsystemManager.forEachSafe()` wraps subsystem callbacks in try-catch to prevent one subsystem's exception from crashing the entire robot. Note: `robotInit()` rethrows exceptions because init must succeed.
+6. **Exception Isolation**: `SubsystemManager.forEachSafe()` wraps
+   subsystem callbacks in try-catch to prevent one subsystem's
+   exception from crashing the entire robot. Note: `robotInit()`
+   rethrows exceptions because init must succeed.
 
 ---
 
 ## Real-Time System Constraints
 
-FRC robot code runs under hard real-time constraints. Every subsystem callback shares a fixed time budget per cycle. Violating timing constraints causes loop overruns, degraded control performance, and potentially unsafe robot behavior.
+FRC robot code runs under hard real-time constraints. Every subsystem
+callback shares a fixed time budget per cycle. Violating timing
+constraints causes loop overruns, degraded control performance, and
+potentially unsafe robot behavior.
 
 ### Timing Hierarchy
 
@@ -228,7 +270,9 @@ FRC robot code runs under hard real-time constraints. Every subsystem callback s
 
 - **Period**: `TimedRobot.kDefaultPeriod = 0.02` seconds, enforced by HAL Notifier via FPGA clock
 - **Watchdog**: `IterativeRobotBase` initializes a Watchdog that reports when any cycle exceeds 20ms
-- **Constraint**: All code in `robotPeriodicBefore()`, mode-specific periodic methods, `robotPeriodicAfter()`, and `outputTelemetry()` must complete within this budget combined
+- **Constraint**: All code in `robotPeriodicBefore()`, mode-specific
+  periodic methods, `robotPeriodicAfter()`, and `outputTelemetry()`
+  must complete within this budget combined
 
 ### Execution Order Within a Single Cycle
 
@@ -250,7 +294,7 @@ Steps 4-8 run through `forEachSafe()` — a single subsystem throwing an excepti
 ### CAN Bus Timing
 
 | Parameter | Value | Constant / Location |
-|-----------|-------|---------------------|
+| ----------- | ------- | --------------------- |
 | Signal update frequency | 250 Hz (4ms) | `ControllerTalonFX` lines 54-101, `EncoderCTRE`, `IMUCTRE`, etc. |
 | Timesync frequency | 250 Hz | `ControllerTalonFX:185` — `ControlTimesyncFreqHz = 250.0` |
 | Short timeout (runtime) | 10 ms | `ConstantsLib.CAN_TIMEOUT_MS` |
@@ -264,9 +308,16 @@ Steps 4-8 run through `forEachSafe()` — a single subsystem throwing an excepti
 
 ### Control Loop Frequencies
 
-- **Hardware PID (PIDFX)**: Runs at **1 kHz** onboard the TalonFX. Software sends setpoints via timesync control requests; the motor controller closes the loop internally. This is why PIDFX delegates entirely to hardware — software cannot match 1 kHz.
-- **Software PID (PIDWPI, PIDSimple, PIDTrap)**: Runs at **50 Hz** (robot loop rate, `0.02s` period). Suitable for mechanisms where hardware PID is not available or for outer control loops.
-- **Timesync requirement**: When `UseTimesync = true`, `UpdateFreqHz` must be `0` (CTRE requirement). All control requests in `ControllerTalonFX` and `TransmissionFX` follow this pattern.
+- **Hardware PID (PIDFX)**: Runs at **1 kHz** onboard the TalonFX.
+  Software sends setpoints via timesync control requests; the motor
+  controller closes the loop internally. This is why PIDFX delegates
+  entirely to hardware — software cannot match 1 kHz.
+- **Software PID (PIDWPI, PIDSimple, PIDTrap)**: Runs at **50 Hz**
+  (robot loop rate, `0.02s` period). Suitable for mechanisms where
+  hardware PID is not available or for outer control loops.
+- **Timesync requirement**: When `UseTimesync = true`, `UpdateFreqHz`
+  must be `0` (CTRE requirement). All control requests in
+  `ControllerTalonFX` and `TransmissionFX` follow this pattern.
 
 ### Latency Compensation
 
@@ -278,19 +329,26 @@ CAN frames arrive with transport delay. Latency compensation uses velocity to ex
 ### Thread Priorities
 
 | Thread | Priority | Real-time | Notes |
-|--------|----------|-----------|-------|
+| -------- | ---------- | ----------- | ------- |
 | HAL Notifier (robot loop) | System-managed | Yes | FPGA-timed, highest priority |
 | HAL thread (SysId) | 40 | Yes | `sysid/Logger.java:60` |
 | User thread (SysId) | 15 | Yes | `sysid/Logger.java:59` |
 | NetworkTables | Default | No | Background publishing |
 
-Thread priorities are only set in real mode (non-simulation). The main robot loop runs synchronously on the Notifier thread — all subsystem callbacks execute sequentially in registration order.
+Thread priorities are only set in real mode (non-simulation). The main
+robot loop runs synchronously on the Notifier thread — all subsystem
+callbacks execute sequentially in registration order.
 
 ### Exception Isolation & Rate Limiting
 
-- **`forEachSafe()`** (`SubsystemManager`): Wraps each subsystem callback in try-catch. One subsystem throwing does not prevent others from running. Errors are reported via `DriverStation.reportError()`.
-- **`robotInit()` rethrows**: Initialization failures must crash loudly — a subsystem that cannot initialize should not run.
-- **Error notification rate limit**: 2.0 seconds per subsystem (`SubsystemManager`) and per CAN refresh failure (`CTREManager`). Prevents flooding Elastic Dashboard during sustained failures.
+- **`forEachSafe()`** (`SubsystemManager`): Wraps each subsystem
+  callback in try-catch. One subsystem throwing does not prevent others
+  from running. Errors are reported via `DriverStation.reportError()`.
+- **`robotInit()` rethrows**: Initialization failures must crash loudly
+  — a subsystem that cannot initialize should not run.
+- **Error notification rate limit**: 2.0 seconds per subsystem
+  (`SubsystemManager`) and per CAN refresh failure (`CTREManager`).
+  Prevents flooding Elastic Dashboard during sustained failures.
 
 ### Timing Budget Guidelines
 
@@ -326,7 +384,9 @@ Thread priorities are only set in real mode (non-simulation). The main robot loo
   - Constructor: AK Logger setup (metadata, data receivers, `Logger.start()`) — must happen before any `Logger.recordOutput()` calls
   - `robotInit()`: subsystems init → `mSubsystemManager.robotInit()` → `CTREManager.init()` (must be AFTER subsystem init)
   - `robotPeriodicBefore()`: `CTREManager.refreshAll()` → timestamp update → `mSubsystemManager.robotPeriodicBefore()`
-  - `robotPeriodicAfter()`: `mSubsystemManager.robotPeriodicAfter()` → `mSubsystemManager.outputTelemetry()` → `CTREManager.outputTelemetry()`
+  - `robotPeriodicAfter()`: `mSubsystemManager.robotPeriodicAfter()` →
+    `mSubsystemManager.outputTelemetry()` →
+    `CTREManager.outputTelemetry()`
 
 ```text
 libtest/
@@ -373,12 +433,17 @@ All control requests MUST use timesync on CANivore buses:
 new VoltageOut(0).withUseTimesync(true).withUpdateFreqHz(0)
 ```
 
-When `UseTimesync = true`, `UpdateFreqHz` MUST be `0` (CTRE requirement). The ControllerTalonFX config also sets `ControlTimesyncFreqHz = 250.0`.
+When `UseTimesync = true`, `UpdateFreqHz` MUST be `0` (CTRE requirement).
+The ControllerTalonFX config also sets `ControlTimesyncFreqHz = 250.0`.
 
 ### Signal Refresh
 
-- All StatusSignals are registered with `CTREManager` during `robotInit()` via `addSignal()`, `addSignalTalonFX()`, `addSignalCANCoder()`, `addSignalPigeon()`, `addSignalCANrange()`
-- `CTREManager.refreshAll()` is called once per cycle in `Robot.robotPeriodicBefore()` using `BaseStatusSignal.refreshAll()` for batched efficiency
+- All StatusSignals are registered with `CTREManager` during
+  `robotInit()` via `addSignal()`, `addSignalTalonFX()`,
+  `addSignalCANCoder()`, `addSignalPigeon()`, `addSignalCANrange()`
+- `CTREManager.refreshAll()` is called once per cycle in
+  `Robot.robotPeriodicBefore()` using `BaseStatusSignal.refreshAll()`
+  for batched efficiency
 - CTREManager tracks `lastRefreshTime` and `prevRefreshTime` for `getDt()` calculations
 - Individual signal reads must check `signal != null && signal.getStatus().isOK()` before reading values
 - `addSignalInternal()` validates signals on registration — only adds signals with OK status
@@ -386,7 +451,9 @@ When `UseTimesync = true`, `UpdateFreqHz` MUST be `0` (CTRE requirement). The Co
 
 ### Config Application
 
-- Motor configs are applied via `ControllerTalonFX.applyConfig()` which retries up to 5 times (`ConstantsLib.CAN_RETRY_COUNT`) with 50ms timeout per attempt
+- Motor configs are applied via `ControllerTalonFX.applyConfig()` which
+  retries up to 5 times (`ConstantsLib.CAN_RETRY_COUNT`) with 50ms
+  timeout per attempt
 - CTRE configs use `ConstantsLib.CAN_LONG_TIMEOUT_MS` (100ms) timeout with the same 5 retries
 - Always call `applyConfigs()` after changing config fields — config objects are mutable but not applied until explicitly sent
 
@@ -457,7 +524,10 @@ Data flows through three parallel systems:
 #### Logger Lifecycle
 
 - `IterativeRobotBase.loopFunc()` calls `LoggerBridge.periodicBeforeUser()` at start, `LoggerBridge.periodicAfterUser()` after simulation
-- `LoggerBridge` (`org.littletonrobotics.junction.LoggerBridge`) is a bridge class that exposes AK's package-private `Logger.periodicBeforeUser/AfterUser` methods for use in custom robot base classes that cannot extend `LoggedRobot`
+- `LoggerBridge` (`org.littletonrobotics.junction.LoggerBridge`) is a
+  bridge class that exposes AK's package-private
+  `Logger.periodicBeforeUser/AfterUser` methods for use in custom robot
+  base classes that cannot extend `LoggedRobot`
 - `Robot()` constructor configures Logger before any subsystem init: metadata → data receivers → `Logger.start()`
 
 #### Config Modes and Logger Setup
@@ -529,7 +599,7 @@ Per-component tunable inventories are in
 ### Notification Events
 
 | Event | Level | Title | Source File |
-|-------|-------|-------|-------------|
+| ------- | ------- | ------- | ------------- |
 | Autonomous started | INFO | Mode Change | `Infrastructure.java` |
 | Teleop started | INFO | Mode Change | `Infrastructure.java` |
 | Robot disabled | WARNING | Mode Change | `Infrastructure.java` |
@@ -567,7 +637,11 @@ Per-component tunable inventories are in
 
 The `sysid/` package provides system identification support:
 
-- **`Logger.java`**: Data collection for quasistatic and dynamic tests. Outputs via `Logger.recordOutput()` (AdvantageKit). Reads voltage commands from SmartDashboard (input from SysId tool). Collects voltage, position, and velocity data for feed-forward characterization.
+- **`Logger.java`**: Data collection for quasistatic and dynamic tests.
+  Outputs via `Logger.recordOutput()` (AdvantageKit). Reads voltage
+  commands from SmartDashboard (input from SysId tool). Collects
+  voltage, position, and velocity data for feed-forward
+  characterization.
 - **`LoggerGeneral.java`**: CSV-based data logging extension for general characterization.
 - **`SensorMode.SYSID`**: Triggers characterization mode in subsystems, allowing SysId voltage commands to override normal control.
 
@@ -577,8 +651,14 @@ The `sysid/` package provides system identification support:
 
 ### NetworkTables / Logging
 
-- **`NTEntry`** — output-only wrapper. `publish()` calls `Logger.recordOutput()` (AdvantageKit), NOT NetworkTables directly. Subscribes to NT for input reading via `get*()` methods.
-- **`LoggedNTInput`** — tuning input wrapper. Maintains both a NT publisher (sets default for dashboard visibility) and NT subscriber (reads operator changes). Every `getDbl()`/`getBool()`/etc. call also records to AK Logger. Supports `hasChanged()` to detect dashboard edits.
+- **`NTEntry`** — output-only wrapper. `publish()` calls
+  `Logger.recordOutput()` (AdvantageKit), NOT NetworkTables directly.
+  Subscribes to NT for input reading via `get*()` methods.
+- **`LoggedNTInput`** — tuning input wrapper. Maintains both a NT
+  publisher (sets default for dashboard visibility) and NT subscriber
+  (reads operator changes). Every `getDbl()`/`getBool()`/etc. call also
+  records to AK Logger. Supports `hasChanged()` to detect dashboard
+  edits.
 - All telemetry output happens in `outputTelemetry()` methods via `NTEntry.publish()` → AK Logger
 - All tuning input happens via `LoggedNTInput` checked in `outputTelemetry()` → `checkTuning()` pattern
 
@@ -591,7 +671,9 @@ The `sysid/` package provides system identification support:
 ### Subsystem Sensor Modes
 
 - `SensorMode` enum: `SENSORED_AUTO`, `SENSORED_MANUAL`, `SENSORLESS`, `SYSID`
-- `sensorsZero()` in the base class sets `isZeroed = false` to mark the start of a zeroing process — subclasses must set `isZeroed = true` after completing their homing sequence
+- `sensorsZero()` in the base class sets `isZeroed = false` to mark the
+  start of a zeroing process — subclasses must set `isZeroed = true`
+  after completing their homing sequence
 - Sensor mode changes may trigger config changes (e.g., different current limits in sensorless mode)
 
 ---
@@ -638,11 +720,15 @@ Code formatting is enforced automatically via **Spotless** (Gradle plugin) and *
 
 - **`control/`**: `BalanceTest`, `PIDSimpleTest`, `PIDTrapTest`, `PIDWPITest`, `PIDWPITrapTest`, `PIDFXTest`
 - **`hardware/`**: `CANBusTest` (68 tests), `CANDeviceIDTest` (50+ tests), `CTREManagerTest`, `MotorBaseTest`, `ControllerTalonFXTest`
-- **`hardware/sensors/`**: `EncoderFXTest`, `EncoderCANCoderTest`, `IMUPigeon2Test`, `RangeCANrangeTest`, `SwitchFXTest`, `SwitchCANCoderTest`
+- **`hardware/sensors/`**: `EncoderFXTest`, `EncoderCANCoderTest`,
+  `IMUPigeon2Test`, `RangeCANrangeTest`, `SwitchFXTest`,
+  `SwitchCANCoderTest`
 - **`hardware/transmissions/`**: `TransmissionFXTest`, `ShifterPneumaticTest`
 - **`hardware/Input/`**: `InputXBoxTest`, `InputPS4Test`, `Input8BitDuoTest`, `InputEnvisionProTest`
 - **`nt/`**: `NTTableTest`, `NTEntryTest`, `LoggedNTInputTest`
-- **`auto/`**: `AutoModeTest`, `AutoMoveTest`, `AutoMoveConditionalTest`, `AutoMoveParallelTest`, `AutoMoveSequenceTest`, `AutoMoveTimedTest`, `AutoIntegrationTest`
+- **`auto/`**: `AutoModeTest`, `AutoMoveTest`,
+  `AutoMoveConditionalTest`, `AutoMoveParallelTest`,
+  `AutoMoveSequenceTest`, `AutoMoveTimedTest`, `AutoIntegrationTest`
 - **`subsystem/`**: `SubsystemTest`, `SubsystemManagerTest`
 - **`sysid/`**: `LoggerTest`, `LoggerGeneralTest`
 - **`util/`**: `UtilTest`, `DriveSignalTest`, `AlertTest`, `ElasticTest`

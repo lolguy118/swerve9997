@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Common Guides
 
 This folder holds **tutorials that apply to every Team 271 Java

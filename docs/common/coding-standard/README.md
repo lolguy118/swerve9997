@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD013 -->
 # Team 271 — Coding Standard
 
 This folder holds the **shared coding standard** for every Team 271

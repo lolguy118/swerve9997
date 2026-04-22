@@ -5,12 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.CTREManager;
 import edu.wpi.first.hal.HAL;
-import java.lang.reflect.Field;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("resource")
 class RangeCANrangeTest {
 
     @BeforeAll
@@ -19,32 +18,13 @@ class RangeCANrangeTest {
     }
 
     @BeforeEach
-    void resetCTREManager() throws Exception {
-        clearStaticField("buses");
-        clearStaticField("devicesByBus");
-        clearStaticField("devices");
-        clearStaticField("signalsAll");
-        setStaticField("signalsAllArray", null);
-        setStaticField("prevRefreshTime", null);
-        setStaticField("lastRefreshTime", null);
-        setStaticField("lastErrorNotificationTime", 0.0);
+    void resetCTREManager() {
+        CTREManager.resetForTesting();
     }
 
-    private void clearStaticField(String fieldName) throws Exception {
-        Field f = CTREManager.class.getDeclaredField(fieldName);
-        f.setAccessible(true);
-        Object collection = f.get(null);
-        if (collection instanceof java.util.Map) {
-            ((java.util.Map<?, ?>) collection).clear();
-        } else if (collection instanceof java.util.List) {
-            ((java.util.List<?>) collection).clear();
-        }
-    }
-
-    private void setStaticField(String fieldName, Object value) throws Exception {
-        Field f = CTREManager.class.getDeclaredField(fieldName);
-        f.setAccessible(true);
-        f.set(null, value);
+    @AfterEach
+    void closeDevices() {
+        CTREManager.resetForTesting();
     }
 
     @Test

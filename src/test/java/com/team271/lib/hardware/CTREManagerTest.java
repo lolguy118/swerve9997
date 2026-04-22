@@ -8,11 +8,18 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.hal.HAL;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("resource") // TalonFX is AutoCloseable but HAL manages lifecycle in sim
+/*
+ * Several tests construct bare TalonFX handles without calling CTREManager.addDevice
+ * to exercise signal-only or no-registration code paths. Those can't be closed by
+ * resetForTesting, so the suppressor stays here — unlike in the other migrated tests
+ * where every device goes through an addDevice-registering wrapper.
+ */
+@SuppressWarnings("resource")
 class CTREManagerTest {
 
     @BeforeAll
@@ -21,27 +28,13 @@ class CTREManagerTest {
     }
 
     @BeforeEach
-    void resetCTREManager() throws Exception {
-        /* Reset static state between tests via reflection */
-        clearStaticField("buses");
-        clearStaticField("devicesByBus");
-        clearStaticField("devices");
-        clearStaticField("signalsAll");
-        setStaticField("signalsAllArray", null);
-        setStaticField("prevRefreshTime", null);
-        setStaticField("lastRefreshTime", null);
-        setStaticField("lastErrorNotificationTime", 0.0);
+    void resetCTREManager() {
+        CTREManager.resetForTesting();
     }
 
-    private void clearStaticField(String fieldName) throws Exception {
-        Field f = CTREManager.class.getDeclaredField(fieldName);
-        f.setAccessible(true);
-        Object collection = f.get(null);
-        if (collection instanceof java.util.Map) {
-            ((java.util.Map<?, ?>) collection).clear();
-        } else if (collection instanceof java.util.List) {
-            ((java.util.List<?>) collection).clear();
-        }
+    @AfterEach
+    void closeDevices() {
+        CTREManager.resetForTesting();
     }
 
     private void setStaticField(String fieldName, Object value) throws Exception {

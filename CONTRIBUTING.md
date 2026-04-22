@@ -47,7 +47,7 @@ companions. The core
 [`docs/common/coding-standard/Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
 indexes the rest:
 
-- Core — §1 Introduction, §2 Programming Language, §3 Source Code
+- Core — §1 Introduction, §2 Language and Build, §3 Source Code
   Presentation, §4 Coding Guidelines (router to companions)
 - `-General.md`, `-Format.md`, `-Modules.md`, `-Methods.md`,
   `-Variables.md`, `-Control.md`, `-Comments.md`, `-Debug.md`,

@@ -16,8 +16,133 @@
 
 ## Appendix F: Subsystem Template
 
-See [§3.1 in the core standard](../../common/coding-standard/Team271-Software-Coding-Standard.md#31-java-source-file-template) for the complete
-subsystem template. Key elements:
+Every robot-project `.java` subsystem file shall follow this structure:
+
+```java
+package com.example.app;
+
+import com.example.lib.LifecycleBase;
+import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
+
+/**
+ * Brief description of the class purpose.
+ *
+ * <p>Additional details about behavior, dependencies, or usage.
+ */
+public class ExampleSubsystem extends Subsystem {
+
+    /*
+     * Singleton
+     */
+    private static ExampleSubsystem mInstance;
+
+    public static ExampleSubsystem getInstance(final LifecycleBase argParent) {
+        if (mInstance == null) {
+            mInstance = new ExampleSubsystem(argParent);
+        }
+        return mInstance;
+    }
+
+    public static ExampleSubsystem getInstance() {
+        if (mInstance == null) {
+            throw new IllegalStateException("ExampleSubsystem not initialized");
+        }
+        return mInstance;
+    }
+
+    /*
+     * Enums
+     */
+    public enum ExampleControlState {
+        IDLE,
+        ACTIVE
+    }
+
+    /*
+     * Constants
+     */
+    private static final double MAX_VOLTAGE = 12.0;
+
+    /*
+     * Other Singletons
+     */
+    protected final InputDriver mInputDriver;
+
+    /*
+     * Variables
+     */
+    private ExampleControlState mControlState = ExampleControlState.IDLE;
+    private ExampleControlState mDesiredControlState = ExampleControlState.IDLE;
+
+    /*
+     * Motors
+     */
+    private final ExampleTransmission mTransmission;
+
+    /*
+     * Constructor
+     */
+    public ExampleSubsystem(final LifecycleBase argParent) {
+        super(argParent, "ExampleSubsystem");
+        mInputDriver = InputDriver.getInstance();
+        // ...
+    }
+
+    /*
+     * Stop Robot
+     */
+    public void stop() {
+        mTransmission.stop();
+    }
+
+    /*
+     * Robot Lifecycle
+     */
+    @Override
+    public void robotInit(final double argTimestamp) {
+        // Configure motors, current limits, etc.
+    }
+
+    @Override
+    public void robotPeriodicBefore(final double argTimestamp) {
+        // Read sensors
+    }
+
+    @Override
+    public void teleopPeriodic(final double argTimestamp) {
+        // Set desired state based on inputs
+    }
+
+    @Override
+    public void robotPeriodicAfter(final double argTimestamp) {
+        // Apply outputs based on desired state
+    }
+
+    @Override
+    public void outputTelemetry() {
+        Logger.recordOutput("ExampleSubsystem/State", mControlState.toString());
+    }
+}
+```
+
+### File organization
+
+Subsystem files shall contain sections in this order, each preceded
+by a block comment:
+
+1. `/* Singleton */` -- `mInstance` field and `getInstance()` methods
+2. `/* Enums */` -- Control state enums and mode enums
+3. `/* Constants */` -- Class-level constants (if not in `Constants.java`)
+4. `/* Other Singletons */` -- References to other subsystems
+5. `/* Variables */` -- State variables, timers, counters
+6. `/* Motors */` -- `ExampleTransmission` declarations
+7. `/* Constructor */`
+8. `/* Stop Robot */` -- `stop()` method
+9. `/* Robot Lifecycle */` -- Lifecycle methods in execution order
+10. Private helper methods
+
+### Key elements demonstrated
 
 1. Singleton with dual `getInstance()` (CODE-GEN-013)
 2. State enum with all states including IDLE (CODE-FUN-005)

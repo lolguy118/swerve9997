@@ -44,7 +44,7 @@ The two share most rules. Where they differ, sections explicitly note
 "library only" or "robot projects may." Notable example: subsystem
 instantiation — reusable library code uses explicit instantiation and
 no singletons; robot-project subsystems commonly use the singleton
-pattern shown in §3.1.
+pattern documented in the consuming project's own templates.
 
 **Exempt from formatting rules** (but not safety rules):
 
@@ -174,182 +174,13 @@ Comments, Debug, Safety, Compliance, Appendices).
 
 ---
 
-## 3. Source Code Presentation Standards
+## 3. Source Code Presentation
 
-### 3.1 Java Source File Template
-
-> **Scope note:** This template is for **robot-project subsystems**
-> (the application package). It uses the singleton pattern commonly
-> used in FRC robot code. Reusable library code does **not** use
-> singletons for subsystems — library authors should omit the
-> `/* Singleton */` block and `getInstance()` methods.
-
-Every robot-project `.java` subsystem file shall follow this structure:
-
-```java
-package com.example.app;
-
-import com.example.lib.LifecycleBase;
-import edu.wpi.first.wpilibj.Timer;
-import org.littletonrobotics.junction.Logger;
-
-/**
- * Brief description of the class purpose.
- *
- * <p>Additional details about behavior, dependencies, or usage.
- */
-public class ExampleSubsystem extends Subsystem {
-
-    /*
-     * Singleton
-     */
-    private static ExampleSubsystem mInstance;
-
-    public static ExampleSubsystem getInstance(final LifecycleBase argParent) {
-        if (mInstance == null) {
-            mInstance = new ExampleSubsystem(argParent);
-        }
-        return mInstance;
-    }
-
-    public static ExampleSubsystem getInstance() {
-        if (mInstance == null) {
-            throw new IllegalStateException("ExampleSubsystem not initialized");
-        }
-        return mInstance;
-    }
-
-    /*
-     * Enums
-     */
-    public enum ExampleControlState {
-        IDLE,
-        ACTIVE
-    }
-
-    /*
-     * Constants
-     */
-    private static final double MAX_VOLTAGE = 12.0;
-
-    /*
-     * Other Singletons
-     */
-    protected final InputDriver mInputDriver;
-
-    /*
-     * Variables
-     */
-    private ExampleControlState mControlState = ExampleControlState.IDLE;
-    private ExampleControlState mDesiredControlState = ExampleControlState.IDLE;
-
-    /*
-     * Motors
-     */
-    private final ExampleTransmission mTransmission;
-
-    /*
-     * Constructor
-     */
-    public ExampleSubsystem(final LifecycleBase argParent) {
-        super(argParent, "ExampleSubsystem");
-        mInputDriver = InputDriver.getInstance();
-        // ...
-    }
-
-    /*
-     * Stop Robot
-     */
-    public void stop() {
-        mTransmission.stop();
-    }
-
-    /*
-     * Robot Lifecycle
-     */
-    @Override
-    public void robotInit(final double argTimestamp) {
-        // Configure motors, current limits, etc.
-    }
-
-    @Override
-    public void robotPeriodicBefore(final double argTimestamp) {
-        // Read sensors
-    }
-
-    @Override
-    public void teleopPeriodic(final double argTimestamp) {
-        // Set desired state based on inputs
-    }
-
-    @Override
-    public void robotPeriodicAfter(final double argTimestamp) {
-        // Apply outputs based on desired state
-    }
-
-    @Override
-    public void outputTelemetry() {
-        Logger.recordOutput("ExampleSubsystem/State", mControlState.toString());
-    }
-}
-```
-
-### 3.2 Subsystem File Organization
-
-Subsystem files shall contain sections in this order, each preceded by
-a block comment:
-
-1. `/* Singleton */` -- `mInstance` field and `getInstance()` methods
-2. `/* Enums */` -- Control state enums and mode enums
-3. `/* Constants */` -- Class-level constants (if not in `Constants.java`)
-4. `/* Other Singletons */` -- References to other subsystems
-5. `/* Variables */` -- State variables, timers, counters
-6. `/* Motors */` -- `ExampleTransmission` declarations
-7. `/* Constructor */`
-8. `/* Stop Robot */` -- `stop()` method
-9. `/* Robot Lifecycle */` -- Lifecycle methods in execution order:
-   `robotInit`, `robotPeriodicBefore`, `disabledInit`,
-   `autonomousInit`, `autonomousPeriodic`, `teleopInit`,
-   `teleopPeriodic`, `robotPeriodicAfter`, `outputTelemetry`
-   (Note: `outputTelemetry()` takes no parameters; all others
-   take `final double argTimestamp`. Additional lifecycle methods
-   include `autonomousExit`, `teleopExit`, `disabledExit`,
-   `simulationInit`, `simulationPeriodic`, `testInit`,
-   `testPeriodic`, and `testExit`.)
-10. Private helper methods
-
-### 3.3 Constants File Organization
-
-Constants shall be organized using nested `public static final class`
-inner classes within `Constants.java`:
-
-```java
-public final class Constants {
-
-    /* CAN Bus Names */
-    public static final String CAN_BUS_RIO = "rio";
-    public static final String CAN_BUS_CANIVORE_A = "BusA";
-
-    public static final class CAN {
-        public static final CANDeviceID INDEXER_LEADER =
-                new CANDeviceID(5, CAN_BUS_CANIVORE_SUBSYSTEMS);
-        // ...
-        private CAN() {}
-    }
-
-    public static final class ExampleSubsystemConstants {
-        public static final double EXAMPLE_SPEED = 1.0;
-        public static final double IDLE_SPEED = 0.0;
-        // ...
-        private ExampleSubsystemConstants() {}
-    }
-
-    private Constants() {}
-}
-```
-
-Each inner class shall have a `private` constructor to prevent
-instantiation.
+Each consuming project maintains its own source-code presentation
+templates — file layouts, class-member ordering, constants
+organization — aligned with its own architecture. Normative rules
+that apply regardless of template (naming, formatting,
+documentation, etc.) are in §4.
 
 ---
 

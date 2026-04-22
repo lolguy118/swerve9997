@@ -206,6 +206,10 @@ a. Subsystems that use state machines **shall** maintain two state
            setValue(ExampleSubsystemConstants.EXAMPLE_SPEED);
            break;
        // ...
+       default:
+           DriverStation.reportError(
+               "Unexpected ExampleControlState: " + mControlState, false);
+           break;
    }
    ```
 

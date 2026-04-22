@@ -50,6 +50,67 @@ c. Switch expressions using the `->` syntax are permitted and
 
 d. Traditional `switch` with `break` **shall** be used for
    side-effectful cases (motor commands, state transitions).
+   Every non-`default` case **shall** terminate with `break`.
+   `return` **shall not** be used to terminate a case (the
+   single-return rule in
+   [CODE-FUN-002(a)](Team271-Software-Coding-Standard-Methods.md#code-fun-002----method-discipline)
+   places the method's only `return` at the tail, after the
+   `switch`). `throw` is permitted for exception-based exit (same
+   rule). Intentional fall-through follows CODE-CTL-002(b) — it
+   **shall** be marked with a `// fall through` comment above the
+   next case label.
+
+   > *Industry note: MISRA Rule 16.3 says "an unconditional `break`
+   > statement shall terminate every switch-clause." Unintentional
+   > fall-through has caused real security vulnerabilities
+   > (the `goto fail` / CVE-2014-0092 family of bugs). Combining
+   > explicit `break` with the single-return rule also means the
+   > control-flow graph of a method is always linear at the top
+   > level — easier to read, test, and extend.*
+
+   ```java
+   /* CORRECT: every case terminated with break */
+   switch (state) {
+       case IDLE:
+           stop();
+           break;
+       case RUN:
+           applySpeed();
+           break;
+       default:
+           DriverStation.reportError(
+               "Unexpected state: " + state, false);
+           break;
+   }
+
+   /* CORRECT: intentional fall-through, commented */
+   switch (mode) {
+       case WARMUP:
+           primeHeater();
+           // fall through
+       case READY:
+           enableIntake();
+           break;
+       default:
+           break;
+   }
+
+   /* WRONG: return inside a case (violates CODE-FUN-002a) */
+   switch (state) {
+       case IDLE:
+           return 0.0;
+       // ...
+   }
+
+   /* WRONG: unmarked fall-through */
+   switch (mode) {
+       case WARMUP:
+           primeHeater();
+       case READY:
+           enableIntake();
+           break;
+   }
+   ```
 
 ### CODE-CTL-003 -- Loops
 

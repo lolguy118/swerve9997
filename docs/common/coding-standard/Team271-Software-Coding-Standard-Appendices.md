@@ -159,7 +159,10 @@ Timer t = new Timer(); // in periodic method
  * If you use raw CTRE API, store requests as fields: */
 private final VoltageOut mVoltageRequest = new VoltageOut(0);
 
-/* In periodic: reuse the object */
+/* In periodic: reuse the object. StatusCode is intentionally
+ * discarded -- periodic control is best-effort at 50 Hz, and
+ * transient failures self-correct on the next cycle
+ * (CODE-GEN-005b). */
 mMotor.setControl(mVoltageRequest.withOutput(voltage));
 ```
 
@@ -217,7 +220,8 @@ Store control request objects as fields and reuse them:
 private final VoltageOut mVoltageRequest =
     new VoltageOut(0).withUseTimesync(true).withUpdateFreqHz(0);
 
-/* In robotPeriodicAfter: */
+/* In robotPeriodicAfter: StatusCode is intentionally discarded --
+ * periodic control is best-effort (CODE-GEN-005b). */
 mMotor.setControl(mVoltageRequest.withOutput(voltage));
 ```
 

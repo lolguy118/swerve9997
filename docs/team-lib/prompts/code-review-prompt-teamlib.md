@@ -461,13 +461,11 @@ Data flows through three parallel systems:
 
 #### Config Modes and Logger Setup
 
-```java
-switch (Config.getMode()) {
-    case REAL:  WPILOGWriter + NT4Publisher  // .wpilog on USB + live NT
-    case SIM:   NT4Publisher                 // live NT only
-    case REPLAY: WPILOGReader → WPILOGWriter // replay from log, write sim output
-}
-```
+| `Config.getMode()` | Logger data receivers | Purpose |
+| ------------------ | --------------------- | ------- |
+| `REAL` | `WPILOGWriter` + `NT4Publisher` | `.wpilog` on USB + live NT |
+| `SIM` | `NT4Publisher` | Live NT only |
+| `REPLAY` | `WPILOGReader` → `WPILOGWriter` | Replay from log, write sim output |
 
 - `Config.FORCE_REPLAY = true` enables replay mode in simulation (reads from existing .wpilog)
 

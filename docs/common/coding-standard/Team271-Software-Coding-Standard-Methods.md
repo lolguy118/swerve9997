@@ -122,6 +122,16 @@ b. Utility classes **shall** be declared `final` with a `private`
 
 ### CODE-FUN-006 -- Defensive Checks
 
+**See also:**
+[CODE-GEN-005](Team271-Software-Coding-Standard-General.md#code-gen-005----return-value-checking)
+(return-value checking — `StatusCode`, `Optional`, etc.),
+[CODE-GEN-012](Team271-Software-Coding-Standard-General.md#code-gen-012----null-safety)
+(null-safety), and
+[CODE-CTL-002](Team271-Software-Coding-Standard-Control.md#code-ctl-002----switch-statements)
+(switch statements — termination, fall-through, arrow syntax).
+This rule covers the remaining defensive patterns not handled by
+those.
+
 > *Industry note: MISRA Rule 16.4 requires every switch statement to have
 > a default label. Even if you think you have covered every enum value,
 > someone might add a new value later and forget to update the switch.
@@ -150,5 +160,40 @@ d. Method parameters **shall** use the `arg` prefix (per
    visibly distinct in the method body, reducing the risk of silent
    bugs where a typo refers to `fieldName` instead of
    `argFieldName`.
+
+e. Public methods that accept numeric parameters with a bounded
+   valid range (voltages, duty cycles, percentages, angles within
+   a finite sector, etc.) **shall** enforce the range at entry.
+   Enforcement **shall** be one of:
+
+   - Clamp to the valid range (when a caller error should be
+     absorbed silently so the robot keeps running), or
+   - Throw `IllegalArgumentException` with a descriptive message
+     (when a caller error indicates a bug that must surface).
+
+   The choice **shall** be documented in the method's JavaDoc so
+   callers know which behavior to expect.
+
+   > *Industry note: CERT NUM00-J and the Barr Group standard both
+   > require bounded-input validation at API boundaries. Without
+   > it, an out-of-range value propagates deep into motor firmware
+   > before surfacing (if it ever does).*
+
+   ```java
+   /* CORRECT: clamp and continue */
+   public void setDutyCycle(final double argDutyCycle) {
+       final double clamped = Util.limit(argDutyCycle, -1.0, 1.0);
+       mTransmission.set(clamped);
+   }
+
+   /* CORRECT: throw on invalid input */
+   public void configRatio(final double argRatio) {
+       if (argRatio <= 0.0) {
+           throw new IllegalArgumentException(
+               "argRatio must be > 0, got " + argRatio);
+       }
+       mRatio = argRatio;
+   }
+   ```
 
 ---

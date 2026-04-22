@@ -19,5 +19,8 @@ and supply ready-to-copy templates for robot projects.
 
 | File | Scope |
 | ---- | ----- |
+| [`coding-standard-teamlib-rules.md`](coding-standard-teamlib-rules.md) | Team271-Lib-specific coding rules (`CODE-LIB-NNN`) for library source code — architectural patterns from ADRs expressed as enforceable rules |
 | [`coding-standard-library-notes.md`](coding-standard-library-notes.md) | How the generic Team 271 coding-standard rules bind to specific library classes (`TObj`, `SubsystemManager`, `CTREManager`, etc.) |
-| [`coding-standard-templates.md`](coding-standard-templates.md) | Copy-paste code templates that robot projects use when implementing subsystems, autonomous moves, controllers, and other library patterns |
+
+Robot-project code templates (subsystem layout, constants organization, input-driver pattern) live in
+[`../../project-template/`](../../project-template/) alongside the project-level coding-standard template — they are consumer-facing scaffolding, not library content.

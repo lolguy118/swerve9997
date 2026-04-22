@@ -293,57 +293,6 @@ c. When null indicates an error, prefer throwing
    `IllegalStateException` (as done in `getInstance()`) over
    returning null.
 
-### CODE-GEN-013 -- Singleton Pattern (Robot Projects)
-
-> **Scope:** This rule applies to **robot-project code** only.
-> Reusable library subsystems do not use singletons — they are
-> instantiated directly and passed by reference.
-
-a. Robot-project subsystems **shall** use the established singleton pattern
-   with two `getInstance()` methods:
-
-   ```java
-   private static MySubsystem mInstance;
-
-   public static MySubsystem getInstance(final LifecycleBase argParent) {
-       if (mInstance == null) {
-           mInstance = new MySubsystem(argParent);
-       }
-       return mInstance;
-   }
-
-   public static MySubsystem getInstance() {
-       if (mInstance == null) {
-           throw new IllegalStateException("MySubsystem not initialized");
-       }
-       return mInstance;
-   }
-   ```
-
-b. The `getInstance(LifecycleBase)` overload creates the instance on first
-   call. The no-argument `getInstance()` **shall** throw
-   `IllegalStateException` if not yet initialized.
-
-c. Subsystem singletons **shall** only be created in `Robot.robotInit()`
-   and registered with `SubsystemManager.addSubsystem()`.
-
-d. After creation, subsystem references **shall** be stored in
-   `Globals.java` as `public static` fields so that other classes
-   can access them without calling `getInstance()`:
-
-   ```java
-   /* In Robot.robotInit() */
-   Globals.subsystemA = SubsystemA.getInstance(ntRobot);
-   mSubsystemManager.addSubsystem(Globals.subsystemA);
-
-   /* In Globals.java */
-   public static SubsystemA subsystemA;
-   public static SubsystemB subsystemB;
-   public static SubsystemC subsystemC;
-   public static SubsystemD subsystemD;
-   public static InputDriver controllerDriver;
-   ```
-
 ### CODE-GEN-014 -- Object Equality
 
 a. Object comparison **shall** use `.equals()`, not `==`, unless
@@ -389,21 +338,11 @@ a. Code that opens resources (files, streams, connections) **shall**
 
 ### CODE-GEN-016 -- Mutable Static Fields
 
-> **Scope:** Item `a` applies universally. The `Globals.java` exception
-> in item `b` is a **robot-project** convention — reusable library code
-> should not depend on it.
-
-a. Mutable `static` fields **shall** only be used for the singleton
-   pattern (`mInstance`). Other shared mutable state **should** be
-   passed explicitly through constructors or method parameters.
-
-b. **Accepted exceptions in robot-project code** (documented here to
-   avoid repeated review flags):
-   - `Globals.java` fields — public static references to subsystems and
-     `InputDriver`. These serve as a global registry initialized once in
-     `Robot.robotInit()` and read thereafter. They use no `m` prefix
-     because they are static, not instance fields (exception to
-     CODE-VAR-001a).
+a. Mutable `static` fields **shall** be avoided. Shared mutable
+   state **should** be passed explicitly through constructors or
+   method parameters. Project-specific exceptions (e.g., singleton
+   instance references in consuming projects) are documented in
+   that project's own coding standard.
 
 ### CODE-GEN-017 -- Concurrency Keywords
 

@@ -131,26 +131,6 @@ Power On → robotInit()
          → disabledInit() → disabledPeriodic() [match ends]
 ```
 
-### Subsystem Registration Order
-
-Subsystems are registered with `SubsystemManager.addSubsystem()` in
-`Robot.robotInit()`. Robot-project subsystems typically use a
-singleton `getInstance(LifecycleBase)` accessor (see CODE-GEN-013);
-reusable library subsystems are instantiated directly and passed by
-reference. Registration order determines lifecycle call order.
-**This order is load-bearing** -- the following rules apply:
-
-- Input/controller subsystems **shall** be registered first so that
-  other subsystems can read their state during the same cycle.
-- Subsystems that produce data consumed by other subsystems (e.g., a
-  subsystem whose state gates another (e.g., a shooter gating a feeder)) **shall** be registered
-  before their consumers.
-- Actuator subsystems that depend on sensor data from other subsystems
-  **shall** be registered after their data sources.
-
-See the robot-specific reference document (e.g., `docs/robot-<year>-reference.md`)
-for the current year's concrete registration order.
-
 ---
 
 ## Appendix E: GC Pressure Minimization Guide

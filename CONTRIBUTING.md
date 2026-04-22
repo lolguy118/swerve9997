@@ -52,8 +52,9 @@ indexes the rest:
 - `-General.md`, `-Format.md`, `-Modules.md`, `-Methods.md`,
   `-Variables.md`, `-Control.md`, `-Comments.md`, `-Debug.md`,
   `-Safety.md` — the `CODE-*` rules by category
-- [`team-lib/coding-standard/coding-standard-templates.md`](docs/team-lib/coding-standard/coding-standard-templates.md)
-  — file and class templates for robot-project code that consumes the library
+- [`project-template/`](docs/project-template/)
+  — scaffolding for consuming robot projects (subsystem, constants, and
+  input-driver code templates plus a project-level coding-standard template)
 - [`-Appendices.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Appendices.md)
   — reference tables (final-keyword guide, unit conventions, GC, etc.)
 - [`-Compliance.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Compliance.md)

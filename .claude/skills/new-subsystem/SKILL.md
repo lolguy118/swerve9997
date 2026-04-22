@@ -42,8 +42,8 @@ scaffold is compliant:
   for desired-vs-actual separation.
 - [`docs/team-lib/planning/adr/ADR-012-mandatory-timeouts-fail-safe.md`](../../../docs/team-lib/planning/adr/ADR-012-mandatory-timeouts-fail-safe.md)
   for homing-timeout requirements.
-- [`docs/team-lib/coding-standard/coding-standard-templates.md`](../../../docs/team-lib/coding-standard/coding-standard-templates.md)
-  for any robot-project subsystem templates.
+- [`docs/project-template/subsystem-template.md`](../../../docs/project-template/subsystem-template.md)
+  for the authoritative robot-project subsystem template.
 
 ### 3. Scaffold structure
 

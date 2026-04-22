@@ -8,10 +8,11 @@ so nothing has to be copy-pasted or forked between repositories.
 
 ```text
 docs/
-├── common/       ← rules that apply to every Team 271 FRC Java project
-├── team-lib/     ← specific to this library
-└── <project>/    ← specific to the robot project using the library
-                    (lives only in that robot's repo, not here)
+├── common/            ← rules that apply to every Team 271 FRC Java project
+├── team-lib/          ← specific to this library
+├── project-template/  ← scaffolding copied into new robot projects
+└── <project>/         ← specific to the robot project using the library
+                         (lives only in that robot's repo, not here)
 ```
 
 ## Start here
@@ -67,7 +68,20 @@ belong:
 - The robot's ADRs (decisions specific to that season's mechanisms)
 - The robot's SDDs (subsystems unique to that robot)
 - The robot's guides
-- Deviations from the common coding standard, if any
+- The robot's project-level coding standard (based on
+  [`project-template/coding-standard.md`](project-template/coding-standard.md)),
+  covering `CODE-<PROJECT>-NNN` rules and any deviations from the
+  inherited common / Team271-Lib standards
+
+## `project-template/`
+
+Scaffolding that a consuming robot project copies into its own
+`docs/<project>/` tier to bootstrap project-level documentation
+(currently: the project-level coding standard; additional stubs
+will land here as they are needed).
+
+See [`project-template/README.md`](project-template/README.md) for
+contents and usage.
 
 ## How a robot project uses this folder
 

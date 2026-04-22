@@ -25,7 +25,7 @@ can be handed off between programmers across seasons.
 
 The core principles are defensive coding, predictable execution, minimal
 complexity, and rigorous formatting -- all directly applicable to FRC
-robot code running in real-time 20ms periodic cycles.
+robot code running in a tight real-time loop.
 
 In this document, any rule specified with "shall" denotes a mandatory
 requirement. Rules specified with "should" are recommended practices.
@@ -148,7 +148,7 @@ NASA's Jet Propulsion Laboratory for code that runs on spacecraft.
 If your Mars rover's code crashes, there is nobody to reboot it.
 Rules like "no recursion," "no dynamic allocation after init," and
 "all loops must have a fixed upper bound" apply directly to our
-20ms robot loop.
+tight real-time loop.
 
 **DO-178C** -- The standard used to certify software in commercial
 aircraft. It is a process standard (it tells you *how* to develop

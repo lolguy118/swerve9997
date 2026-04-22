@@ -167,7 +167,7 @@ for the actual JVM configuration.
 
 Every object allocation in a periodic method creates garbage that
 must eventually be collected. Excessive allocation can cause GC
-pauses that exceed the 20ms cycle, causing the robot to stutter or
+pauses that exceed the loop budget, causing the robot to stutter or
 brownout. Because we can't tune pause times, we minimize them by
 minimizing allocations — the patterns below are the mechanism.
 

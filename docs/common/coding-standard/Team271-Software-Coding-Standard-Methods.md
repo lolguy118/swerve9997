@@ -44,7 +44,7 @@ a. A single return point at the end of a method is preferred but not
 
 b. Recursion **shall** not be used in any code that executes during
    periodic methods. All call graphs reachable from periodic methods
-   **shall** be acyclic. The 20ms cycle budget cannot accommodate
+   **shall** be acyclic. The real-time loop cannot accommodate
    unbounded recursion.
 
    > *Industry note: JPL Rule 1 prohibits all recursion -- direct and

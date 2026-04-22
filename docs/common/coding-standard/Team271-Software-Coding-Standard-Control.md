@@ -61,7 +61,7 @@ b. Loop variables in `for` statements **shall** not be modified
    modification, use a `while` loop instead.
 
 c. All loops in periodic methods **shall** have a provable upper
-   bound and **shall** terminate within the 20ms cycle budget.
+   bound and **shall** terminate within one loop cycle.
    Unbounded loops (e.g., `while (true)`) **shall** not appear
    in any code reachable from periodic methods.
 

@@ -83,12 +83,11 @@ d. The `@Override` annotation **shall** be used on every method that
 > after initialization." MISRA Directive 4.12 says "dynamic memory
 > allocation shall not be used." The reason is the same for a Mars rover
 > and our robot: if your code triggers a memory allocation pause in the
-> middle of a maneuver, you lose control. Our 20ms loop budget is tight.*
+> middle of a maneuver, you lose control. Our loop budget is tight.*
 
-a. Object allocations **shall** be minimized in periodic methods
-   (`robotPeriodicBefore`, `teleopPeriodic`, `robotPeriodicAfter`,
-   `outputTelemetry`). These methods run every 20ms; excessive
-   allocations cause GC pauses that can stall the robot loop.
+a. Object allocations **shall** be minimized in periodic methods.
+   These methods run in a tight real-time loop; excessive
+   allocations cause GC pauses that stall it.
 
 b. Objects that are used repeatedly **shall** be pre-allocated in
    `robotInit()` or at field declaration and reused:
@@ -99,14 +98,15 @@ b. Objects that are used repeatedly **shall** be pre-allocated in
 
    /* WRONG: Timer allocated in periodic method */
    @Override
-   public void teleopPeriodic(final double argTimestamp) {
-       Timer t = new Timer(); // BAD: allocates every 20ms
+   public void teleopPeriodic() {
+       Timer t = new Timer(); // BAD: allocates every cycle
    }
    ```
 
 c. CTRE control request objects **shall** be reused, not
-   re-created on each call. The `ExampleTransmission` class already
-   handles this pattern internally.
+   re-created on each call. Declare them as `private final` fields
+   and mutate their parameters on each use rather than constructing
+   new instances in periodic methods.
 
 d. String concatenation in periodic methods **should** be avoided.
    Use pre-defined constant strings for `Logger.recordOutput()` keys.
@@ -415,6 +415,6 @@ d. `synchronized` blocks **shall** be kept short and **shall not**
    call out to methods that can block (I/O, `Thread.sleep`, CAN
    refresh, etc.). A `synchronized` block held on the main thread
    while a `Notifier` callback contends for the same monitor will
-   stall the 20 ms robot loop.
+   stall the real-time loop.
 
 ---

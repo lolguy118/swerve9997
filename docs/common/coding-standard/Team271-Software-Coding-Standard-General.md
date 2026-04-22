@@ -31,12 +31,13 @@ a. The following methods and patterns **shall** not be used in robot code:
 | `System.err.println()` | Same as `System.out.println()` above |
 | `System.currentTimeMillis()` | Not monotonic, not FPGA-synchronized. Use `Timer.getFPGATimestamp()` |
 | Raw `new Thread()` | Use WPILib `Notifier` for background tasks |
+| `Math.random()` | Uses a synchronized shared `Random`; non-deterministic without a logged seed, which breaks AdvantageKit replay. Use `edu.wpi.first.math.MathUtil` helpers or `ThreadLocalRandom.current()` if randomness is actually needed. |
 
-b. The `volatile` keyword **should** only be used when a field is
-   accessed from multiple threads (e.g., a `Notifier` callback and
-   the main robot thread). In most FRC code you will not need it.
-   If you do need to share data between threads, prefer
-   `synchronized` or `AtomicReference` over `volatile`.
+b. Reflection and dynamic class loading **shall not** be used in
+   periodic methods. They defeat ahead-of-time optimization and can
+   trigger unpredictable class-loading pauses mid-match. Init-time
+   reflection is permitted (e.g., AdvantageKit metadata registration
+   during `robotInit()`).
 
 ### CODE-GEN-003 -- Keywords to Use Frequently
 
@@ -118,6 +119,11 @@ f. Driver-notification objects **should** be pre-allocated when used
 g. Collections that grow dynamically (e.g., `ArrayList`, `HashMap`)
    **should** be pre-sized in `robotInit()` if their maximum size
    is known.
+
+h. Streams and lambda chains that allocate intermediate collections
+   (e.g., `stream().filter(...).collect(toList())`, `.toArray()`)
+   **shall not** be used in periodic methods. They are permitted in
+   init code where one-time allocation cost is not a concern.
 
 ### CODE-GEN-005 -- Return Value Checking
 
@@ -373,5 +379,42 @@ b. **Accepted exceptions in robot-project code** (documented here to
      `Robot.robotInit()` and read thereafter. They use no `m` prefix
      because they are static, not instance fields (exception to
      CODE-VAR-001a).
+
+### CODE-GEN-017 -- Concurrency Keywords
+
+> *Industry note: CERT Java rule LCK00-J says "use private final lock
+> objects to synchronize classes that may interact with untrusted
+> code," and the broader `java.util.concurrent` design philosophy
+> (Goetz et al., *Java Concurrency in Practice*) is to prefer
+> higher-level primitives over raw `synchronized` + `volatile`.
+> Concurrency bugs are the hardest to reproduce and the hardest to
+> debug after a match. The FRC answer is almost always to avoid
+> sharing mutable state across threads in the first place — the main
+> robot loop and any `Notifier` callback should communicate through
+> immutable snapshots, not through locks.*
+
+a. Most robot code is single-threaded (the main robot loop). The
+   keywords in this rule only apply when a field is genuinely shared
+   between the main thread and a background thread (e.g., a
+   `Notifier` callback, a CTRE signal-refresh thread). If you are
+   not sure whether you have cross-thread access, you probably do
+   not, and you do not need these keywords.
+
+b. The `volatile` keyword **should** only be used when a field is
+   accessed from multiple threads. It guarantees visibility of
+   writes across threads but does **not** provide atomicity for
+   compound operations (e.g., `count++` is still unsafe on a
+   `volatile int`).
+
+c. When cross-thread sharing is required, prefer `AtomicReference`,
+   `AtomicInteger`, or the other `java.util.concurrent.atomic`
+   classes over `volatile`. These provide both visibility and atomic
+   compound operations without the ceremony of `synchronized`.
+
+d. `synchronized` blocks **shall** be kept short and **shall not**
+   call out to methods that can block (I/O, `Thread.sleep`, CAN
+   refresh, etc.). A `synchronized` block held on the main thread
+   while a `Notifier` callback contends for the same monitor will
+   stall the 20 ms robot loop.
 
 ---

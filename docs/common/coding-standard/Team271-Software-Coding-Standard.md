@@ -176,28 +176,17 @@ java {
 }
 ```
 
-**Permitted Java features:**
+Java feature and API guidance lives in the General companion:
 
-- Switch expressions (`->` syntax)
-- Enhanced for-each loops
-- `var` for local type inference (when the type is obvious from context)
-- Records (for data-carrier classes)
-- Text blocks (for multi-line strings in tests or configuration)
-
-**Restricted features** (avoid in periodic methods due to GC pressure):
-
-- Streams and lambdas that create intermediate collections
-- Autoboxing/unboxing in loops
-- String concatenation in hot paths (use `Logger.recordOutput()` keys as constants)
-- Reflection and dynamic class loading
-
-**Prohibited:**
-
-- `Thread.sleep()` in robot code (use WPILib `Timer` or `Notifier`)
-- `System.exit()` and `Runtime.halt()`
-- Raw `Thread` creation (use WPILib `Notifier` if needed)
-- `System.gc()` (let the JVM manage garbage collection)
-- `Object.finalize()` (deprecated and unreliable)
+- [CODE-GEN-002](Team271-Software-Coding-Standard-General.md#code-gen-002----apis-and-methods-to-avoid)
+  — banned APIs and patterns (`Thread.sleep`, `System.exit`,
+  reflection in periodic methods, etc.).
+- [CODE-GEN-004](Team271-Software-Coding-Standard-General.md#code-gen-004----garbage-collection-pressure-minimization)
+  — allocation and GC-pressure rules (streams, autoboxing, string
+  concatenation, and similar patterns to avoid in the 20 ms loop).
+- [CODE-GEN-017](Team271-Software-Coding-Standard-General.md#code-gen-017----concurrency-keywords)
+  — concurrency keywords (`volatile`, `synchronized`,
+  `java.util.concurrent.atomic`).
 
 ### 2.2 Build System
 

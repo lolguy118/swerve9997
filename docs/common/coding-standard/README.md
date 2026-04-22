@@ -27,7 +27,7 @@ timeouts and fail-safe behavior).
 | File | Scope |
 | ---- | ----- |
 | [`Team271-Software-Coding-Standard.md`](Team271-Software-Coding-Standard.md) | Core: §1 Introduction, §2 Programming Language, §3 Source-code presentation, §4 Coding Guidelines (router to companions) |
-| [`-General.md`](Team271-Software-Coding-Standard-General.md) | `CODE-GEN-*` — keywords, annotations, type safety, exceptions, garbage collection |
+| [`-General.md`](Team271-Software-Coding-Standard-General.md) | `CODE-GEN-*` — keywords, annotations, type safety, exceptions, garbage collection, concurrency |
 | [`-Format.md`](Team271-Software-Coding-Standard-Format.md) | `CODE-FMT-*` — braces, parentheses, blank lines, line endings, imports |
 | [`-Modules.md`](Team271-Software-Coding-Standard-Modules.md) | `CODE-MAF-*` — file and package organization |
 | [`-Methods.md`](Team271-Software-Coding-Standard-Methods.md) | `CODE-FUN-*` — method naming, lifecycle, state machines |

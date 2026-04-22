@@ -79,6 +79,17 @@ protected void checkTuning() {
 
 ---
 
+## CODE-GEN-008 — External Input Validation
+
+| Common concept | Library binding |
+| -------------- | --------------- |
+| Vendor return-code check | CTRE `StatusCode` returns from `getConfigurator().apply(...)` and signal-refresh operations |
+
+Operator input validation is concretized by the consuming robot
+project — `libtest`'s `InputDriver` is a reference example.
+
+---
+
 ## CODE-SAF-* — Safety Practices
 
 Library bindings for safety rules live alongside their definitions — see

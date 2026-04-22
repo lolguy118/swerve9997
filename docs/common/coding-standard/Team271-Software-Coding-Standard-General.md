@@ -165,8 +165,18 @@ b. Casts **should** be avoided. When unavoidable, they **shall** be
    accompanied by a comment explaining why the cast is safe.
 
 c. `instanceof` checks followed by casts **should** use pattern
-   matching (Java 17):
+   matching. Pattern matching fuses the type check and the cast,
+   eliminates the redundant type name, and scopes the bound
+   variable to the branch where it's valid:
+
    ```java
+   /* AVOID -- separate cast, redundant type naming, typo risk */
+   if (obj instanceof String) {
+       String s = (String) obj;
+       // use s
+   }
+
+   /* PREFER -- pattern matching */
    if (obj instanceof String s) {
        // use s directly
    }
@@ -197,18 +207,34 @@ d. `@SuppressWarnings` **shall** only be used with a comment
 e. The `@Deprecated` annotation **should** include a `@deprecated`
    JavaDoc tag explaining the replacement.
 
+f. Compilation **shall** be invoked with all warning categories
+   enabled. For `javac`, this means `-Xlint:all`; default compiler
+   settings suppress many categories and render (b) unverifiable.
+   Warnings **should** be failed at the build level (via `-Werror`
+   or an equivalent static-analyser gate) so warning drift cannot
+   accumulate silently between reviews. Project-specific enforcer
+   configuration (Error Prone, SpotBugs, Checkstyle) is recorded
+   in [`-Compliance.md`](Team271-Software-Coding-Standard-Compliance.md).
+
 ### CODE-GEN-008 -- External Input Validation
 
-a. **(Robot-project code.)** Controller inputs **shall** be validated
-   before use. Deadbands,
-   trigger thresholds, and input shaping are defined in
-   `InputDriver.java` and **shall** be applied consistently.
+External inputs **shall** be validated before use. "External"
+includes operator inputs, dashboard/selector values,
+vendor-library return codes, and any data received from off-robot
+sources.
 
-b. Auto chooser values **shall** be validated. A `default` case or
-   null check **shall** handle unexpected values.
+a. Operator-input validation — deadbands,
+   trigger thresholds, and input shaping — **shall** be applied
+   consistently across the codebase, typically by routing all raw
+   input through a single project-defined input-handling class.
 
-c. CAN bus data **shall** be validated by checking `StatusCode`
-   returns from CTRE signal refresh operations.
+b. Mode-selection and option-selection values (e.g., FRC auto
+   choosers) **shall** have a `default` case or null-handling path
+   for unexpected values.
+
+c. Return codes from vendor libraries **shall** be checked at the
+   point of call. Project-specific patterns for the chosen vendor
+   libraries are recorded in the consuming project's own docs.
 
 ### CODE-GEN-009 -- Public Method Argument Validation
 

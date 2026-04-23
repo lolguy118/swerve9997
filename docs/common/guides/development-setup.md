@@ -41,6 +41,26 @@ If you don't already have Git, install it from
 
 ---
 
+## Recommended Additional Tools
+
+These tools are commonly used on Team 271 projects. None are required
+to build or run the code — they make daily development, tuning, and
+log review much faster. Install them as needed; most are standalone
+apps (download and run, no build-tool integration required).
+
+| Tool | Purpose | Download / Docs |
+| ---- | ------- | --------------- |
+| **Fork** | Desktop Git GUI — visual commit history, staging, branch management, and conflict resolution | <https://git-fork.com/> |
+| **AdvantageScope** | Log viewer for AdvantageKit `.wpilog` files — replay matches, graph signals, and inspect mechanism state after a run | <https://docs.advantagescope.org/> |
+| **PathPlanner** | Standalone editor for autonomous paths and routines; outputs files consumed by the library's auto layer | <https://pathplanner.dev/> |
+| **Choreo** | Optimization-based trajectory tool (swerve-focused); alternative to PathPlanner for autonomous trajectories | <https://choreo.autos/> |
+| **Elastic Dashboard** | Primary driver-station dashboard; surfaces telemetry, tunable values, and `Elastic.sendNotification` alerts | <https://frc-elastic.gitbook.io/docs> |
+
+For canonical API references and source repositories, see
+[`reference-urls.md`](../../reference-urls.md).
+
+---
+
 ## Clone and Build
 
 ```bash
@@ -65,7 +85,8 @@ and are much faster.
 
 ## IDE Setup
 
-### VS Code (recommended for FRC)
+Team 271 Java projects currently standardize on VS Code. Other IDEs
+may work but aren't actively supported.
 
 1. Open the project folder in **WPILib VS Code** (the FRC-tuned
    VS Code installed by the WPILib installer).
@@ -78,12 +99,27 @@ and are much faster.
     - **Simulate Robot Code** — run the project on your laptop
       without hardware.
 
-### IntelliJ IDEA
+### Recommended Extensions
 
-1. Open the project as a Gradle project.
-2. Set the project SDK to Java 17.
-3. Let IntelliJ import the Gradle project settings.
-4. Run `./gradlew build` from the terminal to verify.
+When you open the project in VS Code, it prompts to install the
+team's recommended extensions. Accept the prompt, or install them
+manually via the Extensions panel (`Ctrl+Shift+X`):
+
+| Extension | ID | Purpose |
+| --------- | -- | ------- |
+| **Claude Code** | `anthropic.claude-code` | AI-assisted development in the editor; backs the project's slash commands (`/lib-review`, `/doc-sync-check`, etc.) |
+| **Gradle for Java** | `vscjava.vscode-gradle` | Gradle task runner, build visualization, and dependency inspection |
+| **Language Support for Java™** | `redhat.java` | Java language server — IntelliSense, navigation, refactoring |
+| **Gradle Language Support** | `naco-siren.gradle-language` | Syntax highlighting for `build.gradle` |
+| **Spotless Gradle** | `richardwillis.vscode-spotless-gradle` | Apply Spotless formatting from the editor without dropping to the terminal |
+| **Coverage Gutters** | `ryanluker.vscode-coverage-gutters` | Show JaCoCo line coverage in the editor gutter after `./gradlew test` |
+
+The authoritative list lives in
+[`.vscode/extensions.json`](../../../.vscode/extensions.json); update
+it there when adding new recommendations so every contributor sees
+the same prompt. Editor settings (JUnit launcher, JaCoCo report path,
+etc.) live in [`.vscode/settings.json`](../../../.vscode/settings.json)
+and are applied automatically when the project opens.
 
 ---
 

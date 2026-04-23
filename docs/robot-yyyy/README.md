@@ -13,7 +13,7 @@ the season year — and fills in the placeholders.
 
 ## Contents
 
-### Code templates (project root)
+### Project-root templates
 
 | File | Purpose |
 | ---- | ------- |
@@ -21,6 +21,7 @@ the season year — and fills in the placeholders.
 | [`subsystem-template.md`](subsystem-template.md) | Java code template for a robot-project subsystem — singleton pattern, lifecycle hooks, Globals registration, file organization |
 | [`constants-template.md`](constants-template.md) | Java code template for a robot-project `Constants.java` — CAN bus names, nested per-subsystem constant classes |
 | [`input-driver-template.md`](input-driver-template.md) | Java code template for the operator-input class (`InputDriver`) — extends a library input base, connection-guarded semantic getters |
+| [`vscode-extensions-template.md`](vscode-extensions-template.md) | Editor-tooling template — recommended VS Code extensions for the robot project's `.vscode/extensions.json` |
 
 ### Planning scaffolds ([`planning/`](planning/))
 

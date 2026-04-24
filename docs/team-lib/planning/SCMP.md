@@ -4,7 +4,7 @@
 | ----- | ----- |
 | Document No. | TBD-SCMP |
 | Revision | 0.1 |
-| Date | 2026-04-20 |
+| Date | 2026-04-23 |
 | Status | Draft |
 
 This plan records Team271-Lib's specific configuration management
@@ -32,7 +32,18 @@ authoritative sources, vendordep list, and deviations.
 ## 3. Library Versioning
 
 `YYYY` in the version format is the current FRC season year; the
-version number is authoritative in `build.gradle`.
+version number is authoritative in `build.gradle`. Because robot
+projects consume the library by **forking** rather than as a
+published artifact (see
+[ADR-001](adr/ADR-001-team271-lib-standalone-library.md)), tags on
+`main` serve two related purposes:
+
+1. They mark reviewed baselines that a new robot project can fork
+   from. Each robot repo records — in its own SCMP — the Team271-Lib
+   tag it was forked from.
+2. They let maintainers coordinate across robot teams when
+   recommending a known-good baseline mid-season (e.g., "fork from
+   `v2026.1.2` — the earlier tag had a CAN-refresh regression").
 
 Concrete tag events for the library's 2026 → 2027 cycle:
 
@@ -41,6 +52,12 @@ Concrete tag events for the library's 2026 → 2027 cycle:
 | Offseason start | `v2026.N.P` (prior-season final) |
 | Offseason API freeze | `v2027.0.0` |
 | Competition hotfix | `v2027.0.P` |
+
+Mid-season library fixes made inside a robot repo do **not** land on
+Team271-Lib `main` automatically. A robot team that wants a fix
+propagated to future seasons opens a PR against Team271-Lib between
+seasons, following the normal change-control process (see
+[ADR-001 Consequences](adr/ADR-001-team271-lib-standalone-library.md#consequences)).
 
 ## 4. Vendordep Management (Team271-Lib specifics)
 

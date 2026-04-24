@@ -1,5 +1,7 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to
-     docs/<project>/planning/SRS.md in the robot's own repository. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place to docs/<project>/planning/SRS.md by tools/init-robot.sh
+     during project initialization. This banner is stripped by the
+     init script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 

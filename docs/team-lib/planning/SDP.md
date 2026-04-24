@@ -47,8 +47,9 @@ and milestones. Does not cover:
 
 Team271-Lib is Team 271's reusable FRC library: lifecycle primitives,
 motor/sensor wrappers, PID variants, a state-machine-based subsystem
-pattern, autonomous move composition, and telemetry. It is consumed as
-a versioned dependency by each year's robot project
+pattern, autonomous move composition, and telemetry. Each year's robot
+project is created by forking this repository at a chosen tag and
+renaming the scaffolding in place
 (see [ADR-001](adr/ADR-001-team271-lib-standalone-library.md)).
 
 The code is organized into six layers with strict dependency rules

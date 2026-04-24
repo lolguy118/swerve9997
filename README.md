@@ -4,8 +4,11 @@ A reusable FRC framework for Team 271's season robots. Instead of
 WPILib's command-based pattern, it builds on a state-machine model
 with explicit lifecycle hooks, per-subsystem exception isolation (one
 crash doesn't take the rest down), and batched CAN-signal reads.
-Robot projects depend on a tagged release of the library; the library
-itself stays season-agnostic.
+Each season's robot project is created by forking this repo at a
+chosen tag and renaming the scaffolding in place; the library itself
+stays season-agnostic. See
+[ADR-001](docs/team-lib/planning/adr/ADR-001-team271-lib-standalone-library.md)
+for the consumption-model rationale.
 
 - **Language / build:** Java 17, GradleRIO 2026
 - **Hardware target:** CTRE Phoenix 6 on roboRIO 2
@@ -84,15 +87,18 @@ isolation come for free. Full example with state modes and driver
 alerts:
 [Infrastructure.java](src/main/java/com/team271/libtest/subsystems/Infrastructure.java).
 
-## Using the library in a robot project
+## Starting a new robot project
 
-Robot projects pin to a tagged release of Team271-Lib and vendor
-`docs/common/` + `docs/team-lib/` alongside their own
-`docs/<robot-name>/` tier. The versioning and publishing mechanism
-is defined in
-[SCMP §3](docs/team-lib/planning/SCMP.md#3-library-versioning);
-the project-tier scaffold lives in
-[docs/robot-yyyy/](docs/robot-yyyy/README.md).
+This repo is the template. Each season, a new robot project is
+created by forking Team271-Lib at a chosen tag, then running the
+bootstrap script under `tools/` to rename `docs/robot-yyyy/` →
+`docs/<project>/` and `com.team271.libtest` → the project's own
+package. See
+[docs/robot-yyyy/README.md](docs/robot-yyyy/README.md) for the full
+fork-and-rename workflow, and
+[ADR-001](docs/team-lib/planning/adr/ADR-001-team271-lib-standalone-library.md)
+for why the library is consumed as a fork rather than a published
+artifact.
 
 ## Working on the library itself
 

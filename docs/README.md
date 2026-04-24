@@ -1,17 +1,20 @@
 # Documentation Layout
 
 This folder contains **all the documentation** for Team271-Lib.
-Because the same rules are shared by this library and by the robot
-projects that use it, the `docs/` folder is organized in three tiers
-so nothing has to be copy-pasted or forked between repositories.
+Because every season's robot project is a **fork** of this repo
+([ADR-001](team-lib/planning/adr/ADR-001-team271-lib-standalone-library.md)),
+the `docs/` folder is organised in three tiers so each tier has a
+clear role after the fork: shared rules stay authoritative,
+library-specific docs become frozen reference material in the robot
+repo, and a project-specific tier is created by renaming the
+`robot-yyyy/` scaffold.
 
 ```text
 docs/
-├── common/            ← rules that apply to every Team 271 FRC Java project
-├── team-lib/          ← specific to this library
-├── robot-yyyy/  ← scaffolding copied into new robot projects
-└── <project>/         ← specific to the robot project using the library
-                         (lives only in that robot's repo, not here)
+├── common/          ← rules that apply to every Team 271 FRC Java project
+├── team-lib/        ← specific to this library
+├── robot-yyyy/      ← scaffold renamed in place when a fork becomes a robot project
+└── <project>/       ← the renamed robot-yyyy/, post-fork (edited in the robot repo)
 ```
 
 ## Start here
@@ -30,7 +33,8 @@ If you're new, open these in order:
 ## common/
 
 FRC Java policy. Anything here applies verbatim to every 271 FRC
-project — the library and any season's robot code.
+project — the library and any season's robot code. This tier
+survives forking unchanged.
 
 Currently:
 
@@ -54,14 +58,31 @@ library package internals. Guides walk through library architecture
 and contributor setup. Prompts and internal diagrams support the
 library's review and maintenance workflow.
 
+After a fork, this tier becomes **frozen reference material** in the
+robot repo — it describes the library state at fork time. Any
+library-code modifications a robot team makes during the season live
+in the robot repo only; they do not propagate back to Team271-Lib
+`main` unless explicitly upstreamed between seasons
+(see [ADR-001 Consequences](team-lib/planning/adr/ADR-001-team271-lib-standalone-library.md#consequences)).
+
 See [`team-lib/planning/README.md`](team-lib/planning/README.md) for
 the planning-doc map.
 
-## `<project>/` (robot projects)
+## robot-yyyy/
 
-A robot project that depends on Team271-Lib creates its own
-`docs/<project>/` directory in the robot's repository. Inside it
-belong:
+Scaffolding that becomes the robot project's documentation tier
+after the fork. An init script under `tools/` renames this directory
+to `docs/<project>/` (e.g., `docs/robot-2026/`), renames the
+`com.team271.libtest` Java package, and substitutes project-name
+placeholders.
+
+See [`robot-yyyy/README.md`](robot-yyyy/README.md) for contents and
+the rename workflow.
+
+## `<project>/` (robot projects, post-fork)
+
+After the fork-and-rename, `docs/robot-yyyy/` becomes
+`docs/<project>/` in the robot repo. This tier contains:
 
 - The robot's own SDP, SRS, SVP, and SCMP
 - The robot's ADRs (decisions specific to that season's mechanisms)
@@ -72,31 +93,8 @@ belong:
   covering `CODE-<PROJECT>-NNN` rules and any deviations from the
   inherited common / Team271-Lib standards
 
-## `robot-yyyy/`
-
-Scaffolding that a consuming robot project copies into its own
-`docs/<project>/` tier to bootstrap project-level documentation:
-a project coding standard, Java code templates (subsystem,
-constants, input driver), and planning/guides/prompts scaffolds
-(SDP, SRS, SVP, SCMP, plus ADR and SDD indexes).
-
-See [`robot-yyyy/README.md`](robot-yyyy/README.md) for
-contents and usage.
-
-## How a robot project uses this folder
-
-The robot project should see this folder's `common/` and `team-lib/` as
-**reference-only**. Two practical options:
-
-1. **Git submodule or subtree** — vendor the `docs/common/` and
-   `docs/team-lib/` directories from this repo into the robot repo. Keeps
-   them in sync with whatever version of the library the robot depends on.
-2. **Copy on pinning** — copy the docs matching the library version the
-   robot ships with. Simple but drifts over time; acceptable for short-lived
-   projects.
-
-Either way, the robot's own `docs/<project>/` is authored fresh in the
-robot repo and is the only tier that gets edited there.
+This is the only tier that gets actively edited in the robot repo;
+`common/` and `team-lib/` are reference-only after the fork.
 
 ## Pointers
 

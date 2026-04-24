@@ -1,5 +1,7 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to
-     docs/<project>/planning/SDP.md in the robot's own repository. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place to docs/<project>/planning/SDP.md by tools/init-robot.sh
+     during project initialization. This banner is stripped by the
+     init script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
@@ -50,8 +52,8 @@ any deviation from the library's development pins. Does not cover:
 
 - **Robot nickname**: `<Robot-Name>`
 - **Season**: `<YYYY>`
-- **Top-level package**: `com.example.<project>`
-- **Library dependency**: Team271-Lib vendored per [SCMP.md](SCMP.md) §4
+- **Top-level package**: `com.team271.<project>`
+- **Forked from**: Team271-Lib, tag recorded in [SCMP.md](SCMP.md) §4
 
 Brief description (1-2 paragraphs) of what the robot does
 mechanically, what mechanisms it has, and what game tasks it performs.
@@ -68,7 +70,7 @@ tool versions). Record project-specific overrides here.
 | Java version | Team271-Lib SDP §4 | (none) |
 | Gradle version | Team271-Lib SDP §4 | (none) |
 | WPILib version | Team271-Lib SDP §4 | (none) |
-| Library version | [SCMP.md](SCMP.md) §4 | (pin here) |
+| Fork origin tag | [SCMP.md](SCMP.md) §4 | (record fork tag) |
 
 ## 5. Platform Matrix
 

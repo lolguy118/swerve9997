@@ -1,8 +1,8 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to
-     docs/<project>/coding-standard.md in the robot's own repository.
-     Replace <PROJECT> placeholders with the project name (season
-     year, robot nickname, etc.). Delete any example rules that do
-     not apply and add your own. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- this scaffold is renamed
+     in place to docs/<project>/coding-standard.md by
+     tools/init-robot.sh during project initialization. Replace
+     <Project>/<PROJECT> placeholders in the body; this banner is
+     stripped by the init script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
@@ -38,15 +38,15 @@ explicitly cites the rule ID in §3 and documents a rationale.
 
 ### 1.3 Inherited Standards
 
-Consuming projects typically vendor `docs/common/` and
-`docs/team-lib/` from Team271-Lib. Update the paths below to match
-your vendoring:
+After forking Team271-Lib, the inherited standards live alongside
+this file in the project's own `docs/` tree at fixed relative
+paths:
 
-- **Common core:** `<vendored-path>/common/coding-standard/Team271-Software-Coding-Standard.md`
-- **Common companions:** `<vendored-path>/common/coding-standard/Team271-Software-Coding-Standard-*.md`
-- **Team271-Lib rules:** `<vendored-path>/team-lib/coding-standard/coding-standard-teamlib-rules.md`
-- **Team271-Lib library-notes:** `<vendored-path>/team-lib/coding-standard/coding-standard-library-notes.md`
-- **Project code templates** (copied alongside this file): `subsystem-template.md`, `constants-template.md`, `input-driver-template.md`
+- **Common core:** [`../common/coding-standard/Team271-Software-Coding-Standard.md`](../common/coding-standard/Team271-Software-Coding-Standard.md)
+- **Common companions:** `../common/coding-standard/Team271-Software-Coding-Standard-*.md`
+- **Team271-Lib rules:** [`../team-lib/coding-standard/coding-standard-teamlib-rules.md`](../team-lib/coding-standard/coding-standard-teamlib-rules.md)
+- **Team271-Lib library-notes:** [`../team-lib/coding-standard/coding-standard-library-notes.md`](../team-lib/coding-standard/coding-standard-library-notes.md)
+- **Project code templates** (siblings of this file): `subsystem-template.md`, `constants-template.md`, `input-driver-template.md`
 
 ---
 

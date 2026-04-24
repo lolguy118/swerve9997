@@ -1,8 +1,9 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to the robot's
-     own docs folder as docs/<project>/subsystem-template.md (or
-     treat as a live reference). The Java layout below is what each
-     subsystem file under src/main/java/<your-package>/subsystems/
-     should follow. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place to docs/<project>/subsystem-template.md by
+     tools/init-robot.sh during project initialization. The Java
+     layout below is what every subsystem file under
+     src/main/java/com/team271/<project>/subsystems/ should follow.
+     This banner is stripped by the init script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 

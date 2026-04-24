@@ -13,10 +13,11 @@
 > - `docs/team-lib/guides/` — contributor tutorials
 > - `docs/team-lib/coding-standard/coding-standard-teamlib-rules.md` — library-specific `CODE-LIB-*` rules
 > - `docs/team-lib/coding-standard/coding-standard-library-notes.md` — library bindings for common rules
-> - `docs/robot-yyyy/` — scaffolding for consuming robot projects
->   (code templates, project coding-standard, and planning scaffolds
->   — SDP/SRS/SVP/SCMP plus ADR, SDD, guides, and prompts indexes;
->   copy to `docs/robot-2026/`, `docs/robot-2027/`, etc.)
+> - `docs/robot-yyyy/` — scaffolding renamed in place when a robot
+>   project forks this repo (code templates, project coding-standard,
+>   and planning scaffolds — SDP/SRS/SVP/SCMP plus ADR, SDD, guides,
+>   and prompts indexes; renamed to `docs/robot-2026/`,
+>   `docs/robot-2027/`, etc. by the `tools/` init script)
 > - `.claude/rules/` — path-scoped AI guardrails
 >
 > If new information needs a home, add it to the appropriate
@@ -27,9 +28,12 @@
 Team 271's reusable FRC library. See [`README.md`](README.md) for the
 project overview and quick start. Docs are organised in three tiers —
 common to every 271 project, library-specific, project-specific — see
-[`docs/README.md`](docs/README.md) for the layout. A robot project
-consuming this library vendors `docs/common/` and `docs/team-lib/` and
-adds its own `docs/<robot-name>/` without path collision.
+[`docs/README.md`](docs/README.md) for the layout. Each season's
+robot project is a **fork** of this repo: the init script under
+`tools/` renames `docs/robot-yyyy/` to `docs/<robot-name>/` and the
+`com.team271.libtest` package to the robot's own package; `common/`
+and `team-lib/` stay in place as inherited reference material
+([ADR-001](docs/team-lib/planning/adr/ADR-001-team271-lib-standalone-library.md)).
 
 ## Architecture
 

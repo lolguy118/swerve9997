@@ -62,11 +62,12 @@ indexes the rest:
 - [`-Compliance.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Compliance.md)
   — §5 static analysis + tooling + §5.4 review checklist
 
-Scaffolding for consuming robot projects (subsystem, constants, and
+Scaffolding for a forked robot project (subsystem, constants, and
 input-driver code templates, plus a project-level coding-standard
-template) lives separately under
-[`docs/robot-yyyy/`](docs/robot-yyyy/) and is copied into each new
-robot project's `docs/<project>/` tier.
+template) lives under [`docs/robot-yyyy/`](docs/robot-yyyy/) and is
+renamed in place to `docs/<project>/` by
+[`tools/init-robot.sh`](tools/init-robot.sh) during project
+initialization.
 
 Read at least the core doc and `-Safety.md` before your first
 contribution.

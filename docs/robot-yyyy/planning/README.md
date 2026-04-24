@@ -1,6 +1,8 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to
-     docs/<project>/planning/README.md in the robot's own repository.
-     Replace <Project>/<PROJECT> placeholders with the project name. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place to docs/<project>/planning/README.md by
+     tools/init-robot.sh during project initialization. Replace
+     <Project>/<PROJECT> placeholders in the body; this banner is
+     stripped by the init script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
@@ -50,7 +52,7 @@ this directory concretize that framework with robot-specific choices
 | [SDP.md](SDP.md) | Software Development Plan | Project phases, milestones, toolchain pinning, deviations |
 | [SRS.md](SRS.md) | Software Requirements Specification | Functional and non-functional requirements — what the robot shall do |
 | [SVP.md](SVP.md) | Software Verification Plan | Test strategy for this robot, coverage targets, on-field validation |
-| [SCMP.md](SCMP.md) | Software Configuration Management Plan | Robot version scheme, library-vendor pinning, deviation tracking |
+| [SCMP.md](SCMP.md) | Software Configuration Management Plan | Robot version scheme, Team271-Lib fork-origin tag, deviation tracking |
 | [sdd/](sdd/) | Software Design Descriptions | One SDD per robot subsystem (Drivebase, Shooter, Intake, Vision, ...) |
 | [adr/](adr/) | Architecture Decision Records | Robot-scope decisions (mechanism choice, drive geometry, controller mapping rationale) |
 
@@ -65,12 +67,12 @@ Fill this table in as subsystem SDDs are authored.
 
 ## Inherited library decisions (informational)
 
-The robot code depends on Team271-Lib, and several of the library's
-architectural decisions govern patterns that the robot code must
-follow. These are listed here so robot contributors know what's
-already decided for them (via the library dependency) vs. what still
-needs a project-level decision. Each link points back into the
-library's planning tier.
+The robot code inherits Team271-Lib from the fork, and several of
+the library's architectural decisions govern patterns that the
+robot code must follow. These are listed here so robot contributors
+know what's already decided for them (via the inherited library
+code) vs. what still needs a project-level decision. Each link
+points into the inherited library planning tier.
 
 - **[ADR-010 — Desired-to-Actual State Pattern](../../team-lib/planning/adr/ADR-010-desired-to-actual-state-pattern.md)**
   — every subsystem separates `mDesired*` from `m*` state; outputs

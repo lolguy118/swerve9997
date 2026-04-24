@@ -10,11 +10,13 @@
 ## What Is Team271-Lib?
 
 Team271-Lib is a reusable FRC robot framework built on WPILib, CTRE
-Phoenix 6, and AdvantageKit. Robot projects depend on it but live in
-separate repositories — the library provides building blocks (lifecycle
-management, hardware wrappers, control algorithms, autonomous
-composition), and each robot project assembles them into a specific
-robot with its own subsystems, constants, and auto paths.
+Phoenix 6, and AdvantageKit. Each season's robot project is a
+**fork** of this repository at a chosen season tag (see
+[ADR-001](../planning/adr/ADR-001-team271-lib-standalone-library.md))
+— the library provides building blocks (lifecycle management,
+hardware wrappers, control algorithms, autonomous composition), and
+each forked robot project assembles them into a specific robot with
+its own subsystems, constants, and auto paths.
 
 The library uses a **state-machine approach** instead of WPILib's
 command-based framework. This gives finer-grained lifecycle control:

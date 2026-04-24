@@ -1,7 +1,8 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy the JSON block below
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- copy the JSON block below
      into .vscode/extensions.json at the robot project's repository
-     root. Commit the file so every contributor gets the same VS Code
-     prompt when opening the project. -->
+     root after forking. Commit the file so every contributor gets
+     the same VS Code extension prompt when opening the project.
+     This banner is stripped by tools/init-robot.sh. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 

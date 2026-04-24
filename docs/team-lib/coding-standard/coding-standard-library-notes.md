@@ -84,8 +84,10 @@ protected void checkTuning() {
 | -------------- | --------------- |
 | Vendor return-code check | CTRE `StatusCode` returns from `getConfigurator().apply(...)` and signal-refresh operations |
 
-Operator input validation is concretized by the consuming robot
-project — `libtest`'s `InputDriver` is a reference example.
+Operator input validation is concretized by each robot project —
+the library's `libtest` package (which the init script renames to
+the robot's own package during fork initialization) provides a
+worked reference example in its `InputDriver`.
 
 ---
 

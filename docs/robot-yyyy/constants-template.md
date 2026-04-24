@@ -1,6 +1,9 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to the robot's
-     own src/main/java/<your-package>/Constants.java and fill in the
-     real CAN IDs, bus names, and constant values for this robot. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place by tools/init-robot.sh during project initialization. The
+     Java layout below is what the robot's Constants.java under
+     src/main/java/com/team271/<project>/ should follow; fill in real
+     CAN IDs, bus names, and constant values. This banner is
+     stripped by the init script. -->
 
 # Constants Template
 

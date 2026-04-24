@@ -17,7 +17,7 @@
 /src/main/java/com/team271/lib/subsystem/        @rvarone
 /src/main/java/com/team271/lib/hardware/         @rvarone
 
-# Library API surface — changes here affect every consuming robot project
+# Library API surface — changes here affect every forked robot project
 /src/main/java/com/team271/lib/api/              @rvarone
 /src/main/java/com/team271/lib/vendor/           @rvarone
 /src/main/java/com/team271/lib/bridge/           @rvarone

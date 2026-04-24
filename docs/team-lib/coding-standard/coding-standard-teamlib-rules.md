@@ -178,9 +178,10 @@ b. Library-wide constants **shall** be defined in
    discipline (shared location for cross-class constants,
    `private` constructors on static-only holders).
 
-c. Library code **shall not** import the consuming project's
-   `Constants` class. Values needed at construction time are
-   supplied by the robot project through constructor parameters or
-   setter calls.
+c. Library code **shall not** import the robot project's
+   `Constants` class (the package under `com.team271.<project>`
+   post-fork). Values needed at construction time are supplied
+   through constructor parameters or setter calls, preserving
+   `com.team271.lib.**` package isolation.
 
 **Related binding:** [library-notes CODE-BUG-004 "the project's `Constants` class"](coding-standard-library-notes.md#code-bug-004--runtime-tunability).

@@ -1,8 +1,10 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to the robot's
-     own src/main/java/<your-package>/subsystems/Input/InputDriver.java.
-     Swap the extended base class (InputXBox, InputPS4, etc.) to
-     match the controller hardware. Add one semantic getter per
-     input per subsystem. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place by tools/init-robot.sh during project initialization. The
+     Java layout below is what the robot's
+     subsystems/Input/InputDriver.java should follow — swap the
+     extended base class (InputXBox, InputPS4, etc.) to match the
+     controller hardware and add one semantic getter per input per
+     subsystem. This banner is stripped by the init script. -->
 
 # Input-Driver Template
 

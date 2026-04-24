@@ -1,5 +1,7 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to
-     docs/<project>/planning/SVP.md in the robot's own repository. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place to docs/<project>/planning/SVP.md by tools/init-robot.sh
+     during project initialization. This banner is stripped by the
+     init script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
@@ -35,7 +37,7 @@ Does not cover:
 - Shared verification framework (test-level taxonomy, coverage tier
   structure, CI gate pattern) → [`../../common/planning/verification-plan.md`](../../common/planning/verification-plan.md)
 - Library's own test strategy → [`../../team-lib/planning/SVP.md`](../../team-lib/planning/SVP.md)
-  (robot inherits library hooks when vendored)
+  (robot inherits the library's full hook roster from the fork)
 
 ## 2. Applicable Documents
 
@@ -71,10 +73,11 @@ Minimum CI gates for this project:
 - Compile + unit + integration tests — `./gradlew test`
 - Markdown lint — via `markdownlint` on `docs/**`
 
-Projects that vendor `docs/team-lib/` alongside the library may pick
-up the library's hook roster (see
-[`../../team-lib/planning/SVP.md`](../../team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster));
-doing so is recommended but not required.
+Robot projects inherit the library's full hook roster from the fork
+(see
+[`../../team-lib/planning/SVP.md`](../../team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster)).
+Keep them unless a specific hook doesn't fit the project's workflow;
+pruning is easier than re-adding.
 
 ## 6. Traceability
 

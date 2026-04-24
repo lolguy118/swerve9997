@@ -1,6 +1,8 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to
-     docs/<project>/prompts/README.md in the robot's own repository.
-     This folder is OPTIONAL. Most projects don't need it. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place to docs/<project>/prompts/README.md by tools/init-robot.sh
+     during project initialization. This folder is OPTIONAL — most
+     projects don't need it. This banner is stripped by the init
+     script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
@@ -8,9 +10,9 @@
 
 This folder holds **prompts** — structured instructions to an AI
 assistant — used during <Project> robot code review. Most robot
-projects don't need a custom prompt; the library's
-[`../../team-lib/prompts/code-review-prompt-teamlib.md`](../../team-lib/prompts/code-review-prompt-teamlib.md)
-generally suffices for projects that vendor the library docs.
+projects don't need a custom prompt; the inherited library prompt
+at [`../../team-lib/prompts/code-review-prompt-teamlib.md`](../../team-lib/prompts/code-review-prompt-teamlib.md)
+is always present in the fork and generally suffices.
 
 > **Industry bridge.** Many professional teams now use
 > *AI-assisted code review* alongside human review. The quality of

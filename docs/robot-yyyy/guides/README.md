@@ -1,5 +1,7 @@
-<!-- TEMPLATE FOR CONSUMING ROBOT PROJECTS -- copy to
-     docs/<project>/guides/README.md in the robot's own repository. -->
+<!-- TEMPLATE FOR FORKED ROBOT PROJECTS -- scaffold file renamed in
+     place to docs/<project>/guides/README.md by tools/init-robot.sh
+     during project initialization. This banner is stripped by the
+     init script. -->
 <!-- markdownlint-disable-file MD033 -->
 <!-- reason: angle-bracket placeholders in this template are not HTML tags. -->
 
@@ -21,9 +23,9 @@ instead.
 > is the reference half.
 
 Library-contributor guides (onboarding to Team271-Lib itself,
-simulation, SysID, Claude Code workflow) live in the library tier
-at [`../../team-lib/guides/`](../../team-lib/guides/) for projects
-that vendor the library docs.
+simulation, SysID, Claude Code workflow) live in the inherited
+library tier at [`../../team-lib/guides/`](../../team-lib/guides/)
+— always present in the forked robot repo.
 
 ## Start here
 

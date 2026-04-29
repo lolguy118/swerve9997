@@ -80,6 +80,13 @@ for the six-layer graph. The layering decision is
     Applies the full review checklist from
     [`docs/team-lib/prompts/code-review-prompt-teamlib.md`](docs/team-lib/prompts/code-review-prompt-teamlib.md)
     against a file list or branch diff.
+  - [`frc-docs` MCP server](.mcp.json) — documentation search across
+    WPILib, CTRE Phoenix, REV, Redux, and PhotonVision via
+    [first-agentic-csa](https://github.com/ramalamadingdong/agentic-csa).
+    Usage policy in
+    [`.claude/rules/frc-docs-mcp.md`](.claude/rules/frc-docs-mcp.md);
+    requires `uv` installed locally (see
+    [`development-setup.md`](docs/common/guides/development-setup.md)).
 - **Pre-merge enforcement:** `.claude/hooks/` runs markdown / YAML /
   shell linters, a batched Java compile + Spotless + Checkstyle step,
   and a docs-sweep wrapper; opt-in Java hooks (SpotBugs, Javadoc,

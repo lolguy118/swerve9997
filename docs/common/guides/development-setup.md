@@ -55,9 +55,18 @@ apps (download and run, no build-tool integration required).
 | **PathPlanner** | Standalone editor for autonomous paths and routines; outputs files consumed by the library's auto layer | <https://pathplanner.dev/> |
 | **Choreo** | Optimization-based trajectory tool (swerve-focused); alternative to PathPlanner for autonomous trajectories | <https://choreo.autos/> |
 | **Elastic Dashboard** | Primary driver-station dashboard; surfaces telemetry, tunable values, and `Elastic.sendNotification` alerts | <https://frc-elastic.gitbook.io/docs> |
+| **uv / uvx** | Python package runner; powers the optional Claude Code MCP server for in-editor FRC-documentation search across WPILib, CTRE, REV, Redux, and PhotonVision | <https://github.com/astral-sh/uv> |
 
 For canonical API references and source repositories, see
 [`reference-urls.md`](../../reference-urls.md).
+
+> **Optional — AI documentation search.** When `uv` is on PATH and
+> you open this project in Claude Code, the `.mcp.json` at the repo
+> root auto-registers an `frc-docs` MCP server that searches WPILib
+> and vendor docs from inside the editor. First launch downloads
+> the package into uv's cache (~10–30 s); subsequent launches are
+> sub-second. To skip this feature, do not install `uv` — Claude
+> Code will note the server failed to start and continue without it.
 
 ---
 

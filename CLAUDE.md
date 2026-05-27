@@ -11,8 +11,7 @@
 > - `docs/common/planning/` — shared planning framework
 > - `docs/team-lib/planning/` — library SDP, SRS, SVP, SCMP, SDDs, ADRs
 > - `docs/team-lib/guides/` — contributor tutorials
-> - `docs/team-lib/coding-standard/coding-standard-teamlib-rules.md` — library-specific `CODE-LIB-*` rules
-> - `docs/team-lib/coding-standard/coding-standard-library-notes.md` — library bindings for common rules
+> - `docs/team-lib/coding-standard/` — library-specific `CODE-LIB-*` rules and bindings to common rules
 > - `docs/robot-yyyy/` — scaffolding renamed in place when a robot
 >   project forks this repo (code templates, project coding-standard,
 >   and planning scaffolds — SDP/SRS/SVP/SCMP plus ADR, SDD, guides,

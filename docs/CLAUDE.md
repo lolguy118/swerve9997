@@ -12,6 +12,8 @@
 > - [`team-lib/planning/`](team-lib/planning/) — library SDP, SRS, SVP, SCMP, SDDs, ADRs
 > - [`team-lib/guides/`](team-lib/guides/) — contributor tutorials
 > - [`team-lib/coding-standard/`](team-lib/coding-standard/) — library-specific templates and bindings
+> - [`team-lib/prompts/`](team-lib/prompts/) — code-review prompt loaded by the `lib-reviewer` subagent
+> - [`team-lib/internal/`](team-lib/internal/) — architecture diagrams and internal references
 > - [`../.claude/rules/`](../.claude/rules/) — path-scoped AI guardrails
 >
 > If new doc-side context is needed, add it to the appropriate

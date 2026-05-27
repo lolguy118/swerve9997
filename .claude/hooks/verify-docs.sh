@@ -178,9 +178,11 @@ if [ -n "$EMPTY_OUT" ]; then
 fi
 
 # ---------- Check 5 [BLOCKER] hook-roster-drift ----------
-# Asserts every PostToolUse hook wired in .claude/settings.json appears
-# in SVP §6's hook roster table. Catches the failure mode where a hook
-# is added or renamed in settings.json but the docs are not updated.
+# Asserts every PreToolUse and PostToolUse hook wired in
+# .claude/settings.json appears in SVP §6's hook roster table.
+# Catches the failure mode where a hook is added or renamed in
+# settings.json but the docs are not updated. SessionStart hooks
+# are intentionally not gates and are listed in SVP §6.1 only.
 ROSTER_OUT=$("$PYTHON" - <<'PY'
 import json, os, re
 from pathlib import Path
@@ -199,13 +201,14 @@ except Exception as e:
     raise SystemExit(0)
 
 wired = set()
-for entry in data.get('hooks', {}).get('PostToolUse', []) or []:
-    for h in entry.get('hooks', []) or []:
-        cmd = h.get('command', '')
-        # command is .claude/hooks/foo.sh — extract basename
-        base = os.path.basename(cmd)
-        if base.endswith('.sh'):
-            wired.add(base)
+for trigger in ('PreToolUse', 'PostToolUse'):
+    for entry in data.get('hooks', {}).get(trigger, []) or []:
+        for h in entry.get('hooks', []) or []:
+            cmd = h.get('command', '')
+            # command is .claude/hooks/foo.sh — extract basename
+            base = os.path.basename(cmd)
+            if base.endswith('.sh'):
+                wired.add(base)
 
 # Find SVP §6 by header anchor, then collect first-column hook names
 # from the markdown table that follows. Stop at the next ## heading.

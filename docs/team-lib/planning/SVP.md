@@ -105,24 +105,40 @@ path does not throw.
 
 ## 6. Hooks as Pre-Merge Gates (library roster)
 
-Team271-Lib installs the following hooks under `.claude/hooks/`.
-All are wired to `PostToolUse` in `.claude/settings.json`.
+Team271-Lib installs the following hooks under `.claude/hooks/`,
+bound in `.claude/settings.json`. The roster below lists the
+pre-merge gates fired on `PreToolUse` and `PostToolUse`.
+`SessionStart` hooks, which inject project context rather than
+gate edits, are listed in [§6.1](#61-session-start-hooks).
 
-| Hook | What It Enforces | Local Run |
-| ---- | ---------------- | --------- |
-| `lint-markdown.sh` | markdownlint-cli2 rules on `.md` files | `markdownlint-cli2 docs/` |
-| `lint-yaml.sh` | yamllint on `*.yml` / `*.yaml` files | `yamllint <file>` |
-| `lint-shell.sh` | ShellCheck (severity=warning) on `*.sh` / `*.bash` files | `shellcheck --severity=warning <file>` |
-| `check-doc-tunables.sh` | No numeric tunables in `docs/**` | (runs on Edit/Write) |
-| `check-deleted-class-refs.sh` | No references to deprecated symbols | (runs on Edit/Write) |
-| `check-design-drift.sh` | Code changes paired with doc updates | (runs on Edit/Write) |
-| `check-common-tier-isolation.sh` | No `team-lib/` or `<project>/` refs in `docs/common/**` (tier-boundary leak) | (runs on Edit/Write) |
-| `check-java-postedit.sh` | Batched Java check: `compileJava` + `spotlessCheck` + `checkstyleMain`/`checkstyleTest` in one gradle invocation (one JVM cold-start instead of three) | `./gradlew compileJava spotlessCheck checkstyleMain` |
-| `check-spotbugs.sh` | SpotBugs findings after Java edit — opt-in via `TEAM271_RUN_SPOTBUGS_HOOK=1` because a cold SpotBugs run is slow; CI is authoritative (fail-soft during rollout) | `./gradlew spotbugsMain` |
-| `check-javadoc.sh` | Javadoc doclint issues after Java edit — opt-in via `TEAM271_RUN_JAVADOC_HOOK=1` because full-tree doclint is slow; CI is authoritative | `./gradlew javadoc` |
-| `check-jacoco.sh` | Coverage report after Java edit — opt-in via `TEAM271_RUN_JACOCO_HOOK=1` because a full test run per edit is expensive | `./gradlew jacocoTestReport` |
-| `verify-docs-hook.sh` | Wrapper that invokes `verify-docs.sh` when a doc is edited (advisory; CI is the authoritative gate) | `bash .claude/hooks/verify-docs.sh` |
-| `verify-docs.sh` | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint | `bash .claude/hooks/verify-docs.sh` |
+| Hook | Trigger | What It Enforces | Local Run |
+| ---- | ------- | ---------------- | --------- |
+| `protect-files.sh` | PreToolUse | Block edits to `vendordeps/` and `.github/workflows/`; prompt on edits to Accepted ADRs | (runs on Edit/Write) |
+| `lint-markdown.sh` | PostToolUse | markdownlint-cli2 rules on `.md` files | `markdownlint-cli2 docs/` |
+| `lint-yaml.sh` | PostToolUse | yamllint on `*.yml` / `*.yaml` files | `yamllint <file>` |
+| `lint-shell.sh` | PostToolUse | ShellCheck (severity=warning) on `*.sh` / `*.bash` files | `shellcheck --severity=warning <file>` |
+| `check-doc-tunables.sh` | PostToolUse | No numeric tunables in `docs/**` | (runs on Edit/Write) |
+| `check-deleted-class-refs.sh` | PostToolUse | No references to deprecated symbols | (runs on Edit/Write) |
+| `check-design-drift.sh` | PostToolUse | Code changes paired with doc updates | (runs on Edit/Write) |
+| `check-common-tier-isolation.sh` | PostToolUse | No `team-lib/` or `<project>/` refs in `docs/common/**` (tier-boundary leak) | (runs on Edit/Write) |
+| `check-java-postedit.sh` | PostToolUse | Batched Java check: `compileJava` + `spotlessCheck` + `checkstyleMain`/`checkstyleTest` in one gradle invocation (one JVM cold-start instead of three) | `./gradlew compileJava spotlessCheck checkstyleMain` |
+| `check-spotbugs.sh` | PostToolUse | SpotBugs findings after Java edit — opt-in via `TEAM271_RUN_SPOTBUGS_HOOK=1` because a cold SpotBugs run is slow; CI is authoritative (fail-soft during rollout) | `./gradlew spotbugsMain` |
+| `check-javadoc.sh` | PostToolUse | Javadoc doclint issues after Java edit — opt-in via `TEAM271_RUN_JAVADOC_HOOK=1` because full-tree doclint is slow; CI is authoritative | `./gradlew javadoc` |
+| `check-jacoco.sh` | PostToolUse | Coverage report after Java edit — opt-in via `TEAM271_RUN_JACOCO_HOOK=1` because a full test run per edit is expensive | `./gradlew jacocoTestReport` |
+| `verify-docs-hook.sh` | PostToolUse | Wrapper that invokes `verify-docs.sh` when a doc is edited (advisory; CI is the authoritative gate) | `bash .claude/hooks/verify-docs.sh` |
+| `verify-docs.sh` | (CI / local) | Full docs sweep: broken links, stale paths, unresolved placeholders, empty SDD sections, markdownlint | `bash .claude/hooks/verify-docs.sh` |
+
+### 6.1 Session-start hooks
+
+These hooks fire on Claude session events and inject project
+context — branch and ADR state, conventions — rather than gate
+file edits. Listed here for completeness; bindings live in
+`.claude/settings.json` under the `SessionStart` block.
+
+| Hook | Matcher | Purpose |
+| ---- | ------- | ------- |
+| `session-start-startup.sh` | `startup` | Inject dynamic branch / ADR / doc state plus the user-invocable scaffolding skills list |
+| `session-start-reminders.sh` | `clear\|compact` | Re-inject project conventions after `/clear` or context compaction |
 
 ## 7. CI Pipeline Gates (library-specific)
 

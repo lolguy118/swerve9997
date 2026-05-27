@@ -63,25 +63,10 @@ matching files. The rules scoped to doc work:
 
 ## Pre-Merge Doc Enforcement
 
-> **Doc-side subset.** The full hook roster — including the Java and
-> opt-in hooks that don't fire on doc edits — is authoritative in
-> [SVP §6](team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
-> The entries below are the hooks that trigger on `docs/**` edits,
-> listed here for doc-session onboarding.
-
-Doc edits trigger these hooks (see also
-[`../.claude/settings.json`](../.claude/settings.json)):
-
-- [`lint-markdown.sh`](../.claude/hooks/lint-markdown.sh) —
-  markdownlint.
-- [`check-doc-tunables.sh`](../.claude/hooks/check-doc-tunables.sh)
-  — flag numeric constants in design docs.
-- [`check-deleted-class-refs.sh`](../.claude/hooks/check-deleted-class-refs.sh)
-  — warn on references to deprecated symbols listed in
-  [`../.claude/rules/deprecated-symbols.txt`](../.claude/rules/deprecated-symbols.txt).
-- [`check-design-drift.sh`](../.claude/hooks/check-design-drift.sh)
-  — nudge doc updates when behavior-defining code changes.
-- [`verify-docs-hook.sh`](../.claude/hooks/verify-docs-hook.sh) —
-  advisory wrapper around the authoritative
-  [`verify-docs.sh`](../.claude/hooks/verify-docs.sh) sweep (broken
-  links, stale paths, TBDs, empty sections).
+The authoritative hook roster lives in
+[SVP §6](team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
+The bindings themselves are in
+[`../.claude/settings.json`](../.claude/settings.json). Doc edits fire
+the markdown / tunable / deleted-symbol / design-drift / tier-isolation
+/ verify-docs hooks from that roster; the Java and opt-in hooks don't
+fire on doc edits.

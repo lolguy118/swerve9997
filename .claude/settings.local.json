@@ -1,9 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./gradlew build:*)",
-      "Bash(./gradlew test:*)",
-      "Bash(./gradlew spotlessCheck)",
       "Bash(java -version)",
       "Bash(where java:*)"
     ]

@@ -116,6 +116,7 @@ All are wired to `PostToolUse` in `.claude/settings.json`.
 | `check-doc-tunables.sh` | No numeric tunables in `docs/**` | (runs on Edit/Write) |
 | `check-deleted-class-refs.sh` | No references to deprecated symbols | (runs on Edit/Write) |
 | `check-design-drift.sh` | Code changes paired with doc updates | (runs on Edit/Write) |
+| `check-common-tier-isolation.sh` | No `team-lib/` or `<project>/` refs in `docs/common/**` (tier-boundary leak) | (runs on Edit/Write) |
 | `check-java-postedit.sh` | Batched Java check: `compileJava` + `spotlessCheck` + `checkstyleMain`/`checkstyleTest` in one gradle invocation (one JVM cold-start instead of three) | `./gradlew compileJava spotlessCheck checkstyleMain` |
 | `check-spotbugs.sh` | SpotBugs findings after Java edit — opt-in via `TEAM271_RUN_SPOTBUGS_HOOK=1` because a cold SpotBugs run is slow; CI is authoritative (fail-soft during rollout) | `./gradlew spotbugsMain` |
 | `check-javadoc.sh` | Javadoc doclint issues after Java edit — opt-in via `TEAM271_RUN_JAVADOC_HOOK=1` because full-tree doclint is slow; CI is authoritative | `./gradlew javadoc` |

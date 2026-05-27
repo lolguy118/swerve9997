@@ -40,6 +40,12 @@ for extra in ('CLAUDE.md', 'CONTRIBUTING.md'):
     ep = repo / extra
     if ep.exists():
         targets.append(ep)
+# Also crawl Claude rule files — they cite ADRs/SDDs by relative
+# path and silently break when those targets are renamed. Same crawler
+# logic; only the targets list grows.
+rules_dir = repo / '.claude' / 'rules'
+if rules_dir.is_dir():
+    targets.extend(sorted(rules_dir.glob('*.md')))
 
 link_re = re.compile(r'\[[^\]]*\]\(([^)]+)\)')
 WHITELIST = {'robot-<year>-reference.md'}
@@ -171,7 +177,65 @@ if [ -n "$EMPTY_OUT" ]; then
   ISSUES=$((ISSUES + $(count_lines "$EMPTY_OUT")))
 fi
 
-# ---------- Check 5 [NIT] markdownlint ----------
+# ---------- Check 5 [BLOCKER] hook-roster-drift ----------
+# Asserts every PostToolUse hook wired in .claude/settings.json appears
+# in SVP §6's hook roster table. Catches the failure mode where a hook
+# is added or renamed in settings.json but the docs are not updated.
+ROSTER_OUT=$("$PYTHON" - <<'PY'
+import json, os, re
+from pathlib import Path
+
+repo = Path('.').resolve()
+settings = repo / '.claude' / 'settings.json'
+svp = repo / 'docs' / 'team-lib' / 'planning' / 'SVP.md'
+
+if not settings.exists() or not svp.exists():
+    raise SystemExit(0)
+
+try:
+    data = json.loads(settings.read_text(encoding='utf-8'))
+except Exception as e:
+    print(f"[BLOCKER] hook-roster-drift cannot parse settings.json: {e}")
+    raise SystemExit(0)
+
+wired = set()
+for entry in data.get('hooks', {}).get('PostToolUse', []) or []:
+    for h in entry.get('hooks', []) or []:
+        cmd = h.get('command', '')
+        # command is .claude/hooks/foo.sh — extract basename
+        base = os.path.basename(cmd)
+        if base.endswith('.sh'):
+            wired.add(base)
+
+# Find SVP §6 by header anchor, then collect first-column hook names
+# from the markdown table that follows. Stop at the next ## heading.
+svp_text = svp.read_text(encoding='utf-8')
+m = re.search(r'(?m)^## 6\.[^\n]*\n', svp_text)
+if not m:
+    print("[BLOCKER] hook-roster-drift cannot locate SVP §6 heading")
+    raise SystemExit(0)
+tail = svp_text[m.end():]
+end = re.search(r'(?m)^## ', tail)
+section = tail[:end.start()] if end else tail
+
+rostered = set()
+for line in section.split('\n'):
+    # Match ` | `script.sh` | ... | ... |` and similar
+    cell = re.match(r'\s*\|\s*`([^`]+\.sh)`', line)
+    if cell:
+        rostered.add(cell.group(1))
+
+missing = sorted(wired - rostered)
+for hook in missing:
+    print(f"[BLOCKER] hook-roster-drift {hook} wired in settings.json but absent from SVP §6")
+PY
+)
+if [ -n "$ROSTER_OUT" ]; then
+  printf '%s\n' "$ROSTER_OUT"
+  ISSUES=$((ISSUES + $(count_lines "$ROSTER_OUT")))
+fi
+
+# ---------- Check 6 [NIT] markdownlint ----------
 if command -v markdownlint-cli2 >/dev/null 2>&1; then
   LINT_OUT=$(markdownlint-cli2 'docs/**/*.md' 'CLAUDE.md' 'CONTRIBUTING.md' 2>&1 || true)
   if [ -n "$LINT_OUT" ]; then

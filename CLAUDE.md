@@ -48,9 +48,7 @@ for the six-layer graph. The layering decision is
 - **Coding standard:** [`docs/common/coding-standard/README.md`](docs/common/coding-standard/README.md)
   indexes the core document
   [`Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
-  and eleven topical companions (General, Format, Modules, Methods,
-  Variables, Control, Comments, Debug, Safety, Compliance,
-  Appendices). Library-specific templates and notes live in
+  and topical companions. Library-specific templates and notes live in
   [`docs/team-lib/coding-standard/`](docs/team-lib/coding-standard/).
 - **Planning framework (common):** [docs/common/planning/README.md](docs/common/planning/README.md)
   — shared SemVer / phase-model / verification-framework policy.
@@ -87,12 +85,10 @@ for the six-layer graph. The layering decision is
     [`.claude/rules/frc-docs-mcp.md`](.claude/rules/frc-docs-mcp.md);
     requires `uv` installed locally (see
     [`development-setup.md`](docs/common/guides/development-setup.md)).
-- **Pre-merge enforcement:** `.claude/hooks/` runs markdown / YAML /
-  shell linters, a batched Java compile + Spotless + Checkstyle step,
-  and a docs-sweep wrapper; opt-in Java hooks (SpotBugs, Javadoc,
-  JaCoCo) activate with `TEAM271_RUN_SPOTBUGS_HOOK=1`,
-  `TEAM271_RUN_JAVADOC_HOOK=1`, `TEAM271_RUN_JACOCO_HOOK=1`.
-  Authoritative roster with triggers and cold-start costs in
+- **Pre-merge enforcement:** local hooks under `.claude/hooks/` are
+  bound by [`.claude/settings.json`](.claude/settings.json); the
+  authoritative roster with triggers, cold-start costs, and opt-in
+  env vars is
   [SVP §6](docs/team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
   [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md#2-language-and-build) and
@@ -100,16 +96,9 @@ for the six-layer graph. The layering decision is
   [ADR-002](docs/team-lib/planning/adr/ADR-002-java17-wpilib-gradlerio-toolchain.md).
 - **Build system:** Gradle + GradleRIO. See `build.gradle`; version
   policy in [SCMP §3](docs/team-lib/planning/SCMP.md#3-library-versioning).
-- **CI:** GitHub Actions live. `.github/workflows/ci.yml` gates PRs on
-  Spotless, compile + Error Prone, test, Javadoc, Checkstyle, SpotBugs
-  (fail-soft during rollout), JaCoCo coverage (with PR comment), build,
-  markdownlint, yamllint, `verify-docs.sh`, and ShellCheck of
-  `.claude/hooks/` — ubuntu-24.04 / JDK 17. Supporting workflows:
-  `claude-code-review.yml` (advisory AI review),
-  `dependency-submission.yml` (supply-chain graph on push to `main`),
-  `vendordep-freshness.yml` (weekly upstream version check). Local
-  pre-edit gates additionally run through `.claude/hooks/`.
-  See [SVP §7](docs/team-lib/planning/SVP.md#7-ci-pipeline-gates-library-specific).
+- **CI:** workflows under [`.github/workflows/`](.github/workflows/);
+  authoritative gate roster in
+  [SVP §7](docs/team-lib/planning/SVP.md#7-ci-pipeline-gates-library-specific).
 - **Platform support:** RoboRIO 2 + desktop sim on Windows/macOS/Linux.
   Matrix in [SDP §5](docs/team-lib/planning/SDP.md#5-platform-matrix-library-specific-deltas).
 - **Vendor dependencies:** CTRE Phoenix 6, WPILib, AdvantageKit,

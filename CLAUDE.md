@@ -77,6 +77,12 @@ for the six-layer graph. The layering decision is
     Applies the full review checklist from
     [`docs/team-lib/prompts/code-review-prompt-teamlib.md`](docs/team-lib/prompts/code-review-prompt-teamlib.md)
     against a file list or branch diff.
+  - [`sim-test-writer`](.claude/agents/sim-test-writer.md) —
+    subagent. Generates a JUnit 5 + WPILib HAL simulation test
+    scaffold for one target class, mirroring the conventions of
+    the nearest sibling test (HAL init, `CTREManager.resetForTesting`,
+    unique CAN IDs, lifecycle smoke tests). Used after adding a new
+    subsystem, hardware wrapper, or controller.
   - [`frc-docs` MCP server](.mcp.json) — documentation search across
     WPILib, CTRE Phoenix, REV, Redux, and PhotonVision via
     [first-agentic-csa](https://github.com/ramalamadingdong/agentic-csa).

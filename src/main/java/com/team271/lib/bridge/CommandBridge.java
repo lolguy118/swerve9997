@@ -90,7 +90,7 @@ public final class CommandBridge {
      * reports complete when the command finishes.
      *
      * @param argCommand the WPILib command to wrap
-     * @param argTimeoutSec timeout for the move (required per coding standard 4.9c)
+     * @param argTimeoutSec timeout for the move (required per CODE-SAF-012)
      * @return an AutoMove wrapping the command
      */
     public static AutoMove asAutoMove(final Command argCommand, final double argTimeoutSec) {

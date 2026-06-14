@@ -8,13 +8,13 @@ import java.util.function.BooleanSupplier;
  * Enables event-driven patterns like "wait until launcher at speed" without manual polling in
  * {@link #autonomousPeriodic}.
  *
- * <p>The timeout is mandatory per coding standard 4.9c (all waiting operations must have timeouts).
- * On timeout, an Elastic notification is sent to alert the driver.
+ * <p>The timeout is mandatory per CODE-SAF-012 (all waiting operations must have timeouts). On
+ * timeout, an Elastic notification is sent to alert the driver.
  *
  * <p>The condition is checked in {@link #robotPeriodicBefore} so it runs every cycle regardless of
- * the {@link #canRun()} state — the same pattern {@link AutoMoveTimed} uses for duration checks.
+ * the {@link #canRun()} state - the same pattern {@link AutoMoveTimed} uses for duration checks.
  *
- * <p>Example — wait until the launcher is at speed (up to 3 seconds):
+ * <p>Example - wait until the launcher is at speed (up to 3 seconds):
  *
  * <pre>{@code
  * new AutoMoveConditional("LauncherReady", Launcher::isAtMaxVelocity, 3.0)
@@ -27,7 +27,7 @@ public class AutoMoveConditional extends AutoMove {
 
     /**
      * @param argName display name for telemetry (or null for class simple name)
-     * @param argCondition the condition to wait for — move completes when this returns true
+     * @param argCondition the condition to wait for - move completes when this returns true
      * @param argTimeoutSec maximum wait time in seconds (required, must be &gt; 0)
      */
     public AutoMoveConditional(
@@ -38,7 +38,7 @@ public class AutoMoveConditional extends AutoMove {
     }
 
     /**
-     * @param argCondition the condition to wait for — move completes when this returns true
+     * @param argCondition the condition to wait for - move completes when this returns true
      * @param argTimeoutSec maximum wait time in seconds (required, must be &gt; 0)
      */
     public AutoMoveConditional(final BooleanSupplier argCondition, final double argTimeoutSec) {

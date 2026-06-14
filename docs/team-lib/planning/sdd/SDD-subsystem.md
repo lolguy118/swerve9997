@@ -49,8 +49,8 @@ modes that gate sensor reads:
 **Homing contract** — subsystems that require zeroing implement a
 zero-to-hardware action plus a post-zero callback. A persisted
 zeroed flag gates closed-loop operation so a subsystem cannot run
-position control before homing completes. Per coding standard
-§4.9c and ADR-012, any waiting homing sequence must have a named
+position control before homing completes. Per CODE-SAF-012 and
+ADR-012, any waiting homing sequence must have a named
 timeout constant, a fail-safe action (stop motors, restore default
 current limits, transition to IDLE), and an Elastic notification on
 timeout.

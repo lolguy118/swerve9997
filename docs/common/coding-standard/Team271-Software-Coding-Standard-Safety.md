@@ -265,4 +265,29 @@ b. CAN signal refresh failures **should** be detected via
    `StatusCode` checks and logged, but **shall not** throw exceptions
    or halt the robot loop.
 
+### CODE-SAF-012 -- Waiting Operation Timeouts
+
+a. Any operation that waits for a condition (current threshold,
+   velocity target, position arrival, sensor signal, path
+   completion) **shall** have a timeout that exits the waiting
+   state. This prevents the robot from locking up if the expected
+   condition never occurs (motor stall not detected, launcher
+   never reaching speed, path waypoint unreachable).
+
+b. The timeout **shall** be a named constant in the subsystem's
+   constants class, not a magic number.
+
+c. On timeout, the subsystem **shall** fail safe: stop motors,
+   restore default current limits, and transition to IDLE.
+
+d. On timeout, the subsystem **shall** send a driver notification
+   so the failure is visible from the driver station.
+
+e. The timeout and its fail-safe behavior **shall** be documented
+   in the subsystem's design doc.
+
+Homing sequences are the most common instance of this rule; their
+specific timeout outcome is governed by CODE-SAF-002c. Vision-gated
+transitions are governed by CODE-SAF-009c.
+
 ---

@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 MD032 -->
-# Team271-Lib FRC Coding Standard — Debugging and Telemetry
+# Team271-Lib FRC Coding Standard - Debugging and Telemetry
 
 | Field | Value |
 | ----- | ----- |
@@ -15,7 +15,7 @@ tunability.
 
 These rules supplement the pure-Java rules in
 [`../java/Standard.md`](../java/Standard.md), which remain
-applicable — `CODE-BUG-*` is FRC-specific because it depends on
+applicable - `CODE-BUG-*` is FRC-specific because it depends on
 the WPILib telemetry and DriverStation facilities and the
 team's chosen replay-capable logger.
 

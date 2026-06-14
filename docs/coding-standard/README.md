@@ -10,14 +10,14 @@ pure-Java layer, an FRC overlay, and a project supplement.
 
 ## Layout
 
-- [`java/Standard.md`](java/Standard.md) — pure-Java rules
+- [`java/Standard.md`](java/Standard.md) - pure-Java rules
   (`CODE-GEN/FMT/MAF/FUN/VAR/CTL/COM/SEC-*`) plus the reusable-library
   tier (`CODE-LIB-*` in
   [`java/Standard-Library.md`](java/Standard-Library.md)).
-- [`frc/Standard.md`](frc/Standard.md) — FRC overlay
+- [`frc/Standard.md`](frc/Standard.md) - FRC overlay
   (`CODE-BUG/SAF/FRC-*`): telemetry, robot safety, NetworkTables,
   lifecycle, and generated-file exemptions.
-- [`team271-lib-supplement.md`](team271-lib-supplement.md) —
+- [`team271-lib-supplement.md`](team271-lib-supplement.md) -
   Team271-Lib's project values (package roots, generated files,
   abbreviations, language policy) and the concrete `CODE-LIB-*` library
   bindings the generic tier delegates.
@@ -32,7 +32,7 @@ location, FRC rules by their `frc/` location.
 ## Provenance
 
 This is the project-template's genericized form of the standard
-Team271-Lib originally authored — the template literally derives its
+Team271-Lib originally authored - the template literally derives its
 Java/FRC content from this repo. The legacy
 [`../common/coding-standard/`](../common/coding-standard/)
 `Team271-Software-Coding-Standard*.md` family is retired (see its

@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 -->
-# Team271-Lib Java Coding Standard — Modules and Files
+# Team271-Lib Java Coding Standard - Modules and Files
 
 | Field | Value |
 | ----- | ----- |
@@ -44,8 +44,8 @@ a. All Java code **shall** reside under a top-level package
 
 b. Package names **shall** be all lowercase with no underscores.
 
-Subpackage conventions — for example, where service classes,
-input handling, or any vendored-library code must live — belong
+Subpackage conventions - for example, where service classes,
+input handling, or any vendored-library code must live - belong
 in the project's own coding standard and in any library-specific
 coding standard it inherits.
 

@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 -->
-# Team271-Lib FRC Coding Standard — Safety Practices
+# Team271-Lib FRC Coding Standard - Safety Practices
 
 | Field | Value |
 | ----- | ----- |
@@ -119,7 +119,7 @@ b. No state **shall** be unreachable. If a state exists in
    the enum, there **shall** be a transition path to it.
 
 c. State transitions **shall** be documented (at minimum in
-   the class-level JavaDoc or the subsystem's design doc —
+   the class-level JavaDoc or the subsystem's design doc -
    not in CLAUDE.md, which is a routing index).
 
 <a id="code-saf-004"></a>
@@ -245,12 +245,12 @@ e. Code **shall not** assume FMS / Driver Station data is
    initialization. The alliance color, driver station
    position, event name, and match time may be:
 
-   - Absent at `robotInit()` — typical in simulation, bench
+   - Absent at `robotInit()` - typical in simulation, bench
      testing, or early at a competition before the FMS
      attaches.
-   - Arriving mid-cycle — the Driver Station can attach
+   - Arriving mid-cycle - the Driver Station can attach
      after the robot boots.
-   - Changing after first read — alliance station assignment
+   - Changing after first read - alliance station assignment
      can change during practice / qualification rounds.
 
    Any logic that depends on these values **shall** either:
@@ -263,9 +263,9 @@ e. Code **shall not** assume FMS / Driver Station data is
 
    Alliance-dependent configuration (path mirroring, target
    pose selection, field-oriented drive heading offset)
-   **shall** handle the "alliance not yet known" case —
+   **shall** handle the "alliance not yet known" case -
    WPILib returns `Optional.empty()` from
-   `DriverStation.getAlliance()` — with a defined safe
+   `DriverStation.getAlliance()` - with a defined safe
    behavior, not an unchecked `.get()`.
 
    Match-time logic **shall** treat

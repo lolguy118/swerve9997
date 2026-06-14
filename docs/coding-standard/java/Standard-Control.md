@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 -->
-# Team271-Lib Java Coding Standard — Control Structures
+# Team271-Lib Java Coding Standard - Control Structures
 
 | Field | Value |
 | ----- | ----- |
@@ -112,13 +112,13 @@ d. Traditional `switch` with `break` **shall** be used for
    places the method's only `return` at the tail, after the
    `switch`). `throw` is permitted for exception-based exit
    (same rule). Intentional fall-through follows
-   CODE-CTL-002b — it **shall** be marked with a
+   CODE-CTL-002b - it **shall** be marked with a
    `// fall through` comment above the next case label.
 
    > *Industry note: MISRA Rule 16.3 requires every
-   > switch-clause to be appropriately terminated — by a
+   > switch-clause to be appropriately terminated - by a
    > break, continue, goto, return, or a _Noreturn-qualified
-   > function call — so control does not silently fall through.
+   > function call - so control does not silently fall through.
    > Rule 16.3 itself permits `return` as a terminator; this
    > standard is stricter and prohibits `return` inside a case
    > (clause d) to keep the method's only `return` at the tail
@@ -127,7 +127,7 @@ d. Traditional `switch` with `break` **shall** be used for
    > vulnerabilities (the `goto fail` / CVE-2014-0092 family
    > of bugs). Combining explicit `break` with the
    > single-return rule also means the control-flow graph of
-   > a method is always linear at the top level — easier to
+   > a method is always linear at the top level - easier to
    > read, test, and extend.*
 
    ```java
@@ -225,7 +225,7 @@ b. When an array or list index is derived from external input,
 
 <a id="code-ctl-005"></a>
 
-### CODE-CTL-005 -- Side-Effect-Free Logging (Source: Team271-Lib — applies MISRA Rule 13.5's side-effect discipline to logging and assertion arguments)
+### CODE-CTL-005 -- Side-Effect-Free Logging (Source: Team271-Lib - applies MISRA Rule 13.5's side-effect discipline to logging and assertion arguments)
 
 a. Arguments to the project's logging / event-reporting calls
    **shall not** contain side effects. Compute values before
@@ -243,7 +243,7 @@ b. Arguments to assertion methods **shall** be
 > side effects." Because Java short-circuits these operators,
 > the right side might not execute at all. If it has a side
 > effect (like modifying a variable), your code behaves
-> differently depending on the left side's value — a subtle
+> differently depending on the left side's value - a subtle
 > and hard-to-debug inconsistency.*
 
 a. The right-hand operand of `&&` and `||` operators **should

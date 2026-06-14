@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 MD032 -->
-# Team271-Lib Java Coding Standard — Variables
+# Team271-Lib Java Coding Standard - Variables
 
 | Field | Value |
 | ----- | ----- |
@@ -95,7 +95,7 @@ g. No variable **shall** shadow a variable from an enclosing
 
 ### CODE-VAR-002 -- Variable Initialization (Source: MISRA Rule 9.1, Barr)
 
-> *Industry note: MISRA Rule 9.1 (a Mandatory rule — their
+> *Industry note: MISRA Rule 9.1 (a Mandatory rule - their
 > strongest category) says variables shall not be read before
 > they are set. Reading an uninitialized variable is one of the
 > oldest and most common bugs in software. Initializing at
@@ -125,7 +125,7 @@ b. Use `double` for all floating-point values. This is the
    `float` unless required by a specific API.
 
 c. Use `boolean` for true/false values. Unlike C/C++, Java
-   enforces this at the compiler level — `if (1)` or
+   enforces this at the compiler level - `if (1)` or
    `if (count)` will not compile. Use explicit comparisons:
    `if (count > 0)` instead.
 
@@ -206,7 +206,7 @@ a. Physical units **shall** be documented in the constant name
 
    Project-domain unit-suffix conventions (the exact
    abbreviations used for the project's physical quantities)
-   belong in the project's coding-standard supplement —
+   belong in the project's coding-standard supplement -
    different domains use different short forms for the same
    unit, and the suffix list is short-lived information that
    shouldn't fork from the project that owns the units.
@@ -237,7 +237,7 @@ a. Numeric constants other than `0`, `1`, `-1`, `0.0`, `1.0`,
    named constant.
 
 b. All tunable values (limits, timing windows, thresholds)
-   **shall** be defined as named constants — either in the
+   **shall** be defined as named constants - either in the
    project's shared constants artifact (see
    [CODE-MAF-003](Standard-Modules.md#code-maf-003))
    or as `private static final` fields on the class that uses

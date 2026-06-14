@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 MD032 -->
-# Team271-Lib FRC Coding Standard — FRC-Specific Conventions
+# Team271-Lib FRC Coding Standard - FRC-Specific Conventions
 
 | Field | Value |
 | ----- | ----- |
@@ -10,7 +10,7 @@
 
 FRC-specific conventions companion to the FRC overlay's
 [`Standard.md`](Standard.md). Contains the conventions that are
-FRC-specific extensions of pure-Java rules — the rules
+FRC-specific extensions of pure-Java rules - the rules
 themselves are general (naming, units, file organisation), but
 the *values* they fix (NetworkTables prefix, WPILib lifecycle
 method names, FRC unit suffixes) are FRC-ecosystem facts that
@@ -43,7 +43,7 @@ a. Fields that wrap NetworkTables entries (`NtPublisher`,
 
    Rationale: NetworkTables-backed fields cross a process /
    driver-station boundary every cycle and behave differently
-   from in-memory state — they can be observed and mutated by
+   from in-memory state - they can be observed and mutated by
    the dashboard, and their reads can lag the publish.
    Visually flagging them in code prevents subtle bugs where
    a developer mutates an `nt`-prefixed field expecting
@@ -68,7 +68,7 @@ b. Every override of a WPILib lifecycle method **shall** be
    [`../java/Standard-General.md`](../java/Standard-General.md);
    the FRC-specific call-out exists because mis-spelled
    lifecycle methods (`teleopperiodic`, `teleopPeriodc`) are
-   a common silent-failure mode — WPILib still compiles, the
+   a common silent-failure mode - WPILib still compiles, the
    robot just never enters teleop logic.
 
    ```java
@@ -171,7 +171,7 @@ The generic mutable-static-field rule lives in
 this rule defines the accepted singleton exception for
 subsystem frameworks that manage one instance per mechanism.
 The concrete parent/container type and any global-registry
-class are project-library specifics — document them in the
+class are project-library specifics - document them in the
 project supplement.
 
 a. Subsystems **shall** use a singleton pattern with two
@@ -200,7 +200,7 @@ a. Subsystems **shall** use a singleton pattern with two
 
 b. The no-argument `getInstance()` **shall** throw
    `IllegalStateException` if the instance has not been
-   created — never silently construct with missing context.
+   created - never silently construct with missing context.
 
 c. Subsystem singletons **shall** only be created during
    robot initialization and registered with the project's
@@ -220,7 +220,7 @@ d. Projects **may** additionally store created references in
 The lifecycle *method-name* conventions are
 [CODE-FRC-002](#code-frc-002); this rule governs what each
 phase of the per-cycle chain is allowed to do. Hook names
-below follow the convention in CODE-FRC-002c — substitute the
+below follow the convention in CODE-FRC-002c - substitute the
 project library's actual names.
 
 a. Subsystem lifecycle hooks **shall** run in a fixed
@@ -254,7 +254,7 @@ d. Lifecycle timestamps **shall** come from WPILib's
 > *Industry note: DO-178C (the avionics software certification
 > standard) emphasizes deterministic, traceable state
 > management. The desired-state/actual-state pattern makes
-> every transition explicit and auditable — you can always
+> every transition explicit and auditable - you can always
 > answer "what state is the robot in and why did it get
 > there?" This is the same pattern used in flight control
 > software.*
@@ -292,7 +292,7 @@ c. All state transitions **shall** be explicit; no state
 
 ## Reference Material
 
-The sections below are *informational* — they support the
+The sections below are *informational* - they support the
 rules above with context, diagrams, and vendor-specific usage
 patterns. They are not themselves numbered rules.
 
@@ -309,7 +309,7 @@ Power On -> robotInit()
 Subsystem-level hooks (`robotPeriodicBefore`,
 `robotPeriodicAfter`, `outputTelemetry`) fire inside the
 WPILib lifecycle in an order fixed by the project's own
-library — see the consuming project's CLAUDE.md for the
+library - see the consuming project's CLAUDE.md for the
 exact sequencing diagram.
 
 ### GC Pressure Minimization on the RoboRIO
@@ -317,7 +317,7 @@ exact sequencing diagram.
 The RoboRIO runs Java with a Serial GC (`-XX:+UseSerialGC`),
 a stop-the-world collector chosen for its small memory
 footprint on the RoboRIO's limited resources. SerialGC does
-**not** support pause-time goals — `MaxGCPauseMillis` is a
+**not** support pause-time goals - `MaxGCPauseMillis` is a
 G1GC / ZGC hint and has no effect here. See
 [`../java/Standard-Compliance.md`](../java/Standard-Compliance.md)
 for the JVM-config slot the consuming project fills in.

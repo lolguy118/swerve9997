@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 -->
-# Team271-Lib Java Coding Standard — Comments
+# Team271-Lib Java Coding Standard - Comments
 
 | Field | Value |
 | ----- | ----- |

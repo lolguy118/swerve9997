@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 -->
-# Team271-Lib Java Coding Standard — Methods
+# Team271-Lib Java Coding Standard - Methods
 
 | Field | Value |
 | ----- | ----- |
@@ -96,7 +96,7 @@ b. Recursion **shall not** be used in any code that executes
    reachable from such loops **shall** be acyclic. A real-time
    loop cannot accommodate unbounded recursion.
 
-   > *Industry note: Power of Ten Rule 1 prohibits all recursion —
+   > *Industry note: Power of Ten Rule 1 prohibits all recursion -
    > direct and indirect. MISRA Rule 17.2 says "functions shall
    > not call themselves, either directly or indirectly." If
    > your function calls itself and the base case has a bug,
@@ -154,11 +154,11 @@ b. Utility classes **shall** be declared `final` with a
 
 **See also:**
 [CODE-GEN-005](Standard-General.md#code-gen-005)
-(return-value checking — status codes, `Optional`),
+(return-value checking - status codes, `Optional`),
 [CODE-GEN-012](Standard-General.md#code-gen-012)
 (null-safety), and
 [CODE-CTL-002](Standard-Control.md#code-ctl-002)
-(switch statements — termination, fall-through, arrow syntax).
+(switch statements - termination, fall-through, arrow syntax).
 This rule covers the remaining defensive patterns not handled by
 those.
 

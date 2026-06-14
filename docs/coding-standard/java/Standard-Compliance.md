@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 MD013 -->
-# Team271-Lib Java Coding Standard — Compliance Reference
+# Team271-Lib Java Coding Standard - Compliance Reference
 
 | Field | Value |
 | ----- | ----- |
@@ -68,7 +68,7 @@ The runtime JVM **shall** be configured for the deployment
 target's latency and memory characteristics. Concrete settings
 (garbage collector choice, heap size, ergonomic tuning flags)
 belong in the consuming project's `build.gradle` and **shall**
-be documented in the project's own coding-standard supplement —
+be documented in the project's own coding-standard supplement -
 the right collector for a long-running server is wrong for a
 real-time embedded target, and vice versa.
 

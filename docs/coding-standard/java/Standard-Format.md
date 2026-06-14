@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 -->
-# Team271-Lib Java Coding Standard — Formatting
+# Team271-Lib Java Coding Standard - Formatting
 
 | Field | Value |
 | ----- | ----- |
@@ -93,7 +93,7 @@ b. Parentheses **shall** also be used:
      same expression.
 
    Parentheses around a bare boolean variable or boolean-returning
-   method call inside a chain are **not required** — the
+   method call inside a chain are **not required** - the
    precedence concern only arises when comparisons or mixed
    logical operators are involved.
 
@@ -105,7 +105,7 @@ b. Parentheses **shall** also be used:
    /* CORRECT: mixed && / || disambiguated */
    if ((isReady && (depth > 0)) || overrideEnabled) { ... }
 
-   /* CORRECT: pure-boolean chain — no extra parens needed */
+   /* CORRECT: pure-boolean chain - no extra parens needed */
    if (signals.contains(A) || signals.contains(B)) { ... }
 
    /* WRONG: relies on implicit comparison-vs-logical precedence */
@@ -135,7 +135,7 @@ c. Section comments using block comment style **shall** be used
     */
    ```
 
-d. Section comment text **shall** be concise (1–3 words).
+d. Section comment text **shall** be concise (1-3 words).
 
 <a id="code-fmt-005"></a>
 

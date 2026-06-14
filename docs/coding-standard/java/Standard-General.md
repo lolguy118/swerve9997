@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 MD031 MD032 -->
-# Team271-Lib Java Coding Standard — General
+# Team271-Lib Java Coding Standard - General
 
 | Field | Value |
 | ----- | ----- |
@@ -253,7 +253,7 @@ c. `instanceof` checks followed by casts **should** use pattern
 > compiled from the first day of development with all compiler
 > warnings enabled at the most pedantic setting" with zero
 > warnings. Warnings are the compiler telling you something
-> looks wrong — ignoring them is ignoring free bug detection.*
+> looks wrong - ignoring them is ignoring free bug detection.*
 
 a. All code **shall** compile without errors.
 
@@ -293,8 +293,8 @@ includes operator inputs, configuration / option-selection
 values, vendor-library return codes, and any data received from
 out-of-process sources.
 
-a. Operator-input validation — deadbands, threshold checks,
-   shape filtering — **shall** be applied consistently across
+a. Operator-input validation - deadbands, threshold checks,
+   shape filtering - **shall** be applied consistently across
    the codebase, typically by routing all raw input through a
    single project-defined input-handling class.
 
@@ -343,7 +343,7 @@ a. Code **shall** be written to minimize runtime exceptions.
 
 > *Industry note: CERT Java ERR00-J says "do not suppress or
 > ignore checked exceptions." Swallowing an exception hides the
-> problem — the resource might not be initialized, the file
+> problem - the resource might not be initialized, the file
 > might not have loaded, and you will not know until the
 > failure surfaces in production.*
 
@@ -447,7 +447,7 @@ a. Mutable `static` fields **shall** be avoided. Shared mutable
 > `volatile`. Concurrency bugs are the hardest to reproduce and
 > the hardest to debug after the fact. The first answer should
 > be to avoid sharing mutable state across threads in the first
-> place — communicate through immutable snapshots, not through
+> place - communicate through immutable snapshots, not through
 > locks.*
 
 a. The concurrency keywords in this rule only apply when a

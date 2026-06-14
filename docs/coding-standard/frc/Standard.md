@@ -12,7 +12,7 @@
 
 | Revision | Date | Author | Description |
 | -------- | ---- | ------ | ----------- |
-| 0.1 | `2026-06-14` | — | Initial draft |
+| 0.1 | `2026-06-14` | - | Initial draft |
 
 ---
 
@@ -22,7 +22,7 @@
 
 This document is the FRC (FIRST Robotics Competition) overlay
 on top of the pure-Java coding standard. It adds the rule
-families that only make sense inside the FRC ecosystem —
+families that only make sense inside the FRC ecosystem -
 WPILib lifecycle, CTRE Phoenix 6 / REV / NavX driver
 patterns, NetworkTables conventions, robot-safety practices
 (motor / CAN / FMS / brownout / vision), and the replay-
@@ -30,9 +30,9 @@ faithful telemetry conventions used by AdvantageKit and
 similar loggers.
 
 The core principles inherited from
-[`../java/Standard.md`](../java/Standard.md) — defensive
+[`../java/Standard.md`](../java/Standard.md) - defensive
 coding, predictable execution, minimal complexity, rigorous
-formatting — apply unchanged. This overlay adds the
+formatting - apply unchanged. This overlay adds the
 domain-specific practices a robot project also needs to
 survive a 2:30 match and recover from an unplanned brownout
 on the field.
@@ -45,7 +45,7 @@ recommended practices.
 
 This overlay applies to all Java source in FRC robot
 projects. It is **additive**: the pure-Java rules in
-[`../java/`](../java/) are not duplicated here — they remain
+[`../java/`](../java/) are not duplicated here - they remain
 in force, and this overlay only documents the FRC-specific
 additions and extensions.
 
@@ -70,16 +70,16 @@ overlay
 the FRC overlay relies on vendor documentation maintained
 outside this repo:
 
-- [WPILib documentation][wpilib-docs] — robot framework,
+- [WPILib documentation][wpilib-docs] - robot framework,
   Subsystem / Command base classes, DriverStation API,
   Notifier, Timer
-- CTRE Phoenix 6 documentation — TalonFX / TalonFXS /
+- CTRE Phoenix 6 documentation - TalonFX / TalonFXS /
   CANcoder / CANivore APIs; the project's chosen URL goes
   in the consuming project's `docs/reference-urls.md`
-- REV Robotics documentation — SPARK MAX / SPARK Flex
+- REV Robotics documentation - SPARK MAX / SPARK Flex
   APIs; same arrangement
 - PathPlanner, Choreo, AdvantageKit, PhotonVision,
-  Limelight — vendor docs maintained per upstream release;
+  Limelight - vendor docs maintained per upstream release;
   links in the consuming project's `docs/reference-urls.md`
 
 [wpilib-docs]: https://docs.wpilib.org/
@@ -106,7 +106,7 @@ master. Each FRC-specific rule family owns one prefix:
 ## 3. Routing to Pure-Java Rules
 
 For shared topics, this overlay routes back into the pure-Java
-overlay. The IDs below are *not* re-defined here — applying
+overlay. The IDs below are *not* re-defined here - applying
 this overlay implies the pure-Java overlay is already in
 place, and reviewers cite the pure-Java rule by its java/
 location.
@@ -131,11 +131,11 @@ location.
 
 The three FRC companions add 23 rules across three prefixes:
 
-- `CODE-BUG-*` — 4 rules in
+- `CODE-BUG-*` - 4 rules in
   [`Standard-Debug.md`](Standard-Debug.md) covering telemetry
   publication, dashboard notifications, error reporting, and
   runtime tunability.
-- `CODE-SAF-*` — 12 rules in
+- `CODE-SAF-*` - 12 rules in
   [`Standard-Safety.md`](Standard-Safety.md) covering input
   validation, motor safety, state-machine completeness,
   subsystem coordination, autonomous safety, CAN bus safety,
@@ -143,7 +143,7 @@ The three FRC companions add 23 rules across three prefixes:
   motor reset), vision-data validation, sustained
   over-current protection, CAN partition resilience, and
   waiting-operation timeouts.
-- `CODE-FRC-*` — 7 rules in
+- `CODE-FRC-*` - 7 rules in
   [`Standard-FRC-Conventions.md`](Standard-FRC-Conventions.md)
   covering the NetworkTables field prefix, WPILib lifecycle
   method names, FRC unit-suffix conventions, the FRC-specific

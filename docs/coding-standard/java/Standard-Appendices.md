@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD007 -->
-# Team271-Lib Java Coding Standard — Reference Appendices
+# Team271-Lib Java Coding Standard - Reference Appendices
 
 | Field | Value |
 | ----- | ----- |
@@ -25,7 +25,7 @@ pure-Java standard.
 
 Short-form tokens permitted in code identifiers (variable, method,
 and field names). This is an *allowlist for naming*, not a
-glossary — for proper-name acronyms used in the standard's prose,
+glossary - for proper-name acronyms used in the standard's prose,
 the project's own glossary or [`Standard.md`](Standard.md) §1.3
 is authoritative.
 
@@ -168,12 +168,12 @@ The originating rule is authoritative; the table summarises.
 | Packages | lowercase | (none) | `com.example.app`, `com.example.lib.util` |
 
 (*) Field examples are shown with the `m` resolution of the
-instance prefix — adjust capitalization to the resolved prefix
+instance prefix - adjust capitalization to the resolved prefix
 per [CODE-VAR-001](Standard-Variables.md#code-var-001).
 
 The instance-field prefix for this standard is
 `m`, set when the coding-standards overlay is
-applied — common resolutions are `m` (Hungarian-style; the
+applied - common resolutions are `m` (Hungarian-style; the
 convention this template was extracted from; capitalize the
 first word after the prefix), `m_` (separator style; plain
 camelCase after the underscore), and the empty string (no

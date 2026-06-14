@@ -83,7 +83,7 @@ points into the inherited library planning tier.
   — every waiting operation has a named timeout constant, a
   fail-safe transition, and a driver notification. Normative form
   lives in
-  [`CODE-SAF-002c`](../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-002----motor-safety)
+  [`CODE-SAF-002c`](../../coding-standard/frc/Standard-Safety.md#code-saf-002)
   — robot code inherits it.
 - **[ADR-013 — Composition over Commands](../../team-lib/planning/adr/ADR-013-composition-over-commands.md)**
   — robot autonomous routines use the library's `AutoMove`
@@ -127,7 +127,7 @@ sources:
 
 | Topic | Authoritative Source |
 | ----- | -------------------- |
-| Coding rules, naming, formatting | [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md) |
+| Coding rules, naming, formatting | [`../../coding-standard/README.md`](../../coding-standard/README.md) |
 | Shared planning policy (SemVer, phase model, CI framework) | [`../../common/planning/`](../../common/planning/) |
 | Library internals (CTREManager, SubsystemManager, AutoMove, ...) | [`../../team-lib/planning/`](../../team-lib/planning/) |
 | Library-specific coding rules (`CODE-LIB-*`) | [`../../team-lib/coding-standard/coding-standard-teamlib-rules.md`](../../team-lib/coding-standard/coding-standard-teamlib-rules.md) |

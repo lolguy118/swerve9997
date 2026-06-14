@@ -10,17 +10,17 @@ to purchase their own copy of a paywalled standard.
 
 | File | Publisher | Edition | Cited from |
 | ---- | --------- | ------- | ---------- |
-| [`MISRA-C-2025.pdf`](MISRA-C-2025.pdf) | The MISRA Consortium | MISRA C:2025 | [SCS §1.4](../common/coding-standard/Team271-Software-Coding-Standard.md#14-applicable-documents), [§1.5](../common/coding-standard/Team271-Software-Coding-Standard.md#15-industry-standard-references) |
-| [`MISRA-CPP-2023.pdf`](MISRA-CPP-2023.pdf) | The MISRA Consortium | MISRA C++:2023 | [SCS §1.4](../common/coding-standard/Team271-Software-Coding-Standard.md#14-applicable-documents), [§1.5](../common/coding-standard/Team271-Software-Coding-Standard.md#15-industry-standard-references) |
+| [`MISRA-C-2025.pdf`](MISRA-C-2025.pdf) | The MISRA Consortium | MISRA C:2025 | [SCS §1.4](../coding-standard/java/Standard.md#14-applicable-documents), [§1.5](../coding-standard/java/Standard.md#15-industry-standards-rationale) |
+| [`MISRA-CPP-2023.pdf`](MISRA-CPP-2023.pdf) | The MISRA Consortium | MISRA C++:2023 | [SCS §1.4](../coding-standard/java/Standard.md#14-applicable-documents), [§1.5](../coding-standard/java/Standard.md#15-industry-standards-rationale) |
 
 Inline rule citations like "MISRA Rule 13.4" or "MISRA Directive 4.4"
 also appear throughout the companion coding-standard files
-([Comments](../common/coding-standard/Team271-Software-Coding-Standard-Comments.md),
-[Control](../common/coding-standard/Team271-Software-Coding-Standard-Control.md),
-[Format](../common/coding-standard/Team271-Software-Coding-Standard-Format.md),
-[Methods](../common/coding-standard/Team271-Software-Coding-Standard-Methods.md),
-[Variables](../common/coding-standard/Team271-Software-Coding-Standard-Variables.md),
-[General](../common/coding-standard/Team271-Software-Coding-Standard-General.md));
+([Comments](../coding-standard/java/Standard-Comments.md),
+[Control](../coding-standard/java/Standard-Control.md),
+[Format](../coding-standard/java/Standard-Format.md),
+[Methods](../coding-standard/java/Standard-Methods.md),
+[Variables](../coding-standard/java/Standard-Variables.md),
+[General](../coding-standard/java/Standard-General.md));
 rule numbers are edition-agnostic by convention, so they resolve
 against whichever local PDF is relevant.
 
@@ -39,8 +39,8 @@ that vendors this folder public, delete the PDFs first.
 - When a new edition is published (e.g., a future MISRA C amendment),
   replace the PDF, update the version column in the table above, and
   bump the edition reference in
-  [SCS §1.4](../common/coding-standard/Team271-Software-Coding-Standard.md#14-applicable-documents)
-  and [SCS §1.5](../common/coding-standard/Team271-Software-Coding-Standard.md#15-industry-standard-references).
+  [SCS §1.4](../coding-standard/java/Standard.md#14-applicable-documents)
+  and [SCS §1.5](../coding-standard/java/Standard.md#15-industry-standards-rationale).
 - Add new third-party PDFs only if they are cited normatively by the
   coding standard or a design doc. Ad-hoc reference material belongs
   elsewhere.

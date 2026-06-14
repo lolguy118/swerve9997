@@ -29,7 +29,7 @@ Defines when <Project> robot code is written, in what order, and
 against what toolchain pin. Captures project-specific milestones and
 any deviation from the library's development pins. Does not cover:
 
-- Coding rules → [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md)
+- Coding rules → [`../../coding-standard/README.md`](../../coding-standard/README.md)
   and [`../coding-standard.md`](../coding-standard.md)
 - Test strategy → [SVP.md](SVP.md)
 - Functional requirements → [SRS.md](SRS.md)

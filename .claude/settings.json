@@ -100,6 +100,11 @@
           },
           {
             "type": "command",
+            "command": ".claude/hooks/check-coding-standards.sh",
+            "description": "citation integrity / normative / external-URL checks on docs/coding-standard/ edits"
+          },
+          {
+            "type": "command",
             "command": ".claude/hooks/check-doc-tunables.sh",
             "description": "flag numeric tunables in design docs"
           },

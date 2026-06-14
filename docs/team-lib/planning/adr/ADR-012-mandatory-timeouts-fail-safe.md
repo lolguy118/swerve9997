@@ -86,7 +86,7 @@ and fail-safe behavior.
 
 ## References
 
-- [Team271-Software-Coding-Standard-Safety.md](../../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md)
+- [Standard-Safety.md](../../../coding-standard/frc/Standard-Safety.md)
   (CODE-SAF-008 through CODE-SAF-011)
 - [SDD-auto.md §3 Module Decomposition](../sdd/SDD-auto.md#3-module-decomposition) (see AutoMoveConditional)
 - [SDD-subsystem.md §6.4 Homing Timeout](../sdd/SDD-subsystem.md#64-homing-timeout)

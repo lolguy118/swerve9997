@@ -7,11 +7,11 @@
 > Do NOT duplicate content from:
 >
 > - `CONTRIBUTING.md` (root) — workflow, PRs, commits, linting
-> - `docs/common/coding-standard/Team271-Software-Coding-Standard*.md` — coding rules
+> - `docs/coding-standard/` — coding rules
 > - `docs/common/planning/` — shared planning framework
 > - `docs/team-lib/planning/` — library SDP, SRS, SVP, SCMP, SDDs, ADRs
 > - `docs/team-lib/guides/` — contributor tutorials
-> - `docs/team-lib/coding-standard/` — library-specific `CODE-LIB-*` rules and bindings to common rules
+> - `docs/team-lib/coding-standard/` — library-API bindings for the common rules (the `CODE-LIB-*` rules now live in the coding standard)
 > - `docs/robot-yyyy/` — scaffolding renamed in place when a robot
 >   project forks this repo (code templates, project coding-standard,
 >   and planning scaffolds — SDP/SRS/SVP/SCMP plus ADR, SDD, guides,
@@ -44,10 +44,15 @@ for the six-layer graph. The layering decision is
 
 ## Authoritative References
 
-- **Coding standard:** [`docs/common/coding-standard/README.md`](docs/common/coding-standard/README.md)
-  indexes the core document
-  [`Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
-  and topical companions. Library-specific templates and notes live in
+- **Coding standard:** [`docs/coding-standard/README.md`](docs/coding-standard/README.md)
+  indexes the Java + FRC standard
+  ([`java/Standard.md`](docs/coding-standard/java/Standard.md),
+  [`frc/Standard.md`](docs/coding-standard/frc/Standard.md), plus the
+  `CODE-LIB-*` library tier) and the project
+  [`supplement`](docs/coding-standard/team271-lib-supplement.md). It is
+  adopted from the project-template; the legacy
+  [`docs/common/coding-standard/`](docs/common/coding-standard/) is
+  retired. Library-API bindings live in
   [`docs/team-lib/coding-standard/`](docs/team-lib/coding-standard/).
 - **Planning framework (common):** [docs/common/planning/README.md](docs/common/planning/README.md)
   — shared SemVer / phase-model / verification-framework policy.
@@ -96,7 +101,7 @@ for the six-layer graph. The layering decision is
   env vars is
   [SVP §6](docs/team-lib/planning/SVP.md#6-hooks-as-pre-merge-gates-library-roster).
 - **Language + toolchain:** Java 17 + GradleRIO. Details in
-  [SCS §2](docs/common/coding-standard/Team271-Software-Coding-Standard.md#2-language-and-build) and
+  [SCS §2](docs/coding-standard/java/Standard.md#2-language-and-build) and
   [SDP §4](docs/team-lib/planning/SDP.md#4-development-environment-library-pins). Decision:
   [ADR-002](docs/team-lib/planning/adr/ADR-002-java17-wpilib-gradlerio-toolchain.md).
 - **Build system:** Gradle + GradleRIO. See `build.gradle`; version

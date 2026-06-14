@@ -1,11 +1,11 @@
 # Library-Specific Coding-Standard Notes
 
-This folder holds **library-specific extensions** to the shared
-coding standard. The shared standard (in
-[`../../common/coding-standard/`](../../common/coding-standard/))
-covers rules that apply to every Team 271 Java project; the files
-here translate those generic rules into concrete library patterns
-and supply ready-to-copy templates for robot projects.
+This folder holds **library-specific notes** layered on the shared
+coding standard. The shared standard now lives in
+[`../../coding-standard/`](../../coding-standard/) (adopted from the
+project-template); the reusable-library rules once duplicated here
+(`CODE-LIB-*`) are now part of that standard. The remaining file maps
+the generic rules to concrete library classes.
 
 > **Industry bridge.** Real software projects often keep a single
 > shared coding standard *and* a project-specific "style guide" or
@@ -18,7 +18,7 @@ and supply ready-to-copy templates for robot projects.
 
 | File | Scope |
 | ---- | ----- |
-| [`coding-standard-teamlib-rules.md`](coding-standard-teamlib-rules.md) | Team271-Lib-specific coding rules (`CODE-LIB-NNN`) for library source code — architectural patterns from ADRs expressed as enforceable rules |
+| [`coding-standard-teamlib-rules.md`](coding-standard-teamlib-rules.md) | **Retired** — the `CODE-LIB-*` rules now live in [`../../coding-standard/java/Standard-Library.md`](../../coding-standard/java/Standard-Library.md) plus the [supplement](../../coding-standard/team271-lib-supplement.md) |
 | [`coding-standard-library-notes.md`](coding-standard-library-notes.md) | How the generic Team 271 coding-standard rules bind to specific library classes (`TObj`, `SubsystemManager`, `CTREManager`, etc.) |
 
 Robot-project code templates (subsystem layout, constants organization,

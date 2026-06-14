@@ -37,7 +37,7 @@ specific to each season's mechanisms.
 | [`../../common/planning/verification-plan.md`](../../common/planning/verification-plan.md) | Shared test framework, coverage structure, CI gate pattern |
 | [SRS.md](SRS.md) | Requirements being verified |
 | [SDP.md](SDP.md) | Development phases and toolchain |
-| [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md) | Coding rules |
+| [`../../coding-standard/README.md`](../../coding-standard/README.md) | Coding rules |
 | [ADR-017](adr/ADR-017-junit5-hal-simulation-tests.md) | Test framework decision |
 
 ## 3. Test Levels (library-specific notes)
@@ -115,6 +115,7 @@ gate edits, are listed in [§6.1](#61-session-start-hooks).
 | ---- | ------- | ---------------- | --------- |
 | `protect-files.sh` | PreToolUse | Block edits to `vendordeps/` and `.github/workflows/`; prompt on edits to Accepted ADRs | (runs on Edit/Write) |
 | `lint-markdown.sh` | PostToolUse | markdownlint-cli2 rules on `.md` files | `markdownlint-cli2 docs/` |
+| `check-coding-standards.sh` | PostToolUse | Citation integrity, duplicate-definition, external-URL allowlist, and normative-keyword checks on `docs/coding-standard/**` edits | (runs on Edit/Write) |
 | `lint-yaml.sh` | PostToolUse | yamllint on `*.yml` / `*.yaml` files | `yamllint <file>` |
 | `lint-shell.sh` | PostToolUse | ShellCheck (severity=warning) on `*.sh` / `*.bash` files | `shellcheck --severity=warning <file>` |
 | `check-doc-tunables.sh` | PostToolUse | No numeric tunables in `docs/**` | (runs on Edit/Write) |

@@ -198,7 +198,7 @@ autoAlign.execute()
 | Passthrough per vendor (ADR-005) | Preserves access to vendor-specific features not on `Camera` | [ADR-005](../adr/ADR-005-passthrough-wrapper-not-wall.md) |
 | Limelight passthrough is NT-name + helper records | Limelight has no "raw object" like `TalonFX` | See §6 |
 | Per-camera pre-periodic read | Matches desired-to-actual + bulk-refresh discipline | [ADR-010](../adr/ADR-010-desired-to-actual-state-pattern.md), [ADR-009](../adr/ADR-009-centralized-can-refresh.md) |
-| Record allocation per cycle is acceptable | ~48 bytes × cameras × 50 Hz; CODE-GEN-004 targets unbounded allocation in hot loops, not small value records returned from cached state | [CODE-GEN-004](../../../common/coding-standard/Team271-Software-Coding-Standard-General.md) |
+| Record allocation per cycle is acceptable | ~48 bytes × cameras × 50 Hz; CODE-GEN-004 targets unbounded allocation in hot loops, not small value records returned from cached state | [CODE-GEN-004](../../../coding-standard/java/Standard-General.md) |
 
 ## 6. Passthrough Getter Reference
 

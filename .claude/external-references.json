@@ -1,0 +1,141 @@
+{
+  "_about": "Allowlist of trusted external-standard domains plus anchored references with last-verified timestamps. Consumed by check-coding-standards.ps1 (hook) and tests/test-coding-standards.ps1. See stacks/coding-standards/MAINTENANCE.md for the lifecycle of this file.",
+  "allowed_domains": [
+    "misra.org.uk",
+    "documents.misra.org.uk",
+    "barrgroup.com",
+    "wiki.sei.cmu.edu",
+    "owasp.org",
+    "cheatsheetseries.owasp.org",
+    "docs.oracle.com",
+    "openjdk.org",
+    "isocpp.org",
+    "en.cppreference.com",
+    "docs.python.org",
+    "peps.python.org",
+    "google.github.io",
+    "airbnb.io",
+    "nodejs.org",
+    "developer.mozilla.org",
+    "learn.microsoft.com",
+    "docs.wpilib.org",
+    "github.com",
+    "raw.githubusercontent.com",
+    "cmu-sei.github.io",
+    "resources.sei.cmu.edu",
+    "spinroot.com",
+    "ntrs.nasa.gov"
+  ],
+  "anchored_references": [
+    {
+      "id": "MISRA C:2025",
+      "url": "https://misra.org.uk/product/misra-c2025/",
+      "last_verified": "2026-05-27"
+    },
+    {
+      "id": "MISRA C++:2023",
+      "url": "https://misra.org.uk/product/misra-cpp2023/",
+      "last_verified": "2026-05-26"
+    },
+    {
+      "id": "JPL Institutional Coding Standard for the C Programming Language (D-60411)",
+      "url": "https://github.com/stanislaw/awesome-safety-critical/blob/master/Backup/JPL_Coding_Standard_C.pdf",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "NASA/JPL Power of Ten Rules (Holzmann, 2006)",
+      "url": "https://spinroot.com/gerard/pdf/P10.pdf",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "NASA C Style Guide (SEL-94-003)",
+      "url": "https://ntrs.nasa.gov/citations/19950022400",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "Barr Group BARR-C:2018",
+      "url": "https://barrgroup.com/embedded-c-coding-standard",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "SEI CERT C Coding Standard",
+      "url": "https://cmu-sei.github.io/secure-coding-standards/sei-cert-c-coding-standard/",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "SEI CERT C++ Coding Standard",
+      "url": "https://cmu-sei.github.io/secure-coding-standards/sei-cert-cpp-coding-standard/",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "SEI CERT Oracle Coding Standard for Java",
+      "url": "https://cmu-sei.github.io/secure-coding-standards/sei-cert-oracle-coding-standard-for-java/",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "OWASP Top 10",
+      "url": "https://owasp.org/www-project-top-ten/",
+      "last_verified": "2026-05-26"
+    },
+    {
+      "id": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/",
+      "last_verified": "2026-05-26"
+    },
+    {
+      "id": "WPILib docs",
+      "url": "https://docs.wpilib.org/",
+      "last_verified": "2026-05-26"
+    },
+    {
+      "id": "PEP 8 — Style Guide for Python Code",
+      "url": "https://peps.python.org/pep-0008/",
+      "last_verified": "2026-05-27"
+    },
+    {
+      "id": "PEP 257 — Docstring Conventions",
+      "url": "https://peps.python.org/pep-0257/",
+      "last_verified": "2026-05-27"
+    },
+    {
+      "id": "PEP 484 — Type Hints",
+      "url": "https://peps.python.org/pep-0484/",
+      "last_verified": "2026-05-27"
+    },
+    {
+      "id": "Google Python Style Guide",
+      "url": "https://google.github.io/styleguide/pyguide.html",
+      "last_verified": "2026-05-27"
+    },
+    {
+      "id": "Google JavaScript Style Guide",
+      "url": "https://google.github.io/styleguide/jsguide.html",
+      "last_verified": "2026-05-27"
+    },
+    {
+      "id": "Airbnb JavaScript Style Guide",
+      "url": "https://github.com/airbnb/javascript",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "Node.js Best Practices (goldbergyoni)",
+      "url": "https://github.com/goldbergyoni/nodebestpractices",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "PSScriptAnalyzer Rules",
+      "url": "https://github.com/PowerShell/PSScriptAnalyzer/tree/master/docs/Rules",
+      "last_verified": "2026-05-27"
+    },
+    {
+      "id": "PowerShell Practice and Style (PoshCode)",
+      "url": "https://github.com/PoshCode/PowerShellPracticeAndStyle",
+      "last_verified": "2026-05-29"
+    },
+    {
+      "id": "PowerShell Strongly Encouraged Development Guidelines",
+      "url": "https://learn.microsoft.com/powershell/scripting/developer/cmdlet/strongly-encouraged-development-guidelines",
+      "last_verified": "2026-05-27"
+    }
+  ]
+}

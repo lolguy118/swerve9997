@@ -39,7 +39,7 @@ It excludes anything that is robot-specific.
 
 | Document | Purpose |
 | -------- | ------- |
-| [Team271-Software-Coding-Standard.md](../../common/coding-standard/Team271-Software-Coding-Standard.md) | Normative coding rules |
+| [Standard.md](../../coding-standard/README.md) | Normative coding rules |
 | [SDP.md](SDP.md) | Development phases and toolchain |
 | [SVP.md](SVP.md) | Verification strategy |
 | [ADR-005](adr/ADR-005-passthrough-wrapper-not-wall.md) | Passthrough contract |

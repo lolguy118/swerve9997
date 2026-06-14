@@ -6,7 +6,7 @@ paths:
 # Rule: Java Coding Standard (Quick-Recall)
 
 Global guardrails for Java library and robot-project code. Full rules
-live in [`docs/common/coding-standard/Team271-Software-Coding-Standard.md`](../../docs/common/coding-standard/Team271-Software-Coding-Standard.md)
+live in [`docs/coding-standard/README.md`](../../docs/coding-standard/README.md)
 and its companions.
 
 ## Rules Claude must apply
@@ -28,7 +28,7 @@ and its companions.
   Don't use `var` when the right-hand side is a factory method that
   hides the concrete type.
 - **`final` on fields that never change** (CODE-VAR). The
-  [`final` keyword usage guide](../../docs/common/coding-standard/Team271-Software-Coding-Standard-Appendices.md)
+  [`final` keyword usage guide](../../docs/coding-standard/java/Standard-Appendices.md)
   is Appendix C.
 - **Spotless enforces formatting.** Do not hand-format imports or
   indentation; run `./gradlew spotlessApply`.
@@ -43,5 +43,5 @@ safety-critical systems proved they were necessary.
 
 ## Authoritative doc
 
-[`docs/common/coding-standard/Team271-Software-Coding-Standard.md`](../../docs/common/coding-standard/Team271-Software-Coding-Standard.md)
+[`docs/coding-standard/README.md`](../../docs/coding-standard/README.md)
 and its companion documents.

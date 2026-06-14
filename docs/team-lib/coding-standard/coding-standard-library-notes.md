@@ -1,7 +1,7 @@
 # Coding Standard — Library Applications
 
 Concrete Team271-Lib API mappings for the framework-agnostic rules in
-[`../../common/coding-standard/Team271-Software-Coding-Standard*.md`](../../common/). The
+[`../../coding-standard/`](../../coding-standard/). The
 common rules describe *what* to do ("use the project's tuning
 mechanism"); this document describes *how* to do it with library
 classes ("`LoggedNTInput` + `checkTuning()`").
@@ -106,7 +106,7 @@ and [ADR-011](../planning/adr/ADR-011-subsystem-exception-isolation.md)).
 ## CODE-SAF-* — Safety Practices
 
 Library bindings for safety rules live alongside their definitions — see
-[`../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md`](../../common/coding-standard/Team271-Software-Coding-Standard-Safety.md)
+[`../../coding-standard/frc/Standard-Safety.md`](../../coding-standard/frc/Standard-Safety.md)
 and its cross-references to:
 
 - [ADR-012 — Mandatory Timeouts with Fail-Safe + Driver Alert](../planning/adr/ADR-012-mandatory-timeouts-fail-safe.md)

@@ -49,7 +49,7 @@ constants), use `// spotless:off` / `// spotless:on` markers sparingly.
 
 The coding standard is split across a core document and topical
 companions. The core
-[`docs/common/coding-standard/Team271-Software-Coding-Standard.md`](docs/common/coding-standard/Team271-Software-Coding-Standard.md)
+[`docs/coding-standard/README.md`](docs/coding-standard/README.md)
 indexes the rest:
 
 - Core — §1 Introduction, §2 Language and Build, §3 Source Code
@@ -57,9 +57,9 @@ indexes the rest:
 - `-General.md`, `-Format.md`, `-Modules.md`, `-Methods.md`,
   `-Variables.md`, `-Control.md`, `-Comments.md`, `-Debug.md`,
   `-Safety.md` — the `CODE-*` rules by category
-- [`-Appendices.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Appendices.md)
+- [`-Appendices.md`](docs/coding-standard/java/Standard-Appendices.md)
   — reference tables (final-keyword guide, unit conventions, GC, etc.)
-- [`-Compliance.md`](docs/common/coding-standard/Team271-Software-Coding-Standard-Compliance.md)
+- [`-Compliance.md`](docs/coding-standard/java/Standard-Compliance.md)
   — §5 static analysis + tooling + §5.4 review checklist
 
 Scaffolding for a forked robot project (subsystem, constants, and
@@ -75,7 +75,7 @@ contribution.
 ## Code Review Checklist
 
 Before opening a PR, verify the items in
-[`-Compliance.md` §5.4 Code Review Checklist](docs/common/coding-standard/Team271-Software-Coding-Standard-Compliance.md#54-code-review-checklist).
+[`-Compliance.md` §5.4 Code Review Checklist](docs/coding-standard/java/Standard-Compliance.md#54-code-review-checklist).
 These include state machine completeness, motor safety, subsystem
 lifecycle ordering, naming conventions, and timeout protection.
 
@@ -144,4 +144,4 @@ manually formatted:
 
 These are exempt from all `CODE-*` rules except `CODE-SAF-*`
 (safety) — the full exemption is documented in
-[the coding standard's §1.2 Scope](docs/common/coding-standard/Team271-Software-Coding-Standard.md#12-scope).
+[the coding standard's §1.2 Scope](docs/coding-standard/java/Standard.md#12-scope).

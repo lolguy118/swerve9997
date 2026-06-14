@@ -28,7 +28,7 @@ Claude Code is **not**:
 - A replacement for understanding what the code does. If you can't
   explain your own PR, don't open it.
 - A substitute for the coding standard. Everything in
-  [`../../common/coding-standard/Team271-Software-Coding-Standard.md`](../../common/coding-standard/Team271-Software-Coding-Standard.md)
+  [`../../coding-standard/README.md`](../../coding-standard/README.md)
   still applies to AI-generated code.
 - An oracle. It can be wrong, especially about recent API changes
   or about code it hasn't read yet.

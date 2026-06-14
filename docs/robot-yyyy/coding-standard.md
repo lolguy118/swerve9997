@@ -42,8 +42,8 @@ After forking Team271-Lib, the inherited standards live alongside
 this file in the project's own `docs/` tree at fixed relative
 paths:
 
-- **Common core:** [`../common/coding-standard/Team271-Software-Coding-Standard.md`](../common/coding-standard/Team271-Software-Coding-Standard.md)
-- **Common companions:** `../common/coding-standard/Team271-Software-Coding-Standard-*.md`
+- **Common core:** [`../coding-standard/README.md`](../coding-standard/README.md)
+- **Java + FRC rules:** [`../coding-standard/java/`](../coding-standard/java/) and [`../coding-standard/frc/`](../coding-standard/frc/)
 - **Team271-Lib rules:** [`../team-lib/coding-standard/coding-standard-teamlib-rules.md`](../team-lib/coding-standard/coding-standard-teamlib-rules.md)
 - **Team271-Lib library-notes:** [`../team-lib/coding-standard/coding-standard-library-notes.md`](../team-lib/coding-standard/coding-standard-library-notes.md)
 - **Project code templates** (siblings of this file): `subsystem-template.md`, `constants-template.md`, `input-driver-template.md`
@@ -132,7 +132,7 @@ b. The registration order for this project is:
 
 ### CODE-<PROJECT>-007 -- Subsystem Package Layout (example)
 
-Binds the common [CODE-MAF-002](../common/coding-standard/Team271-Software-Coding-Standard-Modules.md#code-maf-002----package-structure)
+Binds the common [CODE-MAF-002](../coding-standard/java/Standard-Modules.md#code-maf-002)
 "project's coding standard fixes subpackage conventions" clause.
 
 a. Robot-project subsystems **shall** live in the `subsystems`
@@ -152,7 +152,7 @@ b. **Exception — swerve drivetrain.** The swerve drivetrain class
 
 ### CODE-<PROJECT>-008 -- Constants Organization (example)
 
-Binds the common [CODE-MAF-003](../common/coding-standard/Team271-Software-Coding-Standard-Modules.md#code-maf-003----constants-organization)
+Binds the common [CODE-MAF-003](../coding-standard/java/Standard-Modules.md#code-maf-003)
 "project fixes the concrete shared-constants artifact" clause.
 
 a. Robot-wide constants **shall** be organized in `Constants.java`
@@ -181,7 +181,7 @@ canonical scaffold.
 
 Governs subsystem-level state machines in robot-project code. The
 library-side equivalent for subsystems written inside Team271-Lib is
-[CODE-LIB-003](../team-lib/coding-standard/coding-standard-teamlib-rules.md#code-lib-003----desired-to-actual-state-pattern).
+[CODE-LIB-003](../team-lib/coding-standard/coding-standard-teamlib-rules.md#code-lib-003).
 
 > *Industry note: DO-178C (the avionics software certification
 > standard) emphasizes deterministic, traceable state management.
@@ -217,14 +217,14 @@ a. Subsystems that use state machines **shall** maintain two state
 b. State enums **shall** include an `IDLE` value. `IDLE` **shall**
    be the safe default state and the target of timeout fail-safe
    transitions (per
-   [CODE-SAF-002](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-002----motor-safety)
+   [CODE-SAF-002](../coding-standard/frc/Standard-Safety.md#code-saf-002)
    and
-   [CODE-SAF-003](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-003----state-machine-completeness)).
+   [CODE-SAF-003](../coding-standard/frc/Standard-Safety.md#code-saf-003)).
 
 c. Reachability and default-case requirements for enum `switch`
    blocks are inherited from
-   [CODE-SAF-003](../common/coding-standard/Team271-Software-Coding-Standard-Safety.md#code-saf-003----state-machine-completeness)
-   and [CODE-FUN-004(a)](../common/coding-standard/Team271-Software-Coding-Standard-Methods.md#code-fun-004----defensive-checks);
+   [CODE-SAF-003](../coding-standard/frc/Standard-Safety.md#code-saf-003)
+   and [CODE-FUN-004(a)](../coding-standard/java/Standard-Methods.md#code-fun-004);
    no additional project-level rule is needed.
 
 See [`subsystem-template.md`](subsystem-template.md) for the

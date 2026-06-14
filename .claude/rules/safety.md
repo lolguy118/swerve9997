@@ -53,7 +53,7 @@ When reviewing library changes, flag:
   — exception isolation
 - [ADR-012](../../docs/team-lib/planning/adr/ADR-012-mandatory-timeouts-fail-safe.md)
   — mandatory timeouts
-- [Team271-Software-Coding-Standard-Safety.md](../../docs/common/coding-standard/Team271-Software-Coding-Standard-Safety.md)
+- [Standard-Safety.md](../../docs/coding-standard/frc/Standard-Safety.md)
   — CODE-SAF-* rules
 - [SDD-subsystem.md](../../docs/team-lib/planning/sdd/SDD-subsystem.md)
   — fault-tolerance patterns

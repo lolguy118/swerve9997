@@ -1,0 +1,18 @@
+// markdownlint-cli2 per-directory config for the adopted coding standard.
+// The standard (java/, frc/) follows the project-template's cpp/java/frc
+// anchor convention: an explicit <a id="code-xxx-nnn"></a> line above each
+// rule heading so bare-ID fragment links resolve. markdownlint sees those
+// anchors as inline HTML, so MD033 is disabled directory-wide here rather
+// than repeating a per-file disable in every chapter.
+//
+// MD060 is also disabled: the upstream standard's tables use alignment
+// padding the repo-root "compact" style would reject, and the template
+// itself disables MD060 for the same reason. Inherits everything else
+// (MD013 line-length 140, MD024 siblings-only, etc.) from the repo-root
+// .markdownlint-cli2.mjs.
+{
+  "config": {
+    "MD033": false,
+    "MD060": false
+  }
+}

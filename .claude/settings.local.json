@@ -4,5 +4,9 @@
       "Bash(java -version)",
       "Bash(where java:*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "frc-docs"
+  ],
+  "enableAllProjectMcpServers": true
 }

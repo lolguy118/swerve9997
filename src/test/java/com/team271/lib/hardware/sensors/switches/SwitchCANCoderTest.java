@@ -34,7 +34,7 @@ class SwitchCANCoderTest {
 
     @Test
     void constructorFwdLimitNO() {
-        CANDeviceID id = new CANDeviceID(86);
+        CANDeviceID id = new CANDeviceID(24);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -45,7 +45,7 @@ class SwitchCANCoderTest {
 
     @Test
     void constructorRevLimitNC() {
-        CANDeviceID id = new CANDeviceID(87);
+        CANDeviceID id = new CANDeviceID(25);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -56,7 +56,7 @@ class SwitchCANCoderTest {
 
     @Test
     void setEnabledFwd() {
-        CANDeviceID id = new CANDeviceID(88);
+        CANDeviceID id = new CANDeviceID(26);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -68,7 +68,7 @@ class SwitchCANCoderTest {
 
     @Test
     void setEnabledRev() {
-        CANDeviceID id = new CANDeviceID(89);
+        CANDeviceID id = new CANDeviceID(27);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -80,7 +80,7 @@ class SwitchCANCoderTest {
 
     @Test
     void setTriggerTypeFwdNC() {
-        CANDeviceID id = new CANDeviceID(90);
+        CANDeviceID id = new CANDeviceID(28);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -91,7 +91,7 @@ class SwitchCANCoderTest {
 
     @Test
     void getTriggeredReturnsFalseBeforeRobotInit() {
-        CANDeviceID id = new CANDeviceID(91);
+        CANDeviceID id = new CANDeviceID(29);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -102,7 +102,7 @@ class SwitchCANCoderTest {
 
     @Test
     void getTriggeredRevReturnsFalseBeforeRobotInit() {
-        CANDeviceID id = new CANDeviceID(92);
+        CANDeviceID id = new CANDeviceID(30);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -113,7 +113,7 @@ class SwitchCANCoderTest {
 
     @Test
     void outputTelemetryDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(93);
+        CANDeviceID id = new CANDeviceID(31);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -124,7 +124,7 @@ class SwitchCANCoderTest {
 
     @Test
     void autoSetConfiguredByConstructor() {
-        CANDeviceID id = new CANDeviceID(94);
+        CANDeviceID id = new CANDeviceID(32);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -136,7 +136,7 @@ class SwitchCANCoderTest {
 
     @Test
     void robotInitRegistersSignals() {
-        CANDeviceID id = new CANDeviceID(95);
+        CANDeviceID id = new CANDeviceID(33);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -149,7 +149,7 @@ class SwitchCANCoderTest {
 
     @Test
     void setAutoSetFwd() {
-        CANDeviceID id = new CANDeviceID(96);
+        CANDeviceID id = new CANDeviceID(34);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -161,7 +161,7 @@ class SwitchCANCoderTest {
 
     @Test
     void setAutoSetPosFwd() {
-        CANDeviceID id = new CANDeviceID(97);
+        CANDeviceID id = new CANDeviceID(35);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -173,7 +173,7 @@ class SwitchCANCoderTest {
 
     @Test
     void setEnabledTrueFwd() {
-        CANDeviceID id = new CANDeviceID(98);
+        CANDeviceID id = new CANDeviceID(36);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -185,7 +185,7 @@ class SwitchCANCoderTest {
 
     @Test
     void setEnabledTrueRev() {
-        CANDeviceID id = new CANDeviceID(99);
+        CANDeviceID id = new CANDeviceID(37);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -197,7 +197,7 @@ class SwitchCANCoderTest {
 
     @Test
     void robotInitRevRegistersSignals() {
-        CANDeviceID id = new CANDeviceID(200);
+        CANDeviceID id = new CANDeviceID(14);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -208,7 +208,7 @@ class SwitchCANCoderTest {
 
     @Test
     void getTriggeredFwdAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(201);
+        CANDeviceID id = new CANDeviceID(15);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -220,7 +220,7 @@ class SwitchCANCoderTest {
 
     @Test
     void getTriggeredRevAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(202);
+        CANDeviceID id = new CANDeviceID(16);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(
@@ -232,7 +232,7 @@ class SwitchCANCoderTest {
 
     @Test
     void outputTelemetryAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(203);
+        CANDeviceID id = new CANDeviceID(17);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchCANCoder sw =
                 new SwitchCANCoder(

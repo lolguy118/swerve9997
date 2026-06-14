@@ -111,7 +111,7 @@ class RangeCANrangeTest {
 
     @Test
     void simulationPeriodicDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(73);
+        CANDeviceID id = new CANDeviceID(11);
         RangeCANrange range = new RangeCANrange(null, "Range", id, 250.0);
 
         assertDoesNotThrow(() -> range.simulationPeriodic(0.0));
@@ -119,7 +119,7 @@ class RangeCANrangeTest {
 
     @Test
     void resetDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(74);
+        CANDeviceID id = new CANDeviceID(12);
         RangeCANrange range = new RangeCANrange(null, "Range", id, 250.0);
 
         assertDoesNotThrow(range::reset);

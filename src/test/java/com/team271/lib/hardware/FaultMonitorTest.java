@@ -7,7 +7,6 @@ import com.team271.lib.TObj;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
 import com.team271.lib.hardware.motors.MotorBase;
 import edu.wpi.first.hal.HAL;
-import java.lang.reflect.Field;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,12 +23,12 @@ class FaultMonitorTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        resetCTREManager();
+        CTREManager.resetForTesting();
         parent =
                 new ControllerTalonFX(
                         null,
                         "TestParent",
-                        new CANDeviceID(99),
+                        new CANDeviceID(37),
                         new MotorBase(MotorBase.MotorType.KRAKENX60));
     }
 
@@ -47,7 +46,7 @@ class FaultMonitorTest {
     @Test
     void addFaultDoesNotThrow() {
         FaultMonitor fm = new FaultMonitor(parent, "TestDevice");
-        TalonFX talon = new TalonFX(98);
+        TalonFX talon = new TalonFX(36);
         assertDoesNotThrow(
                 () ->
                         fm.addFault(
@@ -59,7 +58,7 @@ class FaultMonitorTest {
     @Test
     void registerSignalsDoesNotThrow() {
         FaultMonitor fm = new FaultMonitor(parent, "TestDevice");
-        TalonFX talon = new TalonFX(97);
+        TalonFX talon = new TalonFX(35);
         fm.addFault("BootDuringEnable", talon.getStickyFault_BootDuringEnable(), 250.0);
 
         assertDoesNotThrow(fm::registerSignals);
@@ -68,7 +67,7 @@ class FaultMonitorTest {
     @Test
     void refreshDoesNotThrow() {
         FaultMonitor fm = new FaultMonitor(parent, "TestDevice");
-        TalonFX talon = new TalonFX(96);
+        TalonFX talon = new TalonFX(34);
         fm.addFault("BootDuringEnable", talon.getStickyFault_BootDuringEnable(), 250.0);
 
         assertDoesNotThrow(fm::refresh);
@@ -83,43 +82,10 @@ class FaultMonitorTest {
     @Test
     void hasAnyFaultFalseAfterRefreshWithNoFaults() {
         FaultMonitor fm = new FaultMonitor(parent, "TestDevice");
-        TalonFX talon = new TalonFX(95);
+        TalonFX talon = new TalonFX(33);
         fm.addFault("BootDuringEnable", talon.getStickyFault_BootDuringEnable(), 250.0);
         fm.refresh();
 
         assertFalse(fm.hasAnyFault());
-    }
-
-    /** Reset CTREManager static state via reflection for test isolation. */
-    private static void resetCTREManager() throws Exception {
-        Class<?> clz = com.team271.lib.hardware.CTREManager.class;
-        for (String fieldName : new String[] {"signalsAll", "devices", "devicesByBus", "buses"}) {
-            try {
-                Field f = clz.getDeclaredField(fieldName);
-                f.setAccessible(true);
-                Object val = f.get(null);
-                if (val instanceof java.util.Collection) {
-                    ((java.util.Collection<?>) val).clear();
-                } else if (val instanceof java.util.Map) {
-                    ((java.util.Map<?, ?>) val).clear();
-                }
-            } catch (NoSuchFieldException e) {
-                // Skip
-            }
-        }
-        try {
-            Field f = clz.getDeclaredField("initialized");
-            f.setAccessible(true);
-            f.setBoolean(null, false);
-        } catch (NoSuchFieldException e) {
-            // Skip
-        }
-        try {
-            Field f = clz.getDeclaredField("signalsAllArray");
-            f.setAccessible(true);
-            f.set(null, null);
-        } catch (NoSuchFieldException e) {
-            // Skip
-        }
     }
 }

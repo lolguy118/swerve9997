@@ -34,7 +34,7 @@ class SwitchFXTest {
 
     @Test
     void constructorFwdLimitNO() {
-        CANDeviceID id = new CANDeviceID(75);
+        CANDeviceID id = new CANDeviceID(13);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -44,7 +44,7 @@ class SwitchFXTest {
 
     @Test
     void constructorRevLimitNC() {
-        CANDeviceID id = new CANDeviceID(76);
+        CANDeviceID id = new CANDeviceID(14);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NC, true, 1.0, 250.0);
@@ -54,7 +54,7 @@ class SwitchFXTest {
 
     @Test
     void setEnabledFwd() {
-        CANDeviceID id = new CANDeviceID(77);
+        CANDeviceID id = new CANDeviceID(15);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -65,7 +65,7 @@ class SwitchFXTest {
 
     @Test
     void setEnabledRev() {
-        CANDeviceID id = new CANDeviceID(78);
+        CANDeviceID id = new CANDeviceID(16);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -76,7 +76,7 @@ class SwitchFXTest {
 
     @Test
     void setTriggerTypeFwdNC() {
-        CANDeviceID id = new CANDeviceID(79);
+        CANDeviceID id = new CANDeviceID(17);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -86,7 +86,7 @@ class SwitchFXTest {
 
     @Test
     void setTriggerTypeRevNO() {
-        CANDeviceID id = new CANDeviceID(80);
+        CANDeviceID id = new CANDeviceID(18);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NC, false, 0.0, 250.0);
@@ -96,7 +96,7 @@ class SwitchFXTest {
 
     @Test
     void getTriggeredReturnsFalseBeforeRobotInit() {
-        CANDeviceID id = new CANDeviceID(81);
+        CANDeviceID id = new CANDeviceID(19);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -106,7 +106,7 @@ class SwitchFXTest {
 
     @Test
     void getTriggeredRevReturnsFalseBeforeRobotInit() {
-        CANDeviceID id = new CANDeviceID(82);
+        CANDeviceID id = new CANDeviceID(20);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -116,7 +116,7 @@ class SwitchFXTest {
 
     @Test
     void outputTelemetryDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(83);
+        CANDeviceID id = new CANDeviceID(21);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -126,7 +126,7 @@ class SwitchFXTest {
 
     @Test
     void autoSetConfiguredByConstructor() {
-        CANDeviceID id = new CANDeviceID(84);
+        CANDeviceID id = new CANDeviceID(22);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, true, 5.0, 250.0);
@@ -137,7 +137,7 @@ class SwitchFXTest {
 
     @Test
     void robotInitRegistersSignals() {
-        CANDeviceID id = new CANDeviceID(85);
+        CANDeviceID id = new CANDeviceID(23);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -149,7 +149,7 @@ class SwitchFXTest {
 
     @Test
     void setAutoSetFwd() {
-        CANDeviceID id = new CANDeviceID(86);
+        CANDeviceID id = new CANDeviceID(24);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -162,7 +162,7 @@ class SwitchFXTest {
 
     @Test
     void setAutoSetPosFwd() {
-        CANDeviceID id = new CANDeviceID(87);
+        CANDeviceID id = new CANDeviceID(25);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -173,7 +173,7 @@ class SwitchFXTest {
 
     @Test
     void setAutoSetRev() {
-        CANDeviceID id = new CANDeviceID(88);
+        CANDeviceID id = new CANDeviceID(26);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -184,7 +184,7 @@ class SwitchFXTest {
 
     @Test
     void setAutoSetPosRev() {
-        CANDeviceID id = new CANDeviceID(89);
+        CANDeviceID id = new CANDeviceID(27);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -195,7 +195,7 @@ class SwitchFXTest {
 
     @Test
     void setEnabledTrueFwd() {
-        CANDeviceID id = new CANDeviceID(90);
+        CANDeviceID id = new CANDeviceID(28);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -206,7 +206,7 @@ class SwitchFXTest {
 
     @Test
     void setEnabledTrueRev() {
-        CANDeviceID id = new CANDeviceID(91);
+        CANDeviceID id = new CANDeviceID(29);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -217,7 +217,7 @@ class SwitchFXTest {
 
     @Test
     void robotInitRevRegistersSignals() {
-        CANDeviceID id = new CANDeviceID(92);
+        CANDeviceID id = new CANDeviceID(30);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -227,7 +227,7 @@ class SwitchFXTest {
 
     @Test
     void getTriggeredFwdAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(93);
+        CANDeviceID id = new CANDeviceID(31);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -238,7 +238,7 @@ class SwitchFXTest {
 
     @Test
     void getTriggeredRevAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(94);
+        CANDeviceID id = new CANDeviceID(32);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "RevSw", controller, false, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -249,7 +249,7 @@ class SwitchFXTest {
 
     @Test
     void outputTelemetryAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(95);
+        CANDeviceID id = new CANDeviceID(33);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);
@@ -260,7 +260,7 @@ class SwitchFXTest {
 
     @Test
     void autoZeroDisabledByDefault() {
-        CANDeviceID id = new CANDeviceID(96);
+        CANDeviceID id = new CANDeviceID(34);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Motor", id, KRAKEN);
         SwitchFX sw =
                 new SwitchFX(null, "FwdSw", controller, true, SwitchTrigger.NO, false, 0.0, 250.0);

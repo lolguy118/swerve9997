@@ -118,7 +118,7 @@ class IMUPigeon2Test {
 
     @Test
     void refreshDoesNotThrowAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(70);
+        CANDeviceID id = new CANDeviceID(8);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
 
         imu.robotInit(0.0);
@@ -127,7 +127,7 @@ class IMUPigeon2Test {
 
     @Test
     void applyConfigDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(71);
+        CANDeviceID id = new CANDeviceID(9);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
 
         assertDoesNotThrow(imu::applyConfig);
@@ -135,7 +135,7 @@ class IMUPigeon2Test {
 
     @Test
     void simulationPeriodicDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(72);
+        CANDeviceID id = new CANDeviceID(10);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
 
         assertDoesNotThrow(() -> imu.simulationPeriodic(0.0));
@@ -145,7 +145,7 @@ class IMUPigeon2Test {
 
     @Test
     void refreshAfterRobotInitReturnsZeroValues() {
-        CANDeviceID id = new CANDeviceID(74);
+        CANDeviceID id = new CANDeviceID(12);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
         imu.robotInit(0.0);
         imu.refresh();
@@ -158,7 +158,7 @@ class IMUPigeon2Test {
 
     @Test
     void outputTelemetryAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(75);
+        CANDeviceID id = new CANDeviceID(13);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
         imu.robotInit(0.0);
 
@@ -167,7 +167,7 @@ class IMUPigeon2Test {
 
     @Test
     void simulationInitDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(76);
+        CANDeviceID id = new CANDeviceID(14);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
 
         assertDoesNotThrow(() -> imu.simulationInit(0.0));
@@ -175,7 +175,7 @@ class IMUPigeon2Test {
 
     @Test
     void refreshBeforeRobotInitDoesNotChangeValues() {
-        CANDeviceID id = new CANDeviceID(77);
+        CANDeviceID id = new CANDeviceID(15);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
         imu.refresh();
         assertEquals(0.0, imu.getYaw(), 1e-6);
@@ -186,7 +186,7 @@ class IMUPigeon2Test {
 
     @Test
     void getHeadingReturnsZeroDegInitially() {
-        CANDeviceID id = new CANDeviceID(78);
+        CANDeviceID id = new CANDeviceID(16);
         IMUPigeon2 imu = new IMUPigeon2(null, "IMU", id, 250.0);
         assertNotNull(imu.getHeading());
         assertEquals(0.0, imu.getHeading().getDegrees(), 1e-6);

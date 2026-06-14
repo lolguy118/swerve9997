@@ -49,7 +49,7 @@ class PIDControllerInterfaceTest {
                 new ControllerTalonFX(
                         null,
                         "Test",
-                        new CANDeviceID(90, ""),
+                        new CANDeviceID(28, ""),
                         new MotorBase(MotorBase.MotorType.KRAKENX60));
         PIDController pid = new PIDFX(null, "Test", fx, 1.0, 0.0, 0.0, 0.01);
         assertNotNull(pid);
@@ -140,7 +140,7 @@ class PIDControllerInterfaceTest {
                 new ControllerTalonFX(
                         null,
                         "Test",
-                        new CANDeviceID(91, ""),
+                        new CANDeviceID(29, ""),
                         new MotorBase(MotorBase.MotorType.KRAKENX60));
         PIDFX pid = new PIDFX(null, "Test", fx, 1.0, 0.0, 0.0, 0.01);
         assertEquals(0, pid.getSlot());
@@ -152,7 +152,7 @@ class PIDControllerInterfaceTest {
                 new ControllerTalonFX(
                         null,
                         "Test",
-                        new CANDeviceID(92, ""),
+                        new CANDeviceID(30, ""),
                         new MotorBase(MotorBase.MotorType.KRAKENX60));
         PIDFX pid = new PIDFX(null, "Test", fx, 1.0, 0.0, 0.0, 0.01, 1);
         assertEquals(1, pid.getSlot());
@@ -164,7 +164,7 @@ class PIDControllerInterfaceTest {
                 new ControllerTalonFX(
                         null,
                         "Test",
-                        new CANDeviceID(93, ""),
+                        new CANDeviceID(31, ""),
                         new MotorBase(MotorBase.MotorType.KRAKENX60));
         PIDFX pid = new PIDFX(null, "Test", fx, 1.0, 0.0, 0.0, 0.01);
         pid.enableContinuousInput(0, 1);

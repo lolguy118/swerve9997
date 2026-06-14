@@ -333,7 +333,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setRampRates() {
-        CANDeviceID id = new CANDeviceID(63);
+        CANDeviceID id = new CANDeviceID(1);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setRampOpenLoopDuty(0.5);
@@ -353,7 +353,7 @@ class ControllerTalonFXTest {
 
     @Test
     void closedLoopReturnsZeroBeforeSignalInit() {
-        CANDeviceID id = new CANDeviceID(64);
+        CANDeviceID id = new CANDeviceID(2);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertEquals(0.0, controller.getCLError(), 1e-6);
@@ -364,7 +364,7 @@ class ControllerTalonFXTest {
 
     @Test
     void stopDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(65);
+        CANDeviceID id = new CANDeviceID(3);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(controller::stop);
@@ -374,7 +374,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(66);
+        CANDeviceID id = new CANDeviceID(4);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(controller::outputTelemetry);
@@ -384,7 +384,7 @@ class ControllerTalonFXTest {
 
     @Test
     void robotInitDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(67);
+        CANDeviceID id = new CANDeviceID(5);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.robotInit(0.0));
@@ -394,10 +394,10 @@ class ControllerTalonFXTest {
 
     @Test
     void deviceIdAccessors() {
-        CANDeviceID id = new CANDeviceID(68, "canivore");
+        CANDeviceID id = new CANDeviceID(6, "canivore");
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
-        assertEquals(68, controller.getIDNum());
+        assertEquals(6, controller.getIDNum());
         assertEquals("canivore", controller.getBus());
         assertTrue(controller.isDevice(id));
     }
@@ -406,7 +406,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getFollowingIDNullForNonFollower() {
-        CANDeviceID id = new CANDeviceID(69);
+        CANDeviceID id = new CANDeviceID(7);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertNull(controller.getFollowingID());
@@ -414,7 +414,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getFollowingIDNumReturnsNegativeOneForNonFollower() {
-        CANDeviceID id = new CANDeviceID(70);
+        CANDeviceID id = new CANDeviceID(8);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertEquals(-1, controller.getFollowingIDNum());
@@ -422,7 +422,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getFollowingBusReturnsEmptyForNonFollower() {
-        CANDeviceID id = new CANDeviceID(71);
+        CANDeviceID id = new CANDeviceID(9);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertEquals("", controller.getFollowingBus());
@@ -430,7 +430,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getOpposeLeaderFalseByDefault() {
-        CANDeviceID id = new CANDeviceID(72);
+        CANDeviceID id = new CANDeviceID(10);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertFalse(controller.getOpposeLeader());
@@ -438,7 +438,7 @@ class ControllerTalonFXTest {
 
     @Test
     void isConnectedAccessible() {
-        CANDeviceID id = new CANDeviceID(73);
+        CANDeviceID id = new CANDeviceID(11);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         // In sim, isConnected may be true or false depending on HAL state
@@ -447,7 +447,7 @@ class ControllerTalonFXTest {
 
     @Test
     void isConfiguredFalseBeforeApply() {
-        CANDeviceID id = new CANDeviceID(74);
+        CANDeviceID id = new CANDeviceID(12);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertFalse(controller.isConfigured());
@@ -455,7 +455,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getIDReturnsDeviceID() {
-        CANDeviceID id = new CANDeviceID(75);
+        CANDeviceID id = new CANDeviceID(13);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertEquals(id, controller.getID());
@@ -465,7 +465,7 @@ class ControllerTalonFXTest {
 
     @Test
     void robotPeriodicBeforeDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(76);
+        CANDeviceID id = new CANDeviceID(14);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.robotPeriodicBefore(0.0));
@@ -475,7 +475,7 @@ class ControllerTalonFXTest {
 
     @Test
     void robotPeriodicAfterDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(77);
+        CANDeviceID id = new CANDeviceID(15);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.robotPeriodicAfter(0.0));
@@ -485,7 +485,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setOutputTorqueCurrentDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(78);
+        CANDeviceID id = new CANDeviceID(16);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.setOutputTorqueCurrent(10.0));
@@ -493,7 +493,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getOutputTorqueCurrentReturnsZeroBeforeSignalInit() {
-        CANDeviceID id = new CANDeviceID(79);
+        CANDeviceID id = new CANDeviceID(17);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertEquals(0.0, controller.getOutputTorqueCurrent(), 1e-6);
@@ -503,7 +503,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setOutputPositionDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(80);
+        CANDeviceID id = new CANDeviceID(18);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.setOutputPosition(5.0, 0.5));
@@ -511,7 +511,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setOutputVelocityDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(81);
+        CANDeviceID id = new CANDeviceID(19);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.setOutputVelocity(10.0, 0.2));
@@ -521,7 +521,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setRampOpenLoopTorque() {
-        CANDeviceID id = new CANDeviceID(82);
+        CANDeviceID id = new CANDeviceID(20);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setRampOpenLoopTorque(0.4);
@@ -530,7 +530,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setRampClosedLoopTorque() {
-        CANDeviceID id = new CANDeviceID(83);
+        CANDeviceID id = new CANDeviceID(21);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setRampClosedLoopTorque(0.3);
@@ -541,7 +541,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setToleranceDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(84);
+        CANDeviceID id = new CANDeviceID(22);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.setTolerance(0.5));
@@ -552,7 +552,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setCurrentLimitSupplyThreeArg() {
-        CANDeviceID id = new CANDeviceID(85);
+        CANDeviceID id = new CANDeviceID(23);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setCurrentLimitSupply(60.0, 1.0, 40.0);
@@ -565,7 +565,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getConfigMMNotNull() {
-        CANDeviceID id = new CANDeviceID(86);
+        CANDeviceID id = new CANDeviceID(24);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertNotNull(controller.getConfigMM());
@@ -575,15 +575,15 @@ class ControllerTalonFXTest {
 
     @Test
     void followSameBusReturnsOK() {
-        CANDeviceID leaderId = new CANDeviceID(87);
-        CANDeviceID followerId = new CANDeviceID(88);
+        CANDeviceID leaderId = new CANDeviceID(25);
+        CANDeviceID followerId = new CANDeviceID(26);
         ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
         ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
 
         ControllerStatus status = follower.follow(leader, false);
         assertEquals(ControllerStatus.OK, status);
         assertEquals(leaderId, follower.getFollowingID());
-        assertEquals(87, follower.getFollowingIDNum());
+        assertEquals(25, follower.getFollowingIDNum());
         assertNotNull(follower.getFollowingBus());
     }
 
@@ -591,7 +591,7 @@ class ControllerTalonFXTest {
 
     @Test
     void simulationPeriodicDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(89);
+        CANDeviceID id = new CANDeviceID(27);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.simulationInit(0.0);
@@ -600,7 +600,7 @@ class ControllerTalonFXTest {
 
     @Test
     void simulationPeriodicWithoutSimInitDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(90);
+        CANDeviceID id = new CANDeviceID(28);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.simulationPeriodic(0.0));
@@ -610,7 +610,7 @@ class ControllerTalonFXTest {
 
     @Test
     void pidSlot1IAndD() {
-        CANDeviceID id = new CANDeviceID(91);
+        CANDeviceID id = new CANDeviceID(29);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setISlot(1, 0.2);
@@ -621,7 +621,7 @@ class ControllerTalonFXTest {
 
     @Test
     void pidSlot2IAndD() {
-        CANDeviceID id = new CANDeviceID(92);
+        CANDeviceID id = new CANDeviceID(30);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setISlot(2, 0.3);
@@ -632,7 +632,7 @@ class ControllerTalonFXTest {
 
     @Test
     void pidInvalidSlotIAndDReturnsZero() {
-        CANDeviceID id = new CANDeviceID(93);
+        CANDeviceID id = new CANDeviceID(31);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setISlot(5, 1.0);
@@ -645,7 +645,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setPIDFSlotSlot1() {
-        CANDeviceID id = new CANDeviceID(94);
+        CANDeviceID id = new CANDeviceID(32);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setPIDFSlot(1, 1.0, 0.5, 0.25, 0.1, 0.05);
@@ -656,7 +656,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setPIDFSlotSlot2() {
-        CANDeviceID id = new CANDeviceID(95);
+        CANDeviceID id = new CANDeviceID(33);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setPIDFSlot(2, 3.0, 1.5, 0.75, 0.3, 0.15);
@@ -667,7 +667,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setPIDFSlotInvalidSlotDoesNotThrow() {
-        CANDeviceID id = new CANDeviceID(96);
+        CANDeviceID id = new CANDeviceID(34);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.setPIDFSlot(5, 1.0, 0.5, 0.25, 0.1, 0.05));
@@ -677,7 +677,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setDirectionCWWithSimState() {
-        CANDeviceID id = new CANDeviceID(97);
+        CANDeviceID id = new CANDeviceID(35);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         controller.simulationInit(0.0);
 
@@ -687,7 +687,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setDirectionCCWWithSimState() {
-        CANDeviceID id = new CANDeviceID(98);
+        CANDeviceID id = new CANDeviceID(36);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         controller.simulationInit(0.0);
 
@@ -699,8 +699,8 @@ class ControllerTalonFXTest {
 
     @Test
     void followWithSimStateOpposeLeader() {
-        CANDeviceID leaderId = new CANDeviceID(200);
-        CANDeviceID followerId = new CANDeviceID(201);
+        CANDeviceID leaderId = new CANDeviceID(14);
+        CANDeviceID followerId = new CANDeviceID(15);
         ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
         ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
 
@@ -712,8 +712,8 @@ class ControllerTalonFXTest {
 
     @Test
     void followWithSimStateAligned() {
-        CANDeviceID leaderId = new CANDeviceID(202);
-        CANDeviceID followerId = new CANDeviceID(203);
+        CANDeviceID leaderId = new CANDeviceID(16);
+        CANDeviceID followerId = new CANDeviceID(17);
         ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
         ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
 
@@ -727,7 +727,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setOutputPositionSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(300);
+        CANDeviceID id = new CANDeviceID(52);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setOutputPosition(5.0, 0.5);
@@ -741,7 +741,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setOutputVelocitySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(301);
+        CANDeviceID id = new CANDeviceID(53);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         controller.setOutputVelocity(10.0, 0.2);
@@ -757,36 +757,36 @@ class ControllerTalonFXTest {
 
     @Test
     void isDeviceReturnsTrueForMatchingId() {
-        CANDeviceID id = new CANDeviceID(400);
+        CANDeviceID id = new CANDeviceID(28);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         assertTrue(controller.isDevice(id));
     }
 
     @Test
     void isDeviceReturnsFalseForDifferentId() {
-        CANDeviceID id = new CANDeviceID(401);
+        CANDeviceID id = new CANDeviceID(29);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
-        assertFalse(controller.isDevice(new CANDeviceID(999)));
+        assertFalse(controller.isDevice(new CANDeviceID(7)));
     }
 
     @Test
     void getFollowingIDNumReturnsNegativeOneWhenNull() {
-        CANDeviceID id = new CANDeviceID(402);
+        CANDeviceID id = new CANDeviceID(30);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         assertEquals(-1, controller.getFollowingIDNum());
     }
 
     @Test
     void getFollowingBusReturnsEmptyWhenNull() {
-        CANDeviceID id = new CANDeviceID(403);
+        CANDeviceID id = new CANDeviceID(31);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         assertEquals("", controller.getFollowingBus());
     }
 
     @Test
     void getFollowingIDNumAfterFollow() {
-        CANDeviceID leaderId = new CANDeviceID(404);
-        CANDeviceID followerId = new CANDeviceID(405);
+        CANDeviceID leaderId = new CANDeviceID(32);
+        CANDeviceID followerId = new CANDeviceID(33);
         ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
         ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
 
@@ -797,8 +797,8 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryWithFollowerExercisesFollowingBranch() {
-        CANDeviceID leaderId = new CANDeviceID(406);
-        CANDeviceID followerId = new CANDeviceID(407);
+        CANDeviceID leaderId = new CANDeviceID(34);
+        CANDeviceID followerId = new CANDeviceID(35);
         ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
         ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
 
@@ -808,7 +808,7 @@ class ControllerTalonFXTest {
 
     @Test
     void robotInitRegistersSignals() {
-        CANDeviceID id = new CANDeviceID(408);
+        CANDeviceID id = new CANDeviceID(36);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertDoesNotThrow(() -> controller.robotInit(0.0));
@@ -816,7 +816,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryAfterRobotInit() {
-        CANDeviceID id = new CANDeviceID(409);
+        CANDeviceID id = new CANDeviceID(37);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         controller.robotInit(0.0);
 
@@ -824,18 +824,22 @@ class ControllerTalonFXTest {
     }
 
     @Test
-    void applyConfigReturnsErrorInSim() {
-        CANDeviceID id = new CANDeviceID(410);
+    void applyConfigSucceedsInSim() {
+        // Phoenix 6 26.3.0 simulates a present device for any valid CAN ID, so
+        // configurator.apply() succeeds in sim (returns OK / isConfigured). Earlier
+        // Phoenix versions surfaced ERROR here only because the test used an
+        // out-of-range CAN ID, which 26.3.0 now rejects outright (IDs must be 0-62).
+        CANDeviceID id = new CANDeviceID(38);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         ControllerStatus result = controller.applyConfig();
-        assertEquals(ControllerStatus.ERROR, result);
-        assertFalse(controller.isConfigured());
+        assertEquals(ControllerStatus.OK, result);
+        assertTrue(controller.isConfigured());
     }
 
     @Test
     void getSupplyVoltageReturnsZeroBeforeInit() {
-        CANDeviceID id = new CANDeviceID(411);
+        CANDeviceID id = new CANDeviceID(39);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertEquals(0.0, controller.getSupplyVoltage(), 1e-6);
@@ -843,7 +847,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getSupplyCurrentReturnsZeroBeforeInit() {
-        CANDeviceID id = new CANDeviceID(412);
+        CANDeviceID id = new CANDeviceID(40);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertEquals(0.0, controller.getSupplyCurrent(), 1e-6);
@@ -851,7 +855,7 @@ class ControllerTalonFXTest {
 
     @Test
     void getFollowingIDReturnsNullBeforeFollow() {
-        CANDeviceID id = new CANDeviceID(413);
+        CANDeviceID id = new CANDeviceID(41);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
 
         assertNull(controller.getFollowingID());
@@ -859,8 +863,8 @@ class ControllerTalonFXTest {
 
     @Test
     void getFollowingIDReturnsLeaderIdAfterFollow() {
-        CANDeviceID leaderId = new CANDeviceID(414);
-        CANDeviceID followerId = new CANDeviceID(415);
+        CANDeviceID leaderId = new CANDeviceID(42);
+        CANDeviceID followerId = new CANDeviceID(43);
         ControllerTalonFX leader = new ControllerTalonFX(null, "Leader", leaderId, KRAKEN);
         ControllerTalonFX follower = new ControllerTalonFX(null, "Follower", followerId, KRAKEN);
 
@@ -872,7 +876,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryWithBrakeMode() {
-        CANDeviceID id = new CANDeviceID(416);
+        CANDeviceID id = new CANDeviceID(44);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         controller.setNeutralMode(NeutralState.BRAKE);
         assertDoesNotThrow(controller::outputTelemetry);
@@ -880,7 +884,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryWithCWDirection() {
-        CANDeviceID id = new CANDeviceID(417);
+        CANDeviceID id = new CANDeviceID(45);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         controller.setDirection(MotorDirection.CW);
         assertDoesNotThrow(controller::outputTelemetry);
@@ -888,7 +892,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryWithNoneNeutralMode() {
-        CANDeviceID id = new CANDeviceID(418);
+        CANDeviceID id = new CANDeviceID(46);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         controller.setNeutralMode(NeutralState.NONE);
         assertDoesNotThrow(controller::outputTelemetry);
@@ -896,7 +900,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryWithStatusUnknown() throws Exception {
-        CANDeviceID id = new CANDeviceID(419);
+        CANDeviceID id = new CANDeviceID(47);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         Field statusField = ControllerBase.class.getDeclaredField("status");
         statusField.setAccessible(true);
@@ -906,7 +910,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryWithStatusError() throws Exception {
-        CANDeviceID id = new CANDeviceID(420);
+        CANDeviceID id = new CANDeviceID(48);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         Field statusField = ControllerBase.class.getDeclaredField("status");
         statusField.setAccessible(true);
@@ -916,7 +920,7 @@ class ControllerTalonFXTest {
 
     @Test
     void outputTelemetryWithStatusErrorInvalidBus() throws Exception {
-        CANDeviceID id = new CANDeviceID(421);
+        CANDeviceID id = new CANDeviceID(49);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         Field statusField = ControllerBase.class.getDeclaredField("status");
         statusField.setAccessible(true);
@@ -928,7 +932,7 @@ class ControllerTalonFXTest {
 
     @Test
     void robotInitWithSignalsNone() throws Exception {
-        CANDeviceID id = new CANDeviceID(422);
+        CANDeviceID id = new CANDeviceID(50);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         Field signalsField = ControllerTalonFX.class.getDeclaredField("signals");
         signalsField.setAccessible(true);
@@ -945,7 +949,7 @@ class ControllerTalonFXTest {
 
     @Test
     void robotInitWithSpecificSignals() throws Exception {
-        CANDeviceID id = new CANDeviceID(423);
+        CANDeviceID id = new CANDeviceID(51);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         Field signalsField = ControllerTalonFX.class.getDeclaredField("signals");
         signalsField.setAccessible(true);
@@ -959,7 +963,7 @@ class ControllerTalonFXTest {
 
     @Test
     void setNeutralModeNoneDefaultsToCoast() {
-        CANDeviceID id = new CANDeviceID(425);
+        CANDeviceID id = new CANDeviceID(53);
         ControllerTalonFX controller = new ControllerTalonFX(null, "Test", id, KRAKEN);
         controller.setNeutralMode(NeutralState.NONE);
         assertEquals(NeutralState.COAST, controller.getNeutralMode());

@@ -46,7 +46,7 @@ class TransmissionFXTest {
 
     @Test
     void constructorSingleMotor() {
-        CANDeviceID leaderId = new CANDeviceID(100);
+        CANDeviceID leaderId = new CANDeviceID(38);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertNotNull(tx);
@@ -57,7 +57,7 @@ class TransmissionFXTest {
 
     @Test
     void constructorSingleMotorHasOneController() {
-        CANDeviceID leaderId = new CANDeviceID(101);
+        CANDeviceID leaderId = new CANDeviceID(39);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(1, tx.getAllControllers().size());
@@ -67,8 +67,8 @@ class TransmissionFXTest {
 
     @Test
     void constructorWithFollower() {
-        CANDeviceID leaderId = new CANDeviceID(102);
-        CANDeviceID followerId = new CANDeviceID(103);
+        CANDeviceID leaderId = new CANDeviceID(40);
+        CANDeviceID followerId = new CANDeviceID(41);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId, followerId, false);
 
         assertNotNull(tx);
@@ -77,8 +77,8 @@ class TransmissionFXTest {
 
     @Test
     void constructorWithFollowerOpposed() {
-        CANDeviceID leaderId = new CANDeviceID(104);
-        CANDeviceID followerId = new CANDeviceID(105);
+        CANDeviceID leaderId = new CANDeviceID(42);
+        CANDeviceID followerId = new CANDeviceID(43);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId, followerId, true);
 
         assertEquals(2, tx.getAllControllers().size());
@@ -88,9 +88,9 @@ class TransmissionFXTest {
 
     @Test
     void constructorWithTwoFollowers() {
-        CANDeviceID leaderId = new CANDeviceID(106);
-        CANDeviceID follower1Id = new CANDeviceID(107);
-        CANDeviceID follower2Id = new CANDeviceID(108);
+        CANDeviceID leaderId = new CANDeviceID(44);
+        CANDeviceID follower1Id = new CANDeviceID(45);
+        CANDeviceID follower2Id = new CANDeviceID(46);
         TransmissionFX tx =
                 new TransmissionFX(
                         null, "TX", KRAKEN, leaderId, follower1Id, false, follower2Id, true);
@@ -102,7 +102,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDutyDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(109);
+        CANDeviceID leaderId = new CANDeviceID(47);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputDuty(0.5));
@@ -112,7 +112,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVoltageDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(110);
+        CANDeviceID leaderId = new CANDeviceID(48);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputVoltage(6.0));
@@ -122,7 +122,7 @@ class TransmissionFXTest {
 
     @Test
     void setNeutralModeBrake() {
-        CANDeviceID leaderId = new CANDeviceID(111);
+        CANDeviceID leaderId = new CANDeviceID(49);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setNeutralMode(NeutralState.BRAKE);
@@ -131,7 +131,7 @@ class TransmissionFXTest {
 
     @Test
     void setNeutralModeCoast() {
-        CANDeviceID leaderId = new CANDeviceID(112);
+        CANDeviceID leaderId = new CANDeviceID(50);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setNeutralMode(NeutralState.COAST);
@@ -142,7 +142,7 @@ class TransmissionFXTest {
 
     @Test
     void robotInitDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(113);
+        CANDeviceID leaderId = new CANDeviceID(51);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
@@ -152,7 +152,7 @@ class TransmissionFXTest {
 
     @Test
     void outputTelemetryDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(114);
+        CANDeviceID leaderId = new CANDeviceID(52);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(tx::outputTelemetry);
@@ -162,7 +162,7 @@ class TransmissionFXTest {
 
     @Test
     void stopDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(115);
+        CANDeviceID leaderId = new CANDeviceID(53);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(tx::stop);
@@ -172,7 +172,7 @@ class TransmissionFXTest {
 
     @Test
     void addEncoderFXDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(116);
+        CANDeviceID leaderId = new CANDeviceID(54);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.addEncoderFX(250.0));
@@ -181,7 +181,7 @@ class TransmissionFXTest {
 
     @Test
     void positionReturnsZeroWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(117);
+        CANDeviceID leaderId = new CANDeviceID(55);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getPosFX(), 1e-6);
@@ -190,7 +190,7 @@ class TransmissionFXTest {
 
     @Test
     void velocityReturnsZeroWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(118);
+        CANDeviceID leaderId = new CANDeviceID(56);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getVelFX(), 1e-6);
@@ -201,7 +201,7 @@ class TransmissionFXTest {
 
     @Test
     void setRotorToMechanism() {
-        CANDeviceID leaderId = new CANDeviceID(119);
+        CANDeviceID leaderId = new CANDeviceID(57);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -213,7 +213,7 @@ class TransmissionFXTest {
 
     @Test
     void pidPassthroughToLeader() {
-        CANDeviceID leaderId = new CANDeviceID(120);
+        CANDeviceID leaderId = new CANDeviceID(58);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setPSlot(0, 1.5);
@@ -230,7 +230,7 @@ class TransmissionFXTest {
 
     @Test
     void configCurrentLimitsDoNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(121);
+        CANDeviceID leaderId = new CANDeviceID(59);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.configCurrentLimitStator(true, 40.0));
@@ -241,7 +241,7 @@ class TransmissionFXTest {
 
     @Test
     void refreshDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(122);
+        CANDeviceID leaderId = new CANDeviceID(60);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(tx::refresh);
@@ -251,7 +251,7 @@ class TransmissionFXTest {
 
     @Test
     void applyConfigsDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(123);
+        CANDeviceID leaderId = new CANDeviceID(61);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(tx::applyConfigs);
@@ -261,7 +261,7 @@ class TransmissionFXTest {
 
     @Test
     void limitSwitchesReturnFalseByDefault() {
-        CANDeviceID leaderId = new CANDeviceID(124);
+        CANDeviceID leaderId = new CANDeviceID(62);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertFalse(tx.getRevLimit());
@@ -272,7 +272,7 @@ class TransmissionFXTest {
 
     @Test
     void simulationInitDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(125);
+        CANDeviceID leaderId = new CANDeviceID(1);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.simulationInit(0.0));
@@ -280,7 +280,7 @@ class TransmissionFXTest {
 
     @Test
     void simulationPeriodicDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(126);
+        CANDeviceID leaderId = new CANDeviceID(2);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.simulationInit(0.0);
@@ -291,7 +291,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(127);
+        CANDeviceID leaderId = new CANDeviceID(3);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputPosition(1.0, 0.5));
@@ -299,7 +299,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(128);
+        CANDeviceID leaderId = new CANDeviceID(4);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -310,7 +310,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(129);
+        CANDeviceID leaderId = new CANDeviceID(5);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputVelocity(10.0, 0.5));
@@ -318,7 +318,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(130);
+        CANDeviceID leaderId = new CANDeviceID(6);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -329,7 +329,7 @@ class TransmissionFXTest {
 
     @Test
     void setMMConfigDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(131);
+        CANDeviceID leaderId = new CANDeviceID(7);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setMMConfig(100.0, 200.0, 1000.0));
@@ -337,7 +337,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionDutyWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(132);
+        CANDeviceID leaderId = new CANDeviceID(8);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -346,7 +346,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionDutyWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(133);
+        CANDeviceID leaderId = new CANDeviceID(9);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMPositionDuty(1.0, 0.5));
@@ -354,7 +354,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionVoltageWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(134);
+        CANDeviceID leaderId = new CANDeviceID(10);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -363,7 +363,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionVoltageWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(135);
+        CANDeviceID leaderId = new CANDeviceID(11);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMPositionVoltage(1.0, 0.5));
@@ -373,7 +373,7 @@ class TransmissionFXTest {
 
     @Test
     void setSensorToMechanismStoresValue() {
-        CANDeviceID leaderId = new CANDeviceID(136);
+        CANDeviceID leaderId = new CANDeviceID(12);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setSensorToMechanism(0.25);
@@ -382,7 +382,7 @@ class TransmissionFXTest {
 
     @Test
     void setSensorAbsToMechanismStoresValue() {
-        CANDeviceID leaderId = new CANDeviceID(137);
+        CANDeviceID leaderId = new CANDeviceID(13);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setSensorAbsToMechanism(0.5);
@@ -391,7 +391,7 @@ class TransmissionFXTest {
 
     @Test
     void setMechanismToUnitsStoresValue() {
-        CANDeviceID leaderId = new CANDeviceID(138);
+        CANDeviceID leaderId = new CANDeviceID(14);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setMechanismToUnits(2.0);
@@ -402,7 +402,7 @@ class TransmissionFXTest {
 
     @Test
     void configDirectionDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(139);
+        CANDeviceID leaderId = new CANDeviceID(15);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.configDirection(MotorDirection.CW));
@@ -413,7 +413,7 @@ class TransmissionFXTest {
 
     @Test
     void configVoltagePeakDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(140);
+        CANDeviceID leaderId = new CANDeviceID(16);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.configVoltagePeak(12.0, -12.0, 0.01));
@@ -423,7 +423,7 @@ class TransmissionFXTest {
 
     @Test
     void configRampRatesDoNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(141);
+        CANDeviceID leaderId = new CANDeviceID(17);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.configRampOpenLoopDuty(0.5));
@@ -436,7 +436,7 @@ class TransmissionFXTest {
 
     @Test
     void configPIDFSlotPassesThrough() {
-        CANDeviceID leaderId = new CANDeviceID(142);
+        CANDeviceID leaderId = new CANDeviceID(18);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.configPIDFSlot(0, 1.0, 0.5, 0.25, 0.1, 0.05);
@@ -449,7 +449,7 @@ class TransmissionFXTest {
 
     @Test
     void setPIDFSlotPassesThrough() {
-        CANDeviceID leaderId = new CANDeviceID(143);
+        CANDeviceID leaderId = new CANDeviceID(19);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setPIDFSlot(1, 2.0, 1.0, 0.5, 0.2, 0.1);
@@ -460,7 +460,7 @@ class TransmissionFXTest {
 
     @Test
     void getCLErrorReturnsZeroWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(144);
+        CANDeviceID leaderId = new CANDeviceID(20);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getCLError(), 1e-6);
@@ -468,7 +468,7 @@ class TransmissionFXTest {
 
     @Test
     void getCLErrorWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(145);
+        CANDeviceID leaderId = new CANDeviceID(21);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -477,7 +477,7 @@ class TransmissionFXTest {
 
     @Test
     void getCLOutputReturnsZero() {
-        CANDeviceID leaderId = new CANDeviceID(146);
+        CANDeviceID leaderId = new CANDeviceID(22);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getCLOutput(), 1e-6);
@@ -487,7 +487,7 @@ class TransmissionFXTest {
 
     @Test
     void getOutputDutyReturnsValue() {
-        CANDeviceID leaderId = new CANDeviceID(147);
+        CANDeviceID leaderId = new CANDeviceID(23);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getOutputDuty(), 1e-6);
@@ -495,7 +495,7 @@ class TransmissionFXTest {
 
     @Test
     void getOutputVoltageAveragesControllers() {
-        CANDeviceID leaderId = new CANDeviceID(148);
+        CANDeviceID leaderId = new CANDeviceID(24);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getOutputVoltage(), 1e-6);
@@ -505,7 +505,7 @@ class TransmissionFXTest {
 
     @Test
     void getSetpointReturnsZeroWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(149);
+        CANDeviceID leaderId = new CANDeviceID(25);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getSetpoint(), 1e-6);
@@ -513,7 +513,7 @@ class TransmissionFXTest {
 
     @Test
     void getSetpointReturnsValueWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(150);
+        CANDeviceID leaderId = new CANDeviceID(26);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -524,7 +524,7 @@ class TransmissionFXTest {
 
     @Test
     void getToleranceReturnsZero() {
-        CANDeviceID leaderId = new CANDeviceID(151);
+        CANDeviceID leaderId = new CANDeviceID(27);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getTolerance(), 1e-6);
@@ -532,7 +532,7 @@ class TransmissionFXTest {
 
     @Test
     void setSetpointDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(152);
+        CANDeviceID leaderId = new CANDeviceID(28);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setSetpoint(1.0));
@@ -542,7 +542,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftToGear1DoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(153);
+        CANDeviceID leaderId = new CANDeviceID(29);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         ShifterState result = tx.shift(ShifterState.GEAR_1);
@@ -551,7 +551,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftToGear2DoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(154);
+        CANDeviceID leaderId = new CANDeviceID(30);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         ShifterState result = tx.shift(ShifterState.GEAR_2);
@@ -560,7 +560,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftToSameGearDoesNotReapply() {
-        CANDeviceID leaderId = new CANDeviceID(155);
+        CANDeviceID leaderId = new CANDeviceID(31);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.shift(ShifterState.GEAR_1);
@@ -572,7 +572,7 @@ class TransmissionFXTest {
 
     @Test
     void configCurrentLimitSupplyThreeArgDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(156);
+        CANDeviceID leaderId = new CANDeviceID(32);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.configCurrentLimitSupply(60.0, 1.0, 40.0));
@@ -582,7 +582,7 @@ class TransmissionFXTest {
 
     @Test
     void resetEncodersDoesNotThrowWithoutEncoders() {
-        CANDeviceID leaderId = new CANDeviceID(157);
+        CANDeviceID leaderId = new CANDeviceID(33);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(tx::resetEncoders);
@@ -590,7 +590,7 @@ class TransmissionFXTest {
 
     @Test
     void resetEncodersWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(158);
+        CANDeviceID leaderId = new CANDeviceID(34);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -601,7 +601,7 @@ class TransmissionFXTest {
 
     @Test
     void setPosRotationsWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(159);
+        CANDeviceID leaderId = new CANDeviceID(35);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -610,7 +610,7 @@ class TransmissionFXTest {
 
     @Test
     void setPosRotationsWithoutEncoderDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(160);
+        CANDeviceID leaderId = new CANDeviceID(36);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setPosRotations(5.0));
@@ -618,7 +618,7 @@ class TransmissionFXTest {
 
     @Test
     void getPosRotationsReturnsZeroWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(161);
+        CANDeviceID leaderId = new CANDeviceID(37);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getPosRotations(), 1e-6);
@@ -626,7 +626,7 @@ class TransmissionFXTest {
 
     @Test
     void getPosAbsRotationsReturnsZeroWithoutCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(162);
+        CANDeviceID leaderId = new CANDeviceID(38);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getPosAbsRotations(), 1e-6);
@@ -634,7 +634,7 @@ class TransmissionFXTest {
 
     @Test
     void getPosAbsReturnsZeroWithoutCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(163);
+        CANDeviceID leaderId = new CANDeviceID(39);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getPosAbs(), 1e-6);
@@ -644,7 +644,7 @@ class TransmissionFXTest {
 
     @Test
     void getVelFXRPSReturnsZeroWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(164);
+        CANDeviceID leaderId = new CANDeviceID(40);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getVelFXRPS(), 1e-6);
@@ -652,7 +652,7 @@ class TransmissionFXTest {
 
     @Test
     void getVelRPSReturnsZeroWithoutEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(165);
+        CANDeviceID leaderId = new CANDeviceID(41);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertEquals(0.0, tx.getVelRPS(), 1e-6);
@@ -662,7 +662,7 @@ class TransmissionFXTest {
 
     @Test
     void getMotorByIdReturnsLeader() {
-        CANDeviceID leaderId = new CANDeviceID(166);
+        CANDeviceID leaderId = new CANDeviceID(42);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertNotNull(tx.getMotor(leaderId));
@@ -670,17 +670,17 @@ class TransmissionFXTest {
 
     @Test
     void getMotorByIdReturnsNullForUnknownId() {
-        CANDeviceID leaderId = new CANDeviceID(167);
+        CANDeviceID leaderId = new CANDeviceID(43);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
-        assertNull(tx.getMotor(new CANDeviceID(999)));
+        assertNull(tx.getMotor(new CANDeviceID(7)));
     }
 
     /* --- getDCMotor --- */
 
     @Test
     void getDCMotorNullBeforeRobotInit() {
-        CANDeviceID leaderId = new CANDeviceID(168);
+        CANDeviceID leaderId = new CANDeviceID(44);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertNull(tx.getDCMotor());
@@ -688,7 +688,7 @@ class TransmissionFXTest {
 
     @Test
     void getDCMotorSetAfterRobotInit() {
-        CANDeviceID leaderId = new CANDeviceID(169);
+        CANDeviceID leaderId = new CANDeviceID(45);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.robotInit(0.0);
 
@@ -700,7 +700,7 @@ class TransmissionFXTest {
     @Test
     void robotInitWithFalcon500() {
         MotorBase falcon = new MotorBase(MotorBase.MotorType.FALCON500);
-        CANDeviceID leaderId = new CANDeviceID(170);
+        CANDeviceID leaderId = new CANDeviceID(46);
         TransmissionFX tx = new TransmissionFX(null, "TX", falcon, leaderId);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
@@ -710,7 +710,7 @@ class TransmissionFXTest {
     @Test
     void robotInitWithKrakenX44() {
         MotorBase krakenX44 = new MotorBase(MotorBase.MotorType.KRAKENX44);
-        CANDeviceID leaderId = new CANDeviceID(171);
+        CANDeviceID leaderId = new CANDeviceID(47);
         TransmissionFX tx = new TransmissionFX(null, "TX", krakenX44, leaderId);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
@@ -720,7 +720,7 @@ class TransmissionFXTest {
     @Test
     void robotInitWithCTREMinion() {
         MotorBase minion = new MotorBase(MotorBase.MotorType.CTRE_MINION);
-        CANDeviceID leaderId = new CANDeviceID(172);
+        CANDeviceID leaderId = new CANDeviceID(48);
         TransmissionFX tx = new TransmissionFX(null, "TX", minion, leaderId);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
@@ -730,7 +730,7 @@ class TransmissionFXTest {
     @Test
     void robotInitWithNEO() {
         MotorBase neo = new MotorBase(MotorBase.MotorType.NEO);
-        CANDeviceID leaderId = new CANDeviceID(173);
+        CANDeviceID leaderId = new CANDeviceID(49);
         TransmissionFX tx = new TransmissionFX(null, "TX", neo, leaderId);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
@@ -740,7 +740,7 @@ class TransmissionFXTest {
     @Test
     void robotInitWithNEO550() {
         MotorBase neo550 = new MotorBase(MotorBase.MotorType.NEO550);
-        CANDeviceID leaderId = new CANDeviceID(174);
+        CANDeviceID leaderId = new CANDeviceID(50);
         TransmissionFX tx = new TransmissionFX(null, "TX", neo550, leaderId);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
@@ -750,7 +750,7 @@ class TransmissionFXTest {
     @Test
     void robotInitWithNEOVortex() {
         MotorBase neoVortex = new MotorBase(MotorBase.MotorType.NEO_VORTEX);
-        CANDeviceID leaderId = new CANDeviceID(175);
+        CANDeviceID leaderId = new CANDeviceID(51);
         TransmissionFX tx = new TransmissionFX(null, "TX", neoVortex, leaderId);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
@@ -761,7 +761,7 @@ class TransmissionFXTest {
 
     @Test
     void robotPeriodicBeforeDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(176);
+        CANDeviceID leaderId = new CANDeviceID(52);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.robotPeriodicBefore(0.0));
@@ -771,7 +771,7 @@ class TransmissionFXTest {
 
     @Test
     void setSimVelRotationsDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(177);
+        CANDeviceID leaderId = new CANDeviceID(53);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setSimVelRotations(10.0));
@@ -779,7 +779,7 @@ class TransmissionFXTest {
 
     @Test
     void setSimPosRotationsDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(178);
+        CANDeviceID leaderId = new CANDeviceID(54);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setSimPosRotations(5.0));
@@ -789,7 +789,7 @@ class TransmissionFXTest {
 
     @Test
     void getSimStateReturnsNonNull() {
-        CANDeviceID leaderId = new CANDeviceID(179);
+        CANDeviceID leaderId = new CANDeviceID(55);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertNotNull(tx.getSimState());
@@ -799,7 +799,7 @@ class TransmissionFXTest {
 
     @Test
     void getEncoderCANCoderReturnsNullByDefault() {
-        CANDeviceID leaderId = new CANDeviceID(180);
+        CANDeviceID leaderId = new CANDeviceID(56);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertNull(tx.getEncoderCANCoder());
@@ -809,7 +809,7 @@ class TransmissionFXTest {
 
     @Test
     void robotPeriodicAfterDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(181);
+        CANDeviceID leaderId = new CANDeviceID(57);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.robotPeriodicAfter(0.0));
@@ -819,7 +819,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputTorqueCurrentDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(182);
+        CANDeviceID leaderId = new CANDeviceID(58);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputTorqueCurrent(10.0));
@@ -827,7 +827,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputTorqueCurrentBaseDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(183);
+        CANDeviceID leaderId = new CANDeviceID(59);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         TransmissionBase base = tx;
@@ -838,7 +838,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionDutyDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(184);
+        CANDeviceID leaderId = new CANDeviceID(60);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputPositionDuty(1.0, 0.5));
@@ -846,7 +846,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionDutyWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(185);
+        CANDeviceID leaderId = new CANDeviceID(61);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -857,7 +857,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionTorqueCurrentDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(186);
+        CANDeviceID leaderId = new CANDeviceID(62);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputPositionTorqueCurrent(1.0, 0.5));
@@ -865,7 +865,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionTorqueCurrentWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(187);
+        CANDeviceID leaderId = new CANDeviceID(1);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -876,7 +876,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityDutyDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(188);
+        CANDeviceID leaderId = new CANDeviceID(2);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputVelocityDuty(10.0, 0.5));
@@ -884,7 +884,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityDutyWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(189);
+        CANDeviceID leaderId = new CANDeviceID(3);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -895,7 +895,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityTorqueCurrentDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(190);
+        CANDeviceID leaderId = new CANDeviceID(4);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputVelocityTorqueCurrent(10.0, 0.5));
@@ -903,7 +903,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityTorqueCurrentWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(191);
+        CANDeviceID leaderId = new CANDeviceID(5);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -914,7 +914,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionTorqueCurrentDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(192);
+        CANDeviceID leaderId = new CANDeviceID(6);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMPositionTorqueCurrent(1.0, 0.5));
@@ -922,7 +922,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionTorqueCurrentWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(193);
+        CANDeviceID leaderId = new CANDeviceID(7);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -933,7 +933,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityDutyDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(194);
+        CANDeviceID leaderId = new CANDeviceID(8);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMVelocityDuty(10.0, 0.5));
@@ -941,7 +941,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityDutyWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(195);
+        CANDeviceID leaderId = new CANDeviceID(9);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -952,7 +952,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityVoltageDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(196);
+        CANDeviceID leaderId = new CANDeviceID(10);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMVelocityVoltage(10.0, 0.5));
@@ -960,7 +960,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityVoltageWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(197);
+        CANDeviceID leaderId = new CANDeviceID(11);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -971,7 +971,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityTorqueCurrentDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(198);
+        CANDeviceID leaderId = new CANDeviceID(12);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMVelocityTorqueCurrent(10.0, 0.5));
@@ -979,7 +979,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityTorqueCurrentWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(199);
+        CANDeviceID leaderId = new CANDeviceID(13);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -990,7 +990,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionDutyDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(200);
+        CANDeviceID leaderId = new CANDeviceID(14);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMExpoPositionDuty(1.0, 0.5));
@@ -998,7 +998,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionDutyWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(201);
+        CANDeviceID leaderId = new CANDeviceID(15);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1009,7 +1009,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionVoltageDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(202);
+        CANDeviceID leaderId = new CANDeviceID(16);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMExpoPositionVoltage(1.0, 0.5));
@@ -1017,7 +1017,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionVoltageWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(203);
+        CANDeviceID leaderId = new CANDeviceID(17);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1028,7 +1028,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionTorqueCurrentDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(204);
+        CANDeviceID leaderId = new CANDeviceID(18);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputMMExpoPositionTorqueCurrent(1.0, 0.5));
@@ -1036,7 +1036,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionTorqueCurrentWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(205);
+        CANDeviceID leaderId = new CANDeviceID(19);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1047,7 +1047,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionDutyDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(206);
+        CANDeviceID leaderId = new CANDeviceID(20);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputDynMMPositionDuty(1.0, 100.0, 200.0, 1000.0, 0.5));
@@ -1055,7 +1055,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionDutyWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(207);
+        CANDeviceID leaderId = new CANDeviceID(21);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1066,7 +1066,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionVoltageDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(208);
+        CANDeviceID leaderId = new CANDeviceID(22);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(() -> tx.setOutputDynMMPositionVoltage(1.0, 100.0, 200.0, 1000.0, 0.5));
@@ -1074,7 +1074,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionVoltageWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(209);
+        CANDeviceID leaderId = new CANDeviceID(23);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1085,7 +1085,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionTorqueCurrentDoesNotThrow() {
-        CANDeviceID leaderId = new CANDeviceID(210);
+        CANDeviceID leaderId = new CANDeviceID(24);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         assertDoesNotThrow(
@@ -1094,7 +1094,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionTorqueCurrentWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(211);
+        CANDeviceID leaderId = new CANDeviceID(25);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1133,7 +1133,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(300);
+        CANDeviceID id = new CANDeviceID(52);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1144,7 +1144,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocitySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(301);
+        CANDeviceID id = new CANDeviceID(53);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1155,7 +1155,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionDutySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(302);
+        CANDeviceID id = new CANDeviceID(54);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1166,7 +1166,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityDutySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(303);
+        CANDeviceID id = new CANDeviceID(55);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1177,7 +1177,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionVoltageSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(304);
+        CANDeviceID id = new CANDeviceID(56);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1188,7 +1188,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionVoltageSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(305);
+        CANDeviceID id = new CANDeviceID(57);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1199,7 +1199,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionTorqueCurrentSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(306);
+        CANDeviceID id = new CANDeviceID(58);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1210,7 +1210,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputVelocityTorqueCurrentSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(307);
+        CANDeviceID id = new CANDeviceID(59);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1221,7 +1221,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionDutySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(308);
+        CANDeviceID id = new CANDeviceID(60);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1232,7 +1232,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMPositionTorqueCurrentSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(309);
+        CANDeviceID id = new CANDeviceID(61);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1243,7 +1243,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityDutySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(310);
+        CANDeviceID id = new CANDeviceID(62);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1254,7 +1254,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityVoltageSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(311);
+        CANDeviceID id = new CANDeviceID(1);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1265,7 +1265,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMVelocityTorqueCurrentSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(312);
+        CANDeviceID id = new CANDeviceID(2);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1276,7 +1276,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionDutySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(313);
+        CANDeviceID id = new CANDeviceID(3);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1287,7 +1287,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionVoltageSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(314);
+        CANDeviceID id = new CANDeviceID(4);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1298,7 +1298,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputMMExpoPositionTorqueCurrentSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(315);
+        CANDeviceID id = new CANDeviceID(5);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1309,7 +1309,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionDutySetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(316);
+        CANDeviceID id = new CANDeviceID(6);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1320,7 +1320,7 @@ class TransmissionFXTest {
 
     @Test
     void setOutputDynMMPositionTorqueCurrentSetsSlotToZero() throws Exception {
-        CANDeviceID id = new CANDeviceID(317);
+        CANDeviceID id = new CANDeviceID(7);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, id);
         tx.addEncoderFX(250.0);
 
@@ -1333,18 +1333,18 @@ class TransmissionFXTest {
 
     @Test
     void addCANCoderCreatesEncoder() {
-        CANDeviceID leaderId = new CANDeviceID(400);
+        CANDeviceID leaderId = new CANDeviceID(28);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
-        tx.addCANCoder(new CANDeviceID(401), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(29), EncoderDirection.CW, 250.0);
         assertNotNull(tx.getEncoderCANCoder());
     }
 
     @Test
     void getPosWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(402);
+        CANDeviceID leaderId = new CANDeviceID(30);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(403), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(31), EncoderDirection.CW, 250.0);
 
         /* CANCoder branch returns encCANCoder.getPosRotations() * ratio */
         assertEquals(0.0, tx.getPos(), 1e-6);
@@ -1352,36 +1352,36 @@ class TransmissionFXTest {
 
     @Test
     void getPosAbsWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(404);
+        CANDeviceID leaderId = new CANDeviceID(32);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(405), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(33), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getPosAbs(), 1e-6);
     }
 
     @Test
     void getVelWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(406);
+        CANDeviceID leaderId = new CANDeviceID(34);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(407), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(35), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getVel(), 1e-6);
     }
 
     @Test
     void getVelRPSWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(408);
+        CANDeviceID leaderId = new CANDeviceID(36);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(409), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(37), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getVelRPS(), 1e-6);
     }
 
     @Test
     void getPosFXReturnsZeroWithCANCoderOnly() {
-        CANDeviceID leaderId = new CANDeviceID(410);
+        CANDeviceID leaderId = new CANDeviceID(38);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(411), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(39), EncoderDirection.CW, 250.0);
 
         /* getPosFX checks encFX only, not encCANCoder */
         assertEquals(0.0, tx.getPosFX(), 1e-6);
@@ -1389,55 +1389,55 @@ class TransmissionFXTest {
 
     @Test
     void getVelFXReturnsZeroWithCANCoderOnly() {
-        CANDeviceID leaderId = new CANDeviceID(412);
+        CANDeviceID leaderId = new CANDeviceID(40);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(413), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(41), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getVelFX(), 1e-6);
     }
 
     @Test
     void getVelFXRPSReturnsZeroWithCANCoderOnly() {
-        CANDeviceID leaderId = new CANDeviceID(414);
+        CANDeviceID leaderId = new CANDeviceID(42);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(415), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(43), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getVelFXRPS(), 1e-6);
     }
 
     @Test
     void getPosRotationsWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(416);
+        CANDeviceID leaderId = new CANDeviceID(44);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(417), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(45), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getPosRotations(), 1e-6);
     }
 
     @Test
     void getPosAbsRotationsWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(418);
+        CANDeviceID leaderId = new CANDeviceID(46);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(419), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(47), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getPosAbsRotations(), 1e-6);
     }
 
     @Test
     void setPosRotationsWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(420);
+        CANDeviceID leaderId = new CANDeviceID(48);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(421), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(49), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setPosRotations(3.0));
     }
 
     @Test
     void getVelWithBothEncoders() {
-        CANDeviceID leaderId = new CANDeviceID(422);
+        CANDeviceID leaderId = new CANDeviceID(50);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
-        tx.addCANCoder(new CANDeviceID(423), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(51), EncoderDirection.CW, 250.0);
 
         /* CANCoder takes priority */
         assertEquals(0.0, tx.getVel(), 1e-6);
@@ -1445,7 +1445,7 @@ class TransmissionFXTest {
 
     @Test
     void getVelWithFXEncoderOnly() {
-        CANDeviceID leaderId = new CANDeviceID(424);
+        CANDeviceID leaderId = new CANDeviceID(52);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1457,9 +1457,9 @@ class TransmissionFXTest {
 
     @Test
     void getCLErrorWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(425);
+        CANDeviceID leaderId = new CANDeviceID(53);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(426), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(54), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getCLError(), 1e-6);
     }
@@ -1468,9 +1468,9 @@ class TransmissionFXTest {
 
     @Test
     void getSetpointWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(427);
+        CANDeviceID leaderId = new CANDeviceID(55);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(428), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(56), EncoderDirection.CW, 250.0);
 
         assertEquals(0.0, tx.getSetpoint(), 1e-6);
     }
@@ -1479,7 +1479,7 @@ class TransmissionFXTest {
 
     @Test
     void configLimitFwdCreatesSwitchFX() {
-        CANDeviceID leaderId = new CANDeviceID(429);
+        CANDeviceID leaderId = new CANDeviceID(57);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
@@ -1488,7 +1488,7 @@ class TransmissionFXTest {
 
     @Test
     void configLimitRevCreatesSwitchFX() {
-        CANDeviceID leaderId = new CANDeviceID(430);
+        CANDeviceID leaderId = new CANDeviceID(58);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
@@ -1497,7 +1497,7 @@ class TransmissionFXTest {
 
     @Test
     void configLimitFwdDisabled() {
-        CANDeviceID leaderId = new CANDeviceID(431);
+        CANDeviceID leaderId = new CANDeviceID(59);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.configLimitFwd(SwitchType.FX, false, SwitchTrigger.NC, false, 0.0);
@@ -1506,7 +1506,7 @@ class TransmissionFXTest {
 
     @Test
     void configLimitRevDisabled() {
-        CANDeviceID leaderId = new CANDeviceID(432);
+        CANDeviceID leaderId = new CANDeviceID(60);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.configLimitRev(SwitchType.FX, false, SwitchTrigger.NC, false, 0.0);
@@ -1515,7 +1515,7 @@ class TransmissionFXTest {
 
     @Test
     void configLimitFwdWithAutoZero() {
-        CANDeviceID leaderId = new CANDeviceID(433);
+        CANDeviceID leaderId = new CANDeviceID(61);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, true, 5.0);
@@ -1529,7 +1529,7 @@ class TransmissionFXTest {
 
     @Test
     void setShifterWithRatios() {
-        CANDeviceID leaderId = new CANDeviceID(434);
+        CANDeviceID leaderId = new CANDeviceID(62);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setShifter(TEST_SHIFTER, 2.5, 1.5);
@@ -1540,7 +1540,7 @@ class TransmissionFXTest {
 
     @Test
     void setShifterWithoutRatios() {
-        CANDeviceID leaderId = new CANDeviceID(435);
+        CANDeviceID leaderId = new CANDeviceID(1);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setShifter(TEST_SHIFTER);
@@ -1551,7 +1551,7 @@ class TransmissionFXTest {
 
     @Test
     void addShifterInvalidChannels() {
-        CANDeviceID leaderId = new CANDeviceID(437);
+        CANDeviceID leaderId = new CANDeviceID(3);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         /* NO_SOLENOID_CHANNEL sentinel prevents shifter creation */
@@ -1564,7 +1564,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftWithShifterActuates() {
-        CANDeviceID leaderId = new CANDeviceID(439);
+        CANDeviceID leaderId = new CANDeviceID(5);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setShifter(TEST_SHIFTER);
@@ -1576,7 +1576,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftWithoutShifterStillUpdatesState() {
-        CANDeviceID leaderId = new CANDeviceID(440);
+        CANDeviceID leaderId = new CANDeviceID(6);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         /* No shifter set — shifter is null */
@@ -1588,7 +1588,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftToGear1UpdatesRotorRatio() {
-        CANDeviceID leaderId = new CANDeviceID(441);
+        CANDeviceID leaderId = new CANDeviceID(7);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.setShifter(TEST_SHIFTER, 3.5, 2.0);
 
@@ -1599,7 +1599,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftToGear2UpdatesRotorRatio() {
-        CANDeviceID leaderId = new CANDeviceID(442);
+        CANDeviceID leaderId = new CANDeviceID(8);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.setShifter(TEST_SHIFTER, 3.5, 2.0);
 
@@ -1610,7 +1610,7 @@ class TransmissionFXTest {
 
     @Test
     void shiftToGearNoneDoesNotUpdateRatio() {
-        CANDeviceID leaderId = new CANDeviceID(443);
+        CANDeviceID leaderId = new CANDeviceID(9);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         double originalRatio = tx.getLeaderConfig().Feedback.RotorToSensorRatio;
 
@@ -1623,7 +1623,7 @@ class TransmissionFXTest {
 
     @Test
     void applyConfigsReportsWarningOnFailure() {
-        CANDeviceID leaderId = new CANDeviceID(444);
+        CANDeviceID leaderId = new CANDeviceID(10);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         /* In sim, applyConfig always fails — this exercises the rate-limiting path */
@@ -1632,7 +1632,7 @@ class TransmissionFXTest {
 
     @Test
     void applyConfigsRateLimitsWithin2Seconds() {
-        CANDeviceID leaderId = new CANDeviceID(445);
+        CANDeviceID leaderId = new CANDeviceID(11);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         /* First call sets the rate-limit timer */
@@ -1645,162 +1645,162 @@ class TransmissionFXTest {
 
     @Test
     void setOutputPositionWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(446);
+        CANDeviceID leaderId = new CANDeviceID(12);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(447), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(13), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputPosition(2.0, 0.1));
     }
 
     @Test
     void setOutputVelocityWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(448);
+        CANDeviceID leaderId = new CANDeviceID(14);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(449), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(15), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputVelocity(5.0, 0.2));
     }
 
     @Test
     void setOutputPositionDutyWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(450);
+        CANDeviceID leaderId = new CANDeviceID(16);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(451), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(17), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputPositionDuty(2.0, 0.1));
     }
 
     @Test
     void setOutputPositionTorqueCurrentWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(452);
+        CANDeviceID leaderId = new CANDeviceID(18);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(453), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(19), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputPositionTorqueCurrent(2.0, 0.1));
     }
 
     @Test
     void setOutputVelocityDutyWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(454);
+        CANDeviceID leaderId = new CANDeviceID(20);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(455), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(21), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputVelocityDuty(5.0, 0.2));
     }
 
     @Test
     void setOutputVelocityTorqueCurrentWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(456);
+        CANDeviceID leaderId = new CANDeviceID(22);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(457), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(23), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputVelocityTorqueCurrent(5.0, 0.2));
     }
 
     @Test
     void setOutputMMPositionDutyWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(458);
+        CANDeviceID leaderId = new CANDeviceID(24);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(459), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(25), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMPositionDuty(1.0, 0.5));
     }
 
     @Test
     void setOutputMMPositionVoltageWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(460);
+        CANDeviceID leaderId = new CANDeviceID(26);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(461), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(27), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMPositionVoltage(1.0, 0.5));
     }
 
     @Test
     void setOutputMMPositionTorqueCurrentWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(462);
+        CANDeviceID leaderId = new CANDeviceID(28);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(463), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(29), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMPositionTorqueCurrent(1.0, 0.5));
     }
 
     @Test
     void setOutputMMVelocityDutyWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(464);
+        CANDeviceID leaderId = new CANDeviceID(30);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(465), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(31), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMVelocityDuty(10.0, 0.5));
     }
 
     @Test
     void setOutputMMVelocityVoltageWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(466);
+        CANDeviceID leaderId = new CANDeviceID(32);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(467), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(33), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMVelocityVoltage(10.0, 0.5));
     }
 
     @Test
     void setOutputMMVelocityTorqueCurrentWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(468);
+        CANDeviceID leaderId = new CANDeviceID(34);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(469), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(35), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMVelocityTorqueCurrent(10.0, 0.5));
     }
 
     @Test
     void setOutputMMExpoPositionDutyWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(470);
+        CANDeviceID leaderId = new CANDeviceID(36);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(471), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(37), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMExpoPositionDuty(1.0, 0.5));
     }
 
     @Test
     void setOutputMMExpoPositionVoltageWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(472);
+        CANDeviceID leaderId = new CANDeviceID(38);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(473), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(39), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMExpoPositionVoltage(1.0, 0.5));
     }
 
     @Test
     void setOutputMMExpoPositionTorqueCurrentWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(474);
+        CANDeviceID leaderId = new CANDeviceID(40);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(475), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(41), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputMMExpoPositionTorqueCurrent(1.0, 0.5));
     }
 
     @Test
     void setOutputDynMMPositionDutyWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(476);
+        CANDeviceID leaderId = new CANDeviceID(42);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(477), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(43), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputDynMMPositionDuty(1.0, 100.0, 200.0, 1000.0, 0.5));
     }
 
     @Test
     void setOutputDynMMPositionVoltageWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(478);
+        CANDeviceID leaderId = new CANDeviceID(44);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(479), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(45), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setOutputDynMMPositionVoltage(1.0, 100.0, 200.0, 1000.0, 0.5));
     }
 
     @Test
     void setOutputDynMMPositionTorqueCurrentWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(480);
+        CANDeviceID leaderId = new CANDeviceID(46);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(481), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(47), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(
                 () -> tx.setOutputDynMMPositionTorqueCurrent(1.0, 100.0, 200.0, 1000.0, 0.5));
@@ -1810,28 +1810,28 @@ class TransmissionFXTest {
 
     @Test
     void setSimVelRotationsWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(482);
+        CANDeviceID leaderId = new CANDeviceID(48);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(483), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(49), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setSimVelRotations(10.0));
     }
 
     @Test
     void setSimPosRotationsWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(484);
+        CANDeviceID leaderId = new CANDeviceID(50);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(485), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(51), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.setSimPosRotations(5.0));
     }
 
     @Test
     void simulationInitWithEncodersAndLimits() {
-        CANDeviceID leaderId = new CANDeviceID(486);
+        CANDeviceID leaderId = new CANDeviceID(52);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
-        tx.addCANCoder(new CANDeviceID(487), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(53), EncoderDirection.CW, 250.0);
         tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
         tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
 
@@ -1840,10 +1840,10 @@ class TransmissionFXTest {
 
     @Test
     void simulationPeriodicWithEncodersAndLimits() {
-        CANDeviceID leaderId = new CANDeviceID(488);
+        CANDeviceID leaderId = new CANDeviceID(54);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
-        tx.addCANCoder(new CANDeviceID(489), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(55), EncoderDirection.CW, 250.0);
         tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
         tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
 
@@ -1855,7 +1855,7 @@ class TransmissionFXTest {
 
     @Test
     void robotInitWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(490);
+        CANDeviceID leaderId = new CANDeviceID(56);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1864,26 +1864,26 @@ class TransmissionFXTest {
 
     @Test
     void robotInitWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(491);
+        CANDeviceID leaderId = new CANDeviceID(57);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(492), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(58), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
     }
 
     @Test
     void robotInitWithBothEncoders() {
-        CANDeviceID leaderId = new CANDeviceID(493);
+        CANDeviceID leaderId = new CANDeviceID(59);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
-        tx.addCANCoder(new CANDeviceID(494), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(60), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(() -> tx.robotInit(0.0));
     }
 
     @Test
     void robotInitWithLimitSwitches() {
-        CANDeviceID leaderId = new CANDeviceID(495);
+        CANDeviceID leaderId = new CANDeviceID(61);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
         tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
@@ -1895,16 +1895,16 @@ class TransmissionFXTest {
 
     @Test
     void outputTelemetryWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(496);
+        CANDeviceID leaderId = new CANDeviceID(62);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(497), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(1), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(tx::outputTelemetry);
     }
 
     @Test
     void outputTelemetryWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(498);
+        CANDeviceID leaderId = new CANDeviceID(2);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1913,7 +1913,7 @@ class TransmissionFXTest {
 
     @Test
     void outputTelemetryWithLimitSwitches() {
-        CANDeviceID leaderId = new CANDeviceID(499);
+        CANDeviceID leaderId = new CANDeviceID(3);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.configLimitFwd(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
         tx.configLimitRev(SwitchType.FX, true, SwitchTrigger.NO, false, 0.0);
@@ -1925,7 +1925,7 @@ class TransmissionFXTest {
 
     @Test
     void refreshWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(500);
+        CANDeviceID leaderId = new CANDeviceID(4);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -1934,19 +1934,19 @@ class TransmissionFXTest {
 
     @Test
     void refreshWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(501);
+        CANDeviceID leaderId = new CANDeviceID(5);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(502), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(6), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(tx::refresh);
     }
 
     @Test
     void refreshWithBothEncoders() {
-        CANDeviceID leaderId = new CANDeviceID(503);
+        CANDeviceID leaderId = new CANDeviceID(7);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
-        tx.addCANCoder(new CANDeviceID(504), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(8), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(tx::refresh);
     }
@@ -1955,19 +1955,19 @@ class TransmissionFXTest {
 
     @Test
     void resetEncodersWithCANCoder() {
-        CANDeviceID leaderId = new CANDeviceID(505);
+        CANDeviceID leaderId = new CANDeviceID(9);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
-        tx.addCANCoder(new CANDeviceID(506), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(10), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(tx::resetEncoders);
     }
 
     @Test
     void resetEncodersWithBothEncoders() {
-        CANDeviceID leaderId = new CANDeviceID(507);
+        CANDeviceID leaderId = new CANDeviceID(11);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
-        tx.addCANCoder(new CANDeviceID(508), EncoderDirection.CW, 250.0);
+        tx.addCANCoder(new CANDeviceID(12), EncoderDirection.CW, 250.0);
 
         assertDoesNotThrow(tx::resetEncoders);
     }
@@ -1976,7 +1976,7 @@ class TransmissionFXTest {
 
     @Test
     void setMMConfigUpdatesFields() {
-        CANDeviceID leaderId = new CANDeviceID(509);
+        CANDeviceID leaderId = new CANDeviceID(13);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
         tx.setMMConfig(50.0, 100.0, 500.0);
@@ -1988,10 +1988,10 @@ class TransmissionFXTest {
 
     @Test
     void addCANCoderCCW() {
-        CANDeviceID leaderId = new CANDeviceID(510);
+        CANDeviceID leaderId = new CANDeviceID(14);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
 
-        tx.addCANCoder(new CANDeviceID(511), EncoderDirection.CCW, 250.0);
+        tx.addCANCoder(new CANDeviceID(15), EncoderDirection.CCW, 250.0);
         assertNotNull(tx.getEncoderCANCoder());
     }
 
@@ -1999,7 +1999,7 @@ class TransmissionFXTest {
 
     @Test
     void getVelFXWithEncoderReturnsValue() {
-        CANDeviceID leaderId = new CANDeviceID(512);
+        CANDeviceID leaderId = new CANDeviceID(16);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -2008,7 +2008,7 @@ class TransmissionFXTest {
 
     @Test
     void getVelFXRPSWithEncoderReturnsValue() {
-        CANDeviceID leaderId = new CANDeviceID(513);
+        CANDeviceID leaderId = new CANDeviceID(17);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 
@@ -2019,7 +2019,7 @@ class TransmissionFXTest {
 
     @Test
     void getPosRotationsWithEncoderFX() {
-        CANDeviceID leaderId = new CANDeviceID(514);
+        CANDeviceID leaderId = new CANDeviceID(18);
         TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
         tx.addEncoderFX(250.0);
 

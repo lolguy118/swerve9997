@@ -36,6 +36,13 @@ the same PR. Robot-project-specific docs live under `docs/<robot>/`
 - **Cross-references use file-relative paths** (e.g.,
   `[ADR-009](../adr/ADR-009-centralized-can-refresh.md)`), not
   absolute repo paths.
+- **Relative links must resolve.** Every `[text](path)` and
+  `[text](#anchor)` must point to an existing file or in-document
+  heading anchor. Broken **file** links are caught by
+  [`verify-docs.sh`](../hooks/verify-docs.sh)'s `broken-link` check in
+  CI; in-document **anchors** are not auto-checked, so verify those by
+  hand. When you move or rename a file, grep for inbound links and
+  update them in the same commit.
 - **Common docs must stay self-contained.** Files under
   `docs/common/` **shall not** link to, or name specific artifacts
   in, `docs/team-lib/` or any `docs/<project>/` tier. `common/` is

@@ -121,6 +121,17 @@ jobs:
       - name: Docs verification sweep
         run: bash .claude/hooks/verify-docs.sh
 
+      - name: JSON lint (strict parse)
+        run: |
+          FAIL=0
+          while IFS= read -r f; do
+            if ! err=$(node -e "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))" "$f" 2>&1); then
+              echo "::error file=$f::$err"
+              FAIL=1
+            fi
+          done < <(git ls-files '*.json' ':!.vscode/')
+          exit $FAIL
+
   shellcheck:
     runs-on: ubuntu-24.04
     steps:

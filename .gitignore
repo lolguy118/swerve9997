@@ -109,6 +109,7 @@ Temporary Items
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.history/
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -188,3 +189,9 @@ compile_commands.json
 
 # Version file
 src/main/java/frc/robot/BuildConstants.java
+
+# Backup / lock / scratch files
+~$*
+*.bak
+*.swp
+*.swo

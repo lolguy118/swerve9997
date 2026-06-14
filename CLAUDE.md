@@ -131,3 +131,11 @@ Rules live in [`.claude/rules/`](.claude/rules/) and are
 auto-discovered by Claude Code. Each rule declares its own
 `paths:` frontmatter, so Claude loads each rule only when reading
 files inside its declared scope.
+
+### Skills
+
+Skills (user-invocable slash-command workflows) live in
+[`.claude/skills/`](.claude/skills/) — one folder per skill holding a
+`SKILL.md`: [`new-adr`](.claude/skills/new-adr/SKILL.md),
+[`new-sdd`](.claude/skills/new-sdd/SKILL.md), and
+[`new-subsystem`](.claude/skills/new-subsystem/SKILL.md).

@@ -78,6 +78,12 @@ for the six-layer graph. The layering decision is
     command. Checks that code changes on the current branch have
     matching design-doc updates and flags stale references to
     deleted symbols.
+  - [`/doc-review-loop-init`](.claude/commands/doc-review-loop-init.md) —
+    slash command. Authors (does not launch) a gap-driven
+    documentation-review loop; fill its `<OWNER_GOALS>` first, or delete it.
+  - [`/doc-review-loop-run`](.claude/commands/doc-review-loop-run.md) —
+    slash command. Launches the authored loop (optional `[max-iterations]`,
+    default 40; needs the `ralph-loop` plugin).
   - [`lib-reviewer`](.claude/agents/lib-reviewer.md) — subagent.
     Applies the full review checklist from
     [`docs/team-lib/prompts/code-review-prompt-teamlib.md`](docs/team-lib/prompts/code-review-prompt-teamlib.md)

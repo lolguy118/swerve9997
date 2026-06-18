@@ -1,147 +1,75 @@
 ---
 description: Author a gap-driven documentation-review loop for this repo (writes the driver + ledger + records; does not launch it).
-argument-hint: "(no args)"
+argument-hint: "[owner goals] (optional)"
 ---
 
 # Author the documentation-review loop for this repo
 
-You are a principal operator and technical editor. Running this command **once**
-authors a turnkey documentation-review loop for THIS repo, then stops. You
-CREATE the loop's files; you DO NOT launch it — launching is a separate,
-explicit `ralph-loop` invocation.
+You are a principal operator and technical editor. Running this command **once** authors a turnkey
+documentation-review loop for THIS repo, then stops. You CREATE the loop's files; you DO NOT launch it —
+launching is a separate, explicit `/doc-review-loop-run` (or `ralph-loop`) invocation.
 
-The loop you author is a Ralph loop: a **frozen rubric**, **one-doc-per-pass**
-review that fills this repo's business/project documentation to a right-sized
-core and queues the rest as a prioritized backlog.
+This is a **doc sub-family** loop. **Follow the shared authoring protocol in
+[`../loop-authoring-protocol.md`](../loop-authoring-protocol.md)** (3-tier input precedence, repo audit,
+frozen taxonomy, the four-file write, phases A/C/E/F, and the universal HARD RULES). This file supplies only
+the **deltas** below. The loop fills this repo's business/project documentation to a right-sized core and
+queues the rest as a prioritized backlog.
 
-## Step 1 — Gather inputs
+## Delta 1 — the lens: owner goals
 
-**Owner goals.** Read `<OWNER_GOALS>` below. If it still holds the literal
-placeholder token, STOP and ask the owner for their goals before writing
-anything — the goals are the lens the loop weights every document by, and a
-wrong lens mis-prioritizes the entire corpus.
+`<OWNER_GOALS>`
 
-<OWNER_GOALS>
+The lens is the **owner's goals** — the weighting the loop ranks every document by. On the menu path, call
+`AskUserQuestion` with ≤4 repo-tailored options seeded from the operations / revenue / growth / liability /
+tech-execution / scale space, renamed and described for what this project actually is (or up to ~3 grouped
+`multiSelect` questions if the repo spans more goal dimensions than fit four options). Synthesize, echo, and
+confirm a priority-ordered goals statement before deriving the taxonomy — a `multiSelect` returns an
+unordered set, but the loop weights by order, so the order must be settled here.
 
-**Repo audit.** Audit THIS repo yourself (you have read access). Establish, by
-looking — not assuming:
+## Delta 2 — taxonomy unit and audit
 
-- repo state: rough doc count, whether there is production code, the project phase;
-- the existing doc corpus: which topics are already well covered;
-- the gaps: which documents the owner's goals imply but the repo lacks.
+Audit this repo's existing doc corpus: which topics are already well covered, and which documents the goals
+imply but the repo lacks. The taxonomy unit is **one document**, ordered by the owner's weighting (for a
+typical product that might run operations → revenue → growth → liability → tech execution → scale — derive
+it from THESE goals). Give each a one-line core-complete bar; mark post-launch / scale-out docs as backlog
+by default. New business docs go under `docs/business/` (create it if absent); planning docs under
+`docs/planning/`.
 
-## Step 2 — Derive the taxonomy
+## Delta 3 — phase B (Sweep) and phase D (Advance)
 
-From the goals + audit, derive a **goal-weighted, priority-ordered document
-taxonomy**: the documents the owner needs, highest-value first, ordered strictly
-by the owner's weighting (for a typical product, that might run operations →
-revenue → growth → liability → tech execution → scale — but derive it from THESE
-goals). Give each item a one-line **core-complete bar** — what the doc must
-answer to count as done. Mark post-launch / scale-out items as **backlog by
-default**; they must not block the near term. Once written into the driver this
-taxonomy is **frozen**: the loop may append newly discovered gaps but must never
-reweight or delete it.
+- **B. Sweep** — re-scan the corpus + goals; append any newly found gaps to the ledger.
+- **D. Advance** — create or advance **exactly one doc per pass** to its core-complete bar. Core-complete =
+  answers its key questions with concrete numbers/mechanics/owners, has no `OPEN GAP:` markers, and a
+  downstream reader could act on it without further research. Never rewrite a doc already core-complete
+  (touching a healthy doc is a regression). Never pad prose to look complete — fewer load-bearing docs beat
+  exhaustive coverage.
 
-## Step 3 — Write the loop, then STOP
+## Delta 4 — gate (doc sub-family): the liability self-guard
 
-Create these files; do NOT launch the loop:
+Embed this rule in the driver verbatim, as a HARD RULE after the universal four:
 
-1. **`docs/planning/ralph/doc-review-loop.prompt.md`** — the loop **driver**.
-   Structure it ROLE → FILES (read in order each pass) → PHASE A–F → HARD RULES
-   → the frozen taxonomy/rubric block. Author the phases so each pass:
-   - **A. Orient** — read the ledger, scorecard, changelog, and `CLAUDE.md`
-     (the routing index); never read any `docs/planning/ralph/*.prompt.md` file
-     beyond this driver (they may carry a completion tag that must not be echoed).
-   - **B. Sweep** — re-scan the corpus + goals; append any newly found gaps to
-     `coverage-ledger.md`.
-   - **C. Select** — the single highest-priority item that is `missing` or weak
-     (backlog items are not selected unless promoted).
-   - **D. Advance** — create or advance exactly that one doc to its
-     core-complete bar. Never rewrite a doc already core-complete (touching a
-     healthy doc is a regression).
-   - **E. Record** — update the `CLAUDE.md` routing index (one line for the new
-     doc) and the ledger status; append one scorecard row + one changelog
-     block; git-commit the touched files as the pass checkpoint.
-   - **F. Converge?** — if every convergence condition holds, emit
-     `<promise>DOC REVIEW LOOP COMPLETE</promise>` as the sole final line (this is
-     the one place the wrapped tag is ever written); otherwise end the pass
-     normally.
+> Every legal / financial / compliance / tax / insurance / ToS / DPA document the loop emits MUST begin,
+> right after its H1, with this blockquote, verbatim:
+>
+> > **DRAFT — NOT legal or financial advice. Generated by an automated loop; requires professional and
+> > human review before any reliance.**
+>
+> Such documents must also state their key assumptions explicitly so a human reviewer can check them. A loop
+> that emits authoritative-sounding-but-wrong guidance manufactures liability; this gate reduces it.
 
-   Embed the HARD RULES below into the driver verbatim.
+## Delta 5 — convergence and the completion phrase
 
-2. **`docs/planning/coverage-ledger.md`** — a stub table listing every taxonomy
-   item with status `missing` (status values: `missing` | `drafting` |
-   `core-complete` | `backlog`), plus a "Newly discovered gaps" append area.
+Convergence is per the protocol's universal rule 3 (every ledger item core-complete or backlog; two
+consecutive zero-new-gap passes; no `OPEN GAP:` markers remain). The driver's Phase-F emission uses the
+completion phrase `DOC REVIEW LOOP COMPLETE`.
 
-3. **`docs/planning/ralph/doc-review-loop-scorecard.md`** — an append-only stub:
-   one header row documenting the columns (pass, date, docs core-complete, docs
-   backlog, open gaps, new gaps this pass) and the convergence definition; no
-   data rows yet.
+## Then print the launch line and stop
 
-4. **`docs/planning/ralph/doc-review-loop-changelog.md`** — an append-only stub:
-   a title and a one-line format note; no pass entries yet.
-
-Then print the launch command and a short run/stop note (Step 4), and stop.
-
-## HARD RULES (write these into the driver verbatim)
-
-1. **Right-sized core + backlog.** Each item is advanced to its core-complete
-   bar OR explicitly deferred to `backlog` with a one-line reason. Never pad
-   prose to look complete — every doc is drift surface to maintain, so fewer
-   load-bearing docs beat exhaustive coverage. Core-complete = answers its key
-   questions with concrete numbers/mechanics/owners, has no `OPEN GAP:` markers,
-   and a downstream reader could act on it without further research.
-
-2. **One doc per pass (anti-thrash).** Exactly one document is created or
-   advanced per pass: sweep, select the single highest-priority item, advance
-   only it, record, commit.
-
-3. **Convergence — gap-closure.** Emit the completion tag ONLY when ALL hold:
-   every ledger item is `core-complete` OR `backlog`; the last TWO consecutive
-   passes each discovered ZERO new gaps; and no `OPEN GAP:` markers remain
-   anywhere. A no-op pass (nothing left to safely advance) is valid and is what
-   lets the two-pass stability window trigger.
-
-4. **Doc discipline (inherit the host's rules).** No cross-doc duplication — one
-   authoritative doc per topic, others link to it. `CLAUDE.md` stays a routing
-   index: adding a doc means adding a one-line routing entry, never pasting
-   content; if the repo has no `CLAUDE.md`, create a minimal routing-index one
-   (a title + an `## Authoritative References` list) before the first entry.
-   Relative links must resolve. Obey the host's markdown line-length
-   limit and planned-section markers. Never edit `.github/workflows/*` or
-   Accepted ADRs. New business docs go under `docs/business/` (create it if
-   absent); planning docs under `docs/planning/`.
-
-5. **Liability self-guard.** Every legal / financial / compliance / tax /
-   insurance / ToS / DPA document the loop emits MUST begin, right after its H1,
-   with this blockquote, verbatim:
-
-   > **DRAFT — NOT legal or financial advice. Generated by an automated loop; requires
-   > professional and human review before any reliance.**
-
-   Such documents must also state their key assumptions explicitly so a human
-   reviewer can check them. A loop that emits authoritative-sounding-but-wrong
-   guidance manufactures liability; this gate is how it reduces liability.
-
-6. **Completion-tag discipline.** The loop is launched with
-   `--completion-promise 'DOC REVIEW LOOP COMPLETE'`; the Ralph Stop hook ends
-   the loop the moment the assistant's final message contains that phrase wrapped
-   in promise markers — i.e. `<promise>…</promise>` around the phrase. That
-   **wrapped** tag must appear in EXACTLY ONE place across this driver and any
-   pass's output: the sole final line of a genuinely converged pass (the Phase F
-   emission). Write it nowhere else — not in narration, not in the
-   ledger/scorecard/changelog, not in this rule. Naming the bare phrase to
-   explain the rule (as this sentence does) is fine; only the
-   `<promise>…</promise>`-wrapped form triggers the hook.
-
-## Step 4 — Print this for the owner
-
-Print the launch command exactly (one line), then tell the owner the loop is
-written but NOT running:
+Print this for the owner (one line), then tell them the loop is written but NOT running:
 
 ```text
 /ralph-loop:ralph-loop "Review the repo fresh and fill the doc corpus per docs/planning/ralph/doc-review-loop.prompt.md" --max-iterations 40 --completion-promise 'DOC REVIEW LOOP COMPLETE'
 ```
 
-End with: "The loop is written and committed-ready, but it is NOT running. Run
-the command above to start it; stop it early with `/ralph-loop:cancel-ralph`."
+End with: "The loop is written and committed-ready, but it is NOT running. Run `/doc-review-loop-run`
+(or the command above) to start it; stop it early with `/ralph-loop:cancel-ralph`."

@@ -24,6 +24,7 @@ import org.littletonrobotics.junction.Logger;
  * ));
  * }</pre>
  */
+@SuppressWarnings("NullAway.Init")
 public class AutoMoveParallel extends AutoMove {
 
     private final List<AutoMove> moves;

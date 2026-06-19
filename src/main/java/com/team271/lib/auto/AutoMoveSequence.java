@@ -2,6 +2,7 @@ package com.team271.lib.auto;
 
 import java.util.Arrays;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -21,11 +22,12 @@ import org.littletonrobotics.junction.Logger;
  * )
  * }</pre>
  */
+@SuppressWarnings("NullAway.Init")
 public class AutoMoveSequence extends AutoMove {
 
     private final List<AutoMove> moves;
     private int currentIdx = 0;
-    private AutoMove current;
+    @Nullable private AutoMove current;
 
     // Cached telemetry keys — computed in start() to avoid string concat every cycle
     private String telemetryKeyChildIndex;

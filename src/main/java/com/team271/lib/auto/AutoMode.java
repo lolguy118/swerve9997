@@ -5,6 +5,7 @@ import com.team271.lib.util.Elastic;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 import org.littletonrobotics.junction.Logger;
 
 public abstract class AutoMode {
@@ -19,7 +20,7 @@ public abstract class AutoMode {
 
     private List<AutoMove> moves = new ArrayList<>();
     protected int currentMoveIdx = 0;
-    protected AutoMove currentMove;
+    @Nullable protected AutoMove currentMove;
 
     protected AutoMode(double argDelay) {
         delay = argDelay;

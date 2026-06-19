@@ -2,15 +2,17 @@ package com.team271.lib.auto;
 
 import com.team271.lib.ConstantsLib;
 import edu.wpi.first.wpilibj.Timer;
+import org.jspecify.annotations.Nullable;
 import org.littletonrobotics.junction.Logger;
 
+@SuppressWarnings("NullAway.Init")
 public abstract class AutoMove {
     protected boolean isRunning = false;
     protected boolean isComplete = false;
 
     protected final Timer elapsedTimer = new Timer();
     protected final double delay;
-    protected final String name;
+    @Nullable protected final String name;
 
     // Cached telemetry keys — computed once in start() to avoid string concat at 50Hz
     protected String telemetryKeyRunning;
@@ -20,7 +22,7 @@ public abstract class AutoMove {
     protected double currentTime = 0.0;
     protected double lastTime = 0.0;
 
-    protected AutoMove(final String argName, final double argDelay) {
+    protected AutoMove(final @Nullable String argName, final double argDelay) {
         name = argName;
         delay = argDelay;
     }

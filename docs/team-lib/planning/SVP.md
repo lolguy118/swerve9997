@@ -185,7 +185,7 @@ project to declare per-tool adoption. Current library state:
 | `javac -Xlint:all` | Adopted | `build.gradle` compile flags |
 | `javac -Xdoclint:all,-missing` | Adopted (implicit) | Runs as part of `./gradlew javadoc`; consider making explicit in `build.gradle` |
 | Error Prone | Adopted | Inline during `compileJava`; warnings-only during rollout |
-| NullAway (Error Prone plugin) | Adopted (warning) | Runs on the `@NullMarked` `api`, `vendor`, `bridge`, `hardware`, `control`, and `subsystem` layers per [ADR-018](adr/ADR-018-null-safety-annotation-policy.md); extend `AnnotatedPackages` to `auto`, promote warning→gate when a layer is clean |
+| NullAway (Error Prone plugin) | Adopted (warning) | Runs on **all** `@NullMarked` library layers (`api`, `vendor`, `bridge`, `hardware`, `control`, `subsystem`, `auto`) per [ADR-018](adr/ADR-018-null-safety-annotation-policy.md); all clean at warning severity. Next: promote warning→gate (`ERROR`) |
 | SpotBugs | Adopted | `ignoreFailures=true` during rollout |
 | Checkstyle | Adopted | `config/checkstyle/checkstyle.xml` |
 | markdownlint-cli2 | Adopted | CI job `lint-docs` |

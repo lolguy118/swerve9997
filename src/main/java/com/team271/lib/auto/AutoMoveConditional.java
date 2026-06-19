@@ -2,6 +2,7 @@ package com.team271.lib.auto;
 
 import com.team271.lib.util.Elastic;
 import java.util.function.BooleanSupplier;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Completes when a {@link BooleanSupplier} condition returns true, or when the timeout expires.
@@ -31,7 +32,9 @@ public class AutoMoveConditional extends AutoMove {
      * @param argTimeoutSec maximum wait time in seconds (required, must be &gt; 0)
      */
     public AutoMoveConditional(
-            final String argName, final BooleanSupplier argCondition, final double argTimeoutSec) {
+            final @Nullable String argName,
+            final BooleanSupplier argCondition,
+            final double argTimeoutSec) {
         super(argName, 0.0);
         condition = argCondition;
         timeoutSec = argTimeoutSec;

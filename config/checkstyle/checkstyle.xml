@@ -89,9 +89,11 @@
         <!-- CODE-GEN-011: do not catch broad exception types (Throwable/Exception/etc.).
              Permitted top-level-lifecycle catches are listed in suppressions.xml. -->
         <module name="IllegalCatch"/>
-        <!-- CODE-GEN-002a: prohibited APIs/patterns in production code. Line-based and
-             AST-aware (skips comments/strings); word boundaries avoid matching e.g.
-             a project subsystem's own .stop()/.sleep(). -->
+        <!-- CODE-GEN-002a: prohibited APIs/patterns in PRODUCTION code. Line-based (not
+             AST-aware): ignoreComments skips comments but NOT string literals, so a string
+             containing e.g. "new Thread(" could false-positive; word boundaries avoid
+             matching a project subsystem's own .stop()/.sleep(). Test sources are exempt
+             (the rule is production-scoped) via suppressions.xml. -->
         <module name="RegexpSinglelineJava">
             <property name="format"
                       value="(\bSystem\.exit\s*\(|\bRuntime\.getRuntime\(\)\.halt\s*\(|\bThread\.sleep\s*\(|\bThread\.stop\s*\(|\bSystem\.gc\s*\(|\bvoid\s+finalize\s*\(|\bSystem\.out\.print|\bSystem\.err\.print|\bSystem\.currentTimeMillis\s*\(|\bnew\s+Thread\s*\(|\bMath\.random\s*\()"/>

@@ -45,7 +45,8 @@ class Input8BitDuoTest {
         DriverStation.refreshData();
     }
 
-    private void injectJoystickData(double[] axes, int buttonBitmask, int buttonCount, int pov) {
+    private void injectJoystickData(
+            final double[] axes, final int buttonBitmask, final int buttonCount, final int pov) {
         int axisCount = axes != null ? axes.length : 6;
         DriverStationDataJNI.setJoystickAxisCount(PORT, axisCount);
         DriverStationDataJNI.setJoystickButtonCount(PORT, buttonCount);

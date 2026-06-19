@@ -33,92 +33,92 @@ class SubsystemManagerTest {
         boolean testExitCalled = false;
         boolean outputTelemetryCalled = false;
 
-        TestSubsystem(String name) {
+        TestSubsystem(final String name) {
             super(null, name);
         }
 
         @Override
-        public void robotInit(double argTimestamp) {
+        public void robotInit(final double argTimestamp) {
             robotInitCalled = true;
         }
 
         @Override
-        public void robotPeriodicBefore(double argTimestamp) {
+        public void robotPeriodicBefore(final double argTimestamp) {
             robotPeriodicBeforeCalled = true;
         }
 
         @Override
-        public void robotPeriodicAfter(double argTimestamp) {
+        public void robotPeriodicAfter(final double argTimestamp) {
             robotPeriodicAfterCalled = true;
         }
 
         @Override
-        public void disabledInit(double argTimestamp) {
+        public void disabledInit(final double argTimestamp) {
             disabledInitCalled = true;
         }
 
         @Override
-        public void disabledPeriodic(double argTimestamp) {
+        public void disabledPeriodic(final double argTimestamp) {
             disabledPeriodicCalled = true;
         }
 
         @Override
-        public void disabledExit(double argTimestamp) {
+        public void disabledExit(final double argTimestamp) {
             disabledExitCalled = true;
         }
 
         @Override
-        public void autonomousInit(double argTimestamp) {
+        public void autonomousInit(final double argTimestamp) {
             autonomousInitCalled = true;
         }
 
         @Override
-        public void autonomousPeriodic(double argTimestamp) {
+        public void autonomousPeriodic(final double argTimestamp) {
             autonomousPeriodicCalled = true;
         }
 
         @Override
-        public void autonomousExit(double argTimestamp) {
+        public void autonomousExit(final double argTimestamp) {
             autonomousExitCalled = true;
         }
 
         @Override
-        public void teleopInit(double argTimestamp) {
+        public void teleopInit(final double argTimestamp) {
             teleopInitCalled = true;
         }
 
         @Override
-        public void teleopPeriodic(double argTimestamp) {
+        public void teleopPeriodic(final double argTimestamp) {
             teleopPeriodicCalled = true;
         }
 
         @Override
-        public void teleopExit(double argTimestamp) {
+        public void teleopExit(final double argTimestamp) {
             teleopExitCalled = true;
         }
 
         @Override
-        public void simulationInit(double argTimestamp) {
+        public void simulationInit(final double argTimestamp) {
             simulationInitCalled = true;
         }
 
         @Override
-        public void simulationPeriodic(double argTimestamp) {
+        public void simulationPeriodic(final double argTimestamp) {
             simulationPeriodicCalled = true;
         }
 
         @Override
-        public void testInit(double argTimestamp) {
+        public void testInit(final double argTimestamp) {
             testInitCalled = true;
         }
 
         @Override
-        public void testPeriodic(double argTimestamp) {
+        public void testPeriodic(final double argTimestamp) {
             testPeriodicCalled = true;
         }
 
         @Override
-        public void testExit(double argTimestamp) {
+        public void testExit(final double argTimestamp) {
             testExitCalled = true;
         }
 
@@ -130,92 +130,92 @@ class SubsystemManagerTest {
 
     /** Subsystem that throws on every lifecycle method. */
     private static class ThrowingSubsystem extends Subsystem {
-        ThrowingSubsystem(String name) {
+        ThrowingSubsystem(final String name) {
             super(null, name);
         }
 
         @Override
-        public void robotInit(double argTimestamp) {
+        public void robotInit(final double argTimestamp) {
             throw new RuntimeException("robotInit failure");
         }
 
         @Override
-        public void robotPeriodicBefore(double argTimestamp) {
+        public void robotPeriodicBefore(final double argTimestamp) {
             throw new RuntimeException("robotPeriodicBefore failure");
         }
 
         @Override
-        public void robotPeriodicAfter(double argTimestamp) {
+        public void robotPeriodicAfter(final double argTimestamp) {
             throw new RuntimeException("robotPeriodicAfter failure");
         }
 
         @Override
-        public void disabledInit(double argTimestamp) {
+        public void disabledInit(final double argTimestamp) {
             throw new RuntimeException("disabledInit failure");
         }
 
         @Override
-        public void disabledPeriodic(double argTimestamp) {
+        public void disabledPeriodic(final double argTimestamp) {
             throw new RuntimeException("disabledPeriodic failure");
         }
 
         @Override
-        public void disabledExit(double argTimestamp) {
+        public void disabledExit(final double argTimestamp) {
             throw new RuntimeException("disabledExit failure");
         }
 
         @Override
-        public void autonomousInit(double argTimestamp) {
+        public void autonomousInit(final double argTimestamp) {
             throw new RuntimeException("autonomousInit failure");
         }
 
         @Override
-        public void autonomousPeriodic(double argTimestamp) {
+        public void autonomousPeriodic(final double argTimestamp) {
             throw new RuntimeException("autonomousPeriodic failure");
         }
 
         @Override
-        public void autonomousExit(double argTimestamp) {
+        public void autonomousExit(final double argTimestamp) {
             throw new RuntimeException("autonomousExit failure");
         }
 
         @Override
-        public void teleopInit(double argTimestamp) {
+        public void teleopInit(final double argTimestamp) {
             throw new RuntimeException("teleopInit failure");
         }
 
         @Override
-        public void teleopPeriodic(double argTimestamp) {
+        public void teleopPeriodic(final double argTimestamp) {
             throw new RuntimeException("teleopPeriodic failure");
         }
 
         @Override
-        public void teleopExit(double argTimestamp) {
+        public void teleopExit(final double argTimestamp) {
             throw new RuntimeException("teleopExit failure");
         }
 
         @Override
-        public void simulationInit(double argTimestamp) {
+        public void simulationInit(final double argTimestamp) {
             throw new RuntimeException("simulationInit failure");
         }
 
         @Override
-        public void simulationPeriodic(double argTimestamp) {
+        public void simulationPeriodic(final double argTimestamp) {
             throw new RuntimeException("simulationPeriodic failure");
         }
 
         @Override
-        public void testInit(double argTimestamp) {
+        public void testInit(final double argTimestamp) {
             throw new RuntimeException("testInit failure");
         }
 
         @Override
-        public void testPeriodic(double argTimestamp) {
+        public void testPeriodic(final double argTimestamp) {
             throw new RuntimeException("testPeriodic failure");
         }
 
         @Override
-        public void testExit(double argTimestamp) {
+        public void testExit(final double argTimestamp) {
             throw new RuntimeException("testExit failure");
         }
 
@@ -732,7 +732,7 @@ class SubsystemManagerTest {
     /* --- forEachSafe rate limiting --- */
 
     @SuppressWarnings("unchecked")
-    private Map<String, Double> getRateLimitMap(SubsystemManager mgr) throws Exception {
+    private Map<String, Double> getRateLimitMap(final SubsystemManager mgr) throws Exception {
         Field field = SubsystemManager.class.getDeclaredField("lastErrorNotificationTime");
         field.setAccessible(true);
         return (Map<String, Double>) field.get(mgr);

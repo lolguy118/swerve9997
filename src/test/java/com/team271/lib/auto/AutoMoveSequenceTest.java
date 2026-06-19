@@ -34,7 +34,7 @@ class AutoMoveSequenceTest {
         }
 
         @Override
-        public void autonomousPeriodic(double argTimestamp) {
+        public void autonomousPeriodic(final double argTimestamp) {
             autoPeriodicCalled = true;
         }
 

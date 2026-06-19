@@ -27,10 +27,10 @@ public final class GearRatio {
      *     conversions)
      */
     public GearRatio(
-            double rotorToMechanism,
-            double sensorRelToMechanism,
-            double sensorAbsToMechanism,
-            double mechanismToUnits) {
+            final double rotorToMechanism,
+            final double sensorRelToMechanism,
+            final double sensorAbsToMechanism,
+            final double mechanismToUnits) {
         if (rotorToMechanism == 0
                 || sensorRelToMechanism == 0
                 || sensorAbsToMechanism == 0
@@ -53,7 +53,7 @@ public final class GearRatio {
     }
 
     /** Creates a simple gear ratio where all ratios are the same and mechanismToUnits is 1.0. */
-    public GearRatio(double ratio) {
+    public GearRatio(final double ratio) {
         this(ratio, ratio, ratio, 1.0);
     }
 
@@ -63,31 +63,31 @@ public final class GearRatio {
     /* --- Rotor conversions (for FX internal encoder) --- */
 
     /** Convert rotor rotations to mechanism output units. */
-    public double rotorToOutput(double rotorRotations) {
+    public double rotorToOutput(final double rotorRotations) {
         return rotorRotations * rotorToMechanism * mechanismToUnits;
     }
 
     /** Convert mechanism output units to rotor rotations. */
-    public double outputToRotor(double outputUnits) {
+    public double outputToRotor(final double outputUnits) {
         return outputUnits / (rotorToMechanism * mechanismToUnits);
     }
 
     /* --- Sensor relative conversions (for CANCoder relative position) --- */
 
     /** Convert sensor relative rotations to mechanism output units. */
-    public double sensorRelToOutput(double sensorRotations) {
+    public double sensorRelToOutput(final double sensorRotations) {
         return sensorRotations * sensorRelToMechanism * mechanismToUnits;
     }
 
     /** Convert mechanism output units to sensor relative rotations. */
-    public double outputToSensorRel(double outputUnits) {
+    public double outputToSensorRel(final double outputUnits) {
         return outputUnits / (sensorRelToMechanism * mechanismToUnits);
     }
 
     /* --- Sensor absolute conversions (for CANCoder absolute position) --- */
 
     /** Convert sensor absolute rotations to mechanism output units. */
-    public double sensorAbsToOutput(double sensorRotations) {
+    public double sensorAbsToOutput(final double sensorRotations) {
         return sensorRotations * sensorAbsToMechanism * mechanismToUnits;
     }
 
@@ -112,13 +112,13 @@ public final class GearRatio {
     /* --- Builders for gear shifts --- */
 
     /** Returns a new GearRatio with a different rotorToMechanism (e.g., after a gear shift). */
-    public GearRatio withRotorToMechanism(double newRotorToMechanism) {
+    public GearRatio withRotorToMechanism(final double newRotorToMechanism) {
         return new GearRatio(
                 newRotorToMechanism, sensorRelToMechanism, sensorAbsToMechanism, mechanismToUnits);
     }
 
     /** Returns a new GearRatio with a different sensorRelToMechanism. */
-    public GearRatio withSensorRelToMechanism(double newSensorRelToMechanism) {
+    public GearRatio withSensorRelToMechanism(final double newSensorRelToMechanism) {
         return new GearRatio(
                 rotorToMechanism, newSensorRelToMechanism, sensorAbsToMechanism, mechanismToUnits);
     }

@@ -48,7 +48,7 @@ public final class Elastic {
      *
      * @param notification the {@link Notification} object containing notification details
      */
-    public static void sendNotification(Notification notification) {
+    public static void sendNotification(final Notification notification) {
         try {
             notificationPublisher.set(objectMapper.writeValueAsString(notification));
         } catch (JsonProcessingException e) {
@@ -66,7 +66,7 @@ public final class Elastic {
      *
      * @param tabName the name of the tab to select
      */
-    public static void selectTab(String tabName) {
+    public static void selectTab(final String tabName) {
         selectedTabPublisher.set(tabName);
     }
 
@@ -76,7 +76,7 @@ public final class Elastic {
      *
      * @param tabIndex the index of the tab to select.
      */
-    public static void selectTab(int tabIndex) {
+    public static void selectTab(final int tabIndex) {
         selectTab(Integer.toString(tabIndex));
     }
 
@@ -125,12 +125,12 @@ public final class Elastic {
          * @param height the height of the notification display area, inferred if below zero
          */
         public Notification(
-                NotificationLevel level,
-                String title,
-                String description,
-                int displayTimeMillis,
-                double width,
-                double height) {
+                final NotificationLevel level,
+                final String title,
+                final String description,
+                final int displayTimeMillis,
+                final double width,
+                final double height) {
             this.level = level;
             this.title = title;
             this.displayTimeMillis = displayTimeMillis;
@@ -146,7 +146,8 @@ public final class Elastic {
          * @param title the title text of the notification
          * @param description the descriptive text of the notification
          */
-        public Notification(NotificationLevel level, String title, String description) {
+        public Notification(
+                final NotificationLevel level, final String title, final String description) {
             this(level, title, description, 3000, 350, -1);
         }
 
@@ -159,7 +160,10 @@ public final class Elastic {
          * @param displayTimeMillis the display time in milliseconds
          */
         public Notification(
-                NotificationLevel level, String title, String description, int displayTimeMillis) {
+                final NotificationLevel level,
+                final String title,
+                final String description,
+                final int displayTimeMillis) {
             this(level, title, description, displayTimeMillis, 350, -1);
         }
 
@@ -174,11 +178,11 @@ public final class Elastic {
          * @param height the height of the notification display area, inferred if below zero
          */
         public Notification(
-                NotificationLevel level,
-                String title,
-                String description,
-                double width,
-                double height) {
+                final NotificationLevel level,
+                final String title,
+                final String description,
+                final double width,
+                final double height) {
             this(level, title, description, 3000, width, height);
         }
 
@@ -187,7 +191,7 @@ public final class Elastic {
          *
          * @param level the level to set the notification to
          */
-        public void setLevel(NotificationLevel level) {
+        public void setLevel(final NotificationLevel level) {
             this.level = level;
         }
 
@@ -205,7 +209,7 @@ public final class Elastic {
          *
          * @param title the title to set the notification to
          */
-        public void setTitle(String title) {
+        public void setTitle(final String title) {
             this.title = title;
         }
 
@@ -223,7 +227,7 @@ public final class Elastic {
          *
          * @param description the description to set the notification to
          */
-        public void setDescription(String description) {
+        public void setDescription(final String description) {
             this.description = description;
         }
 
@@ -236,7 +240,7 @@ public final class Elastic {
          *
          * @param seconds the number of seconds to display the notification for
          */
-        public void setDisplayTimeSeconds(double seconds) {
+        public void setDisplayTimeSeconds(final double seconds) {
             setDisplayTimeMillis((int) Math.round(seconds * 1000));
         }
 
@@ -245,7 +249,7 @@ public final class Elastic {
          *
          * @param displayTimeMillis the number of milliseconds to display the notification for
          */
-        public void setDisplayTimeMillis(int displayTimeMillis) {
+        public void setDisplayTimeMillis(final int displayTimeMillis) {
             this.displayTimeMillis = displayTimeMillis;
         }
 
@@ -263,7 +267,7 @@ public final class Elastic {
          *
          * @param width the width to set the notification to
          */
-        public void setWidth(double width) {
+        public void setWidth(final double width) {
             this.width = width;
         }
 
@@ -284,7 +288,7 @@ public final class Elastic {
          *
          * @param height the height to set the notification to
          */
-        public void setHeight(double height) {
+        public void setHeight(final double height) {
             this.height = height;
         }
 
@@ -303,7 +307,7 @@ public final class Elastic {
          * @param level the level to set the notification to
          * @return the current notification
          */
-        public Notification withLevel(NotificationLevel level) {
+        public Notification withLevel(final NotificationLevel level) {
             this.level = level;
             return this;
         }
@@ -314,7 +318,7 @@ public final class Elastic {
          * @param title the title to set the notification to
          * @return the current notification
          */
-        public Notification withTitle(String title) {
+        public Notification withTitle(final String title) {
             setTitle(title);
             return this;
         }
@@ -325,7 +329,7 @@ public final class Elastic {
          * @param description the description to set the notification to
          * @return the current notification
          */
-        public Notification withDescription(String description) {
+        public Notification withDescription(final String description) {
             setDescription(description);
             return this;
         }
@@ -336,7 +340,7 @@ public final class Elastic {
          * @param seconds the number of seconds to display the notification for
          * @return the current notification
          */
-        public Notification withDisplaySeconds(double seconds) {
+        public Notification withDisplaySeconds(final double seconds) {
             return withDisplayMilliseconds((int) Math.round(seconds * 1000));
         }
 
@@ -346,7 +350,7 @@ public final class Elastic {
          * @param displayTimeMillis the number of milliseconds to display the notification for
          * @return the current notification
          */
-        public Notification withDisplayMilliseconds(int displayTimeMillis) {
+        public Notification withDisplayMilliseconds(final int displayTimeMillis) {
             setDisplayTimeMillis(displayTimeMillis);
             return this;
         }
@@ -357,7 +361,7 @@ public final class Elastic {
          * @param width the width to set the notification to
          * @return the current notification
          */
-        public Notification withWidth(double width) {
+        public Notification withWidth(final double width) {
             setWidth(width);
             return this;
         }
@@ -368,7 +372,7 @@ public final class Elastic {
          * @param height the height to set the notification to
          * @return the current notification
          */
-        public Notification withHeight(double height) {
+        public Notification withHeight(final double height) {
             setHeight(height);
             return this;
         }

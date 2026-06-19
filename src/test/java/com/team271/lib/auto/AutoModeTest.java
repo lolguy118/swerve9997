@@ -11,7 +11,7 @@ class AutoModeTest {
 
     /** Concrete subclass for testing the abstract AutoMode. */
     private static class TestAutoMode extends AutoMode {
-        TestAutoMode(double argDelay) {
+        TestAutoMode(final double argDelay) {
             super(argDelay);
         }
 
@@ -35,7 +35,7 @@ class AutoModeTest {
         }
 
         @Override
-        public void autonomousPeriodic(double argTimestamp) {
+        public void autonomousPeriodic(final double argTimestamp) {
             periodicCount++;
         }
     }

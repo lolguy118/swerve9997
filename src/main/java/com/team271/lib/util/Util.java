@@ -17,43 +17,44 @@ public final class Util {
     /*
      * Limits the given input to the given magnitude.
      */
-    public static double limit(double v, double maxMagnitude) {
+    public static double limit(final double v, final double maxMagnitude) {
         return limit(v, -maxMagnitude, maxMagnitude);
     }
 
-    public static double limit(double v, double min, double max) {
+    public static double limit(final double v, final double min, final double max) {
         return Math.min(max, Math.max(min, v));
     }
 
-    public static boolean inRange(double v, double maxMagnitude) {
+    public static boolean inRange(final double v, final double maxMagnitude) {
         return inRange(v, -maxMagnitude, maxMagnitude);
     }
 
     /*
      * Checks if the given input is within the range (min, max), both exclusive.
      */
-    public static boolean inRange(double v, double min, double max) {
+    public static boolean inRange(final double v, final double min, final double max) {
         return v > min && v < max;
     }
 
-    public static double interpolate(double a, double b, double x) {
-        x = limit(x, 0.0, 1.0);
-        return a + (b - a) * x;
+    public static double interpolate(final double a, final double b, final double x) {
+        final double t = limit(x, 0.0, 1.0);
+        return a + (b - a) * t;
     }
 
-    public static boolean epsilonEquals(double a, double b, double epsilon) {
+    public static boolean epsilonEquals(final double a, final double b, final double epsilon) {
         return (a - epsilon <= b) && (a + epsilon >= b);
     }
 
-    public static boolean epsilonEquals(double a, double b) {
+    public static boolean epsilonEquals(final double a, final double b) {
         return epsilonEquals(a, b, kEpsilon);
     }
 
-    public static boolean epsilonEquals(int a, int b, int epsilon) {
+    public static boolean epsilonEquals(final int a, final int b, final int epsilon) {
         return (a - epsilon <= b) && (a + epsilon >= b);
     }
 
-    public static boolean allCloseTo(final List<Double> list, double value, double epsilon) {
+    public static boolean allCloseTo(
+            final List<Double> list, final double value, final double epsilon) {
         boolean result = true;
         for (Double valueIn : list) {
             result &= epsilonEquals(valueIn, value, epsilon);
@@ -89,11 +90,11 @@ public final class Util {
      * https://www.desmos.com/calculator/5olzcaocch
      */
     public static void handleDeadzone_Radial(
-            double pOut[], // out: resulting stick x value
-            double x, // in: initial stick x value
-            double y, // in: initial stick x value
-            double deadZoneLow, // in: distance from zero to ignore
-            double deadZoneHigh // in: distance from unit circle to ignore
+            final double pOut[], // out: resulting stick x value
+            final double x, // in: initial stick x value
+            final double y, // in: initial stick x value
+            final double deadZoneLow, // in: distance from zero to ignore
+            final double deadZoneHigh // in: distance from unit circle to ignore
             ) {
         double mag = Math.sqrt(x * x + y * y);
 

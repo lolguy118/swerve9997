@@ -28,7 +28,7 @@ public class Alert {
      * @param text Text to be displayed when the alert is active.
      * @param type Alert level specifying urgency.
      */
-    public Alert(String text, AlertType type) {
+    public Alert(final String text, final AlertType type) {
         this("Alerts", text, type);
     }
 
@@ -40,7 +40,7 @@ public class Alert {
      * @param text Text to be displayed when the alert is active.
      * @param type Alert level specifying urgency.
      */
-    public Alert(String group, String text, AlertType type) {
+    public Alert(final String group, final String text, final AlertType type) {
         if (!groups.containsKey(group)) {
             groups.put(group, new SendableAlerts());
         }
@@ -54,7 +54,7 @@ public class Alert {
      * Sets whether the alert should currently be displayed. When activated, the alert text will also
      * be sent to the console.
      */
-    public void set(boolean active) {
+    public void set(final boolean active) {
         if (active && !this.active) {
             activeStartTime = Timer.getFPGATimestamp();
             switch (type) {
@@ -96,7 +96,7 @@ public class Alert {
     }
 
     /* Updates current alert text. Resets activation time if the alert is currently active. */
-    public void setText(String text) {
+    public void setText(final String text) {
         if (active && !text.equals(this.text)) {
             activeStartTime = Timer.getFPGATimestamp();
             switch (type) {
@@ -144,7 +144,7 @@ public class Alert {
         private String[] cachedWarnings = new String[0];
         private String[] cachedInfos = new String[0];
 
-        public String[] getStrings(AlertType type) {
+        public String[] getStrings(final AlertType type) {
             if (dirty) {
                 rebuildCache();
             }
@@ -169,7 +169,7 @@ public class Alert {
             dirty = false;
         }
 
-        private String[] buildArray(AlertType type, Comparator<Alert> sorter) {
+        private String[] buildArray(final AlertType type, final Comparator<Alert> sorter) {
             List<Alert> filtered = new ArrayList<>();
             for (Alert a : alerts) {
                 if (a.type == type && a.active) {
@@ -185,7 +185,7 @@ public class Alert {
         }
 
         @Override
-        public void initSendable(SendableBuilder builder) {
+        public void initSendable(final SendableBuilder builder) {
             builder.setSmartDashboardType("Alerts");
             builder.addStringArrayProperty("errors", () -> getStrings(AlertType.ERROR), null);
             builder.addStringArrayProperty("warnings", () -> getStrings(AlertType.WARNING), null);

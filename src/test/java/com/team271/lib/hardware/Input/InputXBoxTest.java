@@ -47,7 +47,8 @@ class InputXBoxTest {
      * notifies and refreshes once. Axes array can be null (defaults to 6 zeros). Buttons is a
      * bitmask where bit N corresponds to button N+1. POV value of -1 means not pressed.
      */
-    private void injectJoystickData(double[] axes, int buttonBitmask, int buttonCount, int pov) {
+    private void injectJoystickData(
+            final double[] axes, final int buttonBitmask, final int buttonCount, final int pov) {
         int axisCount = axes != null ? axes.length : 6;
         DriverStationDataJNI.setJoystickAxisCount(PORT, axisCount);
         DriverStationDataJNI.setJoystickButtonCount(PORT, buttonCount);

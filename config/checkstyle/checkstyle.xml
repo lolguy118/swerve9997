@@ -17,6 +17,7 @@
         * LocalVariableName              — CODE-VAR-001c
         * FinalClass                     — CODE-FUN-003b
         * HideUtilityClassConstructor    — CODE-FUN-003b / CODE-MAF-003b
+        * FinalParameters                — CODE-GEN-003b (ADR-020 phase 1)
       Control flow
         * NeedBraces                     — CODE-FMT-002
         * MissingSwitchDefault           — CODE-CTL-002a
@@ -31,8 +32,8 @@
     Grow this config incrementally as other CODE-* rules are ready to be mechanized.
     See docs/coding-standard/java/Standard-Compliance.md for the enforcement matrix.
 
-    Deferred (standard-vs-code gap — large mechanical sweep, separate effort):
-      MemberName (m-prefix), ParameterName (arg-prefix), FinalParameters, MagicNumber.
+    Deferred (standard-vs-code gap — large mechanical sweep, separate effort, ADR-020):
+      MemberName (m-prefix), ParameterName (arg-prefix), MagicNumber.
 
     Run locally:   ./gradlew checkstyleMain checkstyleTest
     CI gate:       .github/workflows/ci.yml (build job)
@@ -68,6 +69,11 @@
         <!-- CODE-FUN-003b: utility classes are final with a private constructor. -->
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
+        <!-- CODE-GEN-003b: final on every method/constructor parameter (ADR-020 phase 1).
+             Restricted to METHOD_DEF/CTOR_DEF — catch params and for-each vars are excluded. -->
+        <module name="FinalParameters">
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
+        </module>
 
         <!-- ===== Control flow ===== -->
         <!-- CODE-FMT-002: braces mandatory on every control-flow construct. -->

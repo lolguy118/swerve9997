@@ -133,7 +133,7 @@ actual rule IDs used across the coding-standard companion files.
 
 | Rule Group | Prefix | Rule Count | Enforced By | Gate |
 | ---------- | ------ | ---------: | ----------- | ---- |
-| General (keywords, annotations, type safety, exceptions, GC, concurrency) | CODE-GEN | 16 | Error Prone + SpotBugs + Checkstyle (`IllegalCatch` → CODE-GEN-011, `RegexpSinglelineJava` → CODE-GEN-002a) + manual review | Compile + CI + PR review |
+| General (keywords, annotations, type safety, exceptions, GC, concurrency) | CODE-GEN | 16 | Error Prone + SpotBugs + Checkstyle (`IllegalCatch` → CODE-GEN-011, `RegexpSinglelineJava` → CODE-GEN-002a, `FinalParameters` → CODE-GEN-003b) + manual review | Compile + CI + PR review |
 | Formatting (braces, parens, blank lines, line endings, imports) | CODE-FMT | 6 | Spotless (AOSP Google Java Format) + Checkstyle (`NeedBraces` → CODE-FMT-002) + `.gitattributes` | `./gradlew spotlessCheck` + `checkstyleMain` |
 | Modules and Files (naming, packages, constants, generated code) | CODE-MAF | 4 | Checkstyle (`OneTopLevelClass` / `OuterTypeFilename` → CODE-MAF-001b, `HideUtilityClassConstructor` → CODE-MAF-003b) + compiler + manual review | `checkstyleMain` + Compile + PR review |
 | Methods (naming, lifecycle, defensive checks) | CODE-FUN | 4 | Error Prone (`MissingOverride`, `DefaultCharset`) + Checkstyle (`FinalClass` / `HideUtilityClassConstructor` → CODE-FUN-003b) + compiler warnings + manual review | Compile + CI + PR review |

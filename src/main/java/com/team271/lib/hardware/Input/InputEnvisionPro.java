@@ -61,7 +61,7 @@ public class InputEnvisionPro extends Input {
         /* Axis value. */
         public final int value;
 
-        Axis(int value) {
+        Axis(final int value) {
             this.value = value;
         }
 

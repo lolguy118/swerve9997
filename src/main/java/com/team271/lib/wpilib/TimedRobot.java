@@ -39,7 +39,11 @@ public class TimedRobot extends IterativeRobotBase {
          * @param periodUs The period at which to run the callback in microseconds.
          * @param offsetUs The offset from the common starting time in microseconds.
          */
-        Callback(Runnable func, long startTimeUs, long periodUs, long offsetUs) {
+        Callback(
+                final Runnable func,
+                final long startTimeUs,
+                final long periodUs,
+                final long offsetUs) {
             this.func = func;
             this.period = periodUs;
             this.expirationTime =
@@ -52,7 +56,7 @@ public class TimedRobot extends IterativeRobotBase {
         }
 
         @Override
-        public boolean equals(Object rhs) {
+        public boolean equals(final Object rhs) {
             return rhs instanceof Callback callback && expirationTime == callback.expirationTime;
         }
 
@@ -62,7 +66,7 @@ public class TimedRobot extends IterativeRobotBase {
         }
 
         @Override
-        public int compareTo(Callback rhs) {
+        public int compareTo(final Callback rhs) {
             // Elements with sooner expiration times are sorted as lesser. The head of
             // Java's PriorityQueue is the least element.
             return Long.compare(expirationTime, rhs.expirationTime);
@@ -91,7 +95,7 @@ public class TimedRobot extends IterativeRobotBase {
      *
      * @param period Period in seconds.
      */
-    protected TimedRobot(double period) {
+    protected TimedRobot(final double period) {
         super(period);
         m_startTimeUs = RobotController.getFPGATime();
         addPeriodic(this::loopFunc, period);
@@ -105,7 +109,7 @@ public class TimedRobot extends IterativeRobotBase {
      *
      * @param period The period of the robot loop function.
      */
-    protected TimedRobot(Time period) {
+    protected TimedRobot(final Time period) {
         this(period.in(Seconds));
     }
 
@@ -114,7 +118,7 @@ public class TimedRobot extends IterativeRobotBase {
      *
      * @param frequency The frequency of the robot loop function.
      */
-    protected TimedRobot(Frequency frequency) {
+    protected TimedRobot(final Frequency frequency) {
         this(frequency.asPeriod());
     }
 
@@ -208,7 +212,7 @@ public class TimedRobot extends IterativeRobotBase {
      * @param callback The callback to run.
      * @param periodSeconds The period at which to run the callback in seconds.
      */
-    public final void addPeriodic(Runnable callback, double periodSeconds) {
+    public final void addPeriodic(final Runnable callback, final double periodSeconds) {
         m_callbacks.add(new Callback(callback, m_startTimeUs, (long) (periodSeconds * 1e6), 0));
     }
 
@@ -223,7 +227,8 @@ public class TimedRobot extends IterativeRobotBase {
      * @param offsetSeconds The offset from the common starting time in seconds. This is useful for
      *     scheduling a callback in a different timeslot relative to TimedRobot.
      */
-    public final void addPeriodic(Runnable callback, double periodSeconds, double offsetSeconds) {
+    public final void addPeriodic(
+            final Runnable callback, final double periodSeconds, final double offsetSeconds) {
         m_callbacks.add(
                 new Callback(
                         callback,
@@ -241,7 +246,7 @@ public class TimedRobot extends IterativeRobotBase {
      * @param callback The callback to run.
      * @param period The period at which to run the callback.
      */
-    public final void addPeriodic(Runnable callback, Time period) {
+    public final void addPeriodic(final Runnable callback, final Time period) {
         addPeriodic(callback, period.in(Seconds));
     }
 
@@ -256,7 +261,7 @@ public class TimedRobot extends IterativeRobotBase {
      * @param offset The offset from the common starting time. This is useful for scheduling a
      *     callback in a different timeslot relative to TimedRobot.
      */
-    public final void addPeriodic(Runnable callback, Time period, Time offset) {
+    public final void addPeriodic(final Runnable callback, final Time period, final Time offset) {
         addPeriodic(callback, period.in(Seconds), offset.in(Seconds));
     }
 }

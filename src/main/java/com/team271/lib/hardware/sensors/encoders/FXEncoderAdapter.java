@@ -10,7 +10,7 @@ public class FXEncoderAdapter implements EncoderAdapter {
     private final EncoderFX encoder;
     private GearRatio gearRatio;
 
-    public FXEncoderAdapter(EncoderFX encoder, GearRatio gearRatio) {
+    public FXEncoderAdapter(final EncoderFX encoder, final GearRatio gearRatio) {
         this.encoder = encoder;
         this.gearRatio = gearRatio;
     }
@@ -46,7 +46,7 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public void setPositionRotations(double rotations) {
+    public void setPositionRotations(final double rotations) {
         encoder.setPosRotations(rotations);
     }
 
@@ -56,12 +56,12 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public double mechanismToNative(double mechanismUnits) {
+    public double mechanismToNative(final double mechanismUnits) {
         return gearRatio.outputToRotor(mechanismUnits);
     }
 
     @Override
-    public double mechanismVelocityToNative(double mechanismUnitsPerSec) {
+    public double mechanismVelocityToNative(final double mechanismUnitsPerSec) {
         return gearRatio.outputToRotor(mechanismUnitsPerSec);
     }
 
@@ -71,12 +71,12 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public void updateGearRatio(GearRatio newRatio) {
+    public void updateGearRatio(final GearRatio newRatio) {
         this.gearRatio = newRatio;
     }
 
     @Override
-    public void robotInit(double timestamp) {
+    public void robotInit(final double timestamp) {
         encoder.robotInit(timestamp);
     }
 
@@ -86,22 +86,22 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public void setSimPosition(double rotations) {
+    public void setSimPosition(final double rotations) {
         encoder.setSimPosRotations(rotations);
     }
 
     @Override
-    public void setSimVelocity(double rps) {
+    public void setSimVelocity(final double rps) {
         encoder.setSimVelRotations(rps);
     }
 
     @Override
-    public void simulationInit(double timestamp) {
+    public void simulationInit(final double timestamp) {
         encoder.simulationInit(timestamp);
     }
 
     @Override
-    public void simulationPeriodic(double timestamp) {
+    public void simulationPeriodic(final double timestamp) {
         encoder.simulationPeriodic(timestamp);
     }
 

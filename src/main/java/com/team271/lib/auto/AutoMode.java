@@ -22,7 +22,7 @@ public abstract class AutoMode {
     protected int currentMoveIdx = 0;
     @Nullable protected AutoMove currentMove;
 
-    protected AutoMode(double argDelay) {
+    protected AutoMode(final double argDelay) {
         delay = argDelay;
     }
 
@@ -82,7 +82,7 @@ public abstract class AutoMode {
                 || ((delay > 0.0) && (currentTime >= delay));
     }
 
-    public void addMove(AutoMove argMove) {
+    public void addMove(final AutoMove argMove) {
         moves.add(argMove);
     }
 
@@ -105,7 +105,7 @@ public abstract class AutoMode {
     /*
      * Robot
      */
-    public void robotPeriodicBefore(double argTimestamp) {
+    public void robotPeriodicBefore(final double argTimestamp) {
         if (isRunning()) {
             lastTime = currentTime;
             currentTime = elapsedTimer.get();
@@ -126,7 +126,7 @@ public abstract class AutoMode {
         }
     }
 
-    public void robotPeriodicAfter(double argTimestamp) {
+    public void robotPeriodicAfter(final double argTimestamp) {
         if ((currentMove != null) && isRunning()) {
             currentMove.robotPeriodicAfter(argTimestamp);
 
@@ -139,32 +139,32 @@ public abstract class AutoMode {
     /*
      * Disabled
      */
-    public void disabledInit(double argTimestamp) {
+    public void disabledInit(final double argTimestamp) {
         // Default Method to override if needed
     }
 
-    public void disabledPeriodic(double argTimestamp) {
+    public void disabledPeriodic(final double argTimestamp) {
         // Default Method to override if needed
     }
 
-    public void disabledExit(double argTimestamp) {
+    public void disabledExit(final double argTimestamp) {
         // Default Method to override if needed
     }
 
     /*
      * Auto
      */
-    public void autonomousInit(double argTimestamp) {
+    public void autonomousInit(final double argTimestamp) {
         start();
     }
 
-    public void autonomousPeriodic(double argTimestamp) {
+    public void autonomousPeriodic(final double argTimestamp) {
         if (currentMove != null && currentMove.canRun()) {
             currentMove.autonomousPeriodic(argTimestamp);
         }
     }
 
-    public void autonomousExit(double argTimestamp) {
+    public void autonomousExit(final double argTimestamp) {
         end();
     }
 }

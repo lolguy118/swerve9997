@@ -6,18 +6,18 @@ public class AutoMoveTimed extends AutoMove {
     protected final double length;
     protected final double timeout;
 
-    public AutoMoveTimed(double argLength, double argDelay, double argTimeout) {
+    public AutoMoveTimed(final double argLength, final double argDelay, final double argTimeout) {
         super(argDelay);
 
         length = argLength;
         timeout = argTimeout;
     }
 
-    public AutoMoveTimed(double argLength, double argDelay) {
+    public AutoMoveTimed(final double argLength, final double argDelay) {
         this(argLength, argDelay, 0.0);
     }
 
-    public AutoMoveTimed(double argLength) {
+    public AutoMoveTimed(final double argLength) {
         this(argLength, 0.0, 0.0);
     }
 
@@ -29,7 +29,7 @@ public class AutoMoveTimed extends AutoMove {
      * Robot
      */
     @Override
-    public void robotPeriodicBefore(double argTimestamp) {
+    public void robotPeriodicBefore(final double argTimestamp) {
         super.robotPeriodicBefore(argTimestamp);
 
         if (isRunning() == true) {

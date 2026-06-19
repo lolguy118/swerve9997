@@ -12,13 +12,13 @@ class MotorBaseTest {
 
     @ParameterizedTest
     @EnumSource(MotorType.class)
-    void allMotorTypes_constructWithoutException(MotorType type) {
+    void allMotorTypes_constructWithoutException(final MotorType type) {
         assertDoesNotThrow(() -> new MotorBase(type));
     }
 
     @ParameterizedTest
     @EnumSource(MotorType.class)
-    void allMotorTypes_returnNonNullMotorName(MotorType type) {
+    void allMotorTypes_returnNonNullMotorName(final MotorType type) {
         MotorBase motor = new MotorBase(type);
         assertNotNull(motor.getMotorName());
         assertFalse(motor.getMotorName().isEmpty());
@@ -26,14 +26,14 @@ class MotorBaseTest {
 
     @ParameterizedTest
     @EnumSource(MotorType.class)
-    void allMotorTypes_areBrushless(MotorType type) {
+    void allMotorTypes_areBrushless(final MotorType type) {
         MotorBase motor = new MotorBase(type);
         assertEquals(MotorControlType.BRUSHLESS, motor.getControlType());
     }
 
     @ParameterizedTest
     @EnumSource(MotorType.class)
-    void allMotorTypes_returnMotorType(MotorType type) {
+    void allMotorTypes_returnMotorType(final MotorType type) {
         MotorBase motor = new MotorBase(type);
         assertEquals(type, motor.getMotorType());
     }
@@ -99,7 +99,7 @@ class MotorBaseTest {
 
     @ParameterizedTest
     @EnumSource(MotorType.class)
-    void getControlName_allTypesReturnBrushless(MotorType type) {
+    void getControlName_allTypesReturnBrushless(final MotorType type) {
         MotorBase motor = new MotorBase(type);
         assertEquals("Brushless", motor.getControlName());
     }

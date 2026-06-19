@@ -22,7 +22,7 @@ public class FaultMonitor {
     private final List<FaultEntry> faults = new ArrayList<>();
     private final NTEntry ntHasAnyFault;
 
-    public FaultMonitor(TObj parent, String deviceName) {
+    public FaultMonitor(final TObj parent, final String deviceName) {
         this.deviceName = deviceName;
         this.faultTable = parent.getTable();
         this.ntHasAnyFault = new NTEntry(faultTable, "Has Fault", false);
@@ -38,7 +38,8 @@ public class FaultMonitor {
      * @param signal the CTRE sticky fault StatusSignal
      * @param updateFreqHz signal refresh frequency
      */
-    public void addFault(String name, StatusSignal<Boolean> signal, double updateFreqHz) {
+    public void addFault(
+            final String name, final StatusSignal<Boolean> signal, final double updateFreqHz) {
         faults.add(new FaultEntry(name, signal, updateFreqHz));
     }
 
@@ -97,7 +98,8 @@ public class FaultMonitor {
         final NTEntry ntEntry;
         boolean isActive = false;
 
-        FaultEntry(String name, StatusSignal<Boolean> signal, double updateFreqHz) {
+        FaultEntry(
+                final String name, final StatusSignal<Boolean> signal, final double updateFreqHz) {
             this.signal = signal;
             this.updateFreqHz = updateFreqHz;
             this.alert = new Alert("Faults", deviceName + ": " + name, AlertType.WARNING);

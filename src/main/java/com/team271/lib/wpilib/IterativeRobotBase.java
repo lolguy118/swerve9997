@@ -85,7 +85,7 @@ public abstract class IterativeRobotBase extends RobotBase {
      *
      * @param period Period in seconds.
      */
-    protected IterativeRobotBase(double period) {
+    protected IterativeRobotBase(final double period) {
         m_period = period;
         m_watchdog = new Watchdog(period, this::printLoopOverrunMessage);
         m_watchdog.suppressTimeoutMessage(true);
@@ -276,7 +276,7 @@ public abstract class IterativeRobotBase extends RobotBase {
      * @deprecated Deprecated without replacement.
      */
     @Deprecated(forRemoval = true, since = "2025")
-    public void setNetworkTablesFlushEnabled(boolean enabled) {
+    public void setNetworkTablesFlushEnabled(final boolean enabled) {
         m_ntFlushEnabled = enabled;
     }
 
@@ -288,7 +288,7 @@ public abstract class IterativeRobotBase extends RobotBase {
      * @param testLW True to enable, false to disable. Defaults to false.
      * @throws ConcurrentModificationException if this is called during test mode.
      */
-    public void enableLiveWindowInTest(boolean testLW) {
+    public void enableLiveWindowInTest(final boolean testLW) {
         if (isTestEnabled()) {
             throw new ConcurrentModificationException(
                     "Can't configure test mode while in test mode!");

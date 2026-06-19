@@ -37,7 +37,7 @@ class CTREManagerTest {
         CTREManager.resetForTesting();
     }
 
-    private void setStaticField(String fieldName, Object value) throws Exception {
+    private void setStaticField(final String fieldName, final Object value) throws Exception {
         Field f = CTREManager.class.getDeclaredField(fieldName);
         f.setAccessible(true);
         f.set(null, value);

@@ -14,7 +14,7 @@ class AutoMoveTest {
         boolean onStartCalled = false;
         boolean onEndCalled = false;
 
-        TestAutoMove(double argDelay) {
+        TestAutoMove(final double argDelay) {
             super(argDelay);
         }
 

@@ -24,19 +24,22 @@ class AutoMoveConditionalTest {
         private final double testTimeout;
 
         FakeConditional(
-                String name, java.util.function.BooleanSupplier condition, double timeoutSec) {
+                final String name,
+                final java.util.function.BooleanSupplier condition,
+                final double timeoutSec) {
             super(name, condition, timeoutSec);
             this.testCondition = condition;
             this.testTimeout = timeoutSec;
         }
 
-        FakeConditional(java.util.function.BooleanSupplier condition, double timeoutSec) {
+        FakeConditional(
+                final java.util.function.BooleanSupplier condition, final double timeoutSec) {
             super(condition, timeoutSec);
             this.testCondition = condition;
             this.testTimeout = timeoutSec;
         }
 
-        void setFakeElapsed(double elapsed) {
+        void setFakeElapsed(final double elapsed) {
             fakeElapsed = elapsed;
         }
 

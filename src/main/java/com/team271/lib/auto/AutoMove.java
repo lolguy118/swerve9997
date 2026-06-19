@@ -34,7 +34,7 @@ public abstract class AutoMove {
         telemetryKeyComplete = prefix + "Complete";
     }
 
-    protected AutoMove(double argDelay) {
+    protected AutoMove(final double argDelay) {
         this(null, argDelay);
     }
 
@@ -109,7 +109,7 @@ public abstract class AutoMove {
     /*
      * Robot
      */
-    public void robotPeriodicBefore(double argTimestamp) {
+    public void robotPeriodicBefore(final double argTimestamp) {
         if (isRunning() == true) {
             lastTime = currentTime;
             currentTime = elapsedTimer.get();
@@ -119,14 +119,14 @@ public abstract class AutoMove {
         }
     }
 
-    public void robotPeriodicAfter(double argTimestamp) {
+    public void robotPeriodicAfter(final double argTimestamp) {
         // Default Method to override if needed
     }
 
     /*
      * Auto
      */
-    public void autonomousPeriodic(double argTimestamp) {
+    public void autonomousPeriodic(final double argTimestamp) {
         // Default Method to override if needed
     }
 }

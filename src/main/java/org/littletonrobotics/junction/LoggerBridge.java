@@ -23,7 +23,7 @@ public final class LoggerBridge {
      * @param periodUs the robot loop period in microseconds
      * @param loopCycleStartUs the FPGA timestamp (microseconds) at the start of this loop cycle
      */
-    public static void periodicAfterUser(long periodUs, long loopCycleStartUs) {
+    public static void periodicAfterUser(final long periodUs, final long loopCycleStartUs) {
         Logger.periodicAfterUser(periodUs, loopCycleStartUs);
     }
 }

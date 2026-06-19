@@ -111,20 +111,20 @@ class AutoMoveTimedTest {
     private static class FakeTimedMove extends AutoMoveTimed {
         private double fakeElapsed = 0.0;
 
-        FakeTimedMove(double argLength, double argDelay, double argTimeout) {
+        FakeTimedMove(final double argLength, final double argDelay, final double argTimeout) {
             super(argLength, argDelay, argTimeout);
         }
 
-        FakeTimedMove(double argLength) {
+        FakeTimedMove(final double argLength) {
             super(argLength);
         }
 
-        void setFakeElapsed(double elapsed) {
+        void setFakeElapsed(final double elapsed) {
             fakeElapsed = elapsed;
         }
 
         @Override
-        public void robotPeriodicBefore(double argTimestamp) {
+        public void robotPeriodicBefore(final double argTimestamp) {
             if (isRunning()) {
                 lastTime = currentTime;
                 currentTime = fakeElapsed;

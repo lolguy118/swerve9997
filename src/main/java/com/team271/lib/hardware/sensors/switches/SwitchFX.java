@@ -10,6 +10,7 @@ import com.team271.lib.TObj;
 import com.team271.lib.hardware.CTREManager;
 import com.team271.lib.hardware.controllers.ControllerTalonFX;
 import com.team271.lib.nt.NTEntry;
+import org.jspecify.annotations.Nullable;
 
 public class SwitchFX extends SwitchBase {
     protected static final int RETRY_COUNT_CAN = 5;
@@ -27,8 +28,8 @@ public class SwitchFX extends SwitchBase {
     protected final boolean autoZero;
     protected final double autoZeroValueIn;
 
-    protected StatusSignal<ForwardLimitValue> swFwd;
-    protected StatusSignal<ReverseLimitValue> swRev;
+    @Nullable protected StatusSignal<ForwardLimitValue> swFwd;
+    @Nullable protected StatusSignal<ReverseLimitValue> swRev;
 
     /*
      *

@@ -5,6 +5,7 @@ import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.nt.NTEntry;
 
+@SuppressWarnings("NullAway.Init")
 public abstract class IMUCTRE extends IMUBase {
     /*
      * IMU

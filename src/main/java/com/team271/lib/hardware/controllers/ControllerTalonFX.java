@@ -22,7 +22,9 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import java.util.EnumSet;
+import org.jspecify.annotations.Nullable;
 
+@SuppressWarnings("NullAway.Init")
 public class ControllerTalonFX extends ControllerSmart {
     public enum Signals {
         NONE,
@@ -49,10 +51,10 @@ public class ControllerTalonFX extends ControllerSmart {
     EnumSet<Signals> signals = EnumSet.of(Signals.ALL);
 
     protected StatusCode fxStatus = StatusCode.OK;
-    protected CANBus canBus = null;
-    protected TalonFX talonFX = null;
-    protected TalonFXConfiguration config = null;
-    protected TalonFXSimState simState = null;
+    protected CANBus canBus;
+    protected TalonFX talonFX;
+    protected TalonFXConfiguration config;
+    protected TalonFXSimState simState;
 
     /*
      * TalonFX
@@ -660,6 +662,7 @@ public class ControllerTalonFX extends ControllerSmart {
             java.util.function.DoubleSupplier getA,
             java.util.function.DoubleConsumer setA) {}
 
+    @Nullable
     private SlotAccess slotAccess(final int argSlot) {
         return switch (argSlot) {
             case 0 ->

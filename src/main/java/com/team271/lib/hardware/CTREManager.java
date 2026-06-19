@@ -10,6 +10,7 @@ import com.team271.lib.util.Elastic;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Centralized manager for all CTRE Phoenix 6 devices and status signals.
@@ -56,14 +57,14 @@ public class CTREManager {
      * Signals
      */
     private static final ArrayList<StatusSignal<?>> signalsAll = new ArrayList<>(20);
-    private static StatusSignal<?>[] signalsAllArray;
+    private static StatusSignal<?> @Nullable [] signalsAllArray;
     private static boolean initialized = false;
 
     /*
      * Timestamps
      */
-    private static AllTimestamps prevRefreshTime = null;
-    private static AllTimestamps lastRefreshTime = null;
+    @Nullable private static AllTimestamps prevRefreshTime = null;
+    @Nullable private static AllTimestamps lastRefreshTime = null;
 
     /*
      * Telemetry (NT)
@@ -170,6 +171,7 @@ public class CTREManager {
     }
 
     /** Get a registered bus by name, or null if not registered. */
+    @Nullable
     public static CANBus getBus(final String argBusName) {
         return buses.get(argBusName);
     }

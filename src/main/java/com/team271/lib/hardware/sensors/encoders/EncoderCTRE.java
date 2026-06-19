@@ -8,6 +8,7 @@ import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 
+@SuppressWarnings("NullAway.Init")
 public abstract class EncoderCTRE extends EncoderBase {
     /*
      * EncoderCTRE

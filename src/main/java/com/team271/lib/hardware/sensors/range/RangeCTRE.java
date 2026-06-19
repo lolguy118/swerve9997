@@ -5,6 +5,7 @@ import com.team271.lib.TObj;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Distance;
 
+@SuppressWarnings("NullAway.Init")
 public abstract class RangeCTRE extends RangeBase {
     /*
      * EncoderCTRE

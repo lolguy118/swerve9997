@@ -13,6 +13,7 @@ import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.CTREManager;
 import edu.wpi.first.wpilibj.RobotController;
 
+@SuppressWarnings("NullAway.Init")
 public class RangeCANrange extends RangeCTRE {
     /*
      * CANCoder

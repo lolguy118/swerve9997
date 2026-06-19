@@ -32,27 +32,28 @@ public record PIDGains(
         double kP, double kI, double kD, double kV, double kS, double kG, double kA) {
 
     /** Creates gains with P, I, D only (all feedforward terms zero). */
-    public PIDGains(final double kP, final double kI, final double kD) {
-        this(kP, kI, kD, 0, 0, 0, 0);
+    public PIDGains(final double argKP, final double argKI, final double argKD) {
+        this(argKP, argKI, argKD, 0, 0, 0, 0);
     }
 
     /** Returns a copy with velocity (kV) and static friction (kS) feedforward set. */
-    public PIDGains withFF(final double kV, final double kS) {
-        return new PIDGains(kP, kI, kD, kV, kS, kG, kA);
+    public PIDGains withFF(final double argKV, final double argKS) {
+        return new PIDGains(kP, kI, kD, argKV, argKS, kG, kA);
     }
 
     /** Returns a copy with gravity feedforward (kG) set. */
-    public PIDGains withGravity(final double kG) {
-        return new PIDGains(kP, kI, kD, kV, kS, kG, kA);
+    public PIDGains withGravity(final double argKG) {
+        return new PIDGains(kP, kI, kD, kV, kS, argKG, kA);
     }
 
     /** Returns a copy with acceleration feedforward (kA) set. */
-    public PIDGains withAccel(final double kA) {
-        return new PIDGains(kP, kI, kD, kV, kS, kG, kA);
+    public PIDGains withAccel(final double argKA) {
+        return new PIDGains(kP, kI, kD, kV, kS, kG, argKA);
     }
 
     /** Returns a copy with all feedforward terms set. */
-    public PIDGains withAllFF(final double kV, final double kS, final double kG, final double kA) {
-        return new PIDGains(kP, kI, kD, kV, kS, kG, kA);
+    public PIDGains withAllFF(
+            final double argKV, final double argKS, final double argKG, final double argKA) {
+        return new PIDGains(kP, kI, kD, argKV, argKS, argKG, argKA);
     }
 }

@@ -29,8 +29,8 @@ public class InputEnvisionPro extends Input {
         /* Button value. */
         public final int value;
 
-        Button(final int value) {
-            this.value = value;
+        Button(final int argValue) {
+            this.value = argValue;
         }
 
         /**
@@ -61,8 +61,8 @@ public class InputEnvisionPro extends Input {
         /* Axis value. */
         public final int value;
 
-        Axis(final int value) {
-            this.value = value;
+        Axis(final int argValue) {
+            this.value = argValue;
         }
 
         /**

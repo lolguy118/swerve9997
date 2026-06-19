@@ -10,9 +10,9 @@ public class FXEncoderAdapter implements EncoderAdapter {
     private final EncoderFX encoder;
     private GearRatio gearRatio;
 
-    public FXEncoderAdapter(final EncoderFX encoder, final GearRatio gearRatio) {
-        this.encoder = encoder;
-        this.gearRatio = gearRatio;
+    public FXEncoderAdapter(final EncoderFX argEncoder, final GearRatio argGearRatio) {
+        this.encoder = argEncoder;
+        this.gearRatio = argGearRatio;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public void setPositionRotations(final double rotations) {
-        encoder.setPosRotations(rotations);
+    public void setPositionRotations(final double argRotations) {
+        encoder.setPosRotations(argRotations);
     }
 
     @Override
@@ -56,13 +56,13 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public double mechanismToNative(final double mechanismUnits) {
-        return gearRatio.outputToRotor(mechanismUnits);
+    public double mechanismToNative(final double argMechanismUnits) {
+        return gearRatio.outputToRotor(argMechanismUnits);
     }
 
     @Override
-    public double mechanismVelocityToNative(final double mechanismUnitsPerSec) {
-        return gearRatio.outputToRotor(mechanismUnitsPerSec);
+    public double mechanismVelocityToNative(final double argMechanismUnitsPerSec) {
+        return gearRatio.outputToRotor(argMechanismUnitsPerSec);
     }
 
     @Override
@@ -71,13 +71,13 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public void updateGearRatio(final GearRatio newRatio) {
-        this.gearRatio = newRatio;
+    public void updateGearRatio(final GearRatio argNewRatio) {
+        this.gearRatio = argNewRatio;
     }
 
     @Override
-    public void robotInit(final double timestamp) {
-        encoder.robotInit(timestamp);
+    public void robotInit(final double argTimestamp) {
+        encoder.robotInit(argTimestamp);
     }
 
     @Override
@@ -86,23 +86,23 @@ public class FXEncoderAdapter implements EncoderAdapter {
     }
 
     @Override
-    public void setSimPosition(final double rotations) {
-        encoder.setSimPosRotations(rotations);
+    public void setSimPosition(final double argRotations) {
+        encoder.setSimPosRotations(argRotations);
     }
 
     @Override
-    public void setSimVelocity(final double rps) {
-        encoder.setSimVelRotations(rps);
+    public void setSimVelocity(final double argRps) {
+        encoder.setSimVelRotations(argRps);
     }
 
     @Override
-    public void simulationInit(final double timestamp) {
-        encoder.simulationInit(timestamp);
+    public void simulationInit(final double argTimestamp) {
+        encoder.simulationInit(argTimestamp);
     }
 
     @Override
-    public void simulationPeriodic(final double timestamp) {
-        encoder.simulationPeriodic(timestamp);
+    public void simulationPeriodic(final double argTimestamp) {
+        encoder.simulationPeriodic(argTimestamp);
     }
 
     /** Returns the underlying EncoderFX for direct access when needed. */

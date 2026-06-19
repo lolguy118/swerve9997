@@ -83,11 +83,11 @@ public abstract class IterativeRobotBase extends RobotBase {
     /**
      * Constructor for IterativeRobotBase.
      *
-     * @param period Period in seconds.
+     * @param argPeriod Period in seconds.
      */
-    protected IterativeRobotBase(final double period) {
-        m_period = period;
-        m_watchdog = new Watchdog(period, this::printLoopOverrunMessage);
+    protected IterativeRobotBase(final double argPeriod) {
+        m_period = argPeriod;
+        m_watchdog = new Watchdog(argPeriod, this::printLoopOverrunMessage);
         m_watchdog.suppressTimeoutMessage(true);
     }
 
@@ -272,12 +272,12 @@ public abstract class IterativeRobotBase extends RobotBase {
     /**
      * Enables or disables flushing NetworkTables every loop iteration. By default, this is enabled.
      *
-     * @param enabled True to enable, false to disable
+     * @param argEnabled True to enable, false to disable
      * @deprecated Deprecated without replacement.
      */
     @Deprecated(forRemoval = true, since = "2025")
-    public void setNetworkTablesFlushEnabled(final boolean enabled) {
-        m_ntFlushEnabled = enabled;
+    public void setNetworkTablesFlushEnabled(final boolean argEnabled) {
+        m_ntFlushEnabled = argEnabled;
     }
 
     private boolean m_reportedLw;
@@ -285,21 +285,21 @@ public abstract class IterativeRobotBase extends RobotBase {
     /**
      * Sets whether LiveWindow operation is enabled during test mode. Calling
      *
-     * @param testLW True to enable, false to disable. Defaults to false.
+     * @param argTestLW True to enable, false to disable. Defaults to false.
      * @throws ConcurrentModificationException if this is called during test mode.
      */
-    public void enableLiveWindowInTest(final boolean testLW) {
+    public void enableLiveWindowInTest(final boolean argTestLW) {
         if (isTestEnabled()) {
             throw new ConcurrentModificationException(
                     "Can't configure test mode while in test mode!");
         }
-        if (!m_reportedLw && testLW) {
+        if (!m_reportedLw && argTestLW) {
             HAL.report(
                     tResourceType.kResourceType_SmartDashboard,
                     tInstances.kSmartDashboard_LiveWindow);
             m_reportedLw = true;
         }
-        m_lwEnabledInTest = testLW;
+        m_lwEnabledInTest = argTestLW;
     }
 
     /**

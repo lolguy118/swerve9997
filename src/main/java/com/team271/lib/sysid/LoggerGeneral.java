@@ -8,15 +8,15 @@ public class LoggerGeneral extends Logger {
 
     public void log(
             final double argTimestamp,
-            final double voltage,
-            final double measuredPosition,
-            final double measuredVelocity) {
+            final double argVoltage,
+            final double argMeasuredPosition,
+            final double argMeasuredVelocity) {
         updateData(argTimestamp);
         if (data.size() < DATA_VECTOR_SIZE) {
             data.add(argTimestamp);
-            data.add(voltage);
-            data.add(measuredPosition);
-            data.add(measuredVelocity);
+            data.add(argVoltage);
+            data.add(argMeasuredPosition);
+            data.add(argMeasuredVelocity);
         }
     }
 

@@ -33,8 +33,8 @@ class SubsystemManagerTest {
         boolean testExitCalled = false;
         boolean outputTelemetryCalled = false;
 
-        TestSubsystem(final String name) {
-            super(null, name);
+        TestSubsystem(final String argName) {
+            super(null, argName);
         }
 
         @Override
@@ -130,8 +130,8 @@ class SubsystemManagerTest {
 
     /** Subsystem that throws on every lifecycle method. */
     private static class ThrowingSubsystem extends Subsystem {
-        ThrowingSubsystem(final String name) {
-            super(null, name);
+        ThrowingSubsystem(final String argName) {
+            super(null, argName);
         }
 
         @Override
@@ -732,10 +732,10 @@ class SubsystemManagerTest {
     /* --- forEachSafe rate limiting --- */
 
     @SuppressWarnings("unchecked")
-    private Map<String, Double> getRateLimitMap(final SubsystemManager mgr) throws Exception {
+    private Map<String, Double> getRateLimitMap(final SubsystemManager argMgr) throws Exception {
         Field field = SubsystemManager.class.getDeclaredField("lastErrorNotificationTime");
         field.setAccessible(true);
-        return (Map<String, Double>) field.get(mgr);
+        return (Map<String, Double>) field.get(argMgr);
     }
 
     @Test

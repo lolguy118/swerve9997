@@ -119,8 +119,8 @@ class AutoMoveTimedTest {
             super(argLength);
         }
 
-        void setFakeElapsed(final double elapsed) {
-            fakeElapsed = elapsed;
+        void setFakeElapsed(final double argElapsed) {
+            fakeElapsed = argElapsed;
         }
 
         @Override

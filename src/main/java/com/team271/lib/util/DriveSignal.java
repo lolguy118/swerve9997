@@ -10,14 +10,14 @@ public final class DriveSignal {
     private final double right;
     private final boolean brakeMode;
 
-    public DriveSignal(final double left, final double right) {
-        this(left, right, false);
+    public DriveSignal(final double argLeft, final double argRight) {
+        this(argLeft, argRight, false);
     }
 
-    public DriveSignal(final double left, final double right, final boolean brakeMode) {
-        this.left = left;
-        this.right = right;
-        this.brakeMode = brakeMode;
+    public DriveSignal(final double argLeft, final double argRight, final boolean argBrakeMode) {
+        this.left = argLeft;
+        this.right = argRight;
+        this.brakeMode = argBrakeMode;
     }
 
     public static final DriveSignal NEUTRAL = new DriveSignal(0, 0);

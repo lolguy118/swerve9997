@@ -46,22 +46,22 @@ public class StateMachine<S extends Enum<S>> {
     /**
      * Sets a callback invoked when entering a new state (after currentState is updated).
      *
-     * @param callback receives (fromState, toState)
+     * @param argCallback receives (fromState, toState)
      * @return this, for chaining
      */
-    public StateMachine<S> withOnEnter(final BiConsumer<S, S> callback) {
-        this.onEnter = callback;
+    public StateMachine<S> withOnEnter(final BiConsumer<S, S> argCallback) {
+        this.onEnter = argCallback;
         return this;
     }
 
     /**
      * Sets a callback invoked when exiting the current state (before currentState is updated).
      *
-     * @param callback receives (fromState, toState)
+     * @param argCallback receives (fromState, toState)
      * @return this, for chaining
      */
-    public StateMachine<S> withOnExit(final BiConsumer<S, S> callback) {
-        this.onExit = callback;
+    public StateMachine<S> withOnExit(final BiConsumer<S, S> argCallback) {
+        this.onExit = argCallback;
         return this;
     }
 

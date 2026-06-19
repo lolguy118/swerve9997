@@ -93,14 +93,14 @@ public class SubsystemManager {
      * Runs an action on each lifecycle participant, catching and logging any exception so that a
      * single failing participant does not prevent others from running.
      */
-    private void forEachSafe(final String phase, final Consumer<Lifecycle> action) {
+    private void forEachSafe(final String argPhase, final Consumer<Lifecycle> argAction) {
         for (Lifecycle l : mAllLifecycles) {
             try {
-                action.accept(l);
+                argAction.accept(l);
             } catch (Throwable t) {
                 String name = (l instanceof Named n) ? n.getName() : l.getClass().getSimpleName();
                 DriverStation.reportError(
-                        name + " threw in " + phase + ": " + t.getMessage(), true);
+                        name + " threw in " + argPhase + ": " + t.getMessage(), true);
                 double now = Timer.getFPGATimestamp();
                 double lastTime =
                         lastErrorNotificationTime.getOrDefault(name, Double.NEGATIVE_INFINITY);
@@ -110,7 +110,7 @@ public class SubsystemManager {
                             new Elastic.Notification(
                                     Elastic.NotificationLevel.ERROR,
                                     "Subsystem Error",
-                                    name + " threw in " + phase + ": " + t.getMessage()));
+                                    name + " threw in " + argPhase + ": " + t.getMessage()));
                 }
             }
         }

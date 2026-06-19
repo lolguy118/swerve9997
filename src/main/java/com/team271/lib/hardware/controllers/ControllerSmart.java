@@ -189,10 +189,11 @@ public abstract class ControllerSmart extends ControllerBase {
      * PID Gains (unified)
      *
      */
-    public void setPIDGains(final int argSlot, final PIDGains gains) {
-        setPIDFSlot(argSlot, gains.kP(), gains.kI(), gains.kD(), gains.kV(), gains.kS());
-        setGravityGain(argSlot, gains.kG());
-        setAccelGain(argSlot, gains.kA());
+    public void setPIDGains(final int argSlot, final PIDGains argGains) {
+        setPIDFSlot(
+                argSlot, argGains.kP(), argGains.kI(), argGains.kD(), argGains.kV(), argGains.kS());
+        setGravityGain(argSlot, argGains.kG());
+        setAccelGain(argSlot, argGains.kA());
     }
 
     public PIDGains getPIDGains(final int argSlot) {
@@ -255,13 +256,15 @@ public abstract class ControllerSmart extends ControllerBase {
      * Current Limit (unified)
      *
      */
-    public void setCurrentLimit(final CurrentLimitConfig config) {
-        setCurrentLimitStator(config.statorEnabled(), config.statorLimit());
+    public void setCurrentLimit(final CurrentLimitConfig argConfig) {
+        setCurrentLimitStator(argConfig.statorEnabled(), argConfig.statorLimit());
         /* Always set the enable flag first, then apply time-based parameters if present */
-        setCurrentLimitSupply(config.supplyEnabled(), config.supplyLimit());
-        if (config.supplyLowerTime() > 0) {
+        setCurrentLimitSupply(argConfig.supplyEnabled(), argConfig.supplyLimit());
+        if (argConfig.supplyLowerTime() > 0) {
             setCurrentLimitSupply(
-                    config.supplyLimit(), config.supplyLowerTime(), config.supplyLowerLimit());
+                    argConfig.supplyLimit(),
+                    argConfig.supplyLowerTime(),
+                    argConfig.supplyLowerLimit());
         }
     }
 

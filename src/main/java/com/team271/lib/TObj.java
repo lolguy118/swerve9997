@@ -42,8 +42,8 @@ public abstract class TObj implements Lifecycle, Named {
 
     /** Build an AdvantageKit log key from this object's NT path. */
     @Override
-    public String logKey(final String suffix) {
-        return table.getPath() + "/" + suffix;
+    public String logKey(final String argSuffix) {
+        return table.getPath() + "/" + argSuffix;
     }
 
     /*

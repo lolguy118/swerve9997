@@ -559,8 +559,8 @@ public class PIDBase extends TObj implements PIDController {
 
     @Override
     public double calculate(
-            final double measurement, final double setpoint, final double timestamp) {
-        return calc(measurement, setpoint, timestamp);
+            final double argMeasurement, final double argSetpoint, final double argTimestamp) {
+        return calc(argMeasurement, argSetpoint, argTimestamp);
     }
 
     @Override

@@ -31,12 +31,12 @@ public interface Feedforward {
     /**
      * Calculates the feedforward output.
      *
-     * @param velocity current or desired velocity (mechanism units per second)
-     * @param acceleration current or desired acceleration (mechanism units per second squared),
+     * @param argVelocity current or desired velocity (mechanism units per second)
+     * @param argAcceleration current or desired acceleration (mechanism units per second squared),
      *     pass 0 if unused
      * @return feedforward output (typically volts)
      */
-    double calculate(double velocity, double acceleration);
+    double calculate(double argVelocity, double argAcceleration);
 
     /** Returns a zero feedforward (no-op). */
     static Feedforward zero() {
@@ -48,8 +48,8 @@ public interface Feedforward {
      *
      * <p>Use for flywheels, drivetrains, and other velocity-controlled mechanisms without gravity.
      */
-    static Feedforward simple(final double kS, final double kV) {
-        return (vel, accel) -> kS * Math.signum(vel) + kV * vel;
+    static Feedforward simple(final double argKS, final double argKV) {
+        return (vel, accel) -> argKS * Math.signum(vel) + argKV * vel;
     }
 
     /**
@@ -57,8 +57,8 @@ public interface Feedforward {
      *
      * <p>Includes acceleration compensation for faster transient response.
      */
-    static Feedforward simple(final double kS, final double kV, final double kA) {
-        return (vel, accel) -> kS * Math.signum(vel) + kV * vel + kA * accel;
+    static Feedforward simple(final double argKS, final double argKV, final double argKA) {
+        return (vel, accel) -> argKS * Math.signum(vel) + argKV * vel + argKA * accel;
     }
 
     /**
@@ -68,8 +68,8 @@ public interface Feedforward {
      * is independent of position.
      */
     static Feedforward elevator(
-            final double kS, final double kG, final double kV, final double kA) {
-        return (vel, accel) -> kS * Math.signum(vel) + kG + kV * vel + kA * accel;
+            final double argKS, final double argKG, final double argKV, final double argKA) {
+        return (vel, accel) -> argKS * Math.signum(vel) + argKG + argKV * vel + argKA * accel;
     }
 
     /**
@@ -78,10 +78,10 @@ public interface Feedforward {
      * <p>Extracts kS, kV, kA from the WPILib object and applies the same formula directly, avoiding
      * deprecated WPILib API methods.
      */
-    static Feedforward fromWPILib(final SimpleMotorFeedforward wpiFF) {
-        final double ks = wpiFF.getKs();
-        final double kv = wpiFF.getKv();
-        final double ka = wpiFF.getKa();
+    static Feedforward fromWPILib(final SimpleMotorFeedforward argWpiFF) {
+        final double ks = argWpiFF.getKs();
+        final double kv = argWpiFF.getKv();
+        final double ka = argWpiFF.getKa();
         return simple(ks, kv, ka);
     }
 }

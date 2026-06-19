@@ -731,23 +731,24 @@ public abstract class TransmissionBase extends TObj {
     /** Sentinel value indicating no solenoid channel is configured. */
     public static final int NO_SOLENOID_CHANNEL = -1;
 
-    public void addShifter(final int pneumaticHubCanId, final int chGear1, final int chGear2) {
-        if (chGear1 != NO_SOLENOID_CHANNEL && chGear2 != NO_SOLENOID_CHANNEL) {
-            setShifter(new ShifterPneumatic(pneumaticHubCanId, chGear1, chGear2));
+    public void addShifter(
+            final int argPneumaticHubCanId, final int argChGear1, final int argChGear2) {
+        if (argChGear1 != NO_SOLENOID_CHANNEL && argChGear2 != NO_SOLENOID_CHANNEL) {
+            setShifter(new ShifterPneumatic(argPneumaticHubCanId, argChGear1, argChGear2));
         }
     }
 
     /** Convenience method: create a pneumatic shifter with per-gear sensor ratios. */
     public void addShifter(
-            final int pneumaticHubCanId,
-            final int chGear1,
+            final int argPneumaticHubCanId,
+            final int argChGear1,
             final double argSensorRatio1,
-            final int chGear2,
+            final int argChGear2,
             final double argSensorRatio2) {
         mSensorRatioGear1 = argSensorRatio1;
         mSensorRatioGear2 = argSensorRatio2;
 
-        addShifter(pneumaticHubCanId, chGear1, chGear2);
+        addShifter(argPneumaticHubCanId, argChGear1, argChGear2);
     }
 
     public ShifterState shift(final ShifterState argShiftTo) {

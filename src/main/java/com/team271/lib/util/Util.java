@@ -17,47 +17,48 @@ public final class Util {
     /*
      * Limits the given input to the given magnitude.
      */
-    public static double limit(final double v, final double maxMagnitude) {
-        return limit(v, -maxMagnitude, maxMagnitude);
+    public static double limit(final double argV, final double argMaxMagnitude) {
+        return limit(argV, -argMaxMagnitude, argMaxMagnitude);
     }
 
-    public static double limit(final double v, final double min, final double max) {
-        return Math.min(max, Math.max(min, v));
+    public static double limit(final double argV, final double argMin, final double argMax) {
+        return Math.min(argMax, Math.max(argMin, argV));
     }
 
-    public static boolean inRange(final double v, final double maxMagnitude) {
-        return inRange(v, -maxMagnitude, maxMagnitude);
+    public static boolean inRange(final double argV, final double argMaxMagnitude) {
+        return inRange(argV, -argMaxMagnitude, argMaxMagnitude);
     }
 
     /*
      * Checks if the given input is within the range (min, max), both exclusive.
      */
-    public static boolean inRange(final double v, final double min, final double max) {
-        return v > min && v < max;
+    public static boolean inRange(final double argV, final double argMin, final double argMax) {
+        return argV > argMin && argV < argMax;
     }
 
-    public static double interpolate(final double a, final double b, final double x) {
-        final double t = limit(x, 0.0, 1.0);
-        return a + (b - a) * t;
+    public static double interpolate(final double argA, final double argB, final double argX) {
+        final double t = limit(argX, 0.0, 1.0);
+        return argA + (argB - argA) * t;
     }
 
-    public static boolean epsilonEquals(final double a, final double b, final double epsilon) {
-        return (a - epsilon <= b) && (a + epsilon >= b);
+    public static boolean epsilonEquals(
+            final double argA, final double argB, final double argEpsilon) {
+        return (argA - argEpsilon <= argB) && (argA + argEpsilon >= argB);
     }
 
-    public static boolean epsilonEquals(final double a, final double b) {
-        return epsilonEquals(a, b, kEpsilon);
+    public static boolean epsilonEquals(final double argA, final double argB) {
+        return epsilonEquals(argA, argB, kEpsilon);
     }
 
-    public static boolean epsilonEquals(final int a, final int b, final int epsilon) {
-        return (a - epsilon <= b) && (a + epsilon >= b);
+    public static boolean epsilonEquals(final int argA, final int argB, final int argEpsilon) {
+        return (argA - argEpsilon <= argB) && (argA + argEpsilon >= argB);
     }
 
     public static boolean allCloseTo(
-            final List<Double> list, final double value, final double epsilon) {
+            final List<Double> argList, final double argValue, final double argEpsilon) {
         boolean result = true;
-        for (Double valueIn : list) {
-            result &= epsilonEquals(valueIn, value, epsilon);
+        for (Double valueIn : argList) {
+            result &= epsilonEquals(valueIn, argValue, argEpsilon);
         }
         return result;
     }
@@ -90,25 +91,25 @@ public final class Util {
      * https://www.desmos.com/calculator/5olzcaocch
      */
     public static void handleDeadzone_Radial(
-            final double pOut[], // out: resulting stick x value
-            final double x, // in: initial stick x value
-            final double y, // in: initial stick x value
-            final double deadZoneLow, // in: distance from zero to ignore
-            final double deadZoneHigh // in: distance from unit circle to ignore
+            final double argPOut[], // out: resulting stick x value
+            final double argX, // in: initial stick x value
+            final double argY, // in: initial stick x value
+            final double argDeadZoneLow, // in: distance from zero to ignore
+            final double argDeadZoneHigh // in: distance from unit circle to ignore
             ) {
-        double mag = Math.sqrt(x * x + y * y);
+        double mag = Math.sqrt(argX * argX + argY * argY);
 
-        if (mag > deadZoneLow) {
+        if (mag > argDeadZoneLow) {
             // scale such that output magnitude is in the range [0.0, 1.0]
-            double legalRange = 1.0 - deadZoneHigh - deadZoneLow;
-            double normalizedMag = Math.min(1.0, (mag - deadZoneLow) / legalRange);
+            double legalRange = 1.0 - argDeadZoneHigh - argDeadZoneLow;
+            double normalizedMag = Math.min(1.0, (mag - argDeadZoneLow) / legalRange);
             double scale = normalizedMag / mag;
-            pOut[0] = x * scale;
-            pOut[1] = y * scale;
+            argPOut[0] = argX * scale;
+            argPOut[1] = argY * scale;
         } else {
             // stick is in the inner dead zone
-            pOut[0] = 0.0;
-            pOut[1] = 0.0;
+            argPOut[0] = 0.0;
+            argPOut[1] = 0.0;
         }
     }
 
@@ -120,13 +121,13 @@ public final class Util {
     }
 
     public static double reMap(
-            final double input,
-            final double input_start,
-            final double input_end,
-            final double output_start,
-            final double output_end) {
-        double slope = 1.0 * (output_end - output_start) / (input_end - input_start);
-        return output_start + slope * (input - input_start);
+            final double argInput,
+            final double argInputStart,
+            final double argInputEnd,
+            final double argOutputStart,
+            final double argOutputEnd) {
+        double slope = 1.0 * (argOutputEnd - argOutputStart) / (argInputEnd - argInputStart);
+        return argOutputStart + slope * (argInput - argInputStart);
     }
 
     /**

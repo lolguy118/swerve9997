@@ -15,6 +15,7 @@
       Naming & structure
         * TypeName-adjacent: OneTopLevelClass + OuterTypeFilename — CODE-MAF-001b
         * LocalVariableName              — CODE-VAR-001c
+        * ParameterName (arg-prefix)     — CODE-VAR-001b (ADR-020 phase 3)
         * FinalClass                     — CODE-FUN-003b
         * HideUtilityClassConstructor    — CODE-FUN-003b / CODE-MAF-003b
         * FinalParameters                — CODE-GEN-003b (ADR-020 phase 1)
@@ -32,8 +33,9 @@
     Grow this config incrementally as other CODE-* rules are ready to be mechanized.
     See docs/coding-standard/java/Standard-Compliance.md for the enforcement matrix.
 
-    Deferred (standard-vs-code gap — large mechanical sweep, separate effort, ADR-020):
-      MemberName (m-prefix), ParameterName (arg-prefix), MagicNumber.
+    Deferred (standard-vs-code gap — separate effort, ADR-020): MagicNumber; and MemberName
+      (m-prefix), scoped to PRIVATE non-final fields per the supplement — public/protected fields
+      are the ADR-001 fork API and keep their names, so MemberName is not yet gated.
 
     Run locally:   ./gradlew checkstyleMain checkstyleTest
     CI gate:       .github/workflows/ci.yml (build job)
@@ -65,6 +67,12 @@
         <!-- CODE-VAR-001c: local variables use camelCase (tmp prefix allowed). -->
         <module name="LocalVariableName">
             <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <!-- CODE-VAR-001b: method/constructor parameters use the arg-prefix (ADR-020 phase 3).
+             Record components (RECORD_COMPONENT_DEF) are not checked — they are public accessor
+             names (ADR-001 API), not PARAMETER_DEF. -->
+        <module name="ParameterName">
+            <property name="format" value="^arg[A-Z][a-zA-Z0-9]*$"/>
         </module>
         <!-- CODE-FUN-003b: utility classes are final with a private constructor. -->
         <module name="FinalClass"/>

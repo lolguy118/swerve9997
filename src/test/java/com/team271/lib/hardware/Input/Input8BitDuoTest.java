@@ -46,20 +46,24 @@ class Input8BitDuoTest {
     }
 
     private void injectJoystickData(
-            final double[] axes, final int buttonBitmask, final int buttonCount, final int pov) {
-        int axisCount = axes != null ? axes.length : 6;
+            final double[] argAxes,
+            final int argButtonBitmask,
+            final int argButtonCount,
+            final int argPov) {
+        int axisCount = argAxes != null ? argAxes.length : 6;
         DriverStationDataJNI.setJoystickAxisCount(PORT, axisCount);
-        DriverStationDataJNI.setJoystickButtonCount(PORT, buttonCount);
+        DriverStationDataJNI.setJoystickButtonCount(PORT, argButtonCount);
         DriverStationDataJNI.setJoystickPOVCount(PORT, 1);
-        if (axes != null) {
-            for (int i = 0; i < axes.length; i++) {
-                DriverStationDataJNI.setJoystickAxis(PORT, i, axes[i]);
+        if (argAxes != null) {
+            for (int i = 0; i < argAxes.length; i++) {
+                DriverStationDataJNI.setJoystickAxis(PORT, i, argAxes[i]);
             }
         }
-        for (int i = 1; i <= buttonCount; i++) {
-            DriverStationDataJNI.setJoystickButton(PORT, i, (buttonBitmask & (1 << (i - 1))) != 0);
+        for (int i = 1; i <= argButtonCount; i++) {
+            DriverStationDataJNI.setJoystickButton(
+                    PORT, i, (argButtonBitmask & (1 << (i - 1))) != 0);
         }
-        DriverStationDataJNI.setJoystickPOV(PORT, 0, pov);
+        DriverStationDataJNI.setJoystickPOV(PORT, 0, argPov);
         DriverStationDataJNI.notifyNewData();
         DriverStation.refreshData();
     }

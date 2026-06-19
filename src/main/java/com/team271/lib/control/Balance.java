@@ -75,8 +75,8 @@ public class Balance {
         }
     }
 
-    public int secondsToTicks(final double time) {
-        return (int) (time * 50);
+    public int secondsToTicks(final double argTime) {
+        return (int) (argTime * 50);
     }
 
     /**

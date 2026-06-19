@@ -46,11 +46,11 @@ public final class Elastic {
      * Sends an notification to the Elastic dashboard. The notification is serialized as a JSON
      * string before being published.
      *
-     * @param notification the {@link Notification} object containing notification details
+     * @param argNotification the {@link Notification} object containing notification details
      */
-    public static void sendNotification(final Notification notification) {
+    public static void sendNotification(final Notification argNotification) {
         try {
-            notificationPublisher.set(objectMapper.writeValueAsString(notification));
+            notificationPublisher.set(objectMapper.writeValueAsString(argNotification));
         } catch (JsonProcessingException e) {
             edu.wpi.first.wpilibj.DriverStation.reportError(
                     "Elastic notification failed: " + e.getMessage(), false);
@@ -64,20 +64,20 @@ public final class Elastic {
      * <p>If the given name is a number, Elastic will select the tab whose index equals the number
      * provided.
      *
-     * @param tabName the name of the tab to select
+     * @param argTabName the name of the tab to select
      */
-    public static void selectTab(final String tabName) {
-        selectedTabPublisher.set(tabName);
+    public static void selectTab(final String argTabName) {
+        selectedTabPublisher.set(argTabName);
     }
 
     /**
      * Selects the tab of the dashboard at the given index. If this index is greater than or equal
      * to the number of tabs, this will have no effect.
      *
-     * @param tabIndex the index of the tab to select.
+     * @param argTabIndex the index of the tab to select.
      */
-    public static void selectTab(final int tabIndex) {
-        selectTab(Integer.toString(tabIndex));
+    public static void selectTab(final int argTabIndex) {
+        selectTab(Integer.toString(argTabIndex));
     }
 
     /**
@@ -117,82 +117,85 @@ public final class Elastic {
         /**
          * Creates a new Notification with all properties specified.
          *
-         * @param level the level of the notification (e.g., INFO, WARNING, ERROR)
-         * @param title the title text of the notification
-         * @param description the descriptive text of the notification
-         * @param displayTimeMillis the time in milliseconds for which the notification is displayed
-         * @param width the width of the notification display area
-         * @param height the height of the notification display area, inferred if below zero
+         * @param argLevel the level of the notification (e.g., INFO, WARNING, ERROR)
+         * @param argTitle the title text of the notification
+         * @param argDescription the descriptive text of the notification
+         * @param argDisplayTimeMillis the time in milliseconds for which the notification is
+         *     displayed
+         * @param argWidth the width of the notification display area
+         * @param argHeight the height of the notification display area, inferred if below zero
          */
         public Notification(
-                final NotificationLevel level,
-                final String title,
-                final String description,
-                final int displayTimeMillis,
-                final double width,
-                final double height) {
-            this.level = level;
-            this.title = title;
-            this.displayTimeMillis = displayTimeMillis;
-            this.description = description;
-            this.height = height;
-            this.width = width;
+                final NotificationLevel argLevel,
+                final String argTitle,
+                final String argDescription,
+                final int argDisplayTimeMillis,
+                final double argWidth,
+                final double argHeight) {
+            this.level = argLevel;
+            this.title = argTitle;
+            this.displayTimeMillis = argDisplayTimeMillis;
+            this.description = argDescription;
+            this.height = argHeight;
+            this.width = argWidth;
         }
 
         /**
          * Creates a new Notification with default display time and dimensions.
          *
-         * @param level the level of the notification
-         * @param title the title text of the notification
-         * @param description the descriptive text of the notification
+         * @param argLevel the level of the notification
+         * @param argTitle the title text of the notification
+         * @param argDescription the descriptive text of the notification
          */
         public Notification(
-                final NotificationLevel level, final String title, final String description) {
-            this(level, title, description, 3000, 350, -1);
+                final NotificationLevel argLevel,
+                final String argTitle,
+                final String argDescription) {
+            this(argLevel, argTitle, argDescription, 3000, 350, -1);
         }
 
         /**
          * Creates a new Notification with a specified display time and default dimensions.
          *
-         * @param level the level of the notification
-         * @param title the title text of the notification
-         * @param description the descriptive text of the notification
-         * @param displayTimeMillis the display time in milliseconds
+         * @param argLevel the level of the notification
+         * @param argTitle the title text of the notification
+         * @param argDescription the descriptive text of the notification
+         * @param argDisplayTimeMillis the display time in milliseconds
          */
         public Notification(
-                final NotificationLevel level,
-                final String title,
-                final String description,
-                final int displayTimeMillis) {
-            this(level, title, description, displayTimeMillis, 350, -1);
+                final NotificationLevel argLevel,
+                final String argTitle,
+                final String argDescription,
+                final int argDisplayTimeMillis) {
+            this(argLevel, argTitle, argDescription, argDisplayTimeMillis, 350, -1);
         }
 
         /**
          * Creates a new Notification with specified dimensions and default display time. If the
          * height is below zero, it is automatically inferred based on screen size.
          *
-         * @param level the level of the notification
-         * @param title the title text of the notification
-         * @param description the descriptive text of the notification
-         * @param width the width of the notification display area
-         * @param height the height of the notification display area, inferred if below zero
+         * @param argLevel the level of the notification
+         * @param argTitle the title text of the notification
+         * @param argDescription the descriptive text of the notification
+         * @param argWidth the width of the notification display area
+         * @param argHeight the height of the notification display area, inferred if below zero
          */
         public Notification(
-                final NotificationLevel level,
-                final String title,
-                final String description,
-                final double width,
-                final double height) {
-            this(level, title, description, 3000, width, height);
+                final NotificationLevel argLevel,
+                final String argTitle,
+                final String argDescription,
+                final double argWidth,
+                final double argHeight) {
+            this(argLevel, argTitle, argDescription, 3000, argWidth, argHeight);
         }
 
         /**
          * Updates the level of this notification
          *
-         * @param level the level to set the notification to
+         * @param argLevel the level to set the notification to
          */
-        public void setLevel(final NotificationLevel level) {
-            this.level = level;
+        public void setLevel(final NotificationLevel argLevel) {
+            this.level = argLevel;
         }
 
         /**
@@ -207,10 +210,10 @@ public final class Elastic {
         /**
          * Updates the title of this notification
          *
-         * @param title the title to set the notification to
+         * @param argTitle the title to set the notification to
          */
-        public void setTitle(final String title) {
-            this.title = title;
+        public void setTitle(final String argTitle) {
+            this.title = argTitle;
         }
 
         /**
@@ -225,10 +228,10 @@ public final class Elastic {
         /**
          * Updates the description of this notification
          *
-         * @param description the description to set the notification to
+         * @param argDescription the description to set the notification to
          */
-        public void setDescription(final String description) {
-            this.description = description;
+        public void setDescription(final String argDescription) {
+            this.description = argDescription;
         }
 
         public String getDescription() {
@@ -238,19 +241,19 @@ public final class Elastic {
         /**
          * Updates the display time of the notification
          *
-         * @param seconds the number of seconds to display the notification for
+         * @param argSeconds the number of seconds to display the notification for
          */
-        public void setDisplayTimeSeconds(final double seconds) {
-            setDisplayTimeMillis((int) Math.round(seconds * 1000));
+        public void setDisplayTimeSeconds(final double argSeconds) {
+            setDisplayTimeMillis((int) Math.round(argSeconds * 1000));
         }
 
         /**
          * Updates the display time of the notification in milliseconds
          *
-         * @param displayTimeMillis the number of milliseconds to display the notification for
+         * @param argDisplayTimeMillis the number of milliseconds to display the notification for
          */
-        public void setDisplayTimeMillis(final int displayTimeMillis) {
-            this.displayTimeMillis = displayTimeMillis;
+        public void setDisplayTimeMillis(final int argDisplayTimeMillis) {
+            this.displayTimeMillis = argDisplayTimeMillis;
         }
 
         /**
@@ -265,10 +268,10 @@ public final class Elastic {
         /**
          * Updates the width of the notification
          *
-         * @param width the width to set the notification to
+         * @param argWidth the width to set the notification to
          */
-        public void setWidth(final double width) {
-            this.width = width;
+        public void setWidth(final double argWidth) {
+            this.width = argWidth;
         }
 
         /**
@@ -286,10 +289,10 @@ public final class Elastic {
          * <p>If the height is set to -1, the height will be determined automatically by the
          * dashboard
          *
-         * @param height the height to set the notification to
+         * @param argHeight the height to set the notification to
          */
-        public void setHeight(final double height) {
-            this.height = height;
+        public void setHeight(final double argHeight) {
+            this.height = argHeight;
         }
 
         /**
@@ -304,76 +307,76 @@ public final class Elastic {
         /**
          * Modifies the notification's level and returns itself to allow for method chaining
          *
-         * @param level the level to set the notification to
+         * @param argLevel the level to set the notification to
          * @return the current notification
          */
-        public Notification withLevel(final NotificationLevel level) {
-            this.level = level;
+        public Notification withLevel(final NotificationLevel argLevel) {
+            this.level = argLevel;
             return this;
         }
 
         /**
          * Modifies the notification's title and returns itself to allow for method chaining
          *
-         * @param title the title to set the notification to
+         * @param argTitle the title to set the notification to
          * @return the current notification
          */
-        public Notification withTitle(final String title) {
-            setTitle(title);
+        public Notification withTitle(final String argTitle) {
+            setTitle(argTitle);
             return this;
         }
 
         /**
          * Modifies the notification's description and returns itself to allow for method chaining
          *
-         * @param description the description to set the notification to
+         * @param argDescription the description to set the notification to
          * @return the current notification
          */
-        public Notification withDescription(final String description) {
-            setDescription(description);
+        public Notification withDescription(final String argDescription) {
+            setDescription(argDescription);
             return this;
         }
 
         /**
          * Modifies the notification's display time and returns itself to allow for method chaining
          *
-         * @param seconds the number of seconds to display the notification for
+         * @param argSeconds the number of seconds to display the notification for
          * @return the current notification
          */
-        public Notification withDisplaySeconds(final double seconds) {
-            return withDisplayMilliseconds((int) Math.round(seconds * 1000));
+        public Notification withDisplaySeconds(final double argSeconds) {
+            return withDisplayMilliseconds((int) Math.round(argSeconds * 1000));
         }
 
         /**
          * Modifies the notification's display time and returns itself to allow for method chaining
          *
-         * @param displayTimeMillis the number of milliseconds to display the notification for
+         * @param argDisplayTimeMillis the number of milliseconds to display the notification for
          * @return the current notification
          */
-        public Notification withDisplayMilliseconds(final int displayTimeMillis) {
-            setDisplayTimeMillis(displayTimeMillis);
+        public Notification withDisplayMilliseconds(final int argDisplayTimeMillis) {
+            setDisplayTimeMillis(argDisplayTimeMillis);
             return this;
         }
 
         /**
          * Modifies the notification's width and returns itself to allow for method chaining
          *
-         * @param width the width to set the notification to
+         * @param argWidth the width to set the notification to
          * @return the current notification
          */
-        public Notification withWidth(final double width) {
-            setWidth(width);
+        public Notification withWidth(final double argWidth) {
+            setWidth(argWidth);
             return this;
         }
 
         /**
          * Modifies the notification's height and returns itself to allow for method chaining
          *
-         * @param height the height to set the notification to
+         * @param argHeight the height to set the notification to
          * @return the current notification
          */
-        public Notification withHeight(final double height) {
-            setHeight(height);
+        public Notification withHeight(final double argHeight) {
+            setHeight(argHeight);
             return this;
         }
 

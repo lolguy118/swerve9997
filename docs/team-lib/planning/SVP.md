@@ -184,7 +184,7 @@ project to declare per-tool adoption. Current library state:
 | Spotless + Google Java Format | Adopted | `./gradlew spotlessCheck` |
 | `javac -Xlint:all` | Adopted | `build.gradle` compile flags |
 | `javac -Xdoclint:all,-missing` | Adopted (implicit) | Runs as part of `./gradlew javadoc`; consider making explicit in `build.gradle` |
-| Error Prone | Adopted | Inline during `compileJava`; warnings-only during rollout |
+| Error Prone | Adopted (gate) | Inline during `compileJava`; default-error checks now fail the build (codebase clean; `allErrorsAsWarnings` removed). Test compilation excluded |
 | NullAway (Error Prone plugin) | Adopted (**gate**) | `ERROR` — any nullness violation fails the build/CI. Covers all `@NullMarked` library layers (`api`, `vendor`, `bridge`, `hardware`, `control`, `subsystem`, `auto`) per [ADR-018](adr/ADR-018-null-safety-annotation-policy.md); unannotated vendor/WPILib packages are unchecked |
 | SpotBugs | Adopted | `ignoreFailures=true` during rollout |
 | Checkstyle | Adopted | `config/checkstyle/checkstyle.xml` |

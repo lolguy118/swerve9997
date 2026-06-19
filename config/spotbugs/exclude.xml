@@ -67,4 +67,17 @@
         <Bug pattern="MS_PKGPROTECT,ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
     </Match>
 
+    <!-- Test sources (classes named *Test and their inner classes, e.g. FooTest$Stub):
+         suppress the STYLE, BAD_PRACTICE, and PERFORMANCE categories. Test code deliberately
+         uses idioms these flag — vacuous-instanceof type assertions, rough-constant expected
+         values (e.g. 3.14), dead local stores in arrange/act, unread fixture fields — the same
+         reason Error Prone is disabled on compileTestJava (build.gradle). CORRECTNESS, SECURITY,
+         and MT_CORRECTNESS findings STILL gate test code; only the noise categories are exempt.
+         Scoped by class name because SpotBugs records source paths package-relative, so the test
+         source set cannot be matched by <Source>. -->
+    <Match>
+        <Class name="~.*Test(\$.*)?"/>
+        <Bug category="STYLE,BAD_PRACTICE,PERFORMANCE"/>
+    </Match>
+
 </FindBugsFilter>

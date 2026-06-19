@@ -6,7 +6,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.List;
 
-public class Util {
+public final class Util {
     public static final double kEpsilon = 1e-12;
 
     /*
@@ -55,8 +55,8 @@ public class Util {
 
     public static boolean allCloseTo(final List<Double> list, double value, double epsilon) {
         boolean result = true;
-        for (Double value_in : list) {
-            result &= epsilonEquals(value_in, value, epsilon);
+        for (Double valueIn : list) {
+            result &= epsilonEquals(valueIn, value, epsilon);
         }
         return result;
     }

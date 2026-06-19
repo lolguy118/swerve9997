@@ -6,15 +6,33 @@
 <!--
     Team271-Lib Checkstyle configuration.
 
-    Initial scope (mechanizable subset of the coding standard):
-      * NeedBraces         — mandatory braces on every if/else/for/while/do
-                             even for single-statement bodies (CODE-FMT-002).
-      * MissingSwitchDefault — every switch must have a default branch
-                               (CODE-CTL-002).
+    Mechanizable subset of the coding standard. Each module cites the CODE-* rule
+    it enforces. Formatting rules are owned by Spotless (google-java-format AOSP),
+    NOT Checkstyle, so only structural / control-flow / naming / design rules live
+    here. Runs strict (maxWarnings=0) — every module below is clean on the current
+    tree, so a new violation fails the build.
 
-    Grow this config incrementally as other CODE-* rules are ready to be
-    mechanized. See docs/common/coding-standard/Team271-Software-Coding-Standard-Compliance.md
-    for the enforcement matrix.
+      Naming & structure
+        * TypeName-adjacent: OneTopLevelClass + OuterTypeFilename — CODE-MAF-001b
+        * LocalVariableName              — CODE-VAR-001c
+        * FinalClass                     — CODE-FUN-003b
+        * HideUtilityClassConstructor    — CODE-FUN-003b / CODE-MAF-003b
+      Control flow
+        * NeedBraces                     — CODE-FMT-002
+        * MissingSwitchDefault           — CODE-CTL-002a
+        * InnerAssignment                — CODE-CTL-001
+        * FallThrough                    — CODE-CTL-002b
+        * ModifiedControlVariable        — CODE-CTL-003b
+      Defensive / banned APIs
+        * IllegalCatch                   — CODE-GEN-011 (top-level-lifecycle catches
+                                           suppressed in suppressions.xml per ADR-011)
+        * RegexpSinglelineJava           — CODE-GEN-002a (prohibited APIs)
+
+    Grow this config incrementally as other CODE-* rules are ready to be mechanized.
+    See docs/coding-standard/java/Standard-Compliance.md for the enforcement matrix.
+
+    Deferred (standard-vs-code gap — large mechanical sweep, separate effort):
+      MemberName (m-prefix), ParameterName (arg-prefix), FinalParameters, MagicNumber.
 
     Run locally:   ./gradlew checkstyleMain checkstyleTest
     CI gate:       .github/workflows/ci.yml (build job)
@@ -32,15 +50,55 @@
         <property name="fileNamePattern" value=".*[\\/]BuildConstants\.java$"/>
     </module>
 
+    <!-- Documented, by-design exceptions (e.g. ADR-011 top-level-lifecycle catches). -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/suppressions.xml"/>
+    </module>
+
     <module name="TreeWalker">
-        <!-- CODE-FMT-002: braces mandatory on every control-flow construct -->
+
+        <!-- ===== Naming and structure ===== -->
+        <!-- CODE-MAF-001b: one top-level class per file; file name matches the type. -->
+        <module name="OneTopLevelClass"/>
+        <module name="OuterTypeFilename"/>
+        <!-- CODE-VAR-001c: local variables use camelCase (tmp prefix allowed). -->
+        <module name="LocalVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <!-- CODE-FUN-003b: utility classes are final with a private constructor. -->
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+
+        <!-- ===== Control flow ===== -->
+        <!-- CODE-FMT-002: braces mandatory on every control-flow construct. -->
         <module name="NeedBraces">
             <property name="tokens"
                       value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_IF, LITERAL_WHILE"/>
             <property name="allowSingleLineStatement" value="false"/>
         </module>
-
-        <!-- CODE-CTL-002: every switch must have a default branch -->
+        <!-- CODE-CTL-002a: every switch must have a default branch. -->
         <module name="MissingSwitchDefault"/>
+        <!-- CODE-CTL-001: no assignment used inside a subexpression (MISRA 13.4). -->
+        <module name="InnerAssignment"/>
+        <!-- CODE-CTL-002b: no switch fall-through without an explicit comment. -->
+        <module name="FallThrough"/>
+        <!-- CODE-CTL-003b: for-loop control variables not modified in the body. -->
+        <module name="ModifiedControlVariable"/>
+
+        <!-- ===== Defensive / banned APIs ===== -->
+        <!-- CODE-GEN-011: do not catch broad exception types (Throwable/Exception/etc.).
+             Permitted top-level-lifecycle catches are listed in suppressions.xml. -->
+        <module name="IllegalCatch"/>
+        <!-- CODE-GEN-002a: prohibited APIs/patterns in production code. Line-based and
+             AST-aware (skips comments/strings); word boundaries avoid matching e.g.
+             a project subsystem's own .stop()/.sleep(). -->
+        <module name="RegexpSinglelineJava">
+            <property name="format"
+                      value="(\bSystem\.exit\s*\(|\bRuntime\.getRuntime\(\)\.halt\s*\(|\bThread\.sleep\s*\(|\bThread\.stop\s*\(|\bSystem\.gc\s*\(|\bvoid\s+finalize\s*\(|\bSystem\.out\.print|\bSystem\.err\.print|\bSystem\.currentTimeMillis\s*\(|\bnew\s+Thread\s*\(|\bMath\.random\s*\()"/>
+            <property name="message"
+                      value="CODE-GEN-002a: prohibited API/pattern — use the project abstraction (logger, Timer/monotonic clock, executor, seeded Random, try-with-resources)."/>
+            <property name="ignoreComments" value="true"/>
+        </module>
+
     </module>
 </module>

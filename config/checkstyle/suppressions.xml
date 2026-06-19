@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<!--
+    Team271-Lib Checkstyle suppressions.
+
+    Each suppression documents WHY the finding is acceptable. Prefer fixing the
+    underlying issue over adding a suppression. Referenced from
+    config/checkstyle/checkstyle.xml via the SuppressionFilter module.
+-->
+<suppressions>
+
+    <!-- CODE-GEN-011 permits broad catch at top-level lifecycle boundaries.
+         SubsystemManager.forEachSafe deliberately catches Throwable so one failing
+         lifecycle participant cannot prevent the others from running
+         (ADR-011 subsystem exception isolation). -->
+    <suppress checks="IllegalCatch" files="[\\/]subsystem[\\/]SubsystemManager\.java$"/>
+
+    <!-- AutoCloseable.close() declares `throws Exception`; the resetForTesting cleanup
+         loop must catch Exception to continue closing the remaining tracked devices
+         (a leaked Phoenix 6 sim handle caused SIGSEGVs). -->
+    <suppress checks="IllegalCatch" files="[\\/]hardware[\\/]CTREManager\.java$"/>
+
+</suppressions>

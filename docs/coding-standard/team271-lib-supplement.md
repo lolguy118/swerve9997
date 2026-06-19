@@ -59,6 +59,20 @@ In addition to the standard's Appendix A allowlist, these FRC-ecosystem
 short forms are approved identifiers: `auto`, `can`, `deg`, `mps`,
 `pid`, `rad`, `rps`, `teleop`.
 
+## Instance-field naming scope (refines CODE-VAR-001a)
+
+[CODE-VAR-001a](java/Standard-Variables.md#code-var-001)'s `m`-prefix
+applies to **private** non-static, non-final instance fields only.
+Public and protected fields are part of the library's extension API —
+robot projects fork this repo and subclass library types, reading
+inherited protected/public fields
+([ADR-001](../team-lib/planning/adr/ADR-001-team271-lib-standalone-library.md)).
+Forcing the `m` prefix on them would rename published API and break
+forks, so they **retain their published names**. Any future automated
+`MemberName` enforcement (ADR-020) is therefore scoped to private fields;
+the generic rule's broader wording yields to this binding for the library
+tier.
+
 ## FRC terminology (acronyms used in the standard)
 
 The generic acronym glossary (ADR, GC, JVM, the SDP / SRS / SVP / SCMP

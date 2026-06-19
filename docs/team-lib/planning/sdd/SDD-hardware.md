@@ -3,7 +3,7 @@
 | Field | Value |
 | ----- | ----- |
 | Document No. | TBD-SDD-HARDWARE |
-| Revision | 0.3 |
+| Revision | 0.4 |
 | Date | 2026-06-19 |
 | Status | Draft |
 | Requirements Traced | `[HW-001]`..`[HW-007]` (SRS §4.3) |
@@ -88,14 +88,19 @@ TObj
                             + Motion Magic (static, dynamic, expo) variants
 ```
 
-`TransmissionBase` manages up to four motors in a `LinkedHashSet`
-(for deterministic iteration). Configuration calls (current limits,
-voltage peaks, ramp rates) apply to **all** motors; PID, direction,
-and control-mode calls apply to the **leader only**. Followers are
-established via a follow call that validates leader and follower
-share the same CAN bus — cross-bus follow attempts return
-`ERROR_INVALID_BUS` because the follower would otherwise sit idle
-at zero output with no error indication.
+`TransmissionBase` manages a leader plus **any number of followers**
+in a `LinkedHashSet` (for deterministic iteration); the follower count
+is not capped
+([ADR-019](../adr/ADR-019-lift-transmission-motor-cap.md)). Followers are
+registered incrementally through an additive follower API on the concrete
+transmission, with the set as the single source of truth; the legacy
+fixed-arity follower constructors are deprecated but retained for backward
+compatibility. Configuration calls (current limits, voltage peaks, ramp
+rates) apply to **all** motors; PID, direction, and control-mode calls
+apply to the **leader only**. Followers are established via a follow call
+that validates leader and follower share the same CAN bus — cross-bus
+follow attempts return `ERROR_INVALID_BUS` because the follower would
+otherwise sit idle at zero output with no error indication.
 
 The encoder subsystem uses an `EncoderAdapter` interface as the
 single source of truth: `TransmissionBase` holds one adapter

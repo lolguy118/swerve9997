@@ -98,6 +98,67 @@ class TransmissionFXTest {
         assertEquals(3, tx.getAllControllers().size());
     }
 
+    /* ADR-019: variable-arity followers (cap lifted past 4 motors) */
+
+    @Test
+    void addFollowerRegistersWithAllControllers() {
+        CANDeviceID leaderId = new CANDeviceID(26);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.addFollower(new CANDeviceID(27), false);
+
+        assertEquals(2, tx.getAllControllers().size());
+    }
+
+    @Test
+    void addFollowerSupportsMoreThanFourMotors() {
+        CANDeviceID leaderId = new CANDeviceID(20);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        /* leader + 5 followers = 6 motors, exceeding the legacy 4-motor cap */
+        tx.addFollower(new CANDeviceID(21), false);
+        tx.addFollower(new CANDeviceID(22), true);
+        tx.addFollower(new CANDeviceID(23), false);
+        tx.addFollower(new CANDeviceID(24), true);
+        tx.addFollower(new CANDeviceID(25), false);
+
+        assertEquals(6, tx.getAllControllers().size());
+    }
+
+    @Test
+    void addFollowerNullIdThrows() {
+        CANDeviceID leaderId = new CANDeviceID(28);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        assertThrows(IllegalArgumentException.class, () -> tx.addFollower(null, false));
+    }
+
+    @Test
+    void addFollowerDuplicateIdThrows() {
+        CANDeviceID leaderId = new CANDeviceID(29);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        /* colliding with the leader's own CAN ID must be rejected (no duplicate device) */
+        assertThrows(
+                IllegalArgumentException.class, () -> tx.addFollower(new CANDeviceID(29), false));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    void addFollowerPopulatesLegacyFieldsForFirstThree() {
+        CANDeviceID leaderId = new CANDeviceID(30);
+        TransmissionFX tx = new TransmissionFX(null, "TX", KRAKEN, leaderId);
+
+        tx.addFollower(new CANDeviceID(31), false);
+        tx.addFollower(new CANDeviceID(32), false);
+        tx.addFollower(new CANDeviceID(33), false);
+
+        /* back-compat: the first three followers still populate the deprecated fields */
+        assertNotNull(tx.mFollower1);
+        assertNotNull(tx.mFollower2);
+        assertNotNull(tx.mFollower3);
+    }
+
     /* setDutyCycle */
 
     @Test

@@ -85,6 +85,11 @@ public class TransmissionFX extends TransmissionBase {
         mCTRELeader = new CTREMotor(getLeaderController());
     }
 
+    /**
+     * @deprecated Construct with the leader only and call {@link #addFollower} per follower
+     *     (ADR-019); the follower count is no longer capped. Retained for backward compatibility.
+     */
+    @Deprecated
     public TransmissionFX(
             final TObj argParent,
             final String argName,
@@ -106,6 +111,11 @@ public class TransmissionFX extends TransmissionBase {
         mAllControllers.add(mFollower1);
     }
 
+    /**
+     * @deprecated Construct with the leader only and call {@link #addFollower} per follower
+     *     (ADR-019); the follower count is no longer capped. Retained for backward compatibility.
+     */
+    @Deprecated
     public TransmissionFX(
             final TObj argParent,
             final String argName,
@@ -135,6 +145,11 @@ public class TransmissionFX extends TransmissionBase {
         mAllControllers.add(mFollower2);
     }
 
+    /**
+     * @deprecated Construct with the leader only and call {@link #addFollower} per follower
+     *     (ADR-019); the follower count is no longer capped. Retained for backward compatibility.
+     */
+    @Deprecated
     public TransmissionFX(
             final TObj argParent,
             final String argName,
@@ -166,6 +181,51 @@ public class TransmissionFX extends TransmissionBase {
                         argFollower3OpposeLeader);
 
         mAllControllers.add(mFollower3);
+    }
+
+    /*
+     *
+     * Followers
+     *
+     */
+
+    /**
+     * Adds a follower motor to this transmission. There is no follower-count limit (ADR-019): each
+     * follower is constructed once here and registered with {@link #getAllControllers()} via {@link
+     * #registerFollower}. The follower reuses the leader's {@link MotorBase} and follows the leader
+     * controller. Its control-request objects are pre-allocated at construction, so no allocation
+     * happens in a periodic loop (CODE-GEN-004).
+     *
+     * @param argCANIDFollower the follower's CAN device ID (non-null)
+     * @param argOpposeLeader true if the follower spins opposite the leader
+     */
+    public void addFollower(final CANDeviceID argCANIDFollower, final boolean argOpposeLeader) {
+        if (argCANIDFollower == null) {
+            throw new IllegalArgumentException(
+                    getName() + ": addFollower requires a non-null CAN ID");
+        }
+        /*
+         * Reject a CAN ID already used by the leader or an existing follower — two CTRE device
+         * objects on one CAN ID is a safety violation (.claude/rules/safety.md). getMotor scans
+         * mAllControllers, which already contains the leader.
+         */
+        if (getMotor(argCANIDFollower) != null) {
+            throw new IllegalArgumentException(
+                    getName()
+                            + ": addFollower CAN ID "
+                            + argCANIDFollower
+                            + " is already in use by this transmission");
+        }
+        final int followerNum = mAllControllers.size(); // leader occupies index 0
+        final ControllerTalonFX follower =
+                new ControllerTalonFX(
+                        this,
+                        getName() + "(F" + followerNum + ")",
+                        argCANIDFollower,
+                        getLeaderController().getMotor(),
+                        getLeaderController(),
+                        argOpposeLeader);
+        registerFollower(follower);
     }
 
     /*

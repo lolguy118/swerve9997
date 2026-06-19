@@ -8,3 +8,4 @@ green.
 
 | Pass | Date | Item advanced | Suite status | Items done | Items backlog | Open gaps | New items this pass |
 | ---- | ---- | ------------- | ------------ | ---------- | ------------- | --------- | ------------------- |
+| 1 | 2026-06-19 | I1: ADR-019 follower-API cap-lift (`addFollower`) | GREEN (BUILD SUCCESSFUL; +5 tests) | 1 | 3 | 0 | 0 |

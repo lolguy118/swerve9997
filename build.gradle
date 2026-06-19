@@ -238,7 +238,9 @@ tasks.withType(JavaCompile).configureEach {
         // com.team271.lib.api during rollout; WARNING severity (not a gate yet). Extend
         // AnnotatedPackages layer by layer, and promote to ERROR once a layer is clean.
         options.errorprone.check("NullAway", CheckSeverity.WARN)
-        options.errorprone.option("NullAway:AnnotatedPackages", "com.team271.lib.api")
+        options.errorprone.option(
+                "NullAway:AnnotatedPackages",
+                "com.team271.lib.api,com.team271.lib.vendor,com.team271.lib.bridge")
     }
 }
 

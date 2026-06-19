@@ -8,3 +8,4 @@ still-unbuilt foundational artifact.
 
 | Pass | Date | Item advanced | Items done | Items backlog | Open questions | New items this pass |
 | ---- | ---- | ------------- | ---------- | ------------- | -------------- | ------------------- |
+| 1 | 2026-06-19 | DR-1: remove phantom `EncoderCANCoderComp` from SDD-hardware §3 | 4 | 1 | 0 | 2 (DR-1, DR-2) |

@@ -3,8 +3,8 @@
 | Field | Value |
 | ----- | ----- |
 | Document No. | TBD-SDD-HARDWARE |
-| Revision | 0.1 |
-| Date | 2026-04-20 |
+| Revision | 0.2 |
+| Date | 2026-06-19 |
 | Status | Draft |
 | Requirements Traced | `[HW-001]`..`[HW-007]` (SRS §4.3) |
 
@@ -117,8 +117,7 @@ TObj
 ├── EncoderBase                 position (rotations) + velocity (RPS)
 │   └── EncoderCTRE             CTRE intermediate — refresh + latency compensation
 │       ├── EncoderFX           TalonFX integrated rotor
-│       ├── EncoderCANCoder     CANcoder absolute
-│       └── EncoderCANCoderComp CANcoder with latency compensation
+│       └── EncoderCANCoder     CANcoder absolute
 │
 ├── IMUBase                     yaw, roll, pitch, yaw rate
 │   └── IMUCTRE

@@ -27,33 +27,33 @@ public interface PIDController {
 
     /* --- Gains --- */
 
-    void setPID(double kP, double kI, double kD);
+    void setPID(double argKP, double argKI, double argKD);
 
-    void setP(double kP);
+    void setP(double argKP);
 
     double getP();
 
-    void setI(double kI);
+    void setI(double argKI);
 
     double getI();
 
-    void setD(double kD);
+    void setD(double argKD);
 
     double getD();
 
     /* --- Tolerances --- */
 
-    void setTolerance(double posTolerance);
+    void setTolerance(double argPosTolerance);
 
-    void setTolerance(double posTolerance, double velTolerance);
+    void setTolerance(double argPosTolerance, double argVelTolerance);
 
     /* --- Output Range --- */
 
-    void setOutputRange(double minOutput, double maxOutput);
+    void setOutputRange(double argMinOutput, double argMaxOutput);
 
     /* --- Continuous Input --- */
 
-    void enableContinuousInput(double minInput, double maxInput);
+    void enableContinuousInput(double argMinInput, double argMaxInput);
 
     void disableContinuousInput();
 
@@ -64,12 +64,12 @@ public interface PIDController {
     /**
      * Calculates the next PID output.
      *
-     * @param measurement current process variable measurement
-     * @param setpoint target setpoint
-     * @param timestamp current timestamp in seconds
+     * @param argMeasurement current process variable measurement
+     * @param argSetpoint target setpoint
+     * @param argTimestamp current timestamp in seconds
      * @return controller output (clamped to output range)
      */
-    double calculate(double measurement, double setpoint, double timestamp);
+    double calculate(double argMeasurement, double argSetpoint, double argTimestamp);
 
     /* --- State --- */
 

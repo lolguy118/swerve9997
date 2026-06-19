@@ -12,12 +12,12 @@ class SubsystemTest {
 
     /** Concrete subclass for testing the abstract Subsystem. */
     private static class TestSubsystem extends Subsystem {
-        TestSubsystem(final String name) {
-            super(null, name);
+        TestSubsystem(final String argName) {
+            super(null, argName);
         }
 
-        void setIsZeroed(final boolean value) {
-            isZeroed = value;
+        void setIsZeroed(final boolean argValue) {
+            isZeroed = argValue;
         }
     }
 

@@ -420,12 +420,12 @@ class PIDSimpleTest {
 
     /* --- checkTuning via NT --- */
 
-    private void setNT(final String tablePath, final String key, final double val) {
+    private void setNT(final String argTablePath, final String argKey, final double argVal) {
         NetworkTableInstance.getDefault()
-                .getTable(tablePath)
-                .getDoubleTopic(key)
+                .getTable(argTablePath)
+                .getDoubleTopic(argKey)
                 .publish()
-                .set(val);
+                .set(argVal);
     }
 
     @Test

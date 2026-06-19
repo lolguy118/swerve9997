@@ -10,12 +10,13 @@ public class ShifterPneumatic implements Shifter {
     private final DoubleSolenoid solenoid;
 
     /**
-     * @param phCanId CAN ID of the Pneumatics Hub
-     * @param chGear1 solenoid channel for gear 1 (forward)
-     * @param chGear2 solenoid channel for gear 2 (reverse)
+     * @param argPhCanId CAN ID of the Pneumatics Hub
+     * @param argChGear1 solenoid channel for gear 1 (forward)
+     * @param argChGear2 solenoid channel for gear 2 (reverse)
      */
-    public ShifterPneumatic(final int phCanId, final int chGear1, final int chGear2) {
-        solenoid = new DoubleSolenoid(phCanId, PneumaticsModuleType.REVPH, chGear1, chGear2);
+    public ShifterPneumatic(final int argPhCanId, final int argChGear1, final int argChGear2) {
+        solenoid =
+                new DoubleSolenoid(argPhCanId, PneumaticsModuleType.REVPH, argChGear1, argChGear2);
     }
 
     @Override

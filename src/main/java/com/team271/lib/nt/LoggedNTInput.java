@@ -47,26 +47,27 @@ public class LoggedNTInput {
      * which appears under an empty-named folder in AdvantageScope. Strip the leading slash so
      * LoggedNTInput entries land in the same RealOutputs namespace as direct recordOutput calls.
      */
-    private static String akLogKey(final NTTable table, final String name) {
-        final String tablePath = table.getPath();
+    private static String akLogKey(final NTTable argTable, final String argName) {
+        final String tablePath = argTable.getPath();
         final String cleanTablePath =
                 tablePath.startsWith("/") ? tablePath.substring(1) : tablePath;
-        return cleanTablePath + "/" + name;
+        return cleanTablePath + "/" + argName;
     }
 
     /* Double */
-    public LoggedNTInput(final NTTable table, final String name, final double defaultValue) {
-        lastDbl = defaultValue;
-        if (table != null) {
-            logPath = akLogKey(table, name);
-            Topic topic = table.getTopic(name);
+    public LoggedNTInput(
+            final NTTable argTable, final String argName, final double argDefaultValue) {
+        lastDbl = argDefaultValue;
+        if (argTable != null) {
+            logPath = akLogKey(argTable, argName);
+            Topic topic = argTable.getTopic(argName);
             sub =
                     topic.genericSubscribe(
                             "double",
                             PubSubOption.keepDuplicates(false),
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("double", PubSubOption.keepDuplicates(false));
-            pub.setDefaultDouble(defaultValue);
+            pub.setDefaultDouble(argDefaultValue);
         } else {
             logPath = null;
             sub = null;
@@ -75,18 +76,19 @@ public class LoggedNTInput {
     }
 
     /* Boolean */
-    public LoggedNTInput(final NTTable table, final String name, final boolean defaultValue) {
-        lastBool = defaultValue;
-        if (table != null) {
-            logPath = akLogKey(table, name);
-            Topic topic = table.getTopic(name);
+    public LoggedNTInput(
+            final NTTable argTable, final String argName, final boolean argDefaultValue) {
+        lastBool = argDefaultValue;
+        if (argTable != null) {
+            logPath = akLogKey(argTable, argName);
+            Topic topic = argTable.getTopic(argName);
             sub =
                     topic.genericSubscribe(
                             "boolean",
                             PubSubOption.keepDuplicates(false),
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("boolean", PubSubOption.keepDuplicates(false));
-            pub.setDefaultBoolean(defaultValue);
+            pub.setDefaultBoolean(argDefaultValue);
         } else {
             logPath = null;
             sub = null;
@@ -95,18 +97,18 @@ public class LoggedNTInput {
     }
 
     /* Long */
-    public LoggedNTInput(final NTTable table, final String name, final long defaultValue) {
-        lastLong = defaultValue;
-        if (table != null) {
-            logPath = akLogKey(table, name);
-            Topic topic = table.getTopic(name);
+    public LoggedNTInput(final NTTable argTable, final String argName, final long argDefaultValue) {
+        lastLong = argDefaultValue;
+        if (argTable != null) {
+            logPath = akLogKey(argTable, argName);
+            Topic topic = argTable.getTopic(argName);
             sub =
                     topic.genericSubscribe(
                             "int",
                             PubSubOption.keepDuplicates(false),
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("int", PubSubOption.keepDuplicates(false));
-            pub.setDefaultInteger(defaultValue);
+            pub.setDefaultInteger(argDefaultValue);
         } else {
             logPath = null;
             sub = null;
@@ -115,18 +117,19 @@ public class LoggedNTInput {
     }
 
     /* String */
-    public LoggedNTInput(final NTTable table, final String name, final String defaultValue) {
-        lastStr = defaultValue;
-        if (table != null) {
-            logPath = akLogKey(table, name);
-            Topic topic = table.getTopic(name);
+    public LoggedNTInput(
+            final NTTable argTable, final String argName, final String argDefaultValue) {
+        lastStr = argDefaultValue;
+        if (argTable != null) {
+            logPath = akLogKey(argTable, argName);
+            Topic topic = argTable.getTopic(argName);
             sub =
                     topic.genericSubscribe(
                             "string",
                             PubSubOption.keepDuplicates(false),
                             PubSubOption.pollStorage(20));
             pub = topic.genericPublish("string", PubSubOption.keepDuplicates(false));
-            pub.setDefaultString(defaultValue);
+            pub.setDefaultString(argDefaultValue);
         } else {
             logPath = null;
             sub = null;
@@ -182,32 +185,32 @@ public class LoggedNTInput {
      * (e.g. operator-controller gain bumps). Also updates the cached last* field so getX() returns
      * the new value immediately without a round-trip through the subscriber.
      */
-    public void setDbl(final double val) {
+    public void setDbl(final double argVal) {
         if (pub != null) {
-            pub.setDouble(val);
+            pub.setDouble(argVal);
         }
-        lastDbl = val;
+        lastDbl = argVal;
     }
 
-    public void setBool(final boolean val) {
+    public void setBool(final boolean argVal) {
         if (pub != null) {
-            pub.setBoolean(val);
+            pub.setBoolean(argVal);
         }
-        lastBool = val;
+        lastBool = argVal;
     }
 
-    public void setLong(final long val) {
+    public void setLong(final long argVal) {
         if (pub != null) {
-            pub.setInteger(val);
+            pub.setInteger(argVal);
         }
-        lastLong = val;
+        lastLong = argVal;
     }
 
-    public void setString(final String val) {
+    public void setString(final String argVal) {
         if (pub != null) {
-            pub.setString(val);
+            pub.setString(argVal);
         }
-        lastStr = val;
+        lastStr = argVal;
     }
 
     /**

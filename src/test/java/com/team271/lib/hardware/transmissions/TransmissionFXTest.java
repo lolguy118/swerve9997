@@ -1170,9 +1170,9 @@ class TransmissionFXTest {
      * reads the public {@code Slot} field on the terminal CTRE request object. Lets these
      * regression tests target CTRE request objects that have moved across classes over time.
      */
-    private int getSlot(final Object root, final String... path) throws Exception {
-        Object current = root;
-        for (String fieldName : path) {
+    private int getSlot(final Object argRoot, final String... argPath) throws Exception {
+        Object current = argRoot;
+        for (String fieldName : argPath) {
             Field field = null;
             Class<?> cls = current.getClass();
             while (cls != null && field == null) {

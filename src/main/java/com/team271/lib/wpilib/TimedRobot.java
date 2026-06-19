@@ -34,30 +34,31 @@ public class TimedRobot extends IterativeRobotBase {
         /**
          * Construct a callback container.
          *
-         * @param func The callback to run.
-         * @param startTimeUs The common starting point for all callback scheduling in microseconds.
-         * @param periodUs The period at which to run the callback in microseconds.
-         * @param offsetUs The offset from the common starting time in microseconds.
+         * @param argFunc The callback to run.
+         * @param argStartTimeUs The common starting point for all callback scheduling in
+         *     microseconds.
+         * @param argPeriodUs The period at which to run the callback in microseconds.
+         * @param argOffsetUs The offset from the common starting time in microseconds.
          */
         Callback(
-                final Runnable func,
-                final long startTimeUs,
-                final long periodUs,
-                final long offsetUs) {
-            this.func = func;
-            this.period = periodUs;
+                final Runnable argFunc,
+                final long argStartTimeUs,
+                final long argPeriodUs,
+                final long argOffsetUs) {
+            this.func = argFunc;
+            this.period = argPeriodUs;
             this.expirationTime =
-                    startTimeUs
-                            + offsetUs
+                    argStartTimeUs
+                            + argOffsetUs
                             + this.period
-                            + (RobotController.getFPGATime() - startTimeUs)
+                            + (RobotController.getFPGATime() - argStartTimeUs)
                                     / this.period
                                     * this.period;
         }
 
         @Override
-        public boolean equals(final Object rhs) {
-            return rhs instanceof Callback callback && expirationTime == callback.expirationTime;
+        public boolean equals(final Object argRhs) {
+            return argRhs instanceof Callback callback && expirationTime == callback.expirationTime;
         }
 
         @Override
@@ -66,10 +67,10 @@ public class TimedRobot extends IterativeRobotBase {
         }
 
         @Override
-        public int compareTo(final Callback rhs) {
+        public int compareTo(final Callback argRhs) {
             // Elements with sooner expiration times are sorted as lesser. The head of
             // Java's PriorityQueue is the least element.
-            return Long.compare(expirationTime, rhs.expirationTime);
+            return Long.compare(expirationTime, argRhs.expirationTime);
         }
     }
 
@@ -93,12 +94,12 @@ public class TimedRobot extends IterativeRobotBase {
     /**
      * Constructor for TimedRobot.
      *
-     * @param period Period in seconds.
+     * @param argPeriod Period in seconds.
      */
-    protected TimedRobot(final double period) {
-        super(period);
+    protected TimedRobot(final double argPeriod) {
+        super(argPeriod);
         m_startTimeUs = RobotController.getFPGATime();
-        addPeriodic(this::loopFunc, period);
+        addPeriodic(this::loopFunc, argPeriod);
         NotifierJNI.setNotifierName(m_notifier, "TimedRobot");
 
         HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_Timed);
@@ -107,19 +108,19 @@ public class TimedRobot extends IterativeRobotBase {
     /**
      * Constructor for TimedRobot.
      *
-     * @param period The period of the robot loop function.
+     * @param argPeriod The period of the robot loop function.
      */
-    protected TimedRobot(final Time period) {
-        this(period.in(Seconds));
+    protected TimedRobot(final Time argPeriod) {
+        this(argPeriod.in(Seconds));
     }
 
     /**
      * Constructor for TimedRobot.
      *
-     * @param frequency The frequency of the robot loop function.
+     * @param argFrequency The frequency of the robot loop function.
      */
-    protected TimedRobot(final Frequency frequency) {
-        this(frequency.asPeriod());
+    protected TimedRobot(final Frequency argFrequency) {
+        this(argFrequency.asPeriod());
     }
 
     @Override
@@ -209,11 +210,12 @@ public class TimedRobot extends IterativeRobotBase {
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
      * synchronously. Interactions between them are thread-safe.
      *
-     * @param callback The callback to run.
-     * @param periodSeconds The period at which to run the callback in seconds.
+     * @param argCallback The callback to run.
+     * @param argPeriodSeconds The period at which to run the callback in seconds.
      */
-    public final void addPeriodic(final Runnable callback, final double periodSeconds) {
-        m_callbacks.add(new Callback(callback, m_startTimeUs, (long) (periodSeconds * 1e6), 0));
+    public final void addPeriodic(final Runnable argCallback, final double argPeriodSeconds) {
+        m_callbacks.add(
+                new Callback(argCallback, m_startTimeUs, (long) (argPeriodSeconds * 1e6), 0));
     }
 
     /**
@@ -222,19 +224,21 @@ public class TimedRobot extends IterativeRobotBase {
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
      * synchronously. Interactions between them are thread-safe.
      *
-     * @param callback The callback to run.
-     * @param periodSeconds The period at which to run the callback in seconds.
-     * @param offsetSeconds The offset from the common starting time in seconds. This is useful for
-     *     scheduling a callback in a different timeslot relative to TimedRobot.
+     * @param argCallback The callback to run.
+     * @param argPeriodSeconds The period at which to run the callback in seconds.
+     * @param argOffsetSeconds The offset from the common starting time in seconds. This is useful
+     *     for scheduling a callback in a different timeslot relative to TimedRobot.
      */
     public final void addPeriodic(
-            final Runnable callback, final double periodSeconds, final double offsetSeconds) {
+            final Runnable argCallback,
+            final double argPeriodSeconds,
+            final double argOffsetSeconds) {
         m_callbacks.add(
                 new Callback(
-                        callback,
+                        argCallback,
                         m_startTimeUs,
-                        (long) (periodSeconds * 1e6),
-                        (long) (offsetSeconds * 1e6)));
+                        (long) (argPeriodSeconds * 1e6),
+                        (long) (argOffsetSeconds * 1e6)));
     }
 
     /**
@@ -243,11 +247,11 @@ public class TimedRobot extends IterativeRobotBase {
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
      * synchronously. Interactions between them are thread-safe.
      *
-     * @param callback The callback to run.
-     * @param period The period at which to run the callback.
+     * @param argCallback The callback to run.
+     * @param argPeriod The period at which to run the callback.
      */
-    public final void addPeriodic(final Runnable callback, final Time period) {
-        addPeriodic(callback, period.in(Seconds));
+    public final void addPeriodic(final Runnable argCallback, final Time argPeriod) {
+        addPeriodic(argCallback, argPeriod.in(Seconds));
     }
 
     /**
@@ -256,12 +260,13 @@ public class TimedRobot extends IterativeRobotBase {
      * <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
      * synchronously. Interactions between them are thread-safe.
      *
-     * @param callback The callback to run.
-     * @param period The period at which to run the callback.
-     * @param offset The offset from the common starting time. This is useful for scheduling a
+     * @param argCallback The callback to run.
+     * @param argPeriod The period at which to run the callback.
+     * @param argOffset The offset from the common starting time. This is useful for scheduling a
      *     callback in a different timeslot relative to TimedRobot.
      */
-    public final void addPeriodic(final Runnable callback, final Time period, final Time offset) {
-        addPeriodic(callback, period.in(Seconds), offset.in(Seconds));
+    public final void addPeriodic(
+            final Runnable argCallback, final Time argPeriod, final Time argOffset) {
+        addPeriodic(argCallback, argPeriod.in(Seconds), argOffset.in(Seconds));
     }
 }

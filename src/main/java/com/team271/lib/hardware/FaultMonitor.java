@@ -22,9 +22,9 @@ public class FaultMonitor {
     private final List<FaultEntry> faults = new ArrayList<>();
     private final NTEntry ntHasAnyFault;
 
-    public FaultMonitor(final TObj parent, final String deviceName) {
-        this.deviceName = deviceName;
-        this.faultTable = parent.getTable();
+    public FaultMonitor(final TObj argParent, final String argDeviceName) {
+        this.deviceName = argDeviceName;
+        this.faultTable = argParent.getTable();
         this.ntHasAnyFault = new NTEntry(faultTable, "Has Fault", false);
         // Each instance gets a unique phase offset so fault checks are spread across cycles
         this.phaseOffset = nextPhaseOffset++ % REFRESH_INTERVAL;
@@ -34,13 +34,15 @@ public class FaultMonitor {
     /**
      * Add a fault signal to monitor.
      *
-     * @param name short name for the fault (e.g., "BootDuringEnable", "DeviceTemp")
-     * @param signal the CTRE sticky fault StatusSignal
-     * @param updateFreqHz signal refresh frequency
+     * @param argName short name for the fault (e.g., "BootDuringEnable", "DeviceTemp")
+     * @param argSignal the CTRE sticky fault StatusSignal
+     * @param argUpdateFreqHz signal refresh frequency
      */
     public void addFault(
-            final String name, final StatusSignal<Boolean> signal, final double updateFreqHz) {
-        faults.add(new FaultEntry(name, signal, updateFreqHz));
+            final String argName,
+            final StatusSignal<Boolean> argSignal,
+            final double argUpdateFreqHz) {
+        faults.add(new FaultEntry(argName, argSignal, argUpdateFreqHz));
     }
 
     /** Register all fault signals with CTREManager. Call in robotInit(). */
@@ -99,11 +101,13 @@ public class FaultMonitor {
         boolean isActive = false;
 
         FaultEntry(
-                final String name, final StatusSignal<Boolean> signal, final double updateFreqHz) {
-            this.signal = signal;
-            this.updateFreqHz = updateFreqHz;
-            this.alert = new Alert("Faults", deviceName + ": " + name, AlertType.WARNING);
-            this.ntEntry = new NTEntry(faultTable, "Fault " + name, false);
+                final String argName,
+                final StatusSignal<Boolean> argSignal,
+                final double argUpdateFreqHz) {
+            this.signal = argSignal;
+            this.updateFreqHz = argUpdateFreqHz;
+            this.alert = new Alert("Faults", deviceName + ": " + argName, AlertType.WARNING);
+            this.ntEntry = new NTEntry(faultTable, "Fault " + argName, false);
         }
     }
 }

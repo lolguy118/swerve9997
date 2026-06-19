@@ -20,10 +20,10 @@ public final class LoggerBridge {
     /**
      * Call at the end of the robot loop, after user code and simulation periodic.
      *
-     * @param periodUs the robot loop period in microseconds
-     * @param loopCycleStartUs the FPGA timestamp (microseconds) at the start of this loop cycle
+     * @param argPeriodUs the robot loop period in microseconds
+     * @param argLoopCycleStartUs the FPGA timestamp (microseconds) at the start of this loop cycle
      */
-    public static void periodicAfterUser(final long periodUs, final long loopCycleStartUs) {
-        Logger.periodicAfterUser(periodUs, loopCycleStartUs);
+    public static void periodicAfterUser(final long argPeriodUs, final long argLoopCycleStartUs) {
+        Logger.periodicAfterUser(argPeriodUs, argLoopCycleStartUs);
     }
 }

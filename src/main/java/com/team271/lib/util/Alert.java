@@ -25,37 +25,37 @@ public class Alert {
      * Creates a new Alert in the default group - "Alerts". If this is the first to be instantiated,
      * the appropriate entries will be added to NetworkTables.
      *
-     * @param text Text to be displayed when the alert is active.
-     * @param type Alert level specifying urgency.
+     * @param argText Text to be displayed when the alert is active.
+     * @param argType Alert level specifying urgency.
      */
-    public Alert(final String text, final AlertType type) {
-        this("Alerts", text, type);
+    public Alert(final String argText, final AlertType argType) {
+        this("Alerts", argText, argType);
     }
 
     /**
      * Creates a new Alert. If this is the first to be instantiated in its group, the appropriate
      * entries will be added to NetworkTables.
      *
-     * @param group Group identifier, also used as NetworkTables title
-     * @param text Text to be displayed when the alert is active.
-     * @param type Alert level specifying urgency.
+     * @param argGroup Group identifier, also used as NetworkTables title
+     * @param argText Text to be displayed when the alert is active.
+     * @param argType Alert level specifying urgency.
      */
-    public Alert(final String group, final String text, final AlertType type) {
-        if (!groups.containsKey(group)) {
-            groups.put(group, new SendableAlerts());
+    public Alert(final String argGroup, final String argText, final AlertType argType) {
+        if (!groups.containsKey(argGroup)) {
+            groups.put(argGroup, new SendableAlerts());
         }
 
-        this.text = text;
-        this.type = type;
-        groups.get(group).alerts.add(this);
+        this.text = argText;
+        this.type = argType;
+        groups.get(argGroup).alerts.add(this);
     }
 
     /*
      * Sets whether the alert should currently be displayed. When activated, the alert text will also
      * be sent to the console.
      */
-    public void set(final boolean active) {
-        if (active && !this.active) {
+    public void set(final boolean argActive) {
+        if (argActive && !this.active) {
             activeStartTime = Timer.getFPGATimestamp();
             switch (type) {
                 case ERROR:
@@ -80,8 +80,8 @@ public class Alert {
                     break;
             }
         }
-        if (this.active != active) {
-            this.active = active;
+        if (this.active != argActive) {
+            this.active = argActive;
             markDirty();
         }
     }
@@ -96,24 +96,24 @@ public class Alert {
     }
 
     /* Updates current alert text. Resets activation time if the alert is currently active. */
-    public void setText(final String text) {
-        if (active && !text.equals(this.text)) {
+    public void setText(final String argText) {
+        if (active && !argText.equals(this.text)) {
             activeStartTime = Timer.getFPGATimestamp();
             switch (type) {
                 case ERROR:
-                    DriverStation.reportError(text, false);
+                    DriverStation.reportError(argText, false);
                     break;
                 case WARNING:
-                    DriverStation.reportWarning(text, false);
+                    DriverStation.reportWarning(argText, false);
                     break;
                 case INFO:
-                    DriverStation.reportWarning(text, false);
+                    DriverStation.reportWarning(argText, false);
                     break;
                 default:
                     break;
             }
         }
-        this.text = text;
+        this.text = argText;
     }
 
     /* Removes this alert from its group. After removal, calling set() has no visible effect. */
@@ -144,11 +144,11 @@ public class Alert {
         private String[] cachedWarnings = new String[0];
         private String[] cachedInfos = new String[0];
 
-        public String[] getStrings(final AlertType type) {
+        public String[] getStrings(final AlertType argType) {
             if (dirty) {
                 rebuildCache();
             }
-            switch (type) {
+            switch (argType) {
                 case ERROR:
                     return cachedErrors;
                 case WARNING:
@@ -169,14 +169,14 @@ public class Alert {
             dirty = false;
         }
 
-        private String[] buildArray(final AlertType type, final Comparator<Alert> sorter) {
+        private String[] buildArray(final AlertType argType, final Comparator<Alert> argSorter) {
             List<Alert> filtered = new ArrayList<>();
             for (Alert a : alerts) {
-                if (a.type == type && a.active) {
+                if (a.type == argType && a.active) {
                     filtered.add(a);
                 }
             }
-            filtered.sort(sorter);
+            filtered.sort(argSorter);
             String[] result = new String[filtered.size()];
             for (int i = 0; i < filtered.size(); i++) {
                 result[i] = filtered.get(i).text;
@@ -185,11 +185,12 @@ public class Alert {
         }
 
         @Override
-        public void initSendable(final SendableBuilder builder) {
-            builder.setSmartDashboardType("Alerts");
-            builder.addStringArrayProperty("errors", () -> getStrings(AlertType.ERROR), null);
-            builder.addStringArrayProperty("warnings", () -> getStrings(AlertType.WARNING), null);
-            builder.addStringArrayProperty("infos", () -> getStrings(AlertType.INFO), null);
+        public void initSendable(final SendableBuilder argBuilder) {
+            argBuilder.setSmartDashboardType("Alerts");
+            argBuilder.addStringArrayProperty("errors", () -> getStrings(AlertType.ERROR), null);
+            argBuilder.addStringArrayProperty(
+                    "warnings", () -> getStrings(AlertType.WARNING), null);
+            argBuilder.addStringArrayProperty("infos", () -> getStrings(AlertType.INFO), null);
         }
     }
 

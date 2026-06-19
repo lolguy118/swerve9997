@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 class TObjTest {
 
     static class ConcreteTObj extends TObj {
-        ConcreteTObj(final String n) {
-            super(n);
+        ConcreteTObj(final String argN) {
+            super(argN);
         }
 
-        ConcreteTObj(final TObj p, final String n) {
-            super(p, n);
+        ConcreteTObj(final TObj argP, final String argN) {
+            super(argP, argN);
         }
 
-        String testLogKey(final String suffix) {
-            return logKey(suffix);
+        String testLogKey(final String argSuffix) {
+            return logKey(argSuffix);
         }
     }
 

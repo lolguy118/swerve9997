@@ -810,8 +810,8 @@ public class ControllerTalonFX extends ControllerSmart {
     }
 
     @Override
-    public void setOutputVoltage(final double outputVolts) {
-        valueOutputVoltage = outputVolts;
+    public void setOutputVoltage(final double argOutputVolts) {
+        valueOutputVoltage = argOutputVolts;
         motorOutV.Output = valueOutputVoltage;
 
         if (isConnected()) {
@@ -841,8 +841,8 @@ public class ControllerTalonFX extends ControllerSmart {
         return 0;
     }
 
-    public void setOutputTorqueCurrent(final double outputTorqueCurrent) {
-        valueOutputTorqueCurrent = outputTorqueCurrent;
+    public void setOutputTorqueCurrent(final double argOutputTorqueCurrent) {
+        valueOutputTorqueCurrent = argOutputTorqueCurrent;
         motorOutTC.Output = valueOutputTorqueCurrent;
 
         if (isConnected()) {

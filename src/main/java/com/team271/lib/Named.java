@@ -16,7 +16,7 @@ public interface Named {
     NTTable getTable();
 
     /** Builds an AdvantageKit log key from this object's NT path. */
-    default String logKey(final String suffix) {
-        return getTable().getPath() + "/" + suffix;
+    default String logKey(final String argSuffix) {
+        return getTable().getPath() + "/" + argSuffix;
     }
 }

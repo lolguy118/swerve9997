@@ -39,7 +39,7 @@ public interface EncoderAdapter {
     double getVelocityRPS();
 
     /** Set the encoder position in raw sensor rotations. */
-    void setPositionRotations(double rotations);
+    void setPositionRotations(double argRotations);
 
     /** Reset position to zero. */
     void reset();
@@ -51,10 +51,10 @@ public interface EncoderAdapter {
      * closed-loop expects. For FX: divides by rotorToMechanism * mechanismToUnits. For CANCoder:
      * divides by sensorRelToMechanism * mechanismToUnits.
      */
-    double mechanismToNative(double mechanismUnits);
+    double mechanismToNative(double argMechanismUnits);
 
     /** Convert a mechanism output unit velocity to native encoder units per second. */
-    double mechanismVelocityToNative(double mechanismUnitsPerSec);
+    double mechanismVelocityToNative(double argMechanismUnitsPerSec);
 
     /* --- Gear ratio management --- */
 
@@ -62,23 +62,23 @@ public interface EncoderAdapter {
     GearRatio getGearRatio();
 
     /** Update the gear ratio (e.g., after a gear shift). */
-    void updateGearRatio(GearRatio newRatio);
+    void updateGearRatio(GearRatio argNewRatio);
 
     /* --- Lifecycle --- */
 
     /** Called during robotInit to perform hardware initialization (e.g., signal registration). */
-    void robotInit(double timestamp);
+    void robotInit(double argTimestamp);
 
     /** Publish telemetry to NetworkTables. */
     void outputTelemetry();
 
     /* --- Simulation --- */
 
-    void setSimPosition(double rotations);
+    void setSimPosition(double argRotations);
 
-    void setSimVelocity(double rps);
+    void setSimVelocity(double argRps);
 
-    void simulationInit(double timestamp);
+    void simulationInit(double argTimestamp);
 
-    void simulationPeriodic(double timestamp);
+    void simulationPeriodic(double argTimestamp);
 }

@@ -37,10 +37,10 @@ class CTREManagerTest {
         CTREManager.resetForTesting();
     }
 
-    private void setStaticField(final String fieldName, final Object value) throws Exception {
-        Field f = CTREManager.class.getDeclaredField(fieldName);
+    private void setStaticField(final String argFieldName, final Object argValue) throws Exception {
+        Field f = CTREManager.class.getDeclaredField(argFieldName);
         f.setAccessible(true);
-        f.set(null, value);
+        f.set(null, argValue);
     }
 
     @SuppressWarnings("unchecked")

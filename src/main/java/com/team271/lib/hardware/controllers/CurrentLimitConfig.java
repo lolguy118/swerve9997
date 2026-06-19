@@ -29,18 +29,18 @@ public record CurrentLimitConfig(
         double supplyLowerTime) {
 
     /** Stator-only current limit. */
-    public static CurrentLimitConfig statorOnly(final double amps) {
-        return new CurrentLimitConfig(true, amps, false, 0, 0, 0);
+    public static CurrentLimitConfig statorOnly(final double argAmps) {
+        return new CurrentLimitConfig(true, argAmps, false, 0, 0, 0);
     }
 
     /** Supply-only current limit (no time-based lower limit). */
-    public static CurrentLimitConfig supplyOnly(final double amps) {
-        return new CurrentLimitConfig(false, 0, true, amps, 0, 0);
+    public static CurrentLimitConfig supplyOnly(final double argAmps) {
+        return new CurrentLimitConfig(false, 0, true, argAmps, 0, 0);
     }
 
     /** Both stator and supply limits enabled (no time-based lower limit). */
-    public static CurrentLimitConfig both(final double statorAmps, final double supplyAmps) {
-        return new CurrentLimitConfig(true, statorAmps, true, supplyAmps, 0, 0);
+    public static CurrentLimitConfig both(final double argStatorAmps, final double argSupplyAmps) {
+        return new CurrentLimitConfig(true, argStatorAmps, true, argSupplyAmps, 0, 0);
     }
 
     /** Disabled — no current limiting. */

@@ -643,8 +643,8 @@ public class ControllerTalonFXS extends ControllerSmart {
     }
 
     @Override
-    public void setOutputVoltage(final double outputVolts) {
-        motorOutV.Output = outputVolts;
+    public void setOutputVoltage(final double argOutputVolts) {
+        motorOutV.Output = argOutputVolts;
         if (isConnected()) {
             talonFXS.setControl(motorOutV);
         }

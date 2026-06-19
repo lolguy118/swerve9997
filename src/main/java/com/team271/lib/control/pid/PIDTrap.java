@@ -173,15 +173,15 @@ public class PIDTrap extends PIDBase implements com.team271.lib.control.Profiled
     /* --- ProfiledPIDController interface methods --- */
 
     @Override
-    public void setGoal(final double goalPosition, final double goalVelocity) {
-        goal.position = goalPosition;
-        goal.velocity = goalVelocity;
+    public void setGoal(final double argGoalPosition, final double argGoalVelocity) {
+        goal.position = argGoalPosition;
+        goal.velocity = argGoalVelocity;
         timestampProfileStart = Double.NaN;
     }
 
     @Override
-    public void setConstraints(final double maxVelocity, final double maxAcceleration) {
-        setConstraints(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+    public void setConstraints(final double argMaxVelocity, final double argMaxAcceleration) {
+        setConstraints(new TrapezoidProfile.Constraints(argMaxVelocity, argMaxAcceleration));
     }
 
     @Override

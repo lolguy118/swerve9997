@@ -137,14 +137,14 @@ public class PIDWPI_Trap extends PIDBase implements com.team271.lib.control.Prof
     /* --- ProfiledPIDController interface methods --- */
 
     @Override
-    public void setGoal(final double goalPosition, final double goalVelocity) {
-        goal = goalPosition;
-        controller.setGoal(new TrapezoidProfile.State(goalPosition, goalVelocity));
+    public void setGoal(final double argGoalPosition, final double argGoalVelocity) {
+        goal = argGoalPosition;
+        controller.setGoal(new TrapezoidProfile.State(argGoalPosition, argGoalVelocity));
     }
 
     @Override
-    public void setConstraints(final double maxVelocity, final double maxAcceleration) {
-        setConstraints(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+    public void setConstraints(final double argMaxVelocity, final double argMaxAcceleration) {
+        setConstraints(new TrapezoidProfile.Constraints(argMaxVelocity, argMaxAcceleration));
     }
 
     @Override
@@ -163,9 +163,9 @@ public class PIDWPI_Trap extends PIDBase implements com.team271.lib.control.Prof
     }
 
     @Override
-    public void reset(final double measuredPosition, final double measuredVelocity) {
+    public void reset(final double argMeasuredPosition, final double argMeasuredVelocity) {
         super.reset();
-        controller.reset(measuredPosition, measuredVelocity);
+        controller.reset(argMeasuredPosition, argMeasuredVelocity);
     }
 
     /*
@@ -208,16 +208,16 @@ public class PIDWPI_Trap extends PIDBase implements com.team271.lib.control.Prof
      */
     @Override
     public double calculate(
-            final double measurement, final double setpoint, final double timestamp) {
-        lastInputMeasurement = measurement;
-        lastTimestamp = timestamp;
+            final double argMeasurement, final double argSetpoint, final double argTimestamp) {
+        lastInputMeasurement = argMeasurement;
+        lastTimestamp = argTimestamp;
 
         /* Use the existing goal if one was set via setGoal; otherwise use setpoint */
-        if (controller.getGoal().position != setpoint) {
-            controller.setGoal(setpoint);
-            goal = setpoint;
+        if (controller.getGoal().position != argSetpoint) {
+            controller.setGoal(argSetpoint);
+            goal = argSetpoint;
         }
-        output = controller.calculate(measurement);
+        output = controller.calculate(argMeasurement);
 
         return output;
     }

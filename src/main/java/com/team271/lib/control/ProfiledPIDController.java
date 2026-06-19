@@ -20,25 +20,25 @@ public interface ProfiledPIDController extends PIDController {
      * Sets the goal position. The profiled controller will generate a trajectory from the current
      * position to this goal.
      *
-     * @param goalPosition target position in mechanism units
+     * @param argGoalPosition target position in mechanism units
      */
-    void setGoal(double goalPosition);
+    void setGoal(double argGoalPosition);
 
     /**
      * Sets the goal position and velocity.
      *
-     * @param goalPosition target position
-     * @param goalVelocity target velocity at the goal (typically 0 for position control)
+     * @param argGoalPosition target position
+     * @param argGoalVelocity target velocity at the goal (typically 0 for position control)
      */
-    void setGoal(double goalPosition, double goalVelocity);
+    void setGoal(double argGoalPosition, double argGoalVelocity);
 
     /**
      * Sets the motion profile constraints.
      *
-     * @param maxVelocity maximum velocity (mechanism units per second)
-     * @param maxAcceleration maximum acceleration (mechanism units per second squared)
+     * @param argMaxVelocity maximum velocity (mechanism units per second)
+     * @param argMaxAcceleration maximum acceleration (mechanism units per second squared)
      */
-    void setConstraints(double maxVelocity, double maxAcceleration);
+    void setConstraints(double argMaxVelocity, double argMaxAcceleration);
 
     /** Returns true if the profiled setpoint has reached the goal and error is within tolerance. */
     boolean atGoal();
@@ -52,8 +52,8 @@ public interface ProfiledPIDController extends PIDController {
     /**
      * Resets the profiled controller state to the given position and velocity.
      *
-     * @param measuredPosition current actual position
-     * @param measuredVelocity current actual velocity
+     * @param argMeasuredPosition current actual position
+     * @param argMeasuredVelocity current actual velocity
      */
-    void reset(double measuredPosition, double measuredVelocity);
+    void reset(double argMeasuredPosition, double argMeasuredVelocity);
 }

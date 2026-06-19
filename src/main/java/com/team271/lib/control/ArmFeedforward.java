@@ -22,33 +22,36 @@ public class ArmFeedforward {
     private final double kV;
     private final double kA;
 
-    public ArmFeedforward(final double kS, final double kG, final double kV, final double kA) {
-        this.kS = kS;
-        this.kG = kG;
-        this.kV = kV;
-        this.kA = kA;
+    public ArmFeedforward(
+            final double argKS, final double argKG, final double argKV, final double argKA) {
+        this.kS = argKS;
+        this.kG = argKG;
+        this.kV = argKV;
+        this.kA = argKA;
     }
 
     /**
      * Calculates the arm feedforward output.
      *
-     * @param positionRad mechanism position in radians (0 = horizontal for standard arm mounting)
-     * @param velocity mechanism velocity (units per second)
-     * @param acceleration mechanism acceleration (units per second squared), pass 0 if unused
+     * @param argPositionRad mechanism position in radians (0 = horizontal for standard arm
+     *     mounting)
+     * @param argVelocity mechanism velocity (units per second)
+     * @param argAcceleration mechanism acceleration (units per second squared), pass 0 if unused
      * @return feedforward output (typically volts)
      */
     public double calculate(
-            final double positionRad, final double velocity, final double acceleration) {
-        return kS * Math.signum(velocity)
-                + kG * Math.cos(positionRad)
-                + kV * velocity
-                + kA * acceleration;
+            final double argPositionRad, final double argVelocity, final double argAcceleration) {
+        return kS * Math.signum(argVelocity)
+                + kG * Math.cos(argPositionRad)
+                + kV * argVelocity
+                + kA * argAcceleration;
     }
 
     /** Wraps a WPILib ArmFeedforward. */
     public static ArmFeedforward fromWPILib(
-            final edu.wpi.first.math.controller.ArmFeedforward wpiFF) {
-        return new ArmFeedforward(wpiFF.getKs(), wpiFF.getKg(), wpiFF.getKv(), wpiFF.getKa());
+            final edu.wpi.first.math.controller.ArmFeedforward argWpiFF) {
+        return new ArmFeedforward(
+                argWpiFF.getKs(), argWpiFF.getKg(), argWpiFF.getKv(), argWpiFF.getKa());
     }
 
     public double getKS() {

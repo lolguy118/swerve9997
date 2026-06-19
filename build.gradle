@@ -1,3 +1,5 @@
+import net.ltgt.gradle.errorprone.CheckSeverity
+
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
@@ -102,6 +104,11 @@ dependencies {
 
     // Static analysis — see "Static Analysis" block below for configuration
     errorprone 'com.google.errorprone:error_prone_core:2.31.0'
+    // NullAway null-safety checker (Error Prone plugin) — see ADR-018. 0.11.x pairs with
+    // Error Prone 2.31; 0.12+ requires EP 2.36+.
+    errorprone 'com.uber.nullaway:nullaway:0.11.3'
+    // JSpecify nullness annotations (@NullMarked / @Nullable) — see ADR-018.
+    implementation 'org.jspecify:jspecify:1.0.0'
 }
 
 test {
@@ -227,6 +234,11 @@ tasks.withType(JavaCompile).configureEach {
     // Skip the vendored LimelightHelpers (upstream code we don't own)
     if (name == 'compileJava') {
         options.errorprone.excludedPaths = ".*/(build/generated|LimelightHelpers\\.java)"
+        // NullAway — null-safety on the @NullMarked api/ layer (ADR-018). Scoped to
+        // com.team271.lib.api during rollout; WARNING severity (not a gate yet). Extend
+        // AnnotatedPackages layer by layer, and promote to ERROR once a layer is clean.
+        options.errorprone.check("NullAway", CheckSeverity.WARN)
+        options.errorprone.option("NullAway:AnnotatedPackages", "com.team271.lib.api")
     }
 }
 

@@ -218,18 +218,17 @@ createVersionFile.dependsOn(eventDeploy)
 // Static Analysis — Error Prone, SpotBugs, Checkstyle
 // -----------------------------------------------------------------------------
 //
-// Rolled out fail-soft initially so first-CI-run findings don't block merges.
-// Tighten each as historical issues are triaged:
-//   - Error Prone:  remove `allErrorsAsWarnings = true`
-//   - SpotBugs:     remove `ignoreFailures = true`
-//   - Checkstyle:   grow config/checkstyle/checkstyle.xml
+// Error Prone now GATES: default-error checks fail the build (NullAway is ERROR per
+// ADR-018) and the codebase is clean of findings. Remaining fail-soft items, to tighten
+// once their historical findings are triaged:
+//   - SpotBugs:   remove `ignoreFailures = true` (~100 findings to triage/suppress first)
+//   - Checkstyle: grow config/checkstyle/checkstyle.xml
 //
 // Reports land under build/reports/{spotbugs,checkstyle}/ and are uploaded as
 // CI artifacts.
 
 tasks.withType(JavaCompile).configureEach {
     options.errorprone.disableWarningsInGeneratedCode = true
-    options.errorprone.allErrorsAsWarnings = true  // initial rollout — tighten later
     options.errorprone.excludedPaths = ".*/build/generated/.*"
     // Skip the vendored LimelightHelpers (upstream code we don't own)
     if (name == 'compileJava') {

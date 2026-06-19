@@ -58,3 +58,17 @@ and any `OPEN QUESTION (needs owner)` raised or resolved.
   row checked; pass 1 covered README/map + 3 SDDs only. Next pass runs a comprehensive sweep of the
   remaining SDDs and Accepted ADRs to satisfy their "every row checked" done-bar before any completion.
   Pass ended normally.
+
+## Pass 4 — 2026-06-19
+
+- **Items advanced:** items 3 & 4 (the drift-reconciliation engines), closed to `done`. A comprehensive
+  read-only sweep covered the remaining 8 SDDs (team271-lib, api, vendor-ctre, subsystem, auto, sysid, nt,
+  util) — every documented §3 class/interface exists in code; **0 phantoms, 0 undocumented gaps**. ADR
+  spot-check: ADR-004 (no singletons), ADR-009 (centralized refresh), ADR-013 (composition over commands),
+  ADR-015/016 (LoggedNTInput tuning) all CONFIRMED in code; no reversals.
+- **Files touched:** this loop's ledger / scorecard / changelog only (no corpus changes — the sweep was
+  clean).
+- **Convergence:** **MET.** All 10 ledger items are `done` (1–6, 8, DR-1, plus 3 & 4) or `backlog` (7,
+  DR-2). Passes 2, 3, and 4 each discovered 0 new items (two-pass stability window satisfied). The single
+  remaining `OPEN QUESTION (needs owner)` — DR-2 (TalonFXS transmission?) — is on a non-blocking backlog
+  item and does not block any foundational artifact. The loop emits its completion tag this pass.

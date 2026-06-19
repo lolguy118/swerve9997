@@ -7,6 +7,7 @@ import com.team271.lib.nt.NTEntry;
 import com.team271.lib.util.Util;
 import edu.wpi.first.math.MathUtil;
 
+@SuppressWarnings("NullAway.Init")
 public class PIDBase extends TObj implements PIDController {
     public enum PIDType {
         PIDSIMP,

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.jspecify.annotations.Nullable;
 import org.littletonrobotics.junction.Logger;
 
 /*
@@ -23,7 +24,7 @@ public class SubsystemManager {
      * Singleton
      *
      */
-    private static SubsystemManager mInstance = null;
+    @Nullable private static SubsystemManager mInstance = null;
 
     public static SubsystemManager getInstance() {
         if (mInstance == null) {

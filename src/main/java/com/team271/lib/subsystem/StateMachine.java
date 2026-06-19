@@ -3,6 +3,7 @@ package com.team271.lib.subsystem;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.nt.NTTable;
 import java.util.function.BiConsumer;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Generic desired-to-actual state machine helper.
@@ -27,8 +28,8 @@ public class StateMachine<S extends Enum<S>> {
     private S currentState;
     private S desiredState;
 
-    private BiConsumer<S, S> onEnter;
-    private BiConsumer<S, S> onExit;
+    @Nullable private BiConsumer<S, S> onEnter;
+    @Nullable private BiConsumer<S, S> onExit;
     private boolean transitioning = false;
 
     private final NTEntry ntCurrent;

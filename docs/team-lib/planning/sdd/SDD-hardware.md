@@ -3,7 +3,7 @@
 | Field | Value |
 | ----- | ----- |
 | Document No. | TBD-SDD-HARDWARE |
-| Revision | 0.4 |
+| Revision | 0.5 |
 | Date | 2026-06-19 |
 | Status | Draft |
 | Requirements Traced | `[HW-001]`..`[HW-007]` (SRS §4.3) |
@@ -25,9 +25,9 @@ This SDD covers:
 
 - **Controllers:** `ControllerBase`, `ControllerSmart`, `ControllerTalonFX`,
   `ControllerTalonFXS` — CTRE-facing lifecycle wrappers
-- **Transmissions:** `TransmissionBase`, `TransmissionFX` — multi-motor
-  coordination (`TransmissionFXS`, a TalonFXS-backed peer mirroring
-  `TransmissionFX`, is **planned — not yet implemented**)
+- **Transmissions:** `TransmissionBase`, `TransmissionFX`, `TransmissionFXS`
+  — multi-motor coordination (`TransmissionFXS` is the TalonFXS-backed peer,
+  scoped to the `ControllerTalonFXS` control surface)
 - **Sensors:** encoder wrappers, IMU wrappers, range sensor wrappers,
   limit switch wrappers
 - **Input:** `Input` base + joystick devices
@@ -83,9 +83,11 @@ TObj
 └── TransmissionBase        multi-motor (1 leader + followers),
     │                       encoder selection, shifter support, gear ratios,
     │                       DCMotor model, unit conversion, input validation
-    └── TransmissionFX      TalonFX-specific control mode matrix:
-                            Position/Velocity × DutyCycle/Voltage/TorqueCurrent
-                            + Motion Magic (static, dynamic, expo) variants
+    ├── TransmissionFX      TalonFX-specific control mode matrix:
+    │                       Position/Velocity × DutyCycle/Voltage/TorqueCurrent
+    │                       + Motion Magic (static, dynamic, expo) variants
+    └── TransmissionFXS     TalonFXS-backed peer — config + basic outputs;
+                            no Motion Magic (ControllerTalonFXS scope)
 ```
 
 `TransmissionBase` manages a leader plus **any number of followers**

@@ -26,3 +26,30 @@ raised or resolved.
 - **Suite:** GREEN — `BUILD SUCCESSFUL`, all 5 new transmission tests pass, no regressions.
 - **Convergence:** not met — I2 (`TransmissionFXS`) still `pending` (depends-on I1, now satisfied). Pass
   ended normally.
+
+## Pass 2 — 2026-06-19
+
+- **Item advanced:** I2 — implement `TransmissionFXS`. Spec ref: SDD-hardware §2 (was planned) + the
+  ADR-019 additive-follower pattern. Depends-on I1 (satisfied), so it was built on `addFollower` from the
+  start rather than the deprecated overloads.
+- **TDD:** wrote `TransmissionFXSTest` (10 tests: construction, `addFollower` registration, >4 motors,
+  null/dup guards, neutral mode, robotInit/outputTelemetry/stop/setOutputDuty smoke) first; red (class
+  undefined) → implemented → green.
+- **Code:** new `TransmissionFXS` — a **lean** TalonFXS peer of `TransmissionFX`: leader-only constructor
+  (`ControllerTalonFXS`), `getLeaderController()`, `getLeader()` passthrough (ADR-005), and
+  `addFollower(CANDeviceID, boolean)` (null + duplicate-CAN-ID guards; construct + `follow()` +
+  `registerFollower`). Deliberately omits the TalonFX-only Motion Magic matrix and the `CTREMotor` wrapper
+  (`CTREMotor` wraps `ControllerTalonFX` only) — smallest increment satisfying the spec. Config / outputs /
+  sim / telemetry are inherited from `TransmissionBase`.
+- **Docs:** SDD-hardware §2 + §3 tree now list `TransmissionFXS` as a real class (dropped the "planned"
+  marker); rev 0.4 → 0.5.
+- **Self-review (`lib-reviewer`):** found 1 Blocker — `addFollower` discarded the `follow()` status, so a
+  cross-bus follower would register but sit idle with no driver alert (silent failure; regression vs.
+  `ControllerTalonFX`'s follower constructor, which reports it). **Fixed:** capture the status and
+  `DriverStation.reportError` on non-OK. Two nits (double-cast `getLeader`, unguarded constructor params)
+  accepted as deliberate parity with the `TransmissionFX` peer.
+- **Suite:** GREEN — `BUILD SUCCESSFUL`, all 10 new tests pass, no regressions.
+- **Convergence:** **MET.** Build-now items I1 + I2 are `done`; I3 (null-safety rollout), I4 (vision), I5
+  (trajectory) remain `backlog` (deferred per the run's scope). Passes 1 and 2 each found 0 new items
+  (two-pass stability window). No `OPEN GAP:` markers. Full suite green. The loop emits its completion tag
+  this pass.

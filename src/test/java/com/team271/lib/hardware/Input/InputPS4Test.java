@@ -295,6 +295,20 @@ class InputPS4Test {
         assertEquals(-0.8, input.getRightY(), 1e-3);
     }
 
+    /* getAxis bounds guard — regression for the ADR-018 audit (negative index must not throw) */
+
+    @Test
+    void getAxisNegativeIndexReturnsZeroWhenConnected() {
+        InputPS4 input = createAndInit();
+        injectJoystickData(new double[6], 0, 14, -1); // axisCount=6, controller connected
+        input.robotPeriodicBefore(0.0);
+
+        // A negative index is out of bounds; the lower-bound guard must return 0.0 rather than
+        // index axis[-1] (which would throw). Without the guard this is a connected-path crash.
+        assertDoesNotThrow(() -> input.getAxis(-1));
+        assertEquals(0.0, input.getAxis(-1), 1e-6);
+    }
+
     @Test
     void getLeftTriggerReturnsConvertedValueWhenConnected() {
         InputPS4 input = createAndInit();

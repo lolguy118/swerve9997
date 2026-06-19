@@ -19,7 +19,7 @@ closes genuine gaps and ADR↔SDD↔code drift only.
 | 3 | SDD↔code drift reconciliation | high | Every Package-to-SDD-Map row checked; each divergence captured + fixed on SDD/code side; two clean sweeps | `in-progress` | Pass 1 sweep found 2 phantoms in SDD-hardware (DR-1 fixed, DR-2 pending); clean-sweep window not yet started |
 | 4 | ADR↔implementation drift reconciliation | high | Every Accepted ADR's decision still reflected in code; reversals captured via new superseding ADR; two clean sweeps | `in-progress` | Pass 1: no ADR↔code drift found (clean sweep 1 of 2) |
 | 5 | Planning-README consistency | medium | ADR/SDD/Planned tables + Package-to-SDD Map match files on disk; links resolve | `done` | Pass 1 sweep: all 3 tables + map verified against disk; planned vision/trajectory packages correctly marked; links resolve |
-| 6 | Reserved ADR — null-safety annotation policy | medium | Author ADR (annotation-set choice + rollout plan); Status `Proposed` until rollout starts | `pending` | **Promoted by owner 2026-06-19**: intent to adopt null-safety annotations / NullAway |
+| 6 | Reserved ADR — null-safety annotation policy | medium | Author ADR (annotation-set choice + rollout plan); Status `Proposed` until rollout starts | `done` | Pass 2: [ADR-018](../team-lib/planning/adr/ADR-018-null-safety-annotation-policy.md) authored (Proposed) — JSpecify + NullAway, layered rollout; unblocks the SVP NullAway gate |
 | 7 | Reserved ADR — supply-chain / CVE response | medium | ADR written IFF concrete trigger exists; else backlog | `backlog` | **Owner deferred 2026-06-19**: keep ad hoc until a dependency-review CI gate is adopted. Carries liability self-guard if written |
 | 8 | Reserved ADR — unlimited followers in `TransmissionBase` | medium | Author ADR lifting the 4-motor cap; impl loop implements the code change to match | `pending` | **Promoted by owner 2026-06-19**: concrete >4-motor mechanism planned for 2027 |
 
@@ -35,4 +35,4 @@ The loop appends rows here during Phase B (Sweep), each with its own one-line do
 | # | Item | Found pass | Priority | Done-bar | Status |
 | - | ---- | ---------- | -------- | -------- | ------ |
 | DR-1 | SDD-hardware §3 names phantom `EncoderCANCoderComp` (not in code; duplicates `EncoderCTRE` latency comp) | 1 | high | Remove the phantom line from the §3.3 sensor tree | `done` |
-| DR-2 | SDD-hardware §2 Scope names `TransmissionFXS` (no transmission class on disk; `ControllerTalonFXS` does exist) | 1 | high | Reconcile: mark Planned or remove — needs owner judgment on whether a TalonFXS transmission is intended | `pending` |
+| DR-2 | SDD-hardware §2 Scope names `TransmissionFXS` (no transmission class on disk; `ControllerTalonFXS` does exist) | 1 | high | `OPEN QUESTION (needs owner)`: is a TalonFXS-backed transmission intended? Yes → add Planned SDD + impl-loop item; No → remove from SDD-hardware §2. Parked (non-blocking) | `backlog` |

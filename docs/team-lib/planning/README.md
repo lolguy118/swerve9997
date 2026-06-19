@@ -117,6 +117,7 @@ Statuses an ADR can have:
 | [ADR-015](adr/ADR-015-logged-nt-input-backed-tuning.md) | LoggedNTInput-Backed Tuning — No Magic Numbers in Docs | Accepted |
 | [ADR-016](adr/ADR-016-advantagekit-logging.md) | AdvantageKit for Telemetry and Replay Logging | Accepted |
 | [ADR-017](adr/ADR-017-junit5-hal-simulation-tests.md) | JUnit 5 + JaCoCo + HAL Simulation for Library Tests | Accepted |
+| [ADR-018](adr/ADR-018-null-safety-annotation-policy.md) | Null-Safety Annotation Policy — JSpecify with NullAway Enforcement | Proposed |
 
 ## Planned ADRs
 
@@ -128,7 +129,6 @@ that depends on it — not speculatively.
 
 | Planned ADR | Scope |
 | ----------- | ----- |
-| Null-safety annotation policy | Choice of annotation set (JSpecify, JetBrains, JSR-305) and rollout plan before NullAway becomes a CI gate |
 | Supply-chain / CVE response | How the library triages OWASP / GitHub dependency-review findings and which severities trigger an out-of-phase hotfix |
 | Unlimited followers in `TransmissionBase` | Whether to lift the current 4-motor cap (1 leader + followers). Phoenix 6 itself imposes no limit; the cap is design-imposed and tied to pre-allocated control-request arrays. Change when a concrete mechanism (e.g., 6-wheel tank, exotic climber) needs it |
 

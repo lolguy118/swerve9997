@@ -23,4 +23,10 @@
          (a leaked Phoenix 6 sim handle caused SIGSEGVs). -->
     <suppress checks="IllegalCatch" files="[\\/]hardware[\\/]CTREManager\.java$"/>
 
+    <!-- CODE-GEN-002a (banned APIs) is scoped to PRODUCTION code. Test sources may
+         legitimately use otherwise-banned constructs (e.g. raw threads / sleep in a
+         concurrency test), consistent with Error Prone being disabled on compileTestJava
+         and SpotBugs noise being exempted on test classes. -->
+    <suppress checks="RegexpSinglelineJava" files="[\\/]src[\\/]test[\\/]"/>
+
 </suppressions>

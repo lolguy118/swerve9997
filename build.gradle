@@ -218,10 +218,9 @@ createVersionFile.dependsOn(eventDeploy)
 // Static Analysis — Error Prone, SpotBugs, Checkstyle
 // -----------------------------------------------------------------------------
 //
-// Error Prone now GATES: default-error checks fail the build (NullAway is ERROR per
-// ADR-018) and the codebase is clean of findings. Remaining fail-soft items, to tighten
-// once their historical findings are triaged:
-//   - SpotBugs:   remove `ignoreFailures = true` (~100 findings to triage/suppress first)
+// Error Prone and SpotBugs now GATE: their findings fail the build (NullAway is ERROR
+// per ADR-018; SpotBugs runs ignoreFailures=false with the curated exclude filter at
+// config/spotbugs/exclude.xml for by-design/idiom findings). Remaining fail-soft item:
 //   - Checkstyle: grow config/checkstyle/checkstyle.xml
 //
 // Reports land under build/reports/{spotbugs,checkstyle}/ and are uploaded as
@@ -255,7 +254,7 @@ spotbugs {
     toolVersion = '4.8.6'
     // effort + reportLevel default to DEFAULT — explicit values require the
     // com.github.spotbugs.snom.Effort / Confidence enums, not strings.
-    ignoreFailures = true  // initial rollout — remove once historical findings cleared
+    ignoreFailures = false  // all findings triaged: see config/spotbugs/exclude.xml
     excludeFilter = file('config/spotbugs/exclude.xml')
 }
 

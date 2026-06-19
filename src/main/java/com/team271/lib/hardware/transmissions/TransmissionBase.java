@@ -53,9 +53,25 @@ public abstract class TransmissionBase extends TObj {
      * Motors
      */
     protected ControllerSmart mLeader;
-    protected ControllerSmart mFollower1;
-    protected ControllerSmart mFollower2;
-    protected ControllerSmart mFollower3;
+
+    /**
+     * @deprecated The follower count is no longer capped (ADR-019). Construct with the leader only
+     *     and call {@code addFollower(...)} on the concrete transmission; use {@link
+     *     #getAllControllers()} as the single source of truth. These fields are still populated for
+     *     the first three followers for backward compatibility.
+     */
+    @Deprecated protected ControllerSmart mFollower1;
+
+    /**
+     * @deprecated See {@link #mFollower1}.
+     */
+    @Deprecated protected ControllerSmart mFollower2;
+
+    /**
+     * @deprecated See {@link #mFollower1}.
+     */
+    @Deprecated protected ControllerSmart mFollower3;
+
     protected Set<ControllerSmart> mAllControllers = new LinkedHashSet<>();
 
     /*
@@ -235,6 +251,34 @@ public abstract class TransmissionBase extends TObj {
      */
     public Set<ControllerSmart> getAllControllers() {
         return mAllControllers;
+    }
+
+    /**
+     * Registers an already-constructed follower controller with this transmission. The follower
+     * joins {@link #getAllControllers()} — the single source of truth for every per-motor operation
+     * (config, current limits, neutral mode, stop, telemetry, simulation). For the first three
+     * followers it also populates the deprecated {@code mFollower1..3} fields for backward
+     * compatibility. There is no follower-count limit (ADR-019).
+     *
+     * <p>Concrete transmissions construct their vendor-specific follower controller and pass it
+     * here; the controller's control-request objects are pre-allocated at construction, so no
+     * allocation happens in a periodic loop (CODE-GEN-004).
+     *
+     * @param argFollower the follower controller to register (non-null)
+     */
+    protected void registerFollower(final ControllerSmart argFollower) {
+        if (argFollower == null) {
+            throw new IllegalArgumentException(
+                    getName() + ": registerFollower requires a non-null follower");
+        }
+        mAllControllers.add(argFollower);
+        if (mFollower1 == null) {
+            mFollower1 = argFollower;
+        } else if (mFollower2 == null) {
+            mFollower2 = argFollower;
+        } else if (mFollower3 == null) {
+            mFollower3 = argFollower;
+        }
     }
 
     public ControllerSmart getMotor(final CANDeviceID argMotor) {

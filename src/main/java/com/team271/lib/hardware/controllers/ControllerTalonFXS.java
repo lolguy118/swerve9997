@@ -30,12 +30,13 @@ import edu.wpi.first.wpilibj.RobotController;
  * <p>Passthrough: {@link #getTalonFXS()} returns the underlying CTRE device, {@link #getConfig()}
  * returns the raw configuration.
  */
+@SuppressWarnings("NullAway.Init")
 public class ControllerTalonFXS extends ControllerSmart {
 
     protected StatusCode fxsStatus = StatusCode.OK;
-    protected TalonFXS talonFXS = null;
-    protected TalonFXSConfiguration config = null;
-    protected TalonFXSSimState simState = null;
+    protected TalonFXS talonFXS;
+    protected TalonFXSConfiguration config;
+    protected TalonFXSSimState simState;
 
     protected static final double UPDATE_FREQ_HZ = 250.0;
     protected FaultMonitor faultMonitor;

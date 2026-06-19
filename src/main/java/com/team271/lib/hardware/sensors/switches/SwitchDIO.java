@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * <p>Unlike {@link SwitchFX} (which reads limit switches through the TalonFX), this class reads
  * directly from the RoboRIO — useful for limit switches not connected to a motor controller.
  */
+@SuppressWarnings("NullAway.Init")
 public class SwitchDIO extends SwitchBase {
     private DigitalInput digitalInput;
     private final int dioChannel;

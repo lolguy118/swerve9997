@@ -12,6 +12,7 @@ import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.nt.NTEntry;
 import com.team271.lib.vendor.ctre.CTREMotor;
 import java.util.Optional;
+import org.jspecify.annotations.Nullable;
 
 public class TransmissionFX extends TransmissionBase {
 
@@ -728,7 +729,7 @@ public class TransmissionFX extends TransmissionBase {
      * Simulation
      *
      */
-    public TalonFXSimState getSimState() {
+    public @Nullable TalonFXSimState getSimState() {
         if (getLeader() != null) {
             return getLeader().getSimState();
         }

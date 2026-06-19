@@ -3,6 +3,7 @@ package com.team271.lib.hardware.sensors.encoders;
 import com.team271.lib.TObj;
 import com.team271.lib.nt.NTEntry;
 
+@SuppressWarnings("NullAway.Init")
 public abstract class EncoderBase extends TObj {
     public enum EncoderType {
         INTERNAL_FX,

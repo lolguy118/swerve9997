@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 
+@SuppressWarnings("NullAway.Init")
 public class Input extends Subsystem {
     public enum InputShaping {
         INPUT_SHAPING_NONE,
@@ -99,8 +100,7 @@ public class Input extends Subsystem {
                 break;
 
             default:
-                mController = null;
-                break;
+                throw new IllegalArgumentException("Input: unsupported InputType " + inputType);
         }
     }
 

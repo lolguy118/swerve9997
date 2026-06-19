@@ -27,7 +27,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.jspecify.annotations.Nullable;
 
+@SuppressWarnings("NullAway.Init")
 public abstract class TransmissionBase extends TObj {
     public enum ShifterState {
         GEAR_NONE,
@@ -281,6 +283,7 @@ public abstract class TransmissionBase extends TObj {
         }
     }
 
+    @Nullable
     public ControllerSmart getMotor(final CANDeviceID argMotor) {
         for (ControllerSmart tmpMotor : mAllControllers) {
             if (argMotor.equals(tmpMotor.getID())) {
@@ -291,6 +294,7 @@ public abstract class TransmissionBase extends TObj {
         return null;
     }
 
+    @Nullable
     public DCMotor getDCMotor() {
         return mSimDCMotor;
     }

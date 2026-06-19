@@ -17,6 +17,7 @@ import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotController;
 
+@SuppressWarnings("NullAway.Init")
 public class EncoderCANCoder extends EncoderCTRE {
     /*
      * CANCoder

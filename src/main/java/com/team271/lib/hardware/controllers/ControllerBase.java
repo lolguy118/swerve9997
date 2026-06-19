@@ -6,6 +6,7 @@ import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.NTEntry;
 
+@SuppressWarnings("NullAway.Init")
 public abstract class ControllerBase extends TObj {
     public enum ControllerStatus {
         UNKNOWN,

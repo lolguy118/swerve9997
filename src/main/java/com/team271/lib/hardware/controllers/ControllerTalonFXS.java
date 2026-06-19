@@ -19,6 +19,7 @@ import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Motor controller wrapper for the CTRE TalonFXS (brushed motor controller).
@@ -129,7 +130,7 @@ public class ControllerTalonFXS extends ControllerSmart {
     }
 
     /** Passthrough — returns the TalonFXS simulation state. */
-    public TalonFXSSimState getSimState() {
+    public @Nullable TalonFXSSimState getSimState() {
         return simState;
     }
 

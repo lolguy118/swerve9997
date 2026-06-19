@@ -352,7 +352,7 @@ public class ControllerTalonFX extends ControllerSmart {
         return talonFX;
     }
 
-    public TalonFXSimState getSimState() {
+    public @Nullable TalonFXSimState getSimState() {
         return simState;
     }
 

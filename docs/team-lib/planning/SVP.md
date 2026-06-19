@@ -186,7 +186,7 @@ project to declare per-tool adoption. Current library state:
 | `javac -Xdoclint:all,-missing` | Adopted (implicit) | Runs as part of `./gradlew javadoc`; consider making explicit in `build.gradle` |
 | Error Prone | Adopted (gate) | Inline during `compileJava`; default-error checks now fail the build (codebase clean; `allErrorsAsWarnings` removed). Test compilation excluded |
 | NullAway (Error Prone plugin) | Adopted (**gate**) | `ERROR` — any nullness violation fails the build/CI. Covers all `@NullMarked` library layers (`api`, `vendor`, `bridge`, `hardware`, `control`, `subsystem`, `auto`) per [ADR-018](adr/ADR-018-null-safety-annotation-policy.md); unannotated vendor/WPILib packages are unchecked |
-| SpotBugs | Adopted | `ignoreFailures=true` during rollout |
+| SpotBugs | Adopted (gate) | `ignoreFailures=false` — findings fail the build. By-design/idiom findings (ADR-005 passthrough, forked-library public/protected fields, intentional patterns) curated in `config/spotbugs/exclude.xml` |
 | Checkstyle | Adopted | `config/checkstyle/checkstyle.xml` |
 | markdownlint-cli2 | Adopted | CI job `lint-docs` |
 | yamllint | Adopted | CI job `lint-docs` |

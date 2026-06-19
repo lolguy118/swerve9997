@@ -2,22 +2,69 @@
 <!--
     Team271-Lib SpotBugs exclusion filter.
 
-    Kept minimal on purpose. Add exclusions with a comment explaining why
-    the finding is acceptable (vendored code, intentional pattern, etc.).
-    Prefer fixing the underlying issue over adding a suppression.
+    Each exclusion documents WHY the finding is acceptable. Prefer fixing the
+    underlying issue over adding a suppression. Every remaining (unsuppressed)
+    finding is a build failure (SpotBugs `ignoreFailures = false`).
 
     Reference: https://spotbugs.readthedocs.io/en/stable/filter.html
 -->
 <FindBugsFilter>
 
-    <!-- Vendored third-party sources that we do not own. -->
+    <!-- Vendored third-party source we do not own, including its inner classes
+         (e.g. LimelightHelpers$PoseEstimate / $RawFiducial / $IMUData). -->
     <Match>
-        <Class name="~.*\.LimelightHelpers"/>
+        <Class name="~.*\.LimelightHelpers(\$.*)?"/>
     </Match>
 
     <!-- gversion-generated BuildConstants classes. -->
     <Match>
         <Class name="~.*\.BuildConstants"/>
+    </Match>
+
+    <!-- ADR-005 "passthrough — wrapper, not wall": hardware wrappers deliberately
+         expose / store the raw CTRE objects, and the CAN/subsystem managers expose
+         their registries. Internal-representation exposure is the intended library
+         contract, not an accident. See docs/team-lib/planning/adr/ADR-005. -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,MS_EXPOSE_REP"/>
+    </Match>
+
+    <!-- Forked-library extension surface: public/protected fields are API for the
+         robot projects that fork this library and for subclasses (ADR-001). SpotBugs'
+         unread/unwritten/unused-public-or-protected-field checks are noise here. -->
+    <Match>
+        <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD,UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD,UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+
+    <!-- FaultMonitor staggers its update phase via a static counter assigned in the
+         constructor; robot construction is single-threaded, so the static write is safe. -->
+    <Match>
+        <Class name="~.*\.hardware\.FaultMonitor"/>
+        <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+
+    <!-- SubsystemManager is an intentional single-threaded-robot singleton; the
+         non-private constructor is the public throttle-configurable entry point
+         (getInstance() is the lazy default). -->
+    <Match>
+        <Class name="~.*\.subsystem\.SubsystemManager"/>
+        <Bug pattern="SING_SINGLETON_GETTER_NOT_SYNCHRONIZED,SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR"/>
+    </Match>
+
+    <!-- Input fails fast on an unsupported InputType in the switch's mandatory default
+         (ADR-018 audit fix). The class is non-final (gamepad subclasses) so it cannot be
+         made final, and it has no finalizer, so the partial-construction concern is moot. -->
+    <Match>
+        <Class name="~.*\.hardware\.Input\.Input"/>
+        <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+    </Match>
+
+    <!-- Example/template robot scaffold (com.team271.libtest, renamed on fork): Globals is
+         a deliberate static service-locator wired up in Robot.robotInit(). Scaffold idiom,
+         replaced when a season project forks the library — not core library code. -->
+    <Match>
+        <Class name="~com\.team271\.libtest\..*"/>
+        <Bug pattern="MS_PKGPROTECT,ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
     </Match>
 
 </FindBugsFilter>

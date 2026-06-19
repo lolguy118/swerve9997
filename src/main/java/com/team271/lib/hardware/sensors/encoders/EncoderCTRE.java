@@ -7,6 +7,7 @@ import com.team271.lib.TObj;
 import com.team271.lib.nt.NTEntry;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("NullAway.Init")
 public abstract class EncoderCTRE extends EncoderBase {
@@ -62,7 +63,7 @@ public abstract class EncoderCTRE extends EncoderBase {
      * Robot
      *
      */
-    public StatusCode applyConfig() {
+    public @Nullable StatusCode applyConfig() {
         return ctreStatus;
     }
 

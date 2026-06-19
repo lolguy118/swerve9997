@@ -40,6 +40,7 @@ import com.team271.lib.hardware.controllers.CurrentLimitConfig;
 import com.team271.lib.hardware.controllers.GravityType;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.NTTable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * CTRE TalonFX implementation of the vendor-neutral {@link ClosedLoopMotor} interface.
@@ -160,8 +161,8 @@ public class CTREMotor implements ClosedLoopMotor, MotorCapabilities {
         return mController.getConfig();
     }
 
-    /** Returns the CTRE simulation state. */
-    public TalonFXSimState getSimState() {
+    /** Returns the CTRE simulation state, or null if simulation has not been initialized. */
+    public @Nullable TalonFXSimState getSimState() {
         return mController.getSimState();
     }
 

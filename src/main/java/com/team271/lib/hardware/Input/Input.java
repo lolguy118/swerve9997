@@ -121,7 +121,7 @@ public class Input extends Subsystem {
      * their controller mapping.
      */
     public double getAxis(final int argAxis) {
-        if ((argAxis < axisCount) && mController.isConnected()) {
+        if (argAxis >= 0 && argAxis < axisCount && mController.isConnected()) {
             return Util.limit(axis[argAxis], -1.0, 1.0);
         }
 

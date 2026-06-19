@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.Timer;
 import org.jspecify.annotations.Nullable;
 import org.littletonrobotics.junction.Logger;
 
-@SuppressWarnings("NullAway.Init")
 public abstract class AutoMove {
     protected boolean isRunning = false;
     protected boolean isComplete = false;
@@ -14,7 +13,7 @@ public abstract class AutoMove {
     protected final double delay;
     @Nullable protected final String name;
 
-    // Cached telemetry keys — computed once in start() to avoid string concat at 50Hz
+    // Cached telemetry keys — computed once at construction to avoid string concat at 50Hz
     protected String telemetryKeyRunning;
     protected String telemetryKeyElapsedTime;
     protected String telemetryKeyComplete;
@@ -25,6 +24,14 @@ public abstract class AutoMove {
     protected AutoMove(final @Nullable String argName, final double argDelay) {
         name = argName;
         delay = argDelay;
+
+        // Cache telemetry key strings once at construction (non-null for the object's whole life,
+        // so lifecycle methods like end() can record them without a null guard).
+        final String prefix =
+                "Auto/Moves/" + (name != null ? name : getClass().getSimpleName()) + "/";
+        telemetryKeyRunning = prefix + "Running";
+        telemetryKeyElapsedTime = prefix + "ElapsedTime";
+        telemetryKeyComplete = prefix + "Complete";
     }
 
     protected AutoMove(double argDelay) {
@@ -54,12 +61,6 @@ public abstract class AutoMove {
 
     public void start() {
         isRunning = true;
-
-        // Cache telemetry key strings once to avoid string concat every cycle
-        String prefix = "Auto/Moves/" + getName() + "/";
-        telemetryKeyRunning = prefix + "Running";
-        telemetryKeyElapsedTime = prefix + "ElapsedTime";
-        telemetryKeyComplete = prefix + "Complete";
 
         elapsedTimer.start();
 

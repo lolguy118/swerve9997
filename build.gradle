@@ -234,10 +234,10 @@ tasks.withType(JavaCompile).configureEach {
     // Skip the vendored LimelightHelpers (upstream code we don't own)
     if (name == 'compileJava') {
         options.errorprone.excludedPaths = ".*/(build/generated|LimelightHelpers\\.java)"
-        // NullAway — null-safety on the @NullMarked api/ layer (ADR-018). Scoped to
-        // com.team271.lib.api during rollout; WARNING severity (not a gate yet). Extend
-        // AnnotatedPackages layer by layer, and promote to ERROR once a layer is clean.
-        options.errorprone.check("NullAway", CheckSeverity.WARN)
+        // NullAway — null-safety GATE across all @NullMarked library layers (ADR-018).
+        // ERROR severity: any nullness violation fails the build (and CI). AnnotatedPackages
+        // covers every layer (api -> auto); unannotated vendor/WPILib packages are unchecked.
+        options.errorprone.check("NullAway", CheckSeverity.ERROR)
         options.errorprone.option(
                 "NullAway:AnnotatedPackages",
                 "com.team271.lib.api,com.team271.lib.vendor,com.team271.lib.bridge,com.team271.lib.hardware,com.team271.lib.control,com.team271.lib.subsystem,com.team271.lib.auto")

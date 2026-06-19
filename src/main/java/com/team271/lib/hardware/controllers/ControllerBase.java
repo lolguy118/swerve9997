@@ -5,6 +5,7 @@ import com.team271.lib.TObj;
 import com.team271.lib.hardware.CANDeviceID;
 import com.team271.lib.hardware.motors.MotorBase;
 import com.team271.lib.nt.NTEntry;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("NullAway.Init")
 public abstract class ControllerBase extends TObj {
@@ -134,7 +135,7 @@ public abstract class ControllerBase extends TObj {
     /*
      * Following DeviceID
      */
-    public final CANDeviceID getFollowingID() {
+    public final @Nullable CANDeviceID getFollowingID() {
         return followingID;
     }
 

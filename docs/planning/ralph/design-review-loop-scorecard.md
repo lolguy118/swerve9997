@@ -10,3 +10,4 @@ still-unbuilt foundational artifact.
 | ---- | ---- | ------------- | ---------- | ------------- | -------------- | ------------------- |
 | 1 | 2026-06-19 | DR-1: remove phantom `EncoderCANCoderComp` from SDD-hardware §3 | 4 | 1 | 0 | 2 (DR-1, DR-2) |
 | 2 | 2026-06-19 | Item 6: author ADR-018 null-safety (JSpecify + NullAway); park DR-2 as OPEN QUESTION | 5 | 2 | 1 | 0 |
+| 3 | 2026-06-19 | Item 8: author ADR-019 lift transmission cap (additive `addFollower()`) | 6 | 2 | 1 | 0 |

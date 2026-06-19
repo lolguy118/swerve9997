@@ -21,7 +21,7 @@ closes genuine gaps and ADR↔SDD↔code drift only.
 | 5 | Planning-README consistency | medium | ADR/SDD/Planned tables + Package-to-SDD Map match files on disk; links resolve | `done` | Pass 1 sweep: all 3 tables + map verified against disk; planned vision/trajectory packages correctly marked; links resolve |
 | 6 | Reserved ADR — null-safety annotation policy | medium | Author ADR (annotation-set choice + rollout plan); Status `Proposed` until rollout starts | `done` | Pass 2: [ADR-018](../team-lib/planning/adr/ADR-018-null-safety-annotation-policy.md) authored (Proposed) — JSpecify + NullAway, layered rollout; unblocks the SVP NullAway gate |
 | 7 | Reserved ADR — supply-chain / CVE response | medium | ADR written IFF concrete trigger exists; else backlog | `backlog` | **Owner deferred 2026-06-19**: keep ad hoc until a dependency-review CI gate is adopted. Carries liability self-guard if written |
-| 8 | Reserved ADR — unlimited followers in `TransmissionBase` | medium | Author ADR lifting the 4-motor cap; impl loop implements the code change to match | `pending` | **Promoted by owner 2026-06-19**: concrete >4-motor mechanism planned for 2027 |
+| 8 | Reserved ADR — unlimited followers in `TransmissionBase` | medium | Author ADR lifting the 4-motor cap; impl loop implements the code change to match | `done` | Pass 3: [ADR-019](../team-lib/planning/adr/ADR-019-lift-transmission-motor-cap.md) authored (Proposed) — additive `addFollower()` API, `mAllControllers` as source of truth; impl loop implements |
 
 Items 6–8 mirror the existing **Planned ADRs** table in the planning README — reserved, not speculative.
 Per owner triggers on **2026-06-19**, items 6 and 8 are **promoted** to `pending`; item 7 stays `backlog`.

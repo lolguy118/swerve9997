@@ -39,3 +39,22 @@ and any `OPEN QUESTION (needs owner)` raised or resolved.
   (stability window: 1 of 2). Item 4 ADR↔code: clean sweep 2 (no reversals found).
 - **Convergence:** not met — item 8 (>4-follower ADR) still `pending`; item 3 awaits a final clean sweep.
   Pass ended normally.
+
+## Pass 3 — 2026-06-19
+
+- **Item advanced:** item 8 (unlimited followers). Authored
+  [ADR-019](../../team-lib/planning/adr/ADR-019-lift-transmission-motor-cap.md) (Status: Proposed) — lift
+  the 4-motor cap with a variable-arity, additive `addFollower(CANDeviceID, opposeLeader)` API. Grounded in
+  the actual code: the cap is the four named fields (`mLeader`, `mFollower1`..`3`) + `TransmissionFX`'s
+  1/2/3-follower constructor overloads, while `mAllControllers` (the iterated set) is already unbounded —
+  so operational code already scales. Constraint captured: per-follower control requests stay pre-allocated
+  (CODE-GEN-004). Implementation is deferred to the impl loop.
+- **Files touched:** new `docs/team-lib/planning/adr/ADR-019-lift-transmission-motor-cap.md`; planning
+  `README.md` (added to ADR table as Proposed; removed its Planned-ADR row); plus this loop's
+  ledger / scorecard / changelog.
+- **Sweep results (Phase B):** read `TransmissionBase` + `TransmissionFX` — code matches the SDD except the
+  already-known DR-2; no new drift → 0 new items (stability window: 2 of 2).
+- **Convergence:** NOT YET — items 3 & 4 (the drift-reconciliation engines) have not had every SDD / ADR
+  row checked; pass 1 covered README/map + 3 SDDs only. Next pass runs a comprehensive sweep of the
+  remaining SDDs and Accepted ADRs to satisfy their "every row checked" done-bar before any completion.
+  Pass ended normally.

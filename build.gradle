@@ -240,7 +240,7 @@ tasks.withType(JavaCompile).configureEach {
         options.errorprone.check("NullAway", CheckSeverity.WARN)
         options.errorprone.option(
                 "NullAway:AnnotatedPackages",
-                "com.team271.lib.api,com.team271.lib.vendor,com.team271.lib.bridge,com.team271.lib.hardware")
+                "com.team271.lib.api,com.team271.lib.vendor,com.team271.lib.bridge,com.team271.lib.hardware,com.team271.lib.control")
     }
 }
 

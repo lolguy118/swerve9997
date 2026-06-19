@@ -134,7 +134,7 @@ public class Alert {
         }
     }
 
-    private static class SendableAlerts implements Sendable {
+    private static final class SendableAlerts implements Sendable {
         public final List<Alert> alerts = new ArrayList<>();
 
         // Dirty flag + cached arrays — avoids stream/sort/toArray allocation every telemetry cycle.

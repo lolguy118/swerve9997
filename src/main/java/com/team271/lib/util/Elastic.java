@@ -25,6 +25,10 @@ public final class Elastic {
             selectedTabTopic.publish(PubSubOption.keepDuplicates(true));
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private Elastic() {
+        // Utility class; not instantiable.
+    }
+
     /**
      * Represents the possible levels of notifications for the Elastic dashboard. These levels are
      * used to indicate the severity or type of notification.

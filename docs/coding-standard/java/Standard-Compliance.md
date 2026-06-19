@@ -133,12 +133,12 @@ actual rule IDs used across the coding-standard companion files.
 
 | Rule Group | Prefix | Rule Count | Enforced By | Gate |
 | ---------- | ------ | ---------: | ----------- | ---- |
-| General (keywords, annotations, type safety, exceptions, GC, concurrency) | CODE-GEN | 16 | Error Prone + SpotBugs + manual review | Compile + CI + PR review |
+| General (keywords, annotations, type safety, exceptions, GC, concurrency) | CODE-GEN | 16 | Error Prone + SpotBugs + Checkstyle (`IllegalCatch` → CODE-GEN-011, `RegexpSinglelineJava` → CODE-GEN-002a) + manual review | Compile + CI + PR review |
 | Formatting (braces, parens, blank lines, line endings, imports) | CODE-FMT | 6 | Spotless (AOSP Google Java Format) + Checkstyle (`NeedBraces` → CODE-FMT-002) + `.gitattributes` | `./gradlew spotlessCheck` + `checkstyleMain` |
-| Modules and Files (naming, packages, constants, generated code) | CODE-MAF | 4 | Compiler + manual review | Compile + PR review |
-| Methods (naming, lifecycle, defensive checks) | CODE-FUN | 4 | Error Prone (`MissingOverride`, `DefaultCharset`) + compiler warnings + manual review | Compile + PR review |
-| Variables (naming, init, types, magic numbers) | CODE-VAR | 10 | Error Prone (`UnusedVariable`) + SpotBugs (null-deref) + manual review | Compile + CI + PR review |
-| Control Structures (if/switch/loops) | CODE-CTL | 6 | Checkstyle (`MissingSwitchDefault` → CODE-CTL-002) + compiler + manual review | `./gradlew checkstyleMain` + PR review |
+| Modules and Files (naming, packages, constants, generated code) | CODE-MAF | 4 | Checkstyle (`OneTopLevelClass` / `OuterTypeFilename` → CODE-MAF-001b, `HideUtilityClassConstructor` → CODE-MAF-003b) + compiler + manual review | `checkstyleMain` + Compile + PR review |
+| Methods (naming, lifecycle, defensive checks) | CODE-FUN | 4 | Error Prone (`MissingOverride`, `DefaultCharset`) + Checkstyle (`FinalClass` / `HideUtilityClassConstructor` → CODE-FUN-003b) + compiler warnings + manual review | Compile + CI + PR review |
+| Variables (naming, init, types, magic numbers) | CODE-VAR | 10 | Error Prone (`UnusedVariable`) + SpotBugs (null-deref) + Checkstyle (`LocalVariableName` → CODE-VAR-001c) + manual review | Compile + CI + PR review |
+| Control Structures (if/switch/loops) | CODE-CTL | 6 | Checkstyle (`MissingSwitchDefault` → CODE-CTL-002a, `InnerAssignment` → CODE-CTL-001, `FallThrough` → CODE-CTL-002b, `ModifiedControlVariable` → CODE-CTL-003b) + compiler + manual review | `./gradlew checkstyleMain` + PR review |
 | Comments (JavaDoc, block, inline) | CODE-COM | 2 | Javadoc task + manual review | `./gradlew javadoc` + PR review |
 | Security (input validation, integer safety, sensitive data, concurrency) | CODE-SEC | 10 | SpotBugs (FindSecBugs profile) + manual review | CI + PR review |
 
@@ -154,7 +154,7 @@ configuration in `build.gradle`:
 | ---- | ----- | --------------- |
 | Error Prone | Compile-time bug patterns (null checks, `==` on Strings, unused vars, `MissingOverride`) | Start fail-soft (`allErrorsAsWarnings = true`); promote categories to errors as historical findings are triaged |
 | SpotBugs | Bytecode analysis (null deref, concurrency, resource leaks) | Start fail-soft (`ignoreFailures = true`); reports uploaded as a CI artifact for review |
-| Checkstyle | Mechanizable formatting/structure rules (`NeedBraces` → CODE-FMT-002, `MissingSwitchDefault` → CODE-CTL-002) | Strict from day one (`maxWarnings = 0`); config grows incrementally as new mechanizable rules are added |
+| Checkstyle | Mechanizable structure / control-flow / naming / defensive rules (braces, switch default, fall-through, inner-assignment, modified-control-variable, local-variable naming, one-class-per-file, final/utility classes, broad-catch, banned APIs) | Strict from day one (`maxWarnings = 0`); config grows incrementally. Formatting is owned by Spotless, not Checkstyle. By-design exceptions (e.g. ADR-011 top-level catches) live in `config/checkstyle/suppressions.xml` |
 
 Tighten rollout (remove `allErrorsAsWarnings`, `ignoreFailures`)
 as historical findings are triaged. The exact plugin versions

@@ -36,7 +36,7 @@ import org.jspecify.annotations.Nullable;
  *   <li>Call {@code CTREManager.refreshAll()} once per cycle in {@code robotPeriodicBefore()}
  * </ol>
  */
-public class CTREManager {
+public final class CTREManager {
     /*
      * CAN Buses — keyed by bus name, preserving insertion order
      */

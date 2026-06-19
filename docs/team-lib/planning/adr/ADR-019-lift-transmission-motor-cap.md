@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Date
 
@@ -38,7 +38,8 @@ objects are **pre-allocated at construction/registration time**, never in a peri
 loop.
 
 Implementation is **deferred to the implementation loop**; this ADR fixes the decision
-and the constraints below. It is `Proposed` pending owner acceptance.
+and the constraints below. It is **Accepted** — the cap-lift is binding; the
+implementation follows.
 
 ## Rationale
 

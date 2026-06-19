@@ -3,7 +3,7 @@
 | Field | Value |
 | ----- | ----- |
 | Document No. | TBD-SDD-HARDWARE |
-| Revision | 0.2 |
+| Revision | 0.3 |
 | Date | 2026-06-19 |
 | Status | Draft |
 | Requirements Traced | `[HW-001]`..`[HW-007]` (SRS §4.3) |
@@ -25,8 +25,9 @@ This SDD covers:
 
 - **Controllers:** `ControllerBase`, `ControllerSmart`, `ControllerTalonFX`,
   `ControllerTalonFXS` — CTRE-facing lifecycle wrappers
-- **Transmissions:** `TransmissionBase`, `TransmissionFX`, `TransmissionFXS`
-  — multi-motor coordination
+- **Transmissions:** `TransmissionBase`, `TransmissionFX` — multi-motor
+  coordination (`TransmissionFXS`, a TalonFXS-backed peer mirroring
+  `TransmissionFX`, is **planned — not yet implemented**)
 - **Sensors:** encoder wrappers, IMU wrappers, range sensor wrappers,
   limit switch wrappers
 - **Input:** `Input` base + joystick devices

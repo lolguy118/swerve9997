@@ -117,8 +117,8 @@ Statuses an ADR can have:
 | [ADR-015](adr/ADR-015-logged-nt-input-backed-tuning.md) | LoggedNTInput-Backed Tuning — No Magic Numbers in Docs | Accepted |
 | [ADR-016](adr/ADR-016-advantagekit-logging.md) | AdvantageKit for Telemetry and Replay Logging | Accepted |
 | [ADR-017](adr/ADR-017-junit5-hal-simulation-tests.md) | JUnit 5 + JaCoCo + HAL Simulation for Library Tests | Accepted |
-| [ADR-018](adr/ADR-018-null-safety-annotation-policy.md) | Null-Safety Annotation Policy — JSpecify with NullAway Enforcement | Proposed |
-| [ADR-019](adr/ADR-019-lift-transmission-motor-cap.md) | Lift the 4-Motor Transmission Cap — Variable-Arity Followers | Proposed |
+| [ADR-018](adr/ADR-018-null-safety-annotation-policy.md) | Null-Safety Annotation Policy — JSpecify with NullAway Enforcement | Accepted |
+| [ADR-019](adr/ADR-019-lift-transmission-motor-cap.md) | Lift the 4-Motor Transmission Cap — Variable-Arity Followers | Accepted |
 
 ## Planned ADRs
 

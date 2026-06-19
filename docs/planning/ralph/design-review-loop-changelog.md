@@ -72,3 +72,15 @@ and any `OPEN QUESTION (needs owner)` raised or resolved.
   DR-2). Passes 2, 3, and 4 each discovered 0 new items (two-pass stability window satisfied). The single
   remaining `OPEN QUESTION (needs owner)` — DR-2 (TalonFXS transmission?) — is on a non-blocking backlog
   item and does not block any foundational artifact. The loop emits its completion tag this pass.
+
+## Post-loop owner decisions — 2026-06-19
+
+The loop had converged; these are owner resolutions of the parked items, applied directly:
+
+- **ADR-018 and ADR-019 accepted.** Both flipped `Proposed` → `Accepted` (status + planning-README table +
+  each ADR's closing note). They are now binding and permanent per the repo's ADR-permanence rule.
+- **DR-2 resolved — "implement it".** A TalonFXS-backed transmission IS intended. `TransmissionFXS` is now
+  marked **planned — not yet implemented** in SDD-hardware §2 (no longer drift) and is queued as an
+  implementation-loop item. Its OPEN QUESTION is closed.
+- **Carried into the impl loop:** (1) implement `TransmissionFXS`; (2) the ADR-019 `addFollower()` cap-lift
+  migration; (3) the ADR-018 null-safety rollout (annotate `api` first, wire NullAway as a warning).

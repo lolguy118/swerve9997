@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Date
 
@@ -45,8 +45,9 @@ plugin (Error Prone is already configured in the build).
   their absence of annotations does not produce false positives at the wrapper
   boundary.
 
-This ADR is **Proposed**: it fixes the policy, but rollout has not begun, so it
-becomes Accepted when the `api` layer is annotated and the warning is wired in.
+This ADR is **Accepted**: the policy is binding. The rollout itself (annotating
+packages, wiring NullAway as a warning, then promoting it to the CI gate) proceeds
+incrementally and is tracked as implementation work.
 
 ## Rationale
 

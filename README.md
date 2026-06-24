@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Team271-Lib
 
 A reusable FRC framework for Team 271's season robots. Instead of
@@ -124,3 +125,7 @@ VS Code with the WPILib extension is recommended — full setup in
 ## License
 
 [TBD]
+=======
+# swerve9997
+Used as a practice project to understand the FRC Team 271 lib. Implemented in a generic swerve base.
+>>>>>>> 35d2012df5ab52f0cbd46faad75a02d028a8228a

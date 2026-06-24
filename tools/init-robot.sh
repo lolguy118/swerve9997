@@ -16,7 +16,7 @@
 # Effects:
 #   - Renames docs/robot-yyyy/ -> docs/<project-name>/
 #   - Renames src/main/java/com/team271/libtest -> .../<java-package>
-#   - Rewrites "com.team271.libtest" references in .java + build.gradle
+#   - Rewrites "com.team271.swerve9997" references in .java + build.gradle
 #   - Strips "<!-- TEMPLATE FOR ... -->" scaffold banners from the
 #     renamed docs
 #
@@ -125,7 +125,7 @@ git mv "src/main/java/com/team271/libtest" "src/main/java/com/team271/$JAVA_PACK
 
 # ============================ rewrite package references ============================
 
-echo "==> Rewriting 'com.team271.libtest' references in source files"
+echo "==> Rewriting 'com.team271.swerve9997' references in source files"
 while IFS= read -r f; do
     sed_inplace "s|com\\.team271\\.libtest|com.team271.$JAVA_PACKAGE|g" "$f"
 done < <(grep -rl 'com\.team271\.libtest' src build.gradle 2>/dev/null || true)
@@ -148,7 +148,7 @@ Initialization complete.
 What changed:
   - docs/robot-yyyy/                      -> docs/$PROJECT_NAME/
   - src/main/java/com/team271/libtest/    -> .../com/team271/$JAVA_PACKAGE/
-  - com.team271.libtest references in .java/.gradle rewritten
+  - com.team271.swerve9997 references in .java/.gradle rewritten
   - scaffold banners stripped from docs/$PROJECT_NAME/
 
 Next steps:

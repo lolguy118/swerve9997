@@ -93,7 +93,7 @@ alerts:
 This repo is the template. Each season, a new robot project is
 created by forking Team271-Lib at a chosen tag, then running the
 bootstrap script under `tools/` to rename `docs/robot-yyyy/` →
-`docs/<project>/` and `com.team271.libtest` → the project's own
+`docs/<project>/` and `com.team271.swerve9997` → the project's own
 package. See
 [docs/robot-yyyy/README.md](docs/robot-yyyy/README.md) for the full
 fork-and-rename workflow, and

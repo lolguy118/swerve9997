@@ -59,7 +59,7 @@
         <Bug pattern="CT_CONSTRUCTOR_THROW"/>
     </Match>
 
-    <!-- Example/template robot scaffold (com.team271.libtest, renamed on fork): Globals is
+    <!-- Example/template robot scaffold (com.team271.swerve9997, renamed on fork): Globals is
          a deliberate static service-locator wired up in Robot.robotInit(). Scaffold idiom,
          replaced when a season project forks the library — not core library code. -->
     <Match>

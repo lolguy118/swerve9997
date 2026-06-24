@@ -32,7 +32,7 @@ Team271-Lib lives in its own Git repository with its own Gradle build,
 its own tag history, and its own release cadence. Each season's robot
 project is created by **forking or copying this repository at a chosen
 tag**, then renaming the `docs/robot-yyyy/` scaffolding and the
-`com.team271.libtest` package to project-specific names (an init
+`com.team271.swerve9997` package to project-specific names (an init
 script under `tools/` automates the mechanical rename steps).
 Team271-Lib is not published as a Maven artifact and robot projects
 do not pull library updates after the initial fork.

@@ -34,7 +34,7 @@ files (CODE-FRC-004), the singleton parent-type / registry concretes
   (`api`, `vendor`, `hardware`, `control`, `subsystem`, `auto`, `nt`,
   `sysid`, `util`, `bridge`, `wpilib`) per the six-layer architecture in
   [ADR-003](../team-lib/planning/adr/ADR-003-layered-architecture.md).
-- The in-repo example/test consumer lives in `com.team271.libtest`; the
+- The in-repo example/test consumer lives in `com.team271.swerve9997`; the
   `tools/init-robot.sh` fork script renames it to the robot's own
   package (`com.team271.<robot>`) when a season project forks this repo.
 - Library code **shall not** be placed outside `com.team271.lib*`, and

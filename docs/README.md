@@ -73,7 +73,7 @@ the planning-doc map.
 Scaffolding that becomes the robot project's documentation tier
 after the fork. An init script under `tools/` renames this directory
 to `docs/<project>/` (e.g., `docs/robot-2026/`), renames the
-`com.team271.libtest` Java package, and substitutes project-name
+`com.team271.swerve9997` Java package, and substitutes project-name
 placeholders.
 
 See [`robot-yyyy/README.md`](robot-yyyy/README.md) for contents and

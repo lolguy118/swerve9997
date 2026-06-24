@@ -3,7 +3,7 @@
 Please comprehensively review our FRC robot library codebase. The
 codebase uses the latest version of WPILib and CTRE Phoenix 6.
 AdvantageKit and PathPlanner are available as dependencies for future
-integration. The `com.team271.libtest` package contains a test robot
+integration. The `com.team271.swerve9997` package contains a test robot
 for validating the library in simulation and on real hardware.
 
 ---
@@ -13,7 +13,7 @@ for validating the library in simulation and on real hardware.
 When reviewing this codebase, you should:
 
 1. **Review all Java source files** in `com.team271.lib` and
-   `com.team271.libtest` for bugs, correctness, and adherence to the
+   `com.team271.swerve9997` for bugs, correctness, and adherence to the
    patterns documented below.
 2. **Fix issues directly** — do not just report problems, apply corrections to the code.
 3. **Verify dependency versions** — check that vendordep JSONs in `vendordeps/` are up to date with their `jsonUrl` sources.
@@ -375,7 +375,7 @@ callbacks execute sequentially in registration order.
 
 ---
 
-## Libtest Architecture (`com.team271.libtest`)
+## Libtest Architecture (`com.team271.swerve9997`)
 
 ### Files
 

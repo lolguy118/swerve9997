@@ -30,7 +30,7 @@ common to every 271 project, library-specific, project-specific — see
 [`docs/README.md`](docs/README.md) for the layout. Each season's
 robot project is a **fork** of this repo: the init script under
 `tools/` renames `docs/robot-yyyy/` to `docs/<robot-name>/` and the
-`com.team271.libtest` package to the robot's own package; `common/`
+`com.team271.swerve9997` package to the robot's own package; `common/`
 and `team-lib/` stay in place as inherited reference material
 ([ADR-001](docs/team-lib/planning/adr/ADR-001-team271-lib-standalone-library.md)).
 

@@ -60,7 +60,7 @@ published artifact) is recorded in
    ```
 
    This renames `docs/robot-yyyy/` to `docs/robot-2026/`, renames
-   the `com.team271.libtest` Java package to `com.team271.robot2026`
+   the `com.team271.swerve9997` Java package to `com.team271.robot2026`
    (dashes stripped by default — pass a second argument to override),
    updates `ROBOT_MAIN_CLASS` in `build.gradle`, and strips the
    scaffold banners from the renamed docs. The script refuses to run

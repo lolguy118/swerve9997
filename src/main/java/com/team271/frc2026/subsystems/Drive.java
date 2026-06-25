@@ -1,3 +1,5 @@
+// TODO: figure out how to toggle hub align AND log telemetry
+
 package com.team271.frc2026.subsystems;
 
 import static edu.wpi.first.units.Units.Rotation;
@@ -6,18 +8,23 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.SwerveDriveBrake;
+import com.team271.frc2026.Constants;
+import com.team271.frc2026.Globals;
 import com.team271.frc2026.generated.TunerConstants;
 import com.team271.frc2026.subsystems.Input.InputDriver;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.FaultMonitor;
+import com.team271.lib.nt.LoggedNTInput;
 import com.team271.lib.subsystem.StateMachine;
 import com.team271.lib.subsystem.Subsystem;
 import com.team271.lib.util.Elastic;
+import com.team271.lib.util.Util;
 import com.team271.lib.util.Elastic.Notification;
 import com.team271.lib.util.Elastic.NotificationLevel;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -109,6 +116,55 @@ public class Drive extends Subsystem {
     private double mRotationalRate = 0.0;
     private ChassisSpeeds mRobotCentricSpeeds = new ChassisSpeeds();
     private ChassisSpeeds mHubAlignRobotCentricSpeeds = new ChassisSpeeds();
+
+    /*
+    Auto and Hub Alignment Gains
+    */
+   LoggedNTInput ntHubAlignKp = new LoggedNTInput(table, "HubAlign/Kp", Constants.DriveConstants.kHubAlignGains.kP());
+   LoggedNTInput ntHubAlignKi = new LoggedNTInput(table, "HubAlign/Ki", Constants.DriveConstants.kHubAlignGains.kI());
+   LoggedNTInput ntHubAlignKd = new LoggedNTInput(table, "HubAlign/Kd", Constants.DriveConstants.kHubAlignGains.kD());
+
+   /*
+   Hub Alignment
+   */
+   private PIDController mHubAlignmentPidController = new PIDController(ntHubAlignKp.getDbl(), ntHubAlignKi.getDbl(), ntHubAlignKd.getDbl());
+   private double mHubAlignRadPerSec;
+   private double mHubAlignTargetRad;
+   private double mHubAlignErrorRad;
+
+   static double computeHubAlignOmega(
+            final double headingRad,
+            final double robotX,
+            final double robotY,
+            final double hubX,
+            final double hubY,
+            final PIDController pid,
+            final double maxRateRadPerSec) {
+        
+        final double targetRad = Math.atan2(robotY - hubY, robotX - hubX);
+        final double raw = pid.calculate(headingRad, targetRad);
+
+        return MathUtil.clamp(raw, -maxRateRadPerSec, maxRateRadPerSec);
+    }
+
+    private double getRotationalRateToAlignToHub() {
+        double omega = computeHubAlignOmega(
+            getNormalizedHeading().getRadians(), 
+            getPose2d().getX(), 
+            getPose2d().getY(), 
+            Globals.getHubX(), 
+            Constants.Field.HUB_Y_COORDINATE, 
+            mHubAlignmentPidController, 
+            InputDriver.MAX_ROTATIONAL_STRAFE);
+        
+        mHubAlignRadPerSec = omega;
+        mHubAlignTargetRad = mHubAlignmentPidController.getSetpoint();
+        mHubAlignErrorRad = MathUtil.angleModulus(mHubAlignTargetRad - getPose2d().getRotation().getRadians());
+
+        return omega;
+    }
+   
+    
 
     /*
     Implementation of Velocities

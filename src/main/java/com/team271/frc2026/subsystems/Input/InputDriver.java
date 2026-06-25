@@ -41,8 +41,8 @@ public class InputDriver extends Input8BitDuo  {
     /*
     Velocity Constants
     */
-    double MAX_VELOCITY = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-    double MAX_ROTATIONAL_STRAFE = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    public static double MAX_VELOCITY = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static double MAX_ROTATIONAL_STRAFE = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     /*
     Deadbands

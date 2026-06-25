@@ -136,6 +136,10 @@ public class Input extends Subsystem {
         return false;
     }
 
+    public boolean getButtonPressed(final XboxController.Button argButton) {
+        return getButtonPressed(argButton.value - 1);
+    }
+
     /** Returns true on the single cycle when the button transitions from pressed to released. */
     public boolean getButtonReleased(final int argButton) {
         if (argButton >= 0 && argButton < buttonCount) {

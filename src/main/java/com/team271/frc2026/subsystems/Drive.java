@@ -1,5 +1,7 @@
 package com.team271.frc2026.subsystems;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -8,13 +10,23 @@ import com.team271.frc2026.generated.TunerConstants;
 import com.team271.frc2026.subsystems.Input.InputDriver;
 import com.team271.lib.TObj;
 import com.team271.lib.hardware.FaultMonitor;
-import com.team271.lib.hardware.sensors.imu.IMUPigeon2;
 import com.team271.lib.subsystem.StateMachine;
 import com.team271.lib.subsystem.Subsystem;
 import com.team271.lib.util.Elastic;
+import com.team271.lib.util.Elastic.Notification;
+import com.team271.lib.util.Elastic.NotificationLevel;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Drive extends Subsystem {
     private static Drive mInstance;
@@ -142,9 +154,81 @@ public class Drive extends Subsystem {
     }
 
     /*
+    Odometry Getters
+    */
+    public Pose2d getPose2d() {
+        Pose2d pose = mDrivetrain.getState().Pose;
+        return pose != null ? pose : new Pose2d();
+    }
+
+    public Pose3d getPose3d() {
+        Pose2d pose = getPose2d();
+        Pose3d pose3d = new Pose3d(pose.getX(), pose.getY(), 0.0, new Rotation3d(getRoll(), getTilt(), getYaw()));
+        return pose3d;
+    }
+
+    public void addVisionMeasurement(Pose2d argVisionRobotPoseMeters, double argTimestampSeconds, Matrix<N3,N1> argVisionMeasurementStdDevs) {
+        mDrivetrain.addVisionMeasurement(argVisionRobotPoseMeters, argTimestampSeconds, argVisionMeasurementStdDevs);
+    }
+
+    public double getRoll() {
+        return mDrivetrain.getPigeon2().getRoll().getValueAsDouble();
+    }
+    
+    public double getTilt() {
+        return mDrivetrain.getPigeon2().getPitch().getValueAsDouble();
+    }
+
+    public double getYaw() {
+        return mDrivetrain.getPigeon2().getYaw().getValueAsDouble();
+    }
+
+    public Rotation2d getRawHeading() {
+        return mDrivetrain.getState().RawHeading;
+    }
+
+    public Rotation2d getNormalizedHeading() {
+        return Rotation2d.fromRadians(MathUtil.inputModulus(getRawHeading().getRadians(), 0, 2 * Math.PI));
+    }
+
+    public Alliance getAlliance() {
+        return DriverStation.getAlliance().orElse(Alliance.Blue);
+    }
+
+    public ChassisSpeeds getMeasuredChassisSpeeds() {
+        ChassisSpeeds speeds = mDrivetrain.getState().Speeds;
+        return speeds != null ? speeds : new ChassisSpeeds();
+    }
+
+    /*
+    Odometry Setters
+    */
+    public void resetPose(Pose2d argPose) {
+        mDrivetrain.resetPose(argPose);
+    }
+
+    public void seedPose(Pose2d argPose) {
+        mDrivetrain.resetPose(argPose);
+    }
+
+    public void zeroGyro() {
+        Rotation2d matchStartRotation = getAlliance() == Alliance.Blue ? Rotation2d.k180deg : Rotation2d.kZero;
+        Pose2d currentPose = getPose2d();
+        resetPose(new Pose2d(currentPose.getTranslation(), matchStartRotation));
+    }
+
+    /*
     Inputs
     */
     InputDriver mInputDriver = InputDriver.getInstance(mInstance);
+
+    /*
+    Elastic Notifications
+    */
+    Notification mDriveModeNotification =
+        new Notification(NotificationLevel.INFO, "Drive Mode Toggle", "", 2000);
+    Notification mAutoSelectedNotification =
+        new Notification(NotificationLevel.INFO, "Auto Selected", "", 2000);
 
     @Override
     public void robotPeriodicBefore(double argTimestamp) {
@@ -171,6 +255,9 @@ public class Drive extends Subsystem {
 
     @Override
     public void teleopInit(double argTimestamp) {
+        if (!mGyroSeededInAuto) {
+            zeroGyro();
+        }
         stateMachine.setDesiredState(DriveControlState.SWERVE);
         stateMachine.transition(DriveControlState.SWERVE);
     }
@@ -180,10 +267,14 @@ public class Drive extends Subsystem {
         // TODO Auto-generated method stub
         if (mInputDriver.isDirectionalDrivePressed()) {
             mRobotCentric = true;
+            mDriveModeNotification.setDescription("Robot-Centric Drive Enabled ");
+            Elastic.sendNotification(mDriveModeNotification);
         }
 
         if (mInputDriver.isFieldDrivePressed()) {
             mRobotCentric = false;
+            mDriveModeNotification.setDescription("Field-Centric Drive Enabled ");
+            Elastic.sendNotification(mDriveModeNotification);
         }
 
         double tmpVelocityX = mInputDriver.getForwardVelocity();

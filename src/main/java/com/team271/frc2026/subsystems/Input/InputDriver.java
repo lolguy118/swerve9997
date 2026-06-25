@@ -5,10 +5,14 @@ import static edu.wpi.first.units.Units.*;
 import com.team271.frc2026.Constants;
 import com.team271.frc2026.generated.TunerConstants;
 import com.team271.lib.TObj;
+import com.team271.lib.hardware.Input.Input.InputShaping;
+import com.team271.lib.hardware.Input.Input8BitDuo;
 import com.team271.lib.hardware.Input.InputXBox;
 import com.team271.lib.util.Util;
 
-public class InputDriver extends InputXBox {
+import edu.wpi.first.wpilibj.XboxController;
+
+public class InputDriver extends Input8BitDuo  {
 
     /*
     Constructors and getInstance() methods
@@ -43,8 +47,6 @@ public class InputDriver extends InputXBox {
     /*
     Deadbands
     */
-
-    // TODO: attain actual values for these from comp repo
     double DEADBAND_FORWARD_VELOCITY = 0.06;
     double DEADZONE_STRAFE_VELOCITY = 0.06;
     double DEADZONE_ROTATIONAL_STRAFE = 0.08;
@@ -75,5 +77,13 @@ public class InputDriver extends InputXBox {
         tmpValue = Util.handleDeadzone(tmpValue, DEADBAND_FORWARD_VELOCITY);
         tmpValue  = inputShaping(rotationalStrafeInputShaping, tmpValue);
         return tmpValue;
+    }
+
+    public boolean isDirectionalDrivePressed() {
+        return getButtonPressed(XboxController.Button.kLeftStick);
+    }
+
+    public boolean isFieldDrivePressed() {
+        return getButtonPressed(XboxController.Button.kRightStick);
     }
 }
